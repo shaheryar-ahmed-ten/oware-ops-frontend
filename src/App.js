@@ -1,17 +1,15 @@
 import './App.css';
-import Forget from './components/login/Forget';
 import Login from './components/login/Login';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'antd/dist/antd.css';
+import { Route } from 'react-router-dom';
+import Routing from './components/routers/Routing';
+// import { BrowserRouter, Route, Switch } from 'react'
 
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Login />
-        <Route path='/forget_password' component={Forget} />
-      </Router>
+      <Routing />
     </div>
   );
 }
