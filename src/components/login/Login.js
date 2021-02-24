@@ -11,6 +11,7 @@ const url = "https://reqres.in/api/login"
 
 const Login = () => {
   const [postRequest, setRequest] = useState(null);
+  const [username, setUsername] = useState();
   useEffect(() => {
     fetch(url).then(response => response.json())
       .then(data => setRequest(data));
@@ -25,6 +26,9 @@ const Login = () => {
     marginTop: "10%",
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+  }
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
@@ -33,6 +37,7 @@ const Login = () => {
   return (
     <Form style={mystyle}
       name="normal_login"
+      onSubmit={handleSubmit}
       className="login-form"
       initialValues={{
         remember: true,
@@ -51,7 +56,7 @@ const Login = () => {
           },
         ]}
       >
-        <Input placeholder="name@example.com" />
+        <Input placeholder="name@example.com" value={username} onChange={(e) => setUsername(e.target.value)} />
       </Form.Item>
 
       <label htmlFor="username">Password</label>
