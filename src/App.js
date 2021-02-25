@@ -4,7 +4,8 @@ import './App.css';
 // import 'antd/dist/antd.css';
 // import { Route } from 'react-router-dom';
 // import Routing from './components/routers/Routing';
-import Layout from './components/Layout'
+// import Layout from './components/Layout'
+import Login from './components/login/LoginForm'
 
 const theme = createMuiTheme({
   palette: {
@@ -36,7 +37,8 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme} className="App">
-      <Layout />
+      {/* <Layout /> */}
+      <Login />
       <CssBaseline />
     </ThemeProvider>
   );
