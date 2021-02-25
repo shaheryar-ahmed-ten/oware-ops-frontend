@@ -1,11 +1,12 @@
-import { Grid, makeStyles, Paper, Typography, TextField, Button, Link, FormControl, InputLabel, BootstrapInput, Box } from '@material-ui/core'
+import { Grid, makeStyles, Paper, Typography, TextField, Button, FormControl, InputLabel, BootstrapInput, Box } from '@material-ui/core'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     paperStyle: {
         backgroundColor: 'transparent',
         padding: 5,
-        height: "70vh",
+        height: "55vh",
         maxWidth: "350px",
         minWidth: "auto",
         margin: "10% auto"
@@ -33,7 +34,7 @@ const LoginForm = () => {
                     </Box>
                     <Box mt={1}>
                         <Typography align="center" style={{ fontWeight: "bolder" }}>
-                            <Link href="#" >Forgot your password?</Link>
+                            {/* <Link to="/forget_password">Forgot your password?</Link> */}
                         </Typography>
                     </Box>
                     <Box mt={2}>
