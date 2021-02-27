@@ -1,24 +1,46 @@
-import logo from './logo.svg';
+import { createMuiTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core';
 import './App.css';
+// import Login from './components/login/Login';
+// import 'antd/dist/antd.css';
+// import { Route } from 'react-router-dom';
+// import Routing from './components/routers/Routing';
+// import Layout from './components/Layout'
+import Login from './components/login/LoginForm'
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#003152",
+      light: "#4B0082"
+    },
+    secondary: {
+      main: "#E32636",
+      light: "#CD5700",
+    }
+  },
+  overrides: {
+    MuiAppBar: {
+      root: {
+        borderBottom: '0.5px solid #D3D3D3',
+        boxShadow: '0px',
+      }
+    }
+  },
+  props: {
+    MuiButton: {
+      disableRipple: true,
+    }
+  }
+})
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme} className="App">
+      {/* <Layout /> */}
+      <Login />
+      <CssBaseline />
+    </ThemeProvider>
   );
 }
 
