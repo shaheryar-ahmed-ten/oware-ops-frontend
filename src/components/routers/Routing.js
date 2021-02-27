@@ -1,15 +1,14 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Forget from '../login/Forget'
-import Login from '../login/Login'
+import Login from '../login/LoginForm'
+import ForgetPassword from '../login/ForgetPassword'
 
 const Routing = () => {
     return (
         <BrowserRouter>
             <Route path="/login" component={Login} />
-            <Route path="/forget_password" component={Forget} />
+            {/* <Route path="/forget_password" component={ForgetPassword} /> */}
         </BrowserRouter>
     )
 }
-
 export default Routing;

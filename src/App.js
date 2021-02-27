@@ -1,11 +1,7 @@
 import { createMuiTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core';
 import './App.css';
-// import Login from './components/login/Login';
-// import 'antd/dist/antd.css';
-// import { Route } from 'react-router-dom';
-// import Routing from './components/routers/Routing';
-// import Layout from './components/Layout'
 import Login from './components/login/LoginForm'
+import ForgetPassword from './components/login/ForgetPassword'
 
 const theme = createMuiTheme({
   palette: {
@@ -38,7 +34,8 @@ function App() {
   return (
     <ThemeProvider theme={theme} className="App">
       {/* <Layout /> */}
-      <Login />
+      {/* <Login /> */}
+      <ForgetPassword />
       <CssBaseline />
     </ThemeProvider>
   );
