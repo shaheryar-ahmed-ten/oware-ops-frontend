@@ -2,6 +2,7 @@ import { createMuiTheme, CssBaseline, makeStyles, ThemeProvider } from '@materia
 import './App.css';
 import Login from './components/login/LoginForm'
 import ForgetPassword from './components/login/ForgetPassword'
+import Layout from './components/Layout';
 
 const theme = createMuiTheme({
   palette: {
@@ -34,8 +35,8 @@ function App() {
   return (
     <ThemeProvider theme={theme} className="App">
       {/* <Layout /> */}
-      {/* <Login /> */}
-      <ForgetPassword />
+      <Login />
+      {/* <ForgetPassword /> */}
       <CssBaseline />
     </ThemeProvider>
   );

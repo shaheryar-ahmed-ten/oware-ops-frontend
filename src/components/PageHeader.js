@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 function PageHeader(props) {
     const classes = useStyles();
-    const { title, subtitle } = props;
+    const { title } = props;
     return (
         <Paper elevation={0} className={classes.root} alignItems="center">
             <Typography

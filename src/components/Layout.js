@@ -4,6 +4,7 @@ import Header from './Header';
 import PageHeader from './PageHeader';
 import DataGrid from './DataGrid'
 import { makeStyles } from '@material-ui/core'
+import DispatchOrder from './orders/DispatchOrder';
 
 const useStyles = makeStyles({
     appMain: {
@@ -20,7 +21,7 @@ const Layout = () => {
             <SideMenu />
             <div className={classes.appMain}>
                 <Header />
-                <PageHeader />
+                <DispatchOrder />
                 <DataGrid />
             </div>
         </React.Fragment>
