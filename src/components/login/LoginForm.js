@@ -46,9 +46,8 @@ const LoginForm = (props) => {
                 setUserToken(res.data.token)
             })
             .then(() => axios.get(getURL('/users/me')))
-            .then(res => {
-                setUser(res.data)
-            })
+            .then(res => setUser(res.data))
+            .then(() => props.history.push("/"))
             .catch(err => {
                 console.log(err)
                 setLoading(false);
