@@ -1,6 +1,7 @@
 import { createMuiTheme, CssBaseline, makeStyles, ThemeProvider } from '@material-ui/core';
 import './App.css';
 import Login from './components/login/LoginForm'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import ForgetPassword from './components/login/ForgetPassword'
 import Layout from './components/Layout';
 
@@ -34,9 +35,11 @@ const theme = createMuiTheme({
 function App() {
   return (
     <ThemeProvider theme={theme} className="App">
-      {/* <Layout /> */}
-      <Login />
-      {/* <ForgetPassword /> */}
+      <Router>
+        <Route path="/" exact component={Layout} />
+        <Route path="/login" component={Login} />
+        <Route path="/forgetpassword" component={ForgetPassword} />
+      </Router>
       <CssBaseline />
     </ThemeProvider>
   );

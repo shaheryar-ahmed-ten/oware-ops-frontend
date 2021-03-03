@@ -38,7 +38,7 @@ const LoginForm = (props) => {
             .then(res => {
                 setLoading(false);
                 setUserSession(res.data.token, res.data.user)
-                props.history.push("/layout");
+                props.history.push("/");
 
                 res.json()
             })
@@ -86,7 +86,7 @@ const LoginForm = (props) => {
                     </Box>
                     <Box mt={1}>
                         <Typography align="center" style={{ fontWeight: "bolder" }}>
-                            {/* <Link to="/forget_password">Forgot your password?</Link> */}
+                            <Link to="/forgetpassword">Forgot your password?</Link>
                         </Typography>
                     </Box>
                     <Box mt={2}>
