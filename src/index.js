@@ -3,7 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
+import { getToken } from './utils/common';
 
+axios.interceptors.request.use(request => {
+  const token = getToken();
+  if (token) {
+    request.headers['authorization'] = `Bearer ${token}`
+  }
+  delete request.headers['authorization'];
+  return request;
+}, error => Promise.reject(error));
 
 ReactDOM.render(
   <App />,

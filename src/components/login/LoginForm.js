@@ -2,10 +2,10 @@ import { Grid, makeStyles, Paper, Typography, TextField, Button, FormControl, In
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios';
-import { setUserSession } from '../utils/Common';
+import { setUserToken, setUser, getURL, removeUserToken } from '../../utils/common';
 
 
-const api = "http://localhost:9000/users";
+const api = "http://localhost:3000/users";
 const useStyles = makeStyles(theme => ({
     paperStyle: {
         backgroundColor: 'transparent',
@@ -21,6 +21,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const LoginForm = (props) => {
+    const logout = () => {
+        removeUserToken();
+    };
+    logout();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -29,29 +34,31 @@ const LoginForm = (props) => {
     const classes = useStyles();
 
     const handleSubmit = e => {
+        e.preventDefault();
         setError(null);
         setLoading(true);
-        axios.post(api, {
-            username: username,
-            password: password
+        axios.post(getURL('/users/auth/login'), {
+            username,
+            password
         })
             .then(res => {
                 setLoading(false);
-                setUserSession(res.data.token, res.data.user)
-                props.history.push("/layout");
-
-                res.json()
+                setUserToken(res.data.token)
+            })
+            .then(() => axios.get(getURL('/users/me')))
+            .then(res => {
+                setUser(res.data)
             })
             .catch(err => {
+                console.log(err)
                 setLoading(false);
-                if (err.res.status === 401 || 400) {
-                    setError(err.res.data.message);
+                if (err.data.status === 401 || 400) {
+                    setError(err.data.message);
                 }
                 else {
-                    setError("Something wents wrong");
+                    setError("Something went wrong!");
                 }
             })
-        // e.preventDefault();
     }
     return (
         <form onSubmit={handleSubmit}>
@@ -83,11 +90,6 @@ const LoginForm = (props) => {
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />
-                    </Box>
-                    <Box mt={1}>
-                        <Typography align="center" style={{ fontWeight: "bolder" }}>
-                            {/* <Link to="/forget_password">Forgot your password?</Link> */}
-                        </Typography>
                     </Box>
                     <Box mt={2}>
                         <Button type="submit" color="primary" variant="contained" fullWidth="true">Login</Button>
