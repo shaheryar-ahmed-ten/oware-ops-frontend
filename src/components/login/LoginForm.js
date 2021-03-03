@@ -5,7 +5,6 @@ import axios from 'axios';
 import { setUserToken, setUser, getURL, removeUserToken } from '../../utils/common';
 
 
-const api = "http://localhost:3000/users";
 const useStyles = makeStyles(theme => ({
     paperStyle: {
         backgroundColor: 'transparent',
@@ -37,7 +36,7 @@ const LoginForm = (props) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
-        axios.post(getURL('/users/auth/login'), {
+        axios.post(getURL('/user/auth/login'), {
             username,
             password
         })
@@ -45,11 +44,10 @@ const LoginForm = (props) => {
                 setLoading(false);
                 setUserToken(res.data.token)
             })
-            .then(() => axios.get(getURL('/users/me')))
+            .then(() => axios.get(getURL('/user/me')))
             .then(res => setUser(res.data))
             .then(() => props.history.push("/"))
             .catch(err => {
-                console.log(err)
                 setLoading(false);
                 if (err.data.status === 401 || 400) {
                     setError(err.data.message);
