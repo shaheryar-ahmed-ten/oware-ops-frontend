@@ -23,36 +23,44 @@ const user = {
 const items = [
   {
     href: '/administration/user',
-    title: 'User'
+    title: 'Manage User'
   },
   {
     href: '/administration/customer',
-    title: 'Customer'
+    title: 'Manage Customer'
   },
   {
     href: '/administration/warehouse',
-    title: 'Warehouse'
+    title: 'Manage Warehouse'
   },
   {
     href: '/administration/brand',
-    title: 'Brand'
+    title: 'Manage Brand'
   },
   {
     href: '/administration/uom',
-    title: 'UoM'
+    title: 'Manage UoM'
   },
   {
     href: '/administration/category',
-    title: 'Category'
+    title: 'Manage Category'
   },
   {
     href: '/administration/product',
-    title: 'Product'
+    title: 'Manage Product'
   },
   {
-    href: '/login',
-    title: 'Login'
-  }
+    href: '/operations/product-inward',
+    title: 'Product Inward'
+  },
+  {
+    href: '/operations/dispatch-order',
+    title: 'Dispatch Order'
+  },
+  {
+    href: '/operations/product-outward',
+    title: 'Product Outward'
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +101,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         display="flex"
         flexDirection="column"
         p={2}>
-        <Typography variant="h3" style={{ fontWeight: "bolder" }} component="div" color="light">oware</Typography>
+        <Typography variant="h3" style={{ fontWeight: "bolder" }} component="div" color="">oware</Typography>
       </Box>
       <Divider />
       <Box p={2}>
