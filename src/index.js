@@ -4,10 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
+import { BrowserRouter } from 'react-router-dom';
 import { getToken } from './utils/common';
 
 axios.interceptors.request.use(request => {
   const token = getToken();
+  console.log('TOKEN', token)
   if (token) {
     request.headers['authorization'] = `Bearer ${token}`
   }
@@ -15,10 +17,11 @@ axios.interceptors.request.use(request => {
   return request;
 }, error => Promise.reject(error));
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+ReactDOM.render((
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+), document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

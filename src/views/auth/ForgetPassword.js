@@ -1,5 +1,5 @@
-import { Paper, Grid, Typography, TextField, Button, makeStyles, Box } from '@material-ui/core'
-import React from 'react'
+import { Paper, Grid, Typography, TextField, Button, makeStyles, Box } from '@material-ui/core';
+import React from 'react';
 
 const useStyle = makeStyles(theme => ({
     paperStyle: {
@@ -41,6 +41,6 @@ const ForgetPassword = () => {
             </Paper>
         </Grid>
     )
-}
+};
 
-export default ForgetPassword
+export default ForgetPassword;

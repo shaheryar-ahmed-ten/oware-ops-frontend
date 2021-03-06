@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const LoginForm = (props) => {
+const LoginView = (props) => {
     const logout = () => {
         removeUserToken();
     };
@@ -46,11 +46,11 @@ const LoginForm = (props) => {
             })
             .then(() => axios.get(getURL('/user/me')))
             .then(res => setUser(res.data))
-            .then(() => props.history.push("/"))
+            // .then(() => props.history.push("/"))
             .catch(err => {
                 setLoading(false);
-                if (err.data.status === 401 || 400) {
-                    setError(err.data.message);
+                if (err.status === 401 || 400) {
+                    setError(err.message);
                 }
                 else {
                     setError("Something went wrong!");
@@ -62,7 +62,7 @@ const LoginForm = (props) => {
             <Grid>
                 <Paper elevation={0} className={classes.paperStyle}>
                     <Grid align="center">
-                        <Typography variant="h3" style={{ fontWeight: "bolder" }} component="div" color="primary">oware</Typography>
+                        <Typography variant="h1" style={{ fontWeight: "bolder" }} component="div" color="primary">oware</Typography>
                     </Grid>
 
                     <Box mt={4}>
@@ -97,4 +97,4 @@ const LoginForm = (props) => {
     )
 }
 
-export default LoginForm
+export default LoginView
