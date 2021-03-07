@@ -1,14 +1,9 @@
 import React from 'react'
 import { Button, AppBar, Toolbar, Grid, IconButton, Badge, makeStyles, Typography, Box } from '@material-ui/core'
-import AcUnitIcon from '@material-ui/icons/AcUnit';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { findByLabelText } from '@testing-library/dom';
-import { Link as RouterLink } from 'react-router-dom';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: "transparent",
-
     },
     toolbar: {
         borderBottom: '1px solid #D8D8D8'
@@ -16,13 +11,13 @@ const useStyles = makeStyles({
     typo: {
         color: 'black',
         fontWeight: 'bolder'
+    },
+    logout: {
+        color: theme.palette.error.main
     }
+}))
 
-
-
-})
-
-function Header({ ...rest }) {
+function Header({ onMobileNavOpen, ...rest }) {
     const classes = useStyles();
     return (
         <AppBar position="static" className={classes.root} elevation={0} {...rest}>
@@ -35,7 +30,7 @@ function Header({ ...rest }) {
                         </Box>
                     </Grid>
                     <Grid item>
-                        <Button size="medium" type="submit" color="error">Logout</Button>
+                        <Button size="medium" type="submit"  className={classes.logout}>Logout</Button>
                     </Grid>
                 </Grid>
 

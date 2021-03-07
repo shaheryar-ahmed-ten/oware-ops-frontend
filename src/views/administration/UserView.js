@@ -34,27 +34,27 @@ const columns = [
 
 ];
 
-function createData(firstName, lastName, email, phone, status) {
+function createData(id, firstName, lastName, email, phone, status) {
     // const density = population / size;
-    return { firstName, lastName, email, phone, status };
+    return { id, firstName, lastName, email, phone, status };
 }
 
 const rows = [
-    createData('India', 'IN', 1324171354, 3287263),
-    createData('China', 'CN', 1403500365, 9596961),
-    createData('Italy', 'IT', 60483973, 301340),
-    createData('United States', 'US', 327167434, 9833520),
-    createData('Canada', 'CA', 37602103, 9984670),
-    createData('Australia', 'AU', 25475400, 7692024),
-    createData('Germany', 'DE', 83019200, 357578),
-    createData('Ireland', 'IE', 4857000, 70273),
-    createData('Mexico', 'MX', 126577691, 1972550),
-    createData('Japan', 'JP', 126317000, 377973),
-    createData('France', 'FR', 67022000, 640679),
-    createData('United Kingdom', 'GB', 67545757, 242495),
-    createData('Russia', 'RU', 146793744, 17098246),
-    createData('Nigeria', 'NG', 200962417, 923768),
-    createData('Brazil', 'BR', 210147125, 8515767),
+    createData(1, 'India', 'IN', 1324171354, 3287263),
+    createData(2, 'China', 'CN', 1403500365, 9596961),
+    createData(3, 'Italy', 'IT', 60483973, 301340),
+    createData(4, 'United States', 'US', 327167434, 9833520),
+    createData(5, 'Canada', 'CA', 37602103, 9984670),
+    createData(6, 'Australia', 'AU', 25475400, 7692024),
+    createData(7, 'Germany', 'DE', 83019200, 357578),
+    createData(8, 'Ireland', 'IE', 4857000, 70273),
+    createData(9, 'Mexico', 'MX', 126577691, 1972550),
+    createData(10, 'Japan', 'JP', 126317000, 377973),
+    createData(11, 'France', 'FR', 67022000, 640679),
+    createData(12, 'United Kingdom', 'GB', 67545757, 242495),
+    createData(14, 'Russia', 'RU', 146793744, 17098246),
+    createData(15, 'Nigeria', 'NG', 200962417, 923768),
+    createData(16, 'Brazil', 'BR', 210147125, 8515767),
 ];
 
 const useStyles = makeStyles({
@@ -67,13 +67,15 @@ const useStyles = makeStyles({
         padding: 20,
 
     },
+    pagination: {
+        border: 'none'
+    }
 });
 
 export default function UserView() {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(4);
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -99,7 +101,7 @@ export default function UserView() {
                     <TableBody>
                         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                     {columns.map((column) => {
                                         const value = row[column.id];
                                         return (
@@ -118,7 +120,7 @@ export default function UserView() {
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}
-                // rowsPerPage={rowsPerPage}
+                rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
             // onChangeRowsPerPage={handleChangeRowsPerPage}

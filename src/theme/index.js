@@ -6,10 +6,15 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#005cfd",
-      light: "#ffffff"
+      light: colors.common.white,
+      dark: colors.common.black
     },
     secondary: {
       main: "#2b3a53",
+      light: "#8b96a8",
+    },
+    error: {
+      main: "#de6868",
       light: "#8b96a8",
     }
   },
@@ -23,7 +28,7 @@ const theme = createMuiTheme({
   },
   props: {
     MuiButton: {
-      disableRipple: true,
+      // disableRipple: true,
     }
   },
   shadows,

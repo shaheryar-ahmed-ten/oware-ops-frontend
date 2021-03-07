@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
-import Header from './../MainLayout/Header';
+import Header from './Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flex: '1 1 auto',
     overflow: 'hidden',
+    marginTop: 64,
     [theme.breakpoints.up('lg')]: {
       paddingLeft: 256
     }
@@ -39,8 +40,8 @@ const DashboardLayout = () => {
 
   return (
     <div className={classes.root}>
-      {/* <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} /> */}
-      <Header onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
+      {/* <Header onMobileNavOpen={() => setMobileNavOpen(true)} /> */}
       <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}

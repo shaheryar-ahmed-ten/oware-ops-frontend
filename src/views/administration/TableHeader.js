@@ -33,11 +33,11 @@ const TableHeader = (props) => {
             <Paper elevation={0} square className={classes.root}>
                 <div className={classes.pageHeader}>
                     <Grid container>
-                        <Grid item sm="4">
+                        <Grid item >
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
                         <Grid item sm></Grid>
-                        <Grid item sm="4" style={{ textAlign: "right" }} >
+                        <Grid item  style={{ textAlign: "right" }} >
                             <InputBase
                                 placeholder="Search"
                                 className={classes.searchInput}

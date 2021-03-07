@@ -27,10 +27,11 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1)
   },
   title: {
-    marginRight: 'auto'
+    marginRight: 'auto',
+    color: theme.palette.secondary.light,
   },
   active: {
-    color: theme.palette.primary.main,
+    color: theme.palette.primary.light,
     '& $title': {
       fontWeight: theme.typography.fontWeightMedium
     },
@@ -61,12 +62,6 @@ const NavItem = ({
         component={RouterLink}
         to={href}
       >
-        {Icon && (
-          <Icon
-            className={classes.icon}
-            size="20"
-          />
-        )}
         <span className={classes.title}>
           {title}
         </span>
