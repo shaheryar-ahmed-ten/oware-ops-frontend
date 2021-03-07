@@ -81,7 +81,7 @@ export default function UserView() {
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Dispatch User" />
+                <TableHeader title="Manage User" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>

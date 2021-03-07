@@ -37,7 +37,7 @@ const TableHeader = (props) => {
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
                         <Grid item sm></Grid>
-                        <Grid item sm="4" >
+                        <Grid item sm="4" style={{ textAlign: "right" }} >
                             <InputBase
                                 placeholder="Search"
                                 className={classes.searchInput}
