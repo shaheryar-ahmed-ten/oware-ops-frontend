@@ -1,78 +1,42 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
+import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import TableHeader from './TableHeader'
 
 const columns = [
     {
-        id: 'dispatch_id',
-        label: 'DISPATCH ID',
+        id: 'firstName',
+        label: 'First Name',
         minWidth: 'auto',
     },
     {
-        id: 'product_name',
-        label: 'PRODUCT NAME',
+        id: 'lastName',
+        label: 'Last Name',
         minWidth: 'auto'
     },
     {
-        id: 'customer_name',
-        label: 'CUSTOMER',
+        id: 'email',
+        label: 'Email',
         minWidth: 'auto',
         format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'warehouse',
-        label: 'WAREHOUSE',
+        id: 'phone',
+        label: 'Phone',
         minWidth: 'auto',
         format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'uom',
-        label: 'UOM',
+        id: 'status',
+        label: 'Status',
         minWidth: 'auto',
         format: (value) => value.toFixed(2),
     },
-    {
-        id: 'qty',
-        label: 'QTY DISPATCH',
-        minWidth: 'auto',
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: 'receiver_phone',
-        label: 'RECEIVER PHONE',
-        minWidth: 'auto',
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: 'receiver_name',
-        label: 'RECEIVER NAME',
-        minWidth: 'auto',
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: 'shipment_date',
-        label: 'SHIPMENT DATE',
-        minWidth: 'auto',
-        format: (value) => value.toFixed(2),
-    },
-    {
-        id: 'date_receiving',
-        label: 'DATE/TIME RECEIVING',
-        minWidth: 'auto',
-        format: (value) => value.toFixed(2),
-    },
+
 ];
 
-function createData(name, code, population, size) {
-    const density = population / size;
-    return { name, code, population, size, density };
+function createData(firstName, lastName, email, phone, status) {
+    // const density = population / size;
+    return { firstName, lastName, email, phone, status };
 }
 
 const rows = [
@@ -99,7 +63,7 @@ const useStyles = makeStyles({
         backgroundColor: 'transparent'
     },
     container: {
-        maxHeight: 440,
+        maxHeight: 450,
         padding: 20,
 
     },
@@ -114,10 +78,10 @@ export default function UserView() {
         setPage(newPage);
     };
 
-
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
+                <TableHeader title="Dispatch User" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -151,10 +115,10 @@ export default function UserView() {
                 </Table>
             </TableContainer>
             <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
+                // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}
-                rowsPerPage={rowsPerPage}
+                // rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
             // onChangeRowsPerPage={handleChangeRowsPerPage}
