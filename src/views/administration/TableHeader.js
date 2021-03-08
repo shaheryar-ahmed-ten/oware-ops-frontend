@@ -1,6 +1,7 @@
 import { Button, Grid, Paper, Box, Typography, makeStyles, InputBase } from '@material-ui/core'
 // import { findByLabelText } from '@testing-library/dom';
 import React from 'react'
+import AddUserView from '../modals/AddUserView'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const TableHeader = (props) => {
-    const { title, addButtonTitle } = props;
+    const { title } = props;
     const classes = useStyles();
 
     return (
@@ -37,12 +38,12 @@ const TableHeader = (props) => {
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
                         <Grid item sm></Grid>
-                        <Grid item  style={{ textAlign: "right" }} >
+                        <Grid item style={{ textAlign: "right" }} >
                             <InputBase
                                 placeholder="Search"
                                 className={classes.searchInput}
                             />
-                            <Button type="submit" color="primary" variant="contained" size="small">{addButtonTitle}</Button>
+                            <Button type="submit" color="primary" variant="contained" size="small">{<AddUserView />}</Button>
                         </Grid>
                     </Grid>
                 </div>

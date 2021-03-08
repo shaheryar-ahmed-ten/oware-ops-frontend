@@ -3,6 +3,7 @@ import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import TableHeader from './TableHeader'
 import axios from 'axios';
 import { getURL } from '../../utils/common';
+import AddUserView from '../administration/TableHeader'
 
 
 const useStyles = makeStyles(theme => ({
@@ -71,7 +72,7 @@ export default function UserView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage User" addButtonTitle="ADD USER"/>
+        <TableHeader title="Manage User" addButtonTitle="ADD USER" />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
