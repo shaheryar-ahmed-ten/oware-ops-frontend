@@ -3,8 +3,10 @@ import {
   Box,
   Container,
   Typography,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import Page from '../../components/Page';
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +53,7 @@ const NotFoundView = () => {
           >
             You either tried some shady route or you came here by mistake.
             Whichever it is, try using the navigation
+            <Button size="medium" to="/" component={RouterLink}>Go to home</Button>
           </Typography>
           <Box textAlign="center">
             <img
