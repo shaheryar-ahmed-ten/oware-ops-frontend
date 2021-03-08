@@ -53,15 +53,12 @@ const NotFoundView = () => {
           >
             You either tried some shady route or you came here by mistake.
             Whichever it is, try using the navigation
-            <Button size="medium" to="/" component={RouterLink}>Go to home</Button>
           </Typography>
-          <Box textAlign="center">
-            <img
-              alt="Under development"
-              className={classes.image}
-              src="/static/images/undraw_page_not_found_su7k.svg"
-            />
-          </Box>
+          <Typography
+            variant="h1"
+            align="center">
+            <Button size="medium" to="/" color="secondary" variant="contained" component={RouterLink}>Go to home</Button>
+          </Typography>
         </Container>
       </Box>
     </Page>
