@@ -13,6 +13,10 @@ const theme = createMuiTheme({
       main: "#2b3a53",
       light: "#8b96a8",
     },
+    success: {
+      main: "#8bbb2a",
+      light: "#8b96a8",
+    },
     error: {
       main: "#de6868",
       light: "#8b96a8",

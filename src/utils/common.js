@@ -1,7 +1,7 @@
 export const apiBaseURL = 'http://localhost:3000';
 export const user = null;
 
-export const getToken = () => {
+export const getUserToken = () => {
     return localStorage.getItem('token') || null;
 }
 

@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const TableHeader = (props) => {
-    const { title } = props;
+    const { title, addButtonTitle } = props;
     const classes = useStyles();
 
     return (
@@ -42,7 +42,7 @@ const TableHeader = (props) => {
                                 placeholder="Search"
                                 className={classes.searchInput}
                             />
-                            <Button type="submit" color="primary" variant="contained" size="small">Add User</Button>
+                            <Button type="submit" color="primary" variant="contained" size="small">{addButtonTitle}</Button>
                         </Grid>
                     </Grid>
                 </div>

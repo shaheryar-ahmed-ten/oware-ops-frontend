@@ -50,7 +50,7 @@ const TopBar = ({
             </Box>
           </Grid>
           <Grid item>
-            <Button size="medium" type="submit" className={classes.logout}>Logout</Button>
+            <Button size="medium" type="submit" to="/login" component={RouterLink} className={classes.logout}>Logout</Button>
           </Grid>
         </Grid>
         <Hidden lgUp>
