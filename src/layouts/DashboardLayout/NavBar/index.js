@@ -14,50 +14,52 @@ import {
 } from '@material-ui/core';
 import NavItem from './NavItem';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
-
 const items = [
   {
     href: '/administration/user',
-    title: 'User'
+    title: 'Manage User'
   },
   {
     href: '/administration/customer',
-    title: 'Customer'
+    title: 'Manage Customer'
   },
   {
     href: '/administration/warehouse',
-    title: 'Warehouse'
+    title: 'Manage Warehouse'
   },
   {
     href: '/administration/brand',
-    title: 'Brand'
+    title: 'Manage Brand'
   },
   {
     href: '/administration/uom',
-    title: 'UoM'
+    title: 'Manage UoM'
   },
   {
     href: '/administration/category',
-    title: 'Category'
+    title: 'Manage Category'
   },
   {
     href: '/administration/product',
-    title: 'Product'
+    title: 'Manage Product'
   },
   {
-    href: '/login',
-    title: 'Login'
-  }
+    href: '/operations/product-inward',
+    title: 'Product Inward'
+  },
+  {
+    href: '/operations/dispatch-order',
+    title: 'Dispatch Order'
+  },
+  {
+    href: '/operations/product-outward',
+    title: 'Product Outward'
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
-    width: 256
+    width: '100vw'
   },
   desktopDrawer: {
     width: 256,
@@ -69,6 +71,9 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     width: 64,
     height: 64
+  },
+  brand: {
+    color: theme.palette.primary.light
   }
 }));
 
@@ -89,11 +94,11 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       display="flex"
       flexDirection="column">
       <Box
-        alignItems="center"
+        alignItems="start"
         display="flex"
         flexDirection="column"
         p={2}>
-        <Typography variant="h3" style={{ fontWeight: "bolder" }} component="div" color="light">oware</Typography>
+        <Typography variant="h2" style={{ fontWeight: "bolder" }} component="div" className={classes.brand} color="primary">oware</Typography>
       </Box>
       <Divider />
       <Box p={2}>

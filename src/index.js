@@ -5,15 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { getToken } from './utils/common';
+import { getUserToken } from './utils/common';
 
 axios.interceptors.request.use(request => {
-  const token = getToken();
-  console.log('TOKEN', token)
+  const token = getUserToken();
   if (token) {
     request.headers['authorization'] = `Bearer ${token}`
-  }
-  delete request.headers['authorization'];
+  } else delete request.headers['authorization'];
   return request;
 }, error => Promise.reject(error));
 

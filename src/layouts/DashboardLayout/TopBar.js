@@ -2,25 +2,24 @@ import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import {
-  AppBar,
-  Badge,
-  Box,
-  Hidden,
-  IconButton,
-  Toolbar,
-  makeStyles
-} from '@material-ui/core';
+import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import Logo from '../../components/Logo';
 
-const useStyles = makeStyles(() => ({
-  root: {},
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.primary.light,
+  },
   avatar: {
     width: 60,
     height: 60
+  },
+  typo: {
+    color: theme.palette.primary.dark,
+    fontWeight: 'bolder'
+  },
+  logout: {
+    color: theme.palette.error.main
   }
 }));
 
@@ -43,20 +42,17 @@ const TopBar = ({
           <Logo />
         </RouterLink>
         <Box flexGrow={1} />
-        <Hidden mdDown>
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
-          </IconButton>
-        </Hidden>
+        <Grid container align="right" >
+          <Grid item sm></Grid>
+          <Grid item>
+            <Box mr={4} mt={1}>
+              <Typography variant="h5" component="div" className={classes.typo}>Welcome, User</Typography>
+            </Box>
+          </Grid>
+          <Grid item>
+            <Button size="medium" type="submit" to="/login" component={RouterLink} className={classes.logout}>Logout</Button>
+          </Grid>
+        </Grid>
         <Hidden lgUp>
           <IconButton
             color="inherit"
