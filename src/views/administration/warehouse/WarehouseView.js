@@ -66,17 +66,19 @@ export default function WarehouseView() {
     const [page, setPage] = useState(1);
     const [warehouses, setWarehouses] = useState([]);
     const getWarehouses = (page = 1) => {
-      axios.get(getURL('/warehouse'), { params: { page } })
-        .then((res) => res.data.data)
-        .then((warehouses) => setWarehouses(warehouses));
+        axios.get(getURL('/warehouse'), { params: { page } })
+            .then(res => {
+                setPageCount(res.data.pages)
+                setWarehouses(res.data.data)
+            });
     };
     const handlePageChange = (event, newPage) => {
-      setPage(newPage);
-      getWarehouses(newPage);
+        setPage(newPage);
+        getWarehouses(newPage);
     };
-  
+
     useEffect(() => {
-      getWarehouses();
+        getWarehouses();
     }, []);
 
 

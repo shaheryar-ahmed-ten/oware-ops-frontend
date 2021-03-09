@@ -73,8 +73,10 @@ export default function UserView() {
   const [users, setUsers] = useState([]);
   const getUsers = (page = 1) => {
     axios.get(getURL('/user'), { params: { page } })
-      .then((res) => res.data.data)
-      .then((users) => setUsers(users));
+      .then(res => {
+        setPageCount(res.data.pages)
+        setUsers(res.data.data)
+      });
   };
   const handlePageChange = (event, newPage) => {
     setPage(newPage);

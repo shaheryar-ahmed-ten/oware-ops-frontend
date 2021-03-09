@@ -52,18 +52,13 @@ export default function CategoryView() {
     const [pageCount, setPageCount] = useState(1);
     const [page, setPage] = useState(1);
     const [categories, setCategories] = useState([]);
-    const [rowsPerPage, setRowsPerPage] = useState(4);
     const getCategories = (page = 1) => {
         axios.get(getURL('/category'), { params: { page } })
-            .then((res) => res.data.data)
-            .then((categories) => setCategories(categories));
+            .then(res => {
+                setPageCount(res.data.pages)
+                setCategories(res.data.data)
+            });
     }
-    const getCategories = (page = 1) => {
-        axios.get(getURL('/category'))
-            .then((res) => res.data.data)
-            .then((categories) => setCategories(categories));
-    }
-
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
         getCategories(newPage);

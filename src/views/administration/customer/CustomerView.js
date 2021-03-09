@@ -72,8 +72,10 @@ export default function CustomerView() {
     const [customers, setCustomers] = useState([]);
     const getCustomers = (page = 1) => {
         axios.get(getURL('/customer'), { params: { page } })
-            .then((res) => res.data.data)
-            .then((users) => setCustomers(users));
+            .then(res => {
+                setPageCount(res.data.pages)
+                setCustomers(res.data.data)
+            });
     };
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
