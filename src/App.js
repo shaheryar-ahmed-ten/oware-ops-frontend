@@ -4,9 +4,10 @@ import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from '../src/components/GlobalStyles';
 import theme from '../src/theme';
 import routes from '../src/routes';
+import { getUser } from './utils/common';
 
 const App = () => {
-  const routing = useRoutes(routes);
+  const routing = useRoutes(routes(getUser()));
 
   return (
     <ThemeProvider theme={theme}>

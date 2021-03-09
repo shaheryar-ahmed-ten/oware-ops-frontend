@@ -2,7 +2,12 @@ export const apiBaseURL = 'http://localhost:3000';
 export const user = null;
 
 export const getUserToken = () => {
-    return localStorage.getItem('token') || null;
+    return localStorage.getItem('token');
+}
+
+export const getUser = () => {
+    let user = localStorage.getItem('user');
+    return user && JSON.parse(user);
 }
 
 export const setUserToken = token => {
@@ -10,11 +15,15 @@ export const setUserToken = token => {
 }
 
 export const setUser = user => {
-    localStorage.setItem('user', user);
+    localStorage.setItem('user', JSON.stringify(user));
 }
 
 export const removeUserToken = () => {
     localStorage.removeItem('token');
+}
+
+export const removeUser = () => {
+    localStorage.removeItem('user');
 }
 
 export const getURL = uri => {

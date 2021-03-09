@@ -2,7 +2,7 @@ import { Grid, makeStyles, Paper, Typography, TextField, Button, FormControl, In
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { setUserToken, setUser, getURL, removeUserToken } from '../../utils/common';
+import { setUserToken, setUser, getURL, removeUserToken, removeUser } from '../../utils/common';
 
 
 const useStyles = makeStyles(theme => ({
@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 const LoginView = (props => {
   const logout = () => {
     removeUserToken();
+    removeUser();
   };
   logout();
 
@@ -46,7 +47,7 @@ const LoginView = (props => {
         setUserToken(res.data.token)
       })
       .then(() => axios.get(getURL('/user/me')))
-      .then(res => setUser(res.data))
+      .then(res => setUser(res.data.data))
       .then(() => navigate('/administration/user'))
       .catch(err => {
         setLoading(false);
