@@ -5,13 +5,13 @@ import DashboardLayout from '../src/layouts/DashboardLayout';
 
 import LoginView from '../src/views/auth/LoginView';
 import NotFoundView from '../src/views/errors/NotFoundView';
-import UserView from '../src/views/administration/UserView';
-import CustomerView from '../src/views/administration/CustomerView';
-import BrandView from '../src/views/administration/BrandView';
-import UoMView from '../src/views/administration/UoMView';
-import WarehouseView from '../src/views/administration/WarehouseView';
-import CategoryView from '../src/views/administration/CategoryView';
-import ProductView from '../src/views/administration/ProductView';
+import UserView from '../src/views/administration/user/UserView';
+import CustomerView from '../src/views/administration/customer/CustomerView';
+import BrandView from '../src/views/administration/brand/BrandView';
+import UoMView from '../src/views/administration/uom/UoMView';
+import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
+import CategoryView from '../src/views/administration/category/CategoryView';
+import ProductView from '../src/views/administration/product/ProductView';
 
 const routes = [
   {

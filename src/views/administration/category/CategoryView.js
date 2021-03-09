@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
+import { getURL } from '../../../utils/common';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,8 +21,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function UoMView() {
+export default function CategoryView() {
     const classes = useStyles();
+
     const columns = [{
         id: 'name',
         label: 'Name',
@@ -36,24 +37,24 @@ export default function UoMView() {
         format: value => value ? 'Active' : 'In-Active',
     }];
     const [page, setPage] = useState(0);
-    const [uoms, setUoMs] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
 
-        axios.get(getURL('/uom'))
+        axios.get(getURL('/category'))
             .then((res) => res.data.data)
-            .then((uoms) => {
-                setUoMs(uoms)
+            .then((categories) => {
+                setCategories(categories)
             });
     }, []);
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Manage UoM" addButtonTitle="ADD UoM" />
+                <TableHeader title="Manage Category" addButtonTitle="ADD CATEGORY" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -69,11 +70,11 @@ export default function UoMView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {uoms.map((uom) => {
+                        {categories.map((category) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={uom.id}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={category.id}>
                                     {columns.map((column) => {
-                                        const value = uom[column.id];
+                                        const value = category[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}
                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
@@ -90,7 +91,7 @@ export default function UoMView() {
             <TablePagination
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={uoms.length}
+                count={categories.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}

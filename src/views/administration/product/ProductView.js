@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
+import { getURL } from '../../../utils/common';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,7 +21,8 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function WarehouseView() {
+
+export default function ProductView() {
     const classes = useStyles();
     const columns = [{
         id: 'name',
@@ -29,46 +30,46 @@ export default function WarehouseView() {
         minWidth: 'auto',
         className: '',
     }, {
-        id: 'businessWarehouseCode',
-        label: 'Business Warehouse Code',
+        id: 'description',
+        label: 'Description',
         minWidth: 'auto',
         className: '',
     }, {
-        id: 'address',
-        label: 'Address',
+        id: 'dimensionsCBM',
+        label: 'Dimensions CBM',
         minWidth: 'auto',
         className: '',
     }, {
-        id: 'city',
-        label: 'City',
+        id: 'weight',
+        label: 'Weight',
         minWidth: 'auto',
         className: '',
     }, {
         id: 'isActive',
-        label: 'Active',
+        label: 'Status',
         minWidth: 'auto',
         className: value => value ? classes.active : '',
         format: value => value ? 'Active' : 'In-Active',
     }];
     const [page, setPage] = useState(0);
-    const [warehouses, setWarehouses] = useState([]);
+    const [products, setProducts] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
 
-        axios.get(getURL('/warehouse'))
+        axios.get(getURL('/product'))
             .then((res) => res.data.data)
-            .then((warehouses) => {
-                setWarehouses(warehouses)
+            .then((products) => {
+                setProducts(products)
             });
     }, []);
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Manage Warehouse" addButtonTitle="ADD WAREHOUSE"/>
+                <TableHeader title="Manage Product" addButtonTitle="ADD PRODUCT" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -84,11 +85,11 @@ export default function WarehouseView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {warehouses.map((warehouse) => {
+                        {products.map((product) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={warehouse.id}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={product.id}>
                                     {columns.map((column) => {
-                                        const value = warehouse[column.id];
+                                        const value = product[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}
                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
@@ -105,7 +106,7 @@ export default function WarehouseView() {
             <TablePagination
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={warehouses.length}
+                count={products.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}

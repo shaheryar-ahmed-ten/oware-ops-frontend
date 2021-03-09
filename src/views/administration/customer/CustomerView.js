@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
+import { getURL } from '../../../utils/common';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -22,44 +22,59 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function BrandView() {
+export default function CustomerView() {
     const classes = useStyles();
     const columns = [{
-        id: 'name',
-        label: 'Name',
+        id: 'companyName',
+        label: 'company',
         minWidth: 'auto',
         className: '',
     }, {
-        id: 'manufacturerName',
-        label: 'Manufacturer Name',
+        id: 'contactName',
+        label: 'Contact Name',
+        minWidth: 'auto',
+        className: '',
+    }, {
+        id: 'contactEmail',
+        label: 'Contact Email',
+        minWidth: 'auto',
+        className: ''
+    }, {
+        id: 'contactPhone',
+        label: 'Contact Phone',
         minWidth: 'auto',
         className: '',
     }, {
         id: 'isActive',
         label: 'Status',
         minWidth: 'auto',
-        className: value => value ? classes.active : '',
+        className: value => value ? 'active' : '',
         format: value => value ? 'Active' : 'In-Active',
+    }, {
+        id: 'notes',
+        label: 'Notes',
+        minWidth: 'auto',
+        className: '',
     }];
     const [page, setPage] = useState(0);
-    const [brands, setBrands] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
 
-        axios.get(getURL('/brand'))
+        axios.get(getURL('/customer'))
             .then((res) => res.data.data)
-            .then((brands) => {
-                setBrands(brands)
+            .then((customers) => {
+                setCustomers(customers)
             });
     }, []);
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Manage Brand" addButtonTitle="ADD BRAND" />
+                <TableHeader title="Manage Customer" addButtonTitle="ADD CUSTOMER" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -75,11 +90,11 @@ export default function BrandView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {brands.map((brand) => {
+                        {customers.map((customer) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={brand.id}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={customer.id}>
                                     {columns.map((column) => {
-                                        const value = brand[column.id];
+                                        const value = customer[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}
                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
@@ -96,7 +111,7 @@ export default function BrandView() {
             <TablePagination
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={brands.length}
+                count={customers.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}

@@ -25,24 +25,23 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const TableHeader = (props) => {
-    const { title, addButtonTitle } = props;
+    const { title, buttons } = props;
     const classes = useStyles();
 
     return (
         <React.Fragment>
             <Paper elevation={0} square className={classes.root}>
                 <div className={classes.pageHeader}>
-                    <Grid container>
-                        <Grid item >
+                    <Grid container justify="space-between">
+                        <Grid item>
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
-                        <Grid item sm></Grid>
-                        <Grid item  style={{ textAlign: "right" }} >
+                        <Grid item>
                             <InputBase
                                 placeholder="Search"
                                 className={classes.searchInput}
                             />
-                            <Button type="submit" color="primary" variant="contained" size="small">{addButtonTitle}</Button>
+                            {buttons}
                         </Grid>
                     </Grid>
                 </div>
