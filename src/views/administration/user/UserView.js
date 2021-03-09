@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react';
-import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import {
+  makeStyles,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@material-ui/core';
 import TableHeader from '../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
@@ -58,19 +68,21 @@ export default function UserView() {
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
   }];
-  const [page, setPage] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(1);
   const [users, setUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(4);
+  const getUsers = (page = 1) => {
+    axios.get(getURL('/user'), { params: { page } })
+      .then((res) => res.data.data)
+      .then((users) => setUsers(users));
+  };
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
+    getUsers(newPage);
   };
-  useEffect(() => {
 
-    axios.get(getURL('/user'))
-      .then((res) => res.data.data)
-      .then((users) => {
-        setUsers(users)
-      });
+  useEffect(() => {
+    getUsers();
   }, []);
 
   return (
@@ -110,25 +122,20 @@ export default function UserView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Pagination
-        component="div"
-        shape="rounded"
-        // count={users.length}
-        color="primary"
-        page={page}
-        className={classes.pagination}
-        onPageChange={handlePageChange}
-      // onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      {/* <TablePagination
-        // rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={users.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handlePageChange}
-      // onChangeRowsPerPage={handleChangeRowsPerPage}
-      /> */}
+      <Grid container>
+        <Grid item>
+          <Pagination
+            component="div"
+            shape="rounded"
+            count={pageCount}
+            color="primary"
+            page={page}
+            className={classes.pagination}
+            onChange={handlePageChange}
+          // onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

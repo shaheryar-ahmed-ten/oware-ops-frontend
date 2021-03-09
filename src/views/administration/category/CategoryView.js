@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
-import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import {
+    makeStyles,
+    Paper,
+    Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow
+} from '@material-ui/core';
 import TableHeader from '../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
@@ -38,19 +49,28 @@ export default function CategoryView() {
         className: value => value ? classes.active : '',
         format: value => value ? 'Active' : 'In-Active',
     }];
-    const [page, setPage] = useState(0);
+    const [pageCount, setPageCount] = useState(1);
+    const [page, setPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const handlePageChange = (event, newPage) => {
-        setPage(newPage);
-    };
-    useEffect(() => {
-
+    const getCategories = (page = 1) => {
+        axios.get(getURL('/category'), { params: { page } })
+            .then((res) => res.data.data)
+            .then((categories) => setCategories(categories));
+    }
+    const getCategories = (page = 1) => {
         axios.get(getURL('/category'))
             .then((res) => res.data.data)
-            .then((categories) => {
-                setCategories(categories)
-            });
+            .then((categories) => setCategories(categories));
+    }
+
+    const handlePageChange = (event, newPage) => {
+        setPage(newPage);
+        getCategories(newPage);
+    };
+
+    useEffect(() => {
+        getCategories();
     }, []);
 
     return (
@@ -90,16 +110,20 @@ export default function CategoryView() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Pagination
-                component="div"
-                shape="rounded"
-                // count={users.length}
-                color="primary"
-                page={page}
-                className={classes.pagination}
-                onPageChange={handlePageChange}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
+            <Grid container>
+                <Grid item>
+                    <Pagination
+                        component="div"
+                        shape="rounded"
+                        count={pageCount}
+                        color="primary"
+                        page={page}
+                        className={classes.pagination}
+                        onChange={handlePageChange}
+                    // onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </Grid>
+            </Grid>
         </Paper>
     );
 }
