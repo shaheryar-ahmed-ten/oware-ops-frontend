@@ -51,7 +51,7 @@ export default function BrandView() {
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
-  }]; s
+  }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [brands, setBrands] = useState([]);
