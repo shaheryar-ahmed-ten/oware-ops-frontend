@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
-import AddUserView from '../administration/TableHeader'
+import { getURL } from '../../../utils/common';
+import AddUserView from './AddUserView';
 
 
 const useStyles = makeStyles(theme => ({
@@ -23,6 +23,8 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.success.main
   }
 }));
+
+const buttonsInHead = [<AddUserView key={1}/>];
 
 
 export default function UserView() {
@@ -72,7 +74,7 @@ export default function UserView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage User" addButtonTitle="ADD USER" />
+        <TableHeader title="Manage User" buttons={buttonsInHead} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

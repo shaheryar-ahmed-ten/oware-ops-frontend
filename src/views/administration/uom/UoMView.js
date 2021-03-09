@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
+import { getURL } from '../../../utils/common';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,60 +21,39 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-
-export default function CustomerView() {
+export default function UoMView() {
     const classes = useStyles();
     const columns = [{
-        id: 'companyName',
-        label: 'company',
-        minWidth: 'auto',
-        className: '',
-    }, {
-        id: 'contactName',
-        label: 'Contact Name',
-        minWidth: 'auto',
-        className: '',
-    }, {
-        id: 'contactEmail',
-        label: 'Contact Email',
-        minWidth: 'auto',
-        className: ''
-    }, {
-        id: 'contactPhone',
-        label: 'Contact Phone',
+        id: 'name',
+        label: 'Name',
         minWidth: 'auto',
         className: '',
     }, {
         id: 'isActive',
         label: 'Status',
         minWidth: 'auto',
-        className: value => value ? 'active' : '',
+        className: value => value ? classes.active : '',
         format: value => value ? 'Active' : 'In-Active',
-    }, {
-        id: 'notes',
-        label: 'Notes',
-        minWidth: 'auto',
-        className: '',
     }];
     const [page, setPage] = useState(0);
-    const [customers, setCustomers] = useState([]);
+    const [uoms, setUoMs] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
 
-        axios.get(getURL('/customer'))
+        axios.get(getURL('/uom'))
             .then((res) => res.data.data)
-            .then((customers) => {
-                setCustomers(customers)
+            .then((uoms) => {
+                setUoMs(uoms)
             });
     }, []);
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Manage Customer" addButtonTitle="ADD CUSTOMER" />
+                <TableHeader title="Manage UoM" addButtonTitle="ADD UoM" />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -90,11 +69,11 @@ export default function CustomerView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.map((customer) => {
+                        {uoms.map((uom) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={customer.id}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={uom.id}>
                                     {columns.map((column) => {
-                                        const value = customer[column.id];
+                                        const value = uom[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}
                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
@@ -111,7 +90,7 @@ export default function CustomerView() {
             <TablePagination
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={customers.length}
+                count={uoms.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}

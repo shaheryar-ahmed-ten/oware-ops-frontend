@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import TableHeader from './TableHeader'
+import TableHeader from '../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../utils/common';
+import { getURL } from '../../../utils/common';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,40 +21,54 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function CategoryView() {
+export default function WarehouseView() {
     const classes = useStyles();
-
     const columns = [{
         id: 'name',
         label: 'Name',
         minWidth: 'auto',
         className: '',
     }, {
+        id: 'businessWarehouseCode',
+        label: 'Business Warehouse Code',
+        minWidth: 'auto',
+        className: '',
+    }, {
+        id: 'address',
+        label: 'Address',
+        minWidth: 'auto',
+        className: '',
+    }, {
+        id: 'city',
+        label: 'City',
+        minWidth: 'auto',
+        className: '',
+    }, {
         id: 'isActive',
-        label: 'Status',
+        label: 'Active',
         minWidth: 'auto',
         className: value => value ? classes.active : '',
         format: value => value ? 'Active' : 'In-Active',
     }];
     const [page, setPage] = useState(0);
-    const [categories, setCategories] = useState([]);
+    const [warehouses, setWarehouses] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
 
-        axios.get(getURL('/category'))
+        axios.get(getURL('/warehouse'))
             .then((res) => res.data.data)
-            .then((categories) => {
-                setCategories(categories)
+            .then((warehouses) => {
+                setWarehouses(warehouses)
             });
     }, []);
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Manage Category" addButtonTitle="ADD CATEGORY" />
+                <TableHeader title="Manage Warehouse" addButtonTitle="ADD WAREHOUSE"/>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
@@ -70,11 +84,11 @@ export default function CategoryView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {categories.map((category) => {
+                        {warehouses.map((warehouse) => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={category.id}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={warehouse.id}>
                                     {columns.map((column) => {
-                                        const value = category[column.id];
+                                        const value = warehouse[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}
                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
@@ -91,7 +105,7 @@ export default function CategoryView() {
             <TablePagination
                 // rowsPerPageOptions={[10, 25, 100]}
                 component="div"
-                count={categories.length}
+                count={warehouses.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
