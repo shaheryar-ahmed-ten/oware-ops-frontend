@@ -61,7 +61,7 @@ export default function UserView() {
   const [page, setPage] = useState(0);
   const [users, setUsers] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(4);
-  const handleChangePage = (event, newPage) => {
+  const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function UserView() {
         color="primary"
         page={page}
         className={classes.pagination}
-        onChangePage={handleChangePage}
+        onPageChange={handlePageChange}
       // onChangeRowsPerPage={handleChangeRowsPerPage}
       />
       {/* <TablePagination
@@ -126,7 +126,7 @@ export default function UserView() {
         count={users.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onChangePage={handleChangePage}
+        onPageChange={handlePageChange}
       // onChangeRowsPerPage={handleChangeRowsPerPage}
       /> */}
     </Paper>

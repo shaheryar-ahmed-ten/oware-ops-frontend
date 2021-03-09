@@ -40,7 +40,7 @@ export default function UoMView() {
     const [page, setPage] = useState(0);
     const [uoms, setUoMs] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const handleChangePage = (event, newPage) => {
+    const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
@@ -96,7 +96,7 @@ export default function UoMView() {
                 color="primary"
                 page={page}
                 className={classes.pagination}
-                onChangePage={handleChangePage}
+                onPageChange={handlePageChange}
             // onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </Paper>

@@ -60,7 +60,7 @@ export default function CustomerView() {
     const [page, setPage] = useState(0);
     const [customers, setCustomers] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const handleChangePage = (event, newPage) => {
+    const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
@@ -116,7 +116,7 @@ export default function CustomerView() {
                 color="primary"
                 page={page}
                 className={classes.pagination}
-                onChangePage={handleChangePage}
+                onPageChange={handlePageChange}
             // onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </Paper>

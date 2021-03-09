@@ -13,29 +13,33 @@ import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
 import CategoryView from '../src/views/administration/category/CategoryView';
 import ProductView from '../src/views/administration/product/ProductView';
 
-const routes = [
+const routes = (user) => [
   {
     path: 'administration',
-    element: <DashboardLayout />,
+    element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
     children: [
-      { path: 'user', element: <UserView /> },
+      {
+        path: 'user',
+        element: user && user['Role.PermissionAccesses.Permission.type'] == 'superadmin_privileges' ? <UserView /> : <Navigate to='404' />,
+      },
       { path: 'customer', element: <CustomerView /> },
       { path: 'warehouse', element: <WarehouseView /> },
       { path: 'brand', element: <BrandView /> },
       { path: 'uom', element: <UoMView /> },
       { path: 'category', element: <CategoryView /> },
       { path: 'product', element: <ProductView /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: '/', element: <Navigate to='/administration/customer' /> },
+      { path: '*', element: <Navigate to='/404' /> }
     ]
   },
   {
     path: 'operations',
-    element: <DashboardLayout />,
+    element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
     children: [
       //   { path: 'product-inward', element: <ProductInwardView /> },
       //   { path: 'dispatch-order', element: <DispatchOrderView /> },
       //   { path: 'product-outward', element: <ProductOutwardView /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: '*', element: <Navigate to='/404' /> }
     ]
   },
   {
@@ -44,8 +48,8 @@ const routes = [
     children: [
       { path: 'login', element: <LoginView /> },
       { path: '404', element: <NotFoundView /> },
-      { path: '/', element: <Navigate to="/administration" /> },
-      { path: '*', element: <Navigate to="/404" /> }
+      { path: '/', element: <Navigate to='/administration' /> },
+      { path: '*', element: <Navigate to='/404' /> }
     ]
   }
 ];

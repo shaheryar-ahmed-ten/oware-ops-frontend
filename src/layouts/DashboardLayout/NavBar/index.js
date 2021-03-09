@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { TreeItem, TreeView } from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import {
-  Avatar,
   Box,
-  Button,
   Divider,
   Drawer,
   Hidden,
-  List,
   Typography,
   makeStyles
 } from '@material-ui/core';
 import NavItem from './NavItem';
+import { getUser } from '../../../utils/common';
 
 const navTreeData = [
   {
@@ -24,30 +22,37 @@ const navTreeData = [
     nodeId: 'administration',
     children: [
       {
+        canActivate: user => !!user && user['Role.PermissionAccesses.Permission.type'] == 'superadmin_privileges',
         href: '/administration/user',
         title: 'Manage User'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/customer',
         title: 'Manage Customer'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/warehouse',
         title: 'Manage Warehouse'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/brand',
         title: 'Manage Brand'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/uom',
         title: 'Manage UoM'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/category',
         title: 'Manage Category'
       },
       {
+        canActivate: user => !!user,
         href: '/administration/product',
         title: 'Manage Product'
       },
@@ -58,14 +63,17 @@ const navTreeData = [
     nodeId: 'operations',
     children: [
       {
+        canActivate: user => !!user,
         href: '/operations/product-inward',
         title: 'Product Inward'
       },
       {
+        canActivate: user => !!user,
         href: '/operations/dispatch-order',
         title: 'Dispatch Order'
       },
       {
+        canActivate: user => !!user,
         href: '/operations/product-outward',
         title: 'Product Outward'
       }
@@ -76,10 +84,12 @@ const navTreeData = [
     nodeId: 'reporting',
     children: [
       {
+        canActivate: user => !!user,
         href: '/reporting/inventory',
         title: 'Inventory'
       },
       {
+        canActivate: user => !!user,
         href: '/reporting/export',
         title: 'Export'
       }
@@ -120,6 +130,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
   const location = useLocation();
+  const user = getUser();
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -164,7 +175,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
               {treeData.children.map((treeItem, j) => (
-                <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} />
+                treeItem.canActivate(user) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} /> : ''
               ))}
             </TreeItem>
           ))}

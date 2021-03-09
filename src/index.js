@@ -15,6 +15,13 @@ axios.interceptors.request.use(request => {
   return request;
 }, error => Promise.reject(error));
 
+axios.interceptors.response.use(undefined, error => {
+  if (error.response.status == 401) {
+    if (window.location.href.split('/').pop() != 'login') window.location.href = '/login';
+  }
+  return Promise.reject(error)
+});
+
 ReactDOM.render((
   <BrowserRouter>
     <App />

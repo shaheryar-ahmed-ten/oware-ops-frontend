@@ -45,7 +45,7 @@ export default function BrandView() {
     const [page, setPage] = useState(0);
     const [brands, setBrands] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(4);
-    const handleChangePage = (event, newPage) => {
+    const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
     useEffect(() => {
@@ -101,7 +101,7 @@ export default function BrandView() {
                 color="primary"
                 page={page}
                 className={classes.pagination}
-                onChangePage={handleChangePage}
+                onPageChange={handlePageChange}
             // onChangeRowsPerPage={handleChangeRowsPerPage}
             />
         </Paper>
