@@ -3,6 +3,8 @@ import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import TableHeader from '../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
+import Pagination from '@material-ui/lab/Pagination';
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -88,12 +90,13 @@ export default function CategoryView() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
-                // rowsPerPageOptions={[10, 25, 100]}
+            <Pagination
                 component="div"
-                count={categories.length}
-                rowsPerPage={rowsPerPage}
+                shape="rounded"
+                // count={users.length}
+                color="primary"
                 page={page}
+                className={classes.pagination}
                 onChangePage={handleChangePage}
             // onChangeRowsPerPage={handleChangeRowsPerPage}
             />

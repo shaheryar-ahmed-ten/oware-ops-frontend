@@ -4,7 +4,7 @@ import TableHeader from '../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import AddUserView from './AddUserView';
-
+import Pagination from '@material-ui/lab/Pagination';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,14 +17,16 @@ const useStyles = makeStyles(theme => ({
 
   },
   pagination: {
-    border: 'none'
+    border: 'none',
+    display: 'block',
+    alignItems: 'right'
   },
   active: {
     color: theme.palette.success.main
   }
 }));
 
-const buttonsInHead = [<AddUserView key={1}/>];
+const buttonsInHead = [<AddUserView key={1} />];
 
 
 export default function UserView() {
@@ -108,7 +110,17 @@ export default function UserView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
+      <Pagination
+        component="div"
+        shape="rounded"
+        // count={users.length}
+        color="primary"
+        page={page}
+        className={classes.pagination}
+        onChangePage={handleChangePage}
+      // onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+      {/* <TablePagination
         // rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={users.length}
@@ -116,7 +128,7 @@ export default function UserView() {
         page={page}
         onChangePage={handleChangePage}
       // onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      /> */}
     </Paper>
   );
 }

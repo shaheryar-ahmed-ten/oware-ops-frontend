@@ -106,7 +106,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.light
   },
   treeNode: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
+  },
+  treeItem: {
+    "&:hover": {
+      color: "white"
+    }
   }
 }));
 
@@ -144,7 +149,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <Typography variant="h2" style={{ fontWeight: "bolder" }} component="div" className={classes.brand} color="primary">oware</Typography>
       </Box>
       <Divider />
+
       <Box p={2}>
+
         <TreeView
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
@@ -153,15 +160,19 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           onNodeToggle={handleToggle}
           onNodeSelect={handleSelect}
         >
+
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
               {treeData.children.map((treeItem, j) => (
-                <NavItem key={j} title={treeItem.title} href={treeItem.href} />
+                <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} />
               ))}
             </TreeItem>
           ))}
         </TreeView>
+
       </Box>
+      <Divider />
+
       <Box flexGrow={1} />
       <Box
         p={2}
