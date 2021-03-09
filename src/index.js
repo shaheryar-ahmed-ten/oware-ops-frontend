@@ -17,8 +17,7 @@ axios.interceptors.request.use(request => {
 
 axios.interceptors.response.use(undefined, error => {
   if (error.response.status == 401) {
-    console.log(window.location.href)
-    window.location.href = '/login';
+    if (window.location.href.split('/').pop() != 'login') window.location.href = '/login';
   }
   return Promise.reject(error)
 });
