@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem from '@material-ui/lab/TreeItem';
+import { TreeItem, TreeView } from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
@@ -19,47 +18,73 @@ import {
 } from '@material-ui/core';
 import NavItem from './NavItem';
 
-const items = [
+const navTreeData = [
   {
-    href: '/administration/user',
-    title: 'Manage User'
+    title: 'Administration',
+    nodeId: 'administration',
+    children: [
+      {
+        href: '/administration/user',
+        title: 'Manage User'
+      },
+      {
+        href: '/administration/customer',
+        title: 'Manage Customer'
+      },
+      {
+        href: '/administration/warehouse',
+        title: 'Manage Warehouse'
+      },
+      {
+        href: '/administration/brand',
+        title: 'Manage Brand'
+      },
+      {
+        href: '/administration/uom',
+        title: 'Manage UoM'
+      },
+      {
+        href: '/administration/category',
+        title: 'Manage Category'
+      },
+      {
+        href: '/administration/product',
+        title: 'Manage Product'
+      },
+    ]
   },
   {
-    href: '/administration/customer',
-    title: 'Manage Customer'
+    title: 'Operations',
+    nodeId: 'operations',
+    children: [
+      {
+        href: '/operations/product-inward',
+        title: 'Product Inward'
+      },
+      {
+        href: '/operations/dispatch-order',
+        title: 'Dispatch Order'
+      },
+      {
+        href: '/operations/product-outward',
+        title: 'Product Outward'
+      }
+    ]
   },
   {
-    href: '/administration/warehouse',
-    title: 'Manage Warehouse'
-  },
-  {
-    href: '/administration/brand',
-    title: 'Manage Brand'
-  },
-  {
-    href: '/administration/uom',
-    title: 'Manage UoM'
-  },
-  {
-    href: '/administration/category',
-    title: 'Manage Category'
-  },
-  {
-    href: '/administration/product',
-    title: 'Manage Product'
-  },
-  {
-    href: '/operations/product-inward',
-    title: 'Product Inward'
-  },
-  {
-    href: '/operations/dispatch-order',
-    title: 'Dispatch Order'
-  },
-  {
-    href: '/operations/product-outward',
-    title: 'Product Outward'
-  },
+    title: 'Reporting',
+    nodeId: 'reporting',
+    children: [
+      {
+        href: '/reporting/inventory',
+        title: 'Inventory'
+      },
+      {
+        href: '/reporting/export',
+        title: 'Export'
+      }
+    ]
+  }
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -78,6 +103,9 @@ const useStyles = makeStyles((theme) => ({
     height: 64
   },
   brand: {
+    color: theme.palette.primary.light
+  },
+  treeNode: {
     color: theme.palette.primary.light
   }
 }));
@@ -125,33 +153,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           onNodeToggle={handleToggle}
           onNodeSelect={handleSelect}
         >
-          <TreeItem nodeId="1" label="Administration">
-            <NavItem nodeId="2" title="Manage User" href="/administration/user" />
-            <NavItem nodeId="3" title="Manage Customer" href="/administration/customer" />
-            <NavItem nodeId="4" title="Manage Warehouse" href="/administration/warehouse" />
-            <NavItem nodeId="5" title="Manage Brand" href="/administration/brand" />
-            <NavItem nodeId="6" title="Manage UoM" href="/administration/uom" />
-            <NavItem nodeId="7" title="Manage Category" href="/administration/category" />
-            <NavItem nodeId="8" title="Manage Product" href="/administration/product" />
-          </TreeItem>
-          <TreeItem nodeId="9" label="Operations">
-            <NavItem nodeId="10" title="Product Inward" href="/operations/product-inward" />
-            <NavItem nodeId="11" title="Dispatch Order" href="/operations/dispatch-order" />
-            <NavItem nodeId="12" title="Product Outward" href="/operations/product-outward" />
-          </TreeItem>
-          <TreeItem nodeId="13" label="Reporting">
-            <NavItem nodeId="14" title="Inventory" href="#" />
-            <NavItem nodeId="15" title="Export" href="#" />
-          </TreeItem>
-        </TreeView>
-        <List>
-          {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title} />
+          {navTreeData.map((treeData, i) => (
+            <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
+              {treeData.children.map((treeItem, j) => (
+                <NavItem key={j} title={treeItem.title} href={treeItem.href} />
+              ))}
+            </TreeItem>
           ))}
-        </List>
+        </TreeView>
       </Box>
       <Box flexGrow={1} />
       <Box
