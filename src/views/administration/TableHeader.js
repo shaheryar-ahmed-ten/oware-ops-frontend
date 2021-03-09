@@ -33,7 +33,6 @@ const TableHeader = ({ title, buttons, searchInput }) => {
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
                         <Grid item>
-                            {searchInput}
                             {buttons}
                         </Grid>
                     </Grid>

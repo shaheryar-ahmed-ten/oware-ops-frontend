@@ -45,7 +45,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const buttonsInHead = [<AddUserView key={1} />];
 
 export default function UserView() {
   const classes = useStyles();
@@ -80,14 +79,18 @@ export default function UserView() {
   const [page, setPage] = useState(1);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const getUsers = () => {
     axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
-      .then(res => {
-        setPageCount(res.data.pages)
-        setUsers(res.data.data)
-      });
+    .then(res => {
+      setPageCount(res.data.pages)
+      setUsers(res.data.data)
+    });
   };
-
+  const getRoles = () => {
+    axios.get(getURL('/user/roles'))
+      .then(res => setRoles(res.data.data));
+  };
   useEffect(() => {
     getUsers();
   }, [page, searchKeyword]);
@@ -101,8 +104,10 @@ export default function UserView() {
     type="text"
     variant="outlined"
     value={searchKeyword}
+    key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+  const buttonsInHead = [searchInput, <AddUserView key={2} />];
 
   return (
     <Paper className={classes.root}>
