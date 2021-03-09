@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import TreeView from '@material-ui/lab/TreeView';
+import TreeItem from '@material-ui/lab/TreeItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
 import {
   Avatar,
   Box,
@@ -78,6 +83,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
+  const [expanded, setExpanded] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
   const location = useLocation();
 
@@ -87,6 +94,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds);
+  };
+
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
 
   const content = (
     <Box
@@ -102,6 +117,33 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       </Box>
       <Divider />
       <Box p={2}>
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+          expanded={expanded}
+          selected={selected}
+          onNodeToggle={handleToggle}
+          onNodeSelect={handleSelect}
+        >
+          <TreeItem nodeId="1" label="Administration">
+            <TreeItem nodeId="2" label="Manage User" />
+            <TreeItem nodeId="3" label="Manage Customer" />
+            <TreeItem nodeId="4" label="Manage Warehouse" />
+            <TreeItem nodeId="5" label="Manage Brand" />
+            <TreeItem nodeId="6" label="Manage UoM" />
+            <TreeItem nodeId="7" label="Manage Category" />
+            <TreeItem nodeId="8" label="Manage Product" />
+          </TreeItem>
+          <TreeItem nodeId="9" label="Operations">
+            <TreeItem nodeId="10" label="Product Inward" />
+            <TreeItem nodeId="11" label="Dispatch Order" />
+            <TreeItem nodeId="12" label="Product Outward" />
+          </TreeItem>
+          <TreeItem nodeId="13" label="Reporting">
+            <TreeItem nodeId="14" label="Inventory" />
+            <TreeItem nodeId="15" label="Export" />
+          </TreeItem>
+        </TreeView>
         <List>
           {items.map((item) => (
             <NavItem
