@@ -126,22 +126,22 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           onNodeSelect={handleSelect}
         >
           <TreeItem nodeId="1" label="Administration">
-            <TreeItem nodeId="2" label="Manage User" />
-            <TreeItem nodeId="3" label="Manage Customer" />
-            <TreeItem nodeId="4" label="Manage Warehouse" />
-            <TreeItem nodeId="5" label="Manage Brand" />
-            <TreeItem nodeId="6" label="Manage UoM" />
-            <TreeItem nodeId="7" label="Manage Category" />
-            <TreeItem nodeId="8" label="Manage Product" />
+            <NavItem nodeId="2" title="Manage User" href="/administration/user" />
+            <NavItem nodeId="3" title="Manage Customer" href="/administration/customer" />
+            <NavItem nodeId="4" title="Manage Warehouse" href="/administration/warehouse" />
+            <NavItem nodeId="5" title="Manage Brand" href="/administration/brand" />
+            <NavItem nodeId="6" title="Manage UoM" href="/administration/uom" />
+            <NavItem nodeId="7" title="Manage Category" href="/administration/category" />
+            <NavItem nodeId="8" title="Manage Product" href="/administration/product" />
           </TreeItem>
           <TreeItem nodeId="9" label="Operations">
-            <TreeItem nodeId="10" label="Product Inward" />
-            <TreeItem nodeId="11" label="Dispatch Order" />
-            <TreeItem nodeId="12" label="Product Outward" />
+            <NavItem nodeId="10" title="Product Inward" href="/operations/product-inward" />
+            <NavItem nodeId="11" title="Dispatch Order" href="/operations/dispatch-order" />
+            <NavItem nodeId="12" title="Product Outward" href="/operations/product-outward" />
           </TreeItem>
           <TreeItem nodeId="13" label="Reporting">
-            <TreeItem nodeId="14" label="Inventory" />
-            <TreeItem nodeId="15" label="Export" />
+            <NavItem nodeId="14" title="Inventory" href="#" />
+            <NavItem nodeId="15" title="Export" href="#" />
           </TreeItem>
         </TreeView>
         <List>
