@@ -1,5 +1,10 @@
-import { Button, Grid, Paper, Box, Typography, makeStyles, InputBase } from '@material-ui/core'
-// import { findByLabelText } from '@testing-library/dom';
+import {
+    Grid,
+    Paper,
+    Typography,
+    makeStyles,
+    InputBase
+} from '@material-ui/core'
 import React from 'react'
 
 const useStyles = makeStyles(theme => ({
@@ -14,18 +19,9 @@ const useStyles = makeStyles(theme => ({
     heading: {
         fontWeight: 'bolder'
     },
-    searchInput: {
-        border: '1px solid grey',
-        borderRadius: 4,
-        opacity: 0.6,
-        padding: '0px 8px',
-        marginRight: 7,
-        height: 30,
-    },
 }))
 
-const TableHeader = (props) => {
-    const { title, buttons } = props;
+const TableHeader = ({ title, buttons, searchInput }) => {
     const classes = useStyles();
 
     return (
@@ -37,10 +33,7 @@ const TableHeader = (props) => {
                             <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
                         </Grid>
                         <Grid item>
-                            <InputBase
-                                placeholder="Search"
-                                className={classes.searchInput}
-                            />
+                            {searchInput}
                             {buttons}
                         </Grid>
                     </Grid>

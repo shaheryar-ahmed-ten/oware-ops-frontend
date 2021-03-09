@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Grid,
-  Typography,
   Button,
   TextField,
   Dialog,
@@ -18,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function UserView() {
+export default function UserView({ addUser }) {
   const [open, setOpen] = React.useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -87,7 +86,6 @@ export default function UserView() {
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
-                    autoFocus
                     margin="dense"
                     id="lastName"
                     label="Last Name"
@@ -102,7 +100,6 @@ export default function UserView() {
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
-                  autoFocus
                   margin="dense"
                   id="email"
                   label="Email Address"
@@ -116,7 +113,6 @@ export default function UserView() {
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
-                  autoFocus
                   margin="dense"
                   id="phone"
                   label="Phone Number"
@@ -130,7 +126,6 @@ export default function UserView() {
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
-                  autoFocus
                   margin="dense"
                   id="password"
                   label="Password"

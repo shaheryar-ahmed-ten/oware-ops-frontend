@@ -3,6 +3,7 @@ import {
   makeStyles,
   Grid,
   Paper,
+  InputBase,
   Table,
   TableBody,
   TableCell,
@@ -33,11 +34,18 @@ const useStyles = makeStyles(theme => ({
   },
   active: {
     color: theme.palette.success.main
-  }
+  },
+  searchInput: {
+    border: '1px solid grey',
+    borderRadius: 4,
+    opacity: 0.6,
+    padding: '0px 8px',
+    marginRight: 7,
+    height: 30,
+  },
 }));
 
 const buttonsInHead = [<AddUserView key={1} />];
-
 
 export default function UserView() {
   const classes = useStyles();
@@ -70,27 +78,36 @@ export default function UserView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [users, setUsers] = useState([]);
-  const getUsers = (page = 1) => {
-    axios.get(getURL('/user'), { params: { page } })
+  const getUsers = () => {
+    axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setUsers(res.data.data)
       });
   };
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getUsers(newPage);
-  };
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [page, searchKeyword]);
+
+  const searchInput = <InputBase
+    placeholder="Search"
+    className={classes.searchInput}
+    margin="dense"
+    id="search"
+    label="Search"
+    type="text"
+    variant="outlined"
+    value={searchKeyword}
+    onChange={e => setSearchKeyword(e.target.value)}
+  />;
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage User" buttons={buttonsInHead} />
+        <TableHeader title="Manage User" buttons={buttonsInHead} searchInput={searchInput} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -133,7 +150,7 @@ export default function UserView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, newPage) => setPage(newPage)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
