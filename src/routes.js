@@ -13,6 +13,10 @@ import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
 import CategoryView from '../src/views/administration/category/CategoryView';
 import ProductView from '../src/views/administration/product/ProductView';
 
+import DispatchOrderView from '../src/views/operations/dispatch/DispatchOrderView'
+import ProductInwardView from '../src/views/operations/inward/ProductInwardView'
+import ProductOutwardView from '../src/views/operations/outward/ProductOutwardView'
+
 const routes = (user) => [
   {
     path: 'administration',
@@ -36,9 +40,9 @@ const routes = (user) => [
     path: 'operations',
     element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
     children: [
-      //   { path: 'product-inward', element: <ProductInwardView /> },
-      //   { path: 'dispatch-order', element: <DispatchOrderView /> },
-      //   { path: 'product-outward', element: <ProductOutwardView /> },
+      { path: 'product-inward', element: <ProductInwardView /> },
+      { path: 'dispatch-order', element: <DispatchOrderView /> },
+      { path: 'product-outward', element: <ProductOutwardView /> },
       { path: '*', element: <Navigate to='/404' /> }
     ]
   },
