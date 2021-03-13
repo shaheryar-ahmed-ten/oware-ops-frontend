@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const TableHeader = ({ title, buttons, searchInput }) => {
+const TableHeader = ({ title, buttons }) => {
     const classes = useStyles();
 
     return (
