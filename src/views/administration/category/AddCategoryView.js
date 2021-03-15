@@ -12,31 +12,27 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddBrandView({ addBrand, open, handleClose, selectedBrand }) {
+export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory }) {
   const [name, setName] = useState('');
-  const [manufacturerName, setManufacturerName] = useState('');
   const [isActive, setActive] = useState(false);
 
   useEffect(() => {
-    if (!!selectedBrand) {
-      setName(selectedBrand.name || '');
-      setManufacturerName(selectedBrand.manufacturerName || '');
-      setActive(!!selectedBrand.isActive);
+    if (!!selectedCategory) {
+      setName(selectedCategory.name || '');
+      setActive(!!selectedCategory.isActive);
     } else {
       setName('');
-      setManufacturerName('');
       setActive(false);
     }
-  }, [selectedBrand])
+  }, [selectedCategory])
   const handleSubmit = e => {
 
-    const newBrand = {
+    const newCategory = {
       name,
-      manufacturerName,
       isActive
     }
 
-    addBrand(newBrand);
+    addCategory(newCategory);
   }
 
   return (
@@ -44,7 +40,7 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedBrand ? 'Add Brand' : 'Edit Brand'}
+            {!selectedCategory ? 'Add Category' : 'Edit Category'}
           </DialogTitle>
           <DialogContent>
             <Grid container>
@@ -62,19 +58,6 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                 />
               </Grid>
               <Grid item sm={12}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="manufacturerName"
-                  label="ManufacturerName Number"
-                  type="text"
-                  variant="outlined"
-                  value={manufacturerName}
-                  onChange={e => setManufacturerName(e.target.value)}
-
-                />
-              </Grid>
-              <Grid item sm={12}>
                 <Checkbox
                   checked={isActive}
                   onChange={(e) => setActive(e.target.checked)}
@@ -88,7 +71,7 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedBrand ? 'Add Brand' : 'Update Brand'}
+              {!selectedCategory ? 'Add Category' : 'Update Category'}
             </Button>
           </DialogActions>
         </Dialog>

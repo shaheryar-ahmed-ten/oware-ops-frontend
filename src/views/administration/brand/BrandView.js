@@ -143,7 +143,7 @@ export default function BrandView() {
   };
   useEffect(() => {
     getBrands();
-  }, []);
+  }, [page, searchKeyword]);
 
   const searchInput = <InputBase
     placeholder="Search"
