@@ -127,7 +127,7 @@ export default function CategoryView() {
 
 
   const getCategories = (page = 1) => {
-    axios.get(getURL('/category'), { params: { page } })
+    axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setCategories(res.data.data)
@@ -159,7 +159,7 @@ export default function CategoryView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCategoryViewOpen(true)}>ADD BRAND</Button>;
+    onClick={() => setAddCategoryViewOpen(true)}>ADD CATEGORY</Button>;
   const addCategoryModal = <AddCategoryView
     key={3}
     selectedCategory={selectedCategory}

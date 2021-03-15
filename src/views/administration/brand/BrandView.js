@@ -130,7 +130,7 @@ export default function BrandView() {
   }
 
   const getBrands = (page = 1) => {
-    axios.get(getURL('/brand'), { params: { page } })
+    axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setBrands(res.data.data)
