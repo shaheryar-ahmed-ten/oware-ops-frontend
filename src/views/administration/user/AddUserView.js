@@ -24,13 +24,13 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
 
   useEffect(() => {
     if (!!selectedUser) {
-      setFirstName(selectedUser.firstName);
-      setLastName(selectedUser.lastName);
-      setEmail(selectedUser.email);
-      setUsername(selectedUser.username);
-      setPhone(selectedUser.phone);
-      setRoleId(selectedUser.roleId);
-      setActive(selectedUser.isActive);
+      setFirstName(selectedUser.firstName || '');
+      setLastName(selectedUser.lastName || '');
+      setEmail(selectedUser.email || '');
+      setUsername(selectedUser.username || '');
+      setPhone(selectedUser.phone || '');
+      setRoleId(selectedUser.roleId || '');
+      setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
       setLastName('');
@@ -162,9 +162,8 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
               </Grid> : ''}
               <Grid item sm={12}>
                 <Checkbox
-                  defaultChecked
-                  value={isActive}
-                  onChange={(e) => setActive(e.target.value)}
+                  checked={isActive}
+                  onChange={(e) => setActive(e.target.checked)}
                   color="primary"
                   inputProps={{ 'aria-label': 'secondary checkbox' }}
                 />

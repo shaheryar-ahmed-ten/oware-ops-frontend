@@ -92,9 +92,9 @@ export default function UserView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
+  const [users, setUsers] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
@@ -121,7 +121,7 @@ export default function UserView() {
           setFormErrors(res.data.message);
           return
         }
-        setAddUserViewOpen(false);
+        closeDeleteUserView();
         getUsers();
       });
   };
@@ -200,11 +200,10 @@ export default function UserView() {
     selectedEntity={selectedUser && selectedUser.firstName + ' ' + selectedUser.lastName}
     title={"User"}
   />
-  const headerButtons = [searchInput, addUserButton, addUserModal];
+  const headerButtons = [searchInput, addUserButton, addUserModal, deleteUserModal];
 
   return (
     <Paper className={classes.root}>
-      {deleteUserModal}
       <TableContainer className={classes.container}>
         <TableHeader title="Manage User" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
