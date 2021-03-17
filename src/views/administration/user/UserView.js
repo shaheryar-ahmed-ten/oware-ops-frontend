@@ -109,7 +109,7 @@ export default function UserView() {
         setFormErrors(res.data.message);
         return
       }
-      setAddUserViewOpen(false);
+      closeAddUserView();
       getUsers();
     });
   };

@@ -87,7 +87,7 @@ export default function CategoryView() {
         setFormErrors(res.data.message);
         return
       }
-      setAddCategoryViewOpen(false);
+      closeAddCategoryView();
       getCategories();
     });
   };

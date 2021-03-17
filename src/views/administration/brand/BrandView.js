@@ -92,7 +92,7 @@ export default function BrandView() {
         setFormErrors(res.data.message);
         return
       }
-      setAddBrandViewOpen(false);
+      closeAddBrandView(false);
       getBrands();
     });
   };

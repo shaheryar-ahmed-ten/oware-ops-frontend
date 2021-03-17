@@ -87,7 +87,7 @@ export default function UoMView() {
                 setFormErrors(res.data.message);
                 return
             }
-            setAddUoMViewOpen(false);
+            closeAddUoMView();
             getUoMs();
         });
     };
