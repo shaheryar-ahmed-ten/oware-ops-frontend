@@ -17,6 +17,9 @@ import DispatchOrderView from '../src/views/operations/dispatch/DispatchOrderVie
 import ProductInwardView from '../src/views/operations/inward/ProductInwardView'
 import ProductOutwardView from '../src/views/operations/outward/ProductOutwardView'
 
+import InventoryView from '../src/views/reporting/inventory/InventoryView'
+import ExportView from '../src/views/reporting/exports/ExportView'
+
 const routes = (user) => [
   {
     path: 'administration',
@@ -55,6 +58,16 @@ const routes = (user) => [
       { path: '/', element: <Navigate to='/administration' /> },
       { path: '*', element: <Navigate to='/404' /> }
     ]
+  },
+  {
+    path: 'reporting',
+    // element: !!user ? <DashboardLayout /> : <Navigate to="/login" />,
+    element: <DashboardLayout />,
+    children: [
+      { path: 'inventory', element: <InventoryView /> },
+      { path: 'export', element: <ExportView /> }
+    ]
+
   }
 ];
 

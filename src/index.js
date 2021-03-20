@@ -7,20 +7,20 @@ import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import { getUserToken } from './utils/common';
 
-axios.interceptors.request.use(request => {
-  const token = getUserToken();
-  if (token) {
-    request.headers['authorization'] = `Bearer ${token}`
-  } else delete request.headers['authorization'];
-  return request;
-}, error => Promise.reject(error));
+// axios.interceptors.request.use(request => {
+//   const token = getUserToken();
+//   if (token) {
+//     request.headers['authorization'] = `Bearer ${token}`
+//   } else delete request.headers['authorization'];
+//   return request;
+// }, error => Promise.reject(error));
 
-axios.interceptors.response.use(undefined, error => {
-  if (error.response.status == 401) {
-    if (window.location.href.split('/').pop() != 'login') window.location.href = '/login';
-  }
-  return Promise.reject(error)
-});
+// axios.interceptors.response.use(undefined, error => {
+//   if (error.response.status == 401) {
+//     if (window.location.href.split('/').pop() != 'login') window.location.href = '/login';
+//   }
+//   return Promise.reject(error)
+// });
 
 ReactDOM.render((
   <BrowserRouter>
