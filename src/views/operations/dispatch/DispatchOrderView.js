@@ -10,7 +10,7 @@ import {
     TableHead,
     TableRow
 } from '@material-ui/core';
-import TableHeader from '../../administration/TableHeader'
+import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import Pagination from '@material-ui/lab/Pagination';

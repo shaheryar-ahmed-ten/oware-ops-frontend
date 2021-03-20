@@ -13,8 +13,8 @@ import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
 import CategoryView from '../src/views/administration/category/CategoryView';
 import ProductView from '../src/views/administration/product/ProductView';
 
+import ProductInwardView from '../src/views/operations/productInward/ProductInwardView'
 import DispatchOrderView from '../src/views/operations/dispatch/DispatchOrderView'
-import ProductInwardView from '../src/views/operations/inward/ProductInwardView'
 import ProductOutwardView from '../src/views/operations/outward/ProductOutwardView'
 
 const routes = (user) => [

@@ -19,8 +19,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddUoMView from './AddUoMView';
-
+import AddProductInwardView from './AddProductInwardView';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,19 +43,45 @@ const useStyles = makeStyles(theme => ({
     padding: '0px 8px',
     marginRight: 7,
     height: 30,
-  }
+  },
 }));
 
-export default function UoMView() {
+
+export default function ProductInwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'name',
-    label: 'Name',
+    id: 'id',
+    label: 'INWARD ID',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'Customer.companyName',
+    label: 'CUSTOMER',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'Product.name',
+    label: 'PRODUCT',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'Warehouse.name',
+    label: 'WAREHOUSE',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'Product.UOM.name',
+    label: 'UOM',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'quantity',
+    label: 'QUANTITY IN-PRODUCT',
     minWidth: 'auto',
     className: '',
   }, {
     id: 'isActive',
-    label: 'Status',
+    label: 'STATUS',
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
@@ -73,75 +98,93 @@ export default function UoMView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [uoms, setUoMs] = useState([]);
+  const [productInwards, setProductInwards] = useState([]);
+
+  const [products, setProducts] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [selectedUoM, setSelectedUoM] = useState(null);
+  const [selectedProductInward, setSelectedProductInward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addUoMViewOpen, setAddUoMViewOpen] = useState(false);
-  const [deleteUoMViewOpen, setDeleteUoMViewOpen] = useState(false);
+  const [addProductInwardViewOpen, setAddProductInwardViewOpen] = useState(false);
+  const [deleteProductInwardViewOpen, setDeleteProductInwardViewOpen] = useState(false);
 
 
-  const addUoM = data => {
+  const addProductInward = data => {
     let apiPromise = null;
-    if (!selectedUoM) apiPromise = axios.post(getURL('/uom'), data);
-    else apiPromise = axios.put(getURL(`/uom/${selectedUoM.id}`), data);
+    if (!selectedProductInward) apiPromise = axios.post(getURL('/product-inward'), data);
+    else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(res.data.message);
         return
       }
-      closeAddUoMView();
-      getUoMs();
+      closeAddProductInwardView(false);
+      getProductInwards();
     });
   };
 
-  const deleteUoM = data => {
-    axios.delete(getURL(`/uom/${selectedUoM.id}`))
+  const deleteProductInward = data => {
+    axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(res.data.message);
           return
         }
-        closeDeleteUoMView();
-        getUoMs();
+        closeDeleteProductInwardView();
+        getProductInwards();
       });
   };
 
-  const openEditView = uom => {
-    setSelectedUoM(uom);
-    setAddUoMViewOpen(true);
+  const openEditView = productInward => {
+    setSelectedProductInward(productInward);
+    setAddProductInwardViewOpen(true);
   }
 
-  const openDeleteView = uom => {
-    setSelectedUoM(uom);
-    setDeleteUoMViewOpen(true);
+  const openDeleteView = productInward => {
+    setSelectedProductInward(productInward);
+    setDeleteProductInwardViewOpen(true);
   }
 
-  const closeAddUoMView = () => {
-    setSelectedUoM(null);
-    setAddUoMViewOpen(false);
+  const closeAddProductInwardView = () => {
+    setSelectedProductInward(null);
+    setAddProductInwardViewOpen(false);
   }
 
-  const closeDeleteUoMView = () => {
-    setSelectedUoM(null);
-    setDeleteUoMViewOpen(false);
+  const closeDeleteProductInwardView = () => {
+    setSelectedProductInward(null);
+    setDeleteProductInwardViewOpen(false);
   }
 
-  const getUoMs = (page = 1) => {
-    axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
+  const getProductInwards = (page = 1) => {
+    axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setUoMs(res.data.data)
+        setProductInwards(res.data.data)
       });
   }
+
+  const getRelations = () => {
+    axios.get(getURL('/product-inward/relations'))
+      .then(res => {
+        setProducts(res.data.products)
+        setWarehouses(res.data.warehouses)
+        setCustomers(res.data.customers)
+      });
+  };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    getUoMs(newPage);
+    getProductInwards(newPage);
   };
   useEffect(() => {
-    getUoMs();
+    getProductInwards();
   }, [page, searchKeyword]);
+
+  useEffect(() => {
+    getRelations();
+  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -155,32 +198,35 @@ export default function UoMView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const addUoMButton = <Button
+  const addProductInwardButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddUoMViewOpen(true)}>ADD UoM</Button>;
-  const addUoMModal = <AddUoMView
+    onClick={() => setAddProductInwardViewOpen(true)}>ADD PRODUCT</Button>;
+  const addProductInwardModal = <AddProductInwardView
     key={3}
-    selectedUoM={selectedUoM}
-    open={addUoMViewOpen}
-    addUoM={addUoM}
-    handleClose={() => closeAddUoMView()} />
-  const deleteUoMModal = <ConfirmDelete
+    products={products}
+    warehouses={warehouses}
+    customers={customers}
+    selectedProductInward={selectedProductInward}
+    open={addProductInwardViewOpen}
+    addProductInward={addProductInward}
+    handleClose={() => closeAddProductInwardView()} />
+  const deleteProductInwardModal = <ConfirmDelete
     key={4}
-    confirmDelete={deleteUoM}
-    open={deleteUoMViewOpen}
-    handleClose={closeDeleteUoMView}
-    selectedEntity={selectedUoM && selectedUoM.name}
-    title={"UoM"}
+    confirmDelete={deleteProductInward}
+    open={deleteProductInwardViewOpen}
+    handleClose={closeDeleteProductInwardView}
+    selectedEntity={selectedProductInward && selectedProductInward.name}
+    title={"ProductInward"}
   />
-  const headerButtons = [searchInput, addUoMButton, addUoMModal, deleteUoMModal];
+  const headerButtons = [searchInput, addProductInwardButton, addProductInwardModal, deleteProductInwardModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage UoM" buttons={headerButtons} />
+        <TableHeader title="Manage ProductInward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -196,15 +242,15 @@ export default function UoMView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {uoms.map((uom) => {
+            {productInwards.map((productInward) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={uom.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={productInward.id}>
                   {columns.map((column) => {
-                    const value = uom[column.id];
+                    const value = productInward[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, uom) : value}
+                        {column.format ? column.format(value, productInward) : value}
                       </TableCell>
                     );
                   })}

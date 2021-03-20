@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../TableHeader'
+import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import Pagination from '@material-ui/lab/Pagination';
@@ -96,7 +96,10 @@ export default function ProductView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>
-      [<EditIcon key="edit" onClick={() => openEditView(entity)} />, <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />]
+      [
+        <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+      ]
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);

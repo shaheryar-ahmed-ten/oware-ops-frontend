@@ -1,0 +1,163 @@
+import { useState, useEffect } from 'react';
+import {
+  Grid,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Checkbox
+} from '@material-ui/core'
+
+export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers }) {
+  const [quantity, setQuantity] = useState(0);
+  const [customerId, setCustomerId] = useState('');
+  const [productId, setProductId] = useState('');
+  const [uom, setUom] = useState('');
+  const [warehouseId, setWarehouseId] = useState('');
+  const [isActive, setActive] = useState(false);
+
+  const selectProduct = value => {
+    setProductId(value);
+    if (value) setUom(products.find(product => product.id == value)['UOM.name']);
+    else setUom('');
+  }
+
+  useEffect(() => {
+    if (!!selectedProductInward) {
+      setQuantity(selectedProductInward.quantity || '');
+      setCustomerId(selectedProductInward.customerId || '');
+      selectProduct(selectedProductInward.productId || '');
+      // setUom(selectedProductInward['Product.UOM.name'] || '');
+      setWarehouseId(selectedProductInward.warehouseId || '');
+      setActive(!!selectedProductInward.isActive);
+    } else {
+      setQuantity('');
+      setCustomerId('');
+      selectProduct('');
+      setUom('');
+      setWarehouseId('');
+      setActive(false);
+    }
+  }, [selectedProductInward, products, warehouses, customers])
+  const handleSubmit = e => {
+
+    const newProductInward = {
+      quantity,
+      customerId,
+      productId,
+      warehouseId,
+      isActive
+    }
+
+    addProductInward(newProductInward);
+  }
+
+  return (
+    <div style={{ display: "inline" }}>
+      <form>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle>
+            {!selectedProductInward ? 'Add ProductInward' : 'Edit ProductInward'}
+          </DialogTitle>
+          <DialogContent>
+            <Grid container>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="customerId"
+                    label="Customer"
+                    variant="outlined"
+                    value={customerId}
+                    onChange={e => setCustomerId(e.target.value)}
+                  >
+                    {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                  </Select>
+                </Grid>
+                <Grid item sm={6}>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="productId"
+                    label="Product"
+                    variant="outlined"
+                    value={productId}
+                    onChange={e => selectProduct(e.target.value)}
+                  >
+                    {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+                  </Select>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="warehouseId"
+                    label="Warehouse"
+                    variant="outlined"
+                    value={warehouseId}
+                    onChange={e => setWarehouseId(e.target.value)}
+                  >
+                    {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
+                  </Select>
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="quantity"
+                    label="UOM"
+                    type="text"
+                    variant="outlined"
+                    value={uom}
+                    disabled
+                  />
+                </Grid>
+
+              </Grid>
+            </Grid>
+            <Grid container>
+
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="quantity"
+                  label="Quantity"
+                  type="text"
+                  variant="outlined"
+                  value={quantity}
+                  onChange={e => setQuantity(e.target.value)}
+
+                />
+              </Grid>
+
+              <Grid item sm={6}>
+                <Checkbox
+                  checked={isActive}
+                  onChange={(e) => setActive(e.target.checked)}
+                  color="primary"
+                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+                  Active
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              {!selectedProductInward ? 'Add ProductInward' : 'Update ProductInward'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </form>
+    </div >
+  );
+}
