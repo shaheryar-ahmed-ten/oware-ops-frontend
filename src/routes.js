@@ -15,7 +15,7 @@ import ProductView from '../src/views/administration/product/ProductView';
 
 import ProductInwardView from '../src/views/operations/productInward/ProductInwardView'
 import DispatchOrderView from '../src/views/operations/dispatchOrder/DispatchOrderView'
-import ProductOutwardView from '../src/views/operations/outward/ProductOutwardView'
+import ProductOutwardView from '../src/views/operations/productOutward/ProductOutwardView'
 
 const routes = (user) => [
   {
