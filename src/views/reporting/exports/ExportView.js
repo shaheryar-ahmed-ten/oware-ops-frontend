@@ -5,13 +5,19 @@ import { Table } from 'react-bootstrap'
 
 const useStyles = makeStyles(theme => ({
     root: {
-        // width: '100%',
-        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '20px'
     },
-    gridOne: {
-        display: ''
+    gridTwo: {
+        alignSelf: 'center',
+        marginTop: '30px'
     }
 }))
+
+const handleClick = _ => {
+
+}
 
 const ExportView = () => {
     const classes = useStyles();
@@ -21,8 +27,8 @@ const ExportView = () => {
                 <TableHeader title="Export" />
             </Grid>
 
-            <Grid item xs={12}>
-                <Button variant="contained" color="primary">Export To Excel</Button>
+            <Grid item className={classes.gridTwo} xs={12}>
+                <Button variant="contained" color="primary" onClick={handleClick}>Export To Excel</Button>
             </Grid>
         </Grid>
     )

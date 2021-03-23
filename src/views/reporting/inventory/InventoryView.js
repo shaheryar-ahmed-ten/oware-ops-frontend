@@ -8,12 +8,16 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    Typography,
+    InputBase
 } from '@material-ui/core';
 import TableHeader from '../../administration/TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import Pagination from '@material-ui/lab/Pagination';
+import { findByLabelText } from '@testing-library/dom';
+import { Fragment } from 'react';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,10 +29,23 @@ const useStyles = makeStyles(theme => ({
         padding: 20,
     },
     pagination: {
-        border: 'none'
+        border: 'none',
     },
     active: {
         color: theme.palette.success.main
+    },
+    paginationContainer: {
+        disply: 'flex',
+        justifyContent: 'flex-end',
+        marginTop: 10
+    },
+    searchBar: {
+        border: '1px solid grey',
+        borderRadius: '6px',
+    },
+    searchContainer: {
+        display: 'flex',
+        justifyContent: 'spaceBetween',
     }
 }));
 
@@ -86,43 +103,46 @@ export default function ProductInwardView() {
     }, []);
 
     return (
-        <Paper className={classes.root}>
-            <TableContainer className={classes.container}>
-                <TableHeader title="Inventory" addButtonTitle="ADD INWARD" />
-                <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <TableCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
-                                >
-                                    {column.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {brands.map((brand) => {
-                            return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={brand.id}>
-                                    {columns.map((column) => {
-                                        const value = brand[column.id];
-                                        return (
-                                            <TableCell key={column.id} align={column.align}
-                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                                                {column.format ? column.format(value) : value}
-                                            </TableCell>
-                                        );
-                                    })}
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Grid container>
+        <>
+            <Paper className={classes.root} elevation={0}>
+                <TableContainer className={classes.container}>
+                    <TableHeader title="Inventory" addButtonTitle="ADD INWARD" search={<SearchBar />} />
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {brands.map((brand) => {
+                                return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={brand.id}>
+                                        {columns.map((column) => {
+                                            const value = brand[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}
+                                                    className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                                                    {column.format ? column.format(value) : value}
+                                                </TableCell>
+                                            );
+                                        })}
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper >
+
+            <Grid container className={classes.paginationContainer}>
                 <Grid item>
                     <Pagination
                         component="div"
@@ -136,6 +156,17 @@ export default function ProductInwardView() {
                     />
                 </Grid>
             </Grid>
-        </Paper>
+        </>
     );
+}
+
+const SearchBar = _ => {
+    const classes = useStyles()
+    return (
+        <Fragment className={classes.searchContainer}>
+            <Grid item>
+                <InputBase className={classes.searchBar} placeholder="Product/Customer/Warehouse" />
+            </Grid>
+        </Fragment>
+    )
 }

@@ -17,11 +17,11 @@ const useStyles = makeStyles(theme => ({
 
     },
     heading: {
-        fontWeight: 'bolder'
+        fontWeight: 'bolder',
     },
 }))
 
-const TableHeader = ({ title, buttons, searchInput }) => {
+const TableHeader = ({ title, buttons, searchInput, search }) => {
     const classes = useStyles();
 
     return (
@@ -34,6 +34,9 @@ const TableHeader = ({ title, buttons, searchInput }) => {
                         </Grid>
                         <Grid item>
                             {buttons}
+                        </Grid>
+                        <Grid item>
+                            {search}
                         </Grid>
                     </Grid>
                 </div>
