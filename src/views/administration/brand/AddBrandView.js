@@ -66,7 +66,7 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                   fullWidth={true}
                   margin="dense"
                   id="manufacturerName"
-                  label="ManufacturerName Number"
+                  label="Manufacturer Name"
                   type="text"
                   variant="outlined"
                   value={manufacturerName}
