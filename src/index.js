@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import { getUserToken } from './utils/common';
+import { useNavigate } from "react-router-dom";
 
 axios.interceptors.request.use(request => {
   const token = getUserToken();
@@ -16,8 +17,9 @@ axios.interceptors.request.use(request => {
 }, error => Promise.reject(error));
 
 axios.interceptors.response.use(undefined, error => {
+  const navigate = useNavigate();
   if (error.response.status == 401) {
-    if (window.location.href.split('/').pop() != 'login') window.location.href = '/login';
+    if (window.location.href.split('/').pop() != 'login') navigate('/login');
   }
   return Promise.reject(error)
 });

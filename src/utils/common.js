@@ -1,4 +1,4 @@
-export const apiBaseURL = 'http://localhost:3000';
+export const apiBaseURL = 'http://localhost:3000/api/v1';
 export const user = null;
 
 export const getUserToken = () => {
