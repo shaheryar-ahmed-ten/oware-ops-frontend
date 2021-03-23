@@ -3,6 +3,8 @@ import {
   Grid,
   Button,
   TextField,
+  Select,
+  MenuItem,
   Dialog,
   DialogActions,
   DialogContent,
@@ -10,9 +12,9 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddCustomerView({ addCustomer, open, handleClose, selectedCustomer }) {
+export default function AddCustomerView({ addCustomer, users, open, handleClose, selectedCustomer }) {
   const [companyName, setCompanyName] = useState('');
-  const [contactName, setContactName] = useState('');
+  const [contactId, setContactId] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [notes, setNotes] = useState('');
@@ -21,16 +23,12 @@ export default function AddCustomerView({ addCustomer, open, handleClose, select
   useEffect(() => {
     if (!!selectedCustomer) {
       setCompanyName(selectedCustomer.companyName || '');
-      setContactName(selectedCustomer.contactName || '');
-      setContactEmail(selectedCustomer.contactEmail || '');
-      setContactPhone(selectedCustomer.contactPhone || '');
+      setContactId(selectedCustomer.contactId || '');
       setNotes(selectedCustomer.notes || '');
       setActive(!!selectedCustomer.isActive);
     } else {
       setCompanyName('');
-      setContactName('');
-      setContactEmail('');
-      setContactPhone('');
+      setContactId('');
       setNotes('');
       setActive(false);
     }
@@ -39,7 +37,7 @@ export default function AddCustomerView({ addCustomer, open, handleClose, select
 
     const newCustomer = {
       companyName,
-      contactName,
+      contactId,
       contactEmail,
       contactPhone,
       notes,
@@ -68,47 +66,20 @@ export default function AddCustomerView({ addCustomer, open, handleClose, select
                   variant="outlined"
                   value={companyName}
                   onChange={e => setCompanyName(e.target.value)}
-
                 />
               </Grid>
               <Grid item sm={12}>
-                <TextField
+                <Select
                   fullWidth={true}
                   margin="dense"
-                  id="contactName"
-                  label="Contact Name"
-                  type="text"
+                  id="contactId"
+                  label="Brand"
                   variant="outlined"
-                  value={contactName}
-                  onChange={e => setContactName(e.target.value)}
-
-                />
-              </Grid>
-              <Grid item sm={12}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="contactEmail"
-                  label="Contact Email"
-                  type="text"
-                  variant="outlined"
-                  value={contactEmail}
-                  onChange={e => setContactEmail(e.target.value)}
-
-                />
-              </Grid>
-              <Grid item sm={12}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="contactPhone"
-                  label="Contact Phone"
-                  type="text"
-                  variant="outlined"
-                  value={contactPhone}
-                  onChange={e => setContactPhone(e.target.value)}
-
-                />
+                  value={contactId}
+                  onChange={e => setContactId(e.target.value)}
+                >
+                  {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
+                </Select>
               </Grid>
               <Grid item sm={12}>
                 <TextField

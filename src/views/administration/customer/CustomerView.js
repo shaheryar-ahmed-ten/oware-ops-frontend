@@ -55,17 +55,18 @@ export default function CustomerView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'contactName',
+    id: 'firstName',
     label: 'Contact Name',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => `${entity['Contact.firstName']} ${entity['Contact.lastName']}`
   }, {
-    id: 'contactEmail',
+    id: 'Contact.email',
     label: 'Contact Email',
     minWidth: 'auto',
     className: ''
   }, {
-    id: 'contactPhone',
+    id: 'Contact.phone',
     label: 'Contact Phone',
     minWidth: 'auto',
     className: '',
@@ -94,6 +95,7 @@ export default function CustomerView() {
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [customers, setCustomers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [formErrors, setFormErrors] = useState('');
@@ -155,13 +157,25 @@ export default function CustomerView() {
       });
   }
 
+  const getRelations = () => {
+    axios.get(getURL('/customer/relations'))
+      .then(res => {
+        setUsers(res.data.users)
+      });
+  };
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
     getCustomers(newPage);
   };
+
   useEffect(() => {
     getCustomers();
   }, [page, searchKeyword]);
+
+  useEffect(() => {
+    getRelations();
+  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -183,6 +197,7 @@ export default function CustomerView() {
     onClick={() => setAddCustomerViewOpen(true)}>ADD CUSTOMER</Button>;
   const addCustomerModal = <AddCustomerView
     key={3}
+    users={users}
     selectedCustomer={selectedCustomer}
     open={addCustomerViewOpen}
     addCustomer={addCustomer}
