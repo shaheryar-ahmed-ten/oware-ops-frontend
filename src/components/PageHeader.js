@@ -1,6 +1,5 @@
 import { InputBase, makeStyles, Paper, Typography } from '@material-ui/core'
 import React from 'react'
-// import { Button, Card } from 'react-bootstrap'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,7 +33,6 @@ function PageHeader(props) {
             >{title}</Typography>
             <div align="right">
                 <InputBase placeholder="Search" className={classes.searchInput} />
-                {/* <Button variant="contained">Add New</Button> */}
             </div>
         </Paper >
     )

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Button, Grid, makeStyles, Paper } from '@material-ui/core'
 import TableHeader from '../../administration/TableHeader'
-import { Table } from 'react-bootstrap'
 
 const useStyles = makeStyles(theme => ({
     root: {
