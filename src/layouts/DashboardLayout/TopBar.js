@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Logo from '../../components/Logo';
+import { getUser } from '../../utils/common';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +31,7 @@ const TopBar = ({
 }) => {
   const classes = useStyles();
   const [notifications] = useState([]);
+  const user = getUser();
 
   return (
     <AppBar
@@ -46,7 +48,7 @@ const TopBar = ({
           <Grid item sm></Grid>
           <Grid item>
             <Box mr={4} mt={1}>
-              <Typography variant="h5" component="div" className={classes.typo}>Welcome, User</Typography>
+              <Typography variant="h5" component="div" className={classes.typo}>Welcome, {user.firstName}</Typography>
             </Box>
           </Grid>
           <Grid item>

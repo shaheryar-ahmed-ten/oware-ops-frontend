@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const TableHeader = ({ title, buttons, searchInput, search }) => {
+const TableHeader = ({ title, buttons }) => {
     const classes = useStyles();
 
     return (
@@ -34,9 +34,6 @@ const TableHeader = ({ title, buttons, searchInput, search }) => {
                         </Grid>
                         <Grid item>
                             {buttons}
-                        </Grid>
-                        <Grid item>
-                            {search}
                         </Grid>
                     </Grid>
                 </div>

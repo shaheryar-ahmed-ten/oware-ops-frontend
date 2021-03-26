@@ -1,71 +1,68 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
   TextField,
+  Select,
+  MenuItem,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox,
-  makeStyles
+  Checkbox
 } from '@material-ui/core'
 
-const useStyles = makeStyles(theme => ({
-  active: {
-    color: theme.palette.success.main
-  }
-}));
-
-export default function UserView({ addUser }) {
-  const [open, setOpen] = React.useState(false);
+export default function AddUserView({ addUser, roles, open, handleClose, selectedUser }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
+  const [roleId, setRoleId] = useState(0);
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false)
-  const [user, setUser] = useState([]);
-  const [checked, setChecked] = React.useState(true);
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  useEffect(() => {
+    if (!!selectedUser) {
+      setFirstName(selectedUser.firstName);
+      setLastName(selectedUser.lastName);
+      setEmail(selectedUser.email);
+      setUsername(selectedUser.username);
+      setPhone(selectedUser.phone);
+      setRoleId(selectedUser.roleId);
+      setActive(selectedUser.isActive);
+    } else {
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setUsername('');
+      setPhone('');
+      setRoleId('');
+      setActive(true);
+    }
+  }, [selectedUser])
   const handleSubmit = e => {
-    e.preventDefault();
+
     const newUser = {
       firstName,
       lastName,
+      username,
       email,
+      roleId,
       phone,
+      isActive,
       password
-
     }
-    setUser(users => {
-      return [...users, newUser]
-    })
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPhone('');
+
+    addUser(newUser);
   }
 
   return (
     <div style={{ display: "inline" }}>
-      <Button variant="contained" color="primary" size="small" onClick={handleClickOpen}>ADD USER</Button>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            Add User
+            {!selectedUser ? 'Add User' : 'Edit User'}
           </DialogTitle>
           <DialogContent>
             <Grid container>
@@ -101,6 +98,21 @@ export default function UserView({ addUser }) {
                 <TextField
                   fullWidth={true}
                   margin="dense"
+                  id="username"
+                  disabled={!!selectedUser}
+                  label="Username"
+                  type="text"
+                  variant="outlined"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  disabled={!!selectedUser}
                   id="email"
                   label="Email Address"
                   type="email"
@@ -109,6 +121,19 @@ export default function UserView({ addUser }) {
                   onChange={e => setEmail(e.target.value)}
 
                 />
+              </Grid>
+              <Grid item sm={12}>
+                <Select
+                  fullWidth={true}
+                  margin="dense"
+                  id="roleId"
+                  label="Role"
+                  variant="outlined"
+                  value={roleId}
+                  onChange={e => setRoleId(e.target.value)}
+                >
+                  {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
+                </Select>
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -123,7 +148,7 @@ export default function UserView({ addUser }) {
 
                 />
               </Grid>
-              <Grid item sm={12}>
+              {!selectedUser ? <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -133,12 +158,13 @@ export default function UserView({ addUser }) {
                   variant="outlined"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-
                 />
-              </Grid>
+              </Grid> : ''}
               <Grid item sm={12}>
                 <Checkbox
                   defaultChecked
+                  value={isActive}
+                  onChange={(e) => setActive(e.target.value)}
                   color="primary"
                   inputProps={{ 'aria-label': 'secondary checkbox' }}
                 />
@@ -148,7 +174,9 @@ export default function UserView({ addUser }) {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-            <Button onSubmit={handleSubmit} color="primary" variant="contained">Add User</Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              {!selectedUser ? 'Add User' : 'Update User'}
+            </Button>
           </DialogActions>
         </Dialog>
       </form>
