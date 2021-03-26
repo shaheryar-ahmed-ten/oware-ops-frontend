@@ -19,7 +19,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddProductView from './AddProductView';
+import AddDispatchOrderView from './AddDispatchOrderView';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,46 +47,52 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function ProductView() {
+export default function DispatchOrderView() {
   const classes = useStyles();
   const columns = [{
-    id: 'name',
-    label: 'Name',
+    id: 'ProductInward.Customer.companyName',
+    label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'description',
-    label: 'Description',
+    id: 'ProductInward.Product.name',
+    label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'dimensionsCBM',
-    label: 'Dimensions CBM',
+    id: 'ProductInward.Warehouse.name',
+    label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'weight',
-    label: 'Weight',
+    id: 'ProductInward.Product.UOM.name',
+    label: 'UOM',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'Category.name',
-    label: 'Category',
+    id: 'receiverName',
+    label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'Brand.name',
-    label: 'Brand',
+    id: 'receiverPhone',
+    label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'UOM.name',
-    label: 'Uom',
+    id: 'quantity',
+    label: 'QUANTITY AVAILABLE',
     minWidth: 'auto',
     className: '',
+  }, {
+    id: 'shipmentDate',
+    label: 'SHIPMENT DATE',
+    minWidth: 'auto',
+    className: '',
+    format: value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`
   }, {
     id: 'isActive',
-    label: 'Status',
+    label: 'STATUS',
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
@@ -103,88 +109,88 @@ export default function ProductView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState([]);
+  const [dispatchOrders, setDispatchOrders] = useState([]);
 
-  const [brands, setBrands] = useState([]);
-  const [uoms, setUoms] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [productInwards, setProductInwards] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addProductViewOpen, setAddProductViewOpen] = useState(false);
-  const [deleteProductViewOpen, setDeleteProductViewOpen] = useState(false);
+  const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
+  const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
 
 
-  const addProduct = data => {
+  const addDispatchOrder = data => {
     let apiPromise = null;
-    if (!selectedProduct) apiPromise = axios.post(getURL('/product'), data);
-    else apiPromise = axios.put(getURL(`/product/${selectedProduct.id}`), data);
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
+    else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(res.data.message);
         return
       }
-      closeAddProductView(false);
-      getProducts();
+      closeAddDispatchOrderView(false);
+      getDispatchOrders();
     });
   };
 
-  const deleteProduct = data => {
-    axios.delete(getURL(`/product/${selectedProduct.id}`))
+  const deleteDispatchOrder = data => {
+    axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(res.data.message);
           return
         }
-        closeDeleteProductView();
-        getProducts();
+        closeDeleteDispatchOrderView();
+        getDispatchOrders();
       });
   };
 
-  const openEditView = product => {
-    setSelectedProduct(product);
-    setAddProductViewOpen(true);
+  const openEditView = dispatchOrder => {
+    setSelectedDispatchOrder(dispatchOrder);
+    setAddDispatchOrderViewOpen(true);
   }
 
-  const openDeleteView = product => {
-    setSelectedProduct(product);
-    setDeleteProductViewOpen(true);
+  const openDeleteView = dispatchOrder => {
+    setSelectedDispatchOrder(dispatchOrder);
+    setDeleteDispatchOrderViewOpen(true);
   }
 
-  const closeAddProductView = () => {
-    setSelectedProduct(null);
-    setAddProductViewOpen(false);
+  const closeAddDispatchOrderView = () => {
+    setSelectedDispatchOrder(null);
+    setAddDispatchOrderViewOpen(false);
   }
 
-  const closeDeleteProductView = () => {
-    setSelectedProduct(null);
-    setDeleteProductViewOpen(false);
+  const closeDeleteDispatchOrderView = () => {
+    setSelectedDispatchOrder(null);
+    setDeleteDispatchOrderViewOpen(false);
   }
 
-  const getProducts = (page = 1) => {
-    axios.get(getURL('/product'), { params: { page, search: searchKeyword } })
+  const getDispatchOrders = (page = 1) => {
+    axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setProducts(res.data.data)
+        setDispatchOrders(res.data.data)
       });
   }
 
   const getRelations = () => {
-    axios.get(getURL('/product/relations'))
+    axios.get(getURL('/dispatch-order/relations'))
       .then(res => {
-        setBrands(res.data.brands)
-        setUoms(res.data.uoms)
-        setCategories(res.data.categories)
+        setProductInwards(res.data.productInwards)
+        setWarehouses(res.data.warehouses)
+        setCustomers(res.data.customers)
       });
   };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    getProducts(newPage);
+    getDispatchOrders(newPage);
   };
   useEffect(() => {
-    getProducts();
+    getDispatchOrders();
   }, [page, searchKeyword]);
 
   useEffect(() => {
@@ -203,35 +209,35 @@ export default function ProductView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const addProductButton = <Button
+  const addDispatchOrderButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductViewOpen(true)}>ADD PRODUCT</Button>;
-  const addProductModal = <AddProductView
+    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD PRODUCT</Button>;
+  const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
-    brands={brands}
-    uoms={uoms}
-    categories={categories}
-    selectedProduct={selectedProduct}
-    open={addProductViewOpen}
-    addProduct={addProduct}
-    handleClose={() => closeAddProductView()} />
-  const deleteProductModal = <ConfirmDelete
+    productInwards={productInwards}
+    warehouses={warehouses}
+    customers={customers}
+    selectedDispatchOrder={selectedDispatchOrder}
+    open={addDispatchOrderViewOpen}
+    addDispatchOrder={addDispatchOrder}
+    handleClose={() => closeAddDispatchOrderView()} />
+  const deleteDispatchOrderModal = <ConfirmDelete
     key={4}
-    confirmDelete={deleteProduct}
-    open={deleteProductViewOpen}
-    handleClose={closeDeleteProductView}
-    selectedEntity={selectedProduct && selectedProduct.name}
-    title={"Product"}
+    confirmDelete={deleteDispatchOrder}
+    open={deleteDispatchOrderViewOpen}
+    handleClose={closeDeleteDispatchOrderView}
+    selectedEntity={selectedDispatchOrder && selectedDispatchOrder.name}
+    title={"DispatchOrder"}
   />
-  const headerButtons = [searchInput, addProductButton, addProductModal, deleteProductModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product" buttons={headerButtons} />
+        <TableHeader title="Manage DispatchOrder" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -247,15 +253,15 @@ export default function ProductView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => {
+            {dispatchOrders.map((dispatchOrder) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={product.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={dispatchOrder.id}>
                   {columns.map((column) => {
-                    const value = product[column.id];
+                    const value = dispatchOrder[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, product) : value}
+                        {column.format ? column.format(value, dispatchOrder) : value}
                       </TableCell>
                     );
                   })}

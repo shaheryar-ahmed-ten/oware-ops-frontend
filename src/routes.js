@@ -13,9 +13,9 @@ import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
 import CategoryView from '../src/views/administration/category/CategoryView';
 import ProductView from '../src/views/administration/product/ProductView';
 
-import DispatchOrderView from '../src/views/operations/dispatch/DispatchOrderView'
-import ProductInwardView from '../src/views/operations/inward/ProductInwardView'
-import ProductOutwardView from '../src/views/operations/outward/ProductOutwardView'
+import ProductInwardView from '../src/views/operations/productInward/ProductInwardView'
+import DispatchOrderView from '../src/views/operations/dispatchOrder/DispatchOrderView'
+import ProductOutwardView from '../src/views/operations/productOutward/ProductOutwardView'
 
 import InventoryView from '../src/views/reporting/inventory/InventoryView'
 import ExportView from '../src/views/reporting/exports/ExportView'

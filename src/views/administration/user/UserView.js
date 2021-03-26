@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../TableHeader';
+import TableHeader from '../../TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import AddUserView from './AddUserView';
@@ -88,13 +88,16 @@ export default function UserView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>
-      [<EditIcon key="edit" onClick={() => openEditView(entity)} />, <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />]
+      [
+        <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+      ]
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
+  const [users, setUsers] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
@@ -109,7 +112,7 @@ export default function UserView() {
         setFormErrors(res.data.message);
         return
       }
-      setAddUserViewOpen(false);
+      closeAddUserView();
       getUsers();
     });
   };
@@ -121,7 +124,7 @@ export default function UserView() {
           setFormErrors(res.data.message);
           return
         }
-        setAddUserViewOpen(false);
+        closeDeleteUserView();
         getUsers();
       });
   };
@@ -200,11 +203,10 @@ export default function UserView() {
     selectedEntity={selectedUser && selectedUser.firstName + ' ' + selectedUser.lastName}
     title={"User"}
   />
-  const headerButtons = [searchInput, addUserButton, addUserModal];
+  const headerButtons = [searchInput, addUserButton, addUserModal, deleteUserModal];
 
   return (
     <Paper className={classes.root}>
-      {deleteUserModal}
       <TableContainer className={classes.container}>
         <TableHeader title="Manage User" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">

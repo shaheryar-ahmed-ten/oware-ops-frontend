@@ -19,7 +19,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddProductView from './AddProductView';
+import AddProductOutwardView from './AddProductOutwardView';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,46 +47,57 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function ProductView() {
+export default function ProductOutwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'name',
-    label: 'Name',
+    id: 'DispatchOrder.ProductInward.Customer.companyName',
+    label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'description',
-    label: 'Description',
+    id: 'DispatchOrder.ProductInward.Product.name',
+    label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'dimensionsCBM',
-    label: 'Dimensions CBM',
+    id: 'DispatchOrder.ProductInward.Warehouse.name',
+    label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'weight',
-    label: 'Weight',
+    id: 'DispatchOrder.ProductInward.Product.UOM.name',
+    label: 'UOM',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'Category.name',
-    label: 'Category',
+    id: 'DispatchOrder.receiverName',
+    label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'Brand.name',
-    label: 'Brand',
+    id: 'DispatchOrder.receiverPhone',
+    label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'UOM.name',
-    label: 'Uom',
+    id: 'DispatchOrder.quantity',
+    label: 'Requested Quantity to Dispatch',
     minWidth: 'auto',
     className: '',
+  }, {
+    id: 'quantity',
+    label: 'Actual Quantity to Dispatch',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'DispatchOrder.shipmentDate',
+    label: 'SHIPMENT DATE',
+    minWidth: 'auto',
+    className: '',
+    format: value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`
   }, {
     id: 'isActive',
-    label: 'Status',
+    label: 'STATUS',
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
@@ -103,88 +114,84 @@ export default function ProductView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [products, setProducts] = useState([]);
+  const [productOutwards, setProductOutwards] = useState([]);
 
-  const [brands, setBrands] = useState([]);
-  const [uoms, setUoms] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [dispatchOrders, setDispatchOrders] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductOutward, setSelectedProductOutward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addProductViewOpen, setAddProductViewOpen] = useState(false);
-  const [deleteProductViewOpen, setDeleteProductViewOpen] = useState(false);
+  const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
+  const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
 
 
-  const addProduct = data => {
+  const addProductOutward = data => {
     let apiPromise = null;
-    if (!selectedProduct) apiPromise = axios.post(getURL('/product'), data);
-    else apiPromise = axios.put(getURL(`/product/${selectedProduct.id}`), data);
+    if (!selectedProductOutward) apiPromise = axios.post(getURL('/product-outward'), data);
+    else apiPromise = axios.put(getURL(`/product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(res.data.message);
         return
       }
-      closeAddProductView(false);
-      getProducts();
+      closeAddProductOutwardView(false);
+      getProductOutwards();
     });
   };
 
-  const deleteProduct = data => {
-    axios.delete(getURL(`/product/${selectedProduct.id}`))
+  const deleteProductOutward = data => {
+    axios.delete(getURL(`/product-outward/${selectedProductOutward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(res.data.message);
           return
         }
-        closeDeleteProductView();
-        getProducts();
+        closeDeleteProductOutwardView();
+        getProductOutwards();
       });
   };
 
-  const openEditView = product => {
-    setSelectedProduct(product);
-    setAddProductViewOpen(true);
+  const openEditView = productOutward => {
+    setSelectedProductOutward(productOutward);
+    setAddProductOutwardViewOpen(true);
   }
 
-  const openDeleteView = product => {
-    setSelectedProduct(product);
-    setDeleteProductViewOpen(true);
+  const openDeleteView = productOutward => {
+    setSelectedProductOutward(productOutward);
+    setDeleteProductOutwardViewOpen(true);
   }
 
-  const closeAddProductView = () => {
-    setSelectedProduct(null);
-    setAddProductViewOpen(false);
+  const closeAddProductOutwardView = () => {
+    setSelectedProductOutward(null);
+    setAddProductOutwardViewOpen(false);
   }
 
-  const closeDeleteProductView = () => {
-    setSelectedProduct(null);
-    setDeleteProductViewOpen(false);
+  const closeDeleteProductOutwardView = () => {
+    setSelectedProductOutward(null);
+    setDeleteProductOutwardViewOpen(false);
   }
 
-  const getProducts = (page = 1) => {
-    axios.get(getURL('/product'), { params: { page, search: searchKeyword } })
+  const getProductOutwards = (page = 1) => {
+    axios.get(getURL('/product-outward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setProducts(res.data.data)
+        setProductOutwards(res.data.data)
       });
   }
 
   const getRelations = () => {
-    axios.get(getURL('/product/relations'))
+    axios.get(getURL('/product-outward/relations'))
       .then(res => {
-        setBrands(res.data.brands)
-        setUoms(res.data.uoms)
-        setCategories(res.data.categories)
+        setDispatchOrders(res.data.dispatchOrders)
       });
   };
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
-    getProducts(newPage);
+    getProductOutwards(newPage);
   };
   useEffect(() => {
-    getProducts();
+    getProductOutwards();
   }, [page, searchKeyword]);
 
   useEffect(() => {
@@ -203,35 +210,33 @@ export default function ProductView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const addProductButton = <Button
+  const addProductOutwardButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductViewOpen(true)}>ADD PRODUCT</Button>;
-  const addProductModal = <AddProductView
+    onClick={() => setAddProductOutwardViewOpen(true)}>ADD PRODUCT OUTWARD</Button>;
+  const addProductOutwardModal = <AddProductOutwardView
     key={3}
-    brands={brands}
-    uoms={uoms}
-    categories={categories}
-    selectedProduct={selectedProduct}
-    open={addProductViewOpen}
-    addProduct={addProduct}
-    handleClose={() => closeAddProductView()} />
-  const deleteProductModal = <ConfirmDelete
+    dispatchOrders={dispatchOrders}
+    selectedProductOutward={selectedProductOutward}
+    open={addProductOutwardViewOpen}
+    addProductOutward={addProductOutward}
+    handleClose={() => closeAddProductOutwardView()} />
+  const deleteProductOutwardModal = <ConfirmDelete
     key={4}
-    confirmDelete={deleteProduct}
-    open={deleteProductViewOpen}
-    handleClose={closeDeleteProductView}
-    selectedEntity={selectedProduct && selectedProduct.name}
-    title={"Product"}
+    confirmDelete={deleteProductOutward}
+    open={deleteProductOutwardViewOpen}
+    handleClose={closeDeleteProductOutwardView}
+    selectedEntity={selectedProductOutward && selectedProductOutward.name}
+    title={"ProductOutward"}
   />
-  const headerButtons = [searchInput, addProductButton, addProductModal, deleteProductModal];
+  const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product" buttons={headerButtons} />
+        <TableHeader title="Manage ProductOutward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -247,15 +252,15 @@ export default function ProductView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => {
+            {productOutwards.map((productOutward) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={product.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={productOutward.id}>
                   {columns.map((column) => {
-                    const value = product[column.id];
+                    const value = productOutward[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, product) : value}
+                        {column.format ? column.format(value, productOutward) : value}
                       </TableCell>
                     );
                   })}
