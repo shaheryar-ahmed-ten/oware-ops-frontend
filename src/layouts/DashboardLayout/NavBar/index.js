@@ -22,7 +22,7 @@ const navTreeData = [
     nodeId: 'administration',
     children: [
       {
-        canActivate: user => !!user && user['Role.PermissionAccesses.Permission.type'] == 'superadmin_privileges',
+        canActivate: user => !!user && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges'),
         href: '/administration/user',
         title: 'Manage User'
       },

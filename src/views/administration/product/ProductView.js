@@ -74,16 +74,19 @@ export default function ProductView() {
     label: 'Category',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Category.name
   }, {
     id: 'Brand.name',
     label: 'Brand',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Brand.name
   }, {
     id: 'UOM.name',
     label: 'Uom',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.UOM.name
   }, {
     id: 'isActive',
     label: 'Status',

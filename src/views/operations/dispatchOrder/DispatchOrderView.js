@@ -54,21 +54,25 @@ export default function DispatchOrderView() {
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.ProductInward.Customer.companyName
   }, {
     id: 'ProductInward.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.ProductInward.Product.name
   }, {
     id: 'ProductInward.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.ProductInward.Warehouse.name
   }, {
     id: 'ProductInward.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.ProductInward.Product.UOM.name
   }, {
     id: 'receiverName',
     label: 'RECEIVER NAME',

@@ -22,7 +22,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
 
   const selectProduct = value => {
     setProductId(value);
-    if (value) setUom(products.find(product => product.id == value)['UOM.name']);
+    if (value) setUom(products.find(product => product.id == value).UOM.name);
     else setUom('');
   }
 
@@ -31,7 +31,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       setQuantity(selectedProductInward.quantity || '');
       setCustomerId(selectedProductInward.customerId || '');
       selectProduct(selectedProductInward.productId || '');
-      // setUom(selectedProductInward['Product.UOM.name'] || '');
       setWarehouseId(selectedProductInward.warehouseId || '');
       setActive(!!selectedProductInward.isActive);
     } else {

@@ -29,9 +29,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
     if (value) {
       let productInward = productInwards.find(productInward => productInward.id == value);
       setAvailableQuantity(productInward.quantity);
-      setUom(productInward['Product.UOM.name']);
-      setWarehouse(productInward['Warehouse.name']);
-      setCustomer(productInward['Customer.companyName']);
+      setUom(productInward.Product.UOM.name);
+      setWarehouse(productInward.Warehouse.name);
+      setCustomer(productInward.Customer.companyName);
     }
     else {
       setAvailableQuantity('');
@@ -92,7 +92,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   value={productInwardId}
                   onChange={e => selectProductInward(e.target.value)}
                 >
-                  {productInwards.map(productInward => <MenuItem key={productInward.id} value={productInward.id}>{productInward['Product.name']}::{productInward.quantity}</MenuItem>)}
+                  {productInwards.map(productInward => <MenuItem key={productInward.id} value={productInward.id}>{productInward.Product.name}::{productInward.quantity}</MenuItem>)}
                 </Select>
               </Grid>
               <Grid container>

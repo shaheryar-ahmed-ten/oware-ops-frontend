@@ -59,17 +59,19 @@ export default function CustomerView() {
     label: 'Contact Name',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => `${entity['Contact.firstName']} ${entity['Contact.lastName']}`
+    format: (value, entity) => `${entity.Contact.firstName} ${entity.Contact.lastName}`
   }, {
     id: 'Contact.email',
     label: 'Contact Email',
     minWidth: 'auto',
-    className: ''
+    className: '',
+    format: (value, entity) => entity.Contact.email
   }, {
     id: 'Contact.phone',
     label: 'Contact Phone',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Contact.phone
   }, {
     id: 'isActive',
     label: 'Status',

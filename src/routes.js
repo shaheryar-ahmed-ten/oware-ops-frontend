@@ -27,7 +27,7 @@ const routes = (user) => [
     children: [
       {
         path: 'user',
-        element: user && user['Role.PermissionAccesses.Permission.type'] == 'superadmin_privileges' ? <UserView /> : <Navigate to='404' />,
+        element: user && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges') ? <UserView /> : <Navigate to='404' />,
       },
       { path: 'customer', element: <CustomerView /> },
       { path: 'warehouse', element: <WarehouseView /> },

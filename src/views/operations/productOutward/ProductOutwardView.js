@@ -54,36 +54,43 @@ export default function ProductOutwardView() {
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.ProductInward.Customer.companyName
   }, {
     id: 'DispatchOrder.ProductInward.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.ProductInward.Product.name
   }, {
     id: 'DispatchOrder.ProductInward.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.ProductInward.Warehouse.name
   }, {
     id: 'DispatchOrder.ProductInward.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.ProductInward.Product.UOM.name
   }, {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.receiverName
   }, {
     id: 'DispatchOrder.receiverPhone',
     label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.receiverPhone
   }, {
     id: 'DispatchOrder.quantity',
     label: 'Requested Quantity to Dispatch',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.DispatchOrder.quantity
   }, {
     id: 'quantity',
     label: 'Actual Quantity to Dispatch',
@@ -94,7 +101,7 @@ export default function ProductOutwardView() {
     label: 'SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
-    format: value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`
+    format: (value, entity) => `${new Date(entity.DispatchOrder.shipmentDate).toLocaleDateString()} ${new Date(entity.DispatchOrder.shipmentDate).toLocaleTimeString()}`
   }, {
     id: 'isActive',
     label: 'STATUS',

@@ -30,14 +30,14 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     if (value) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       setRequestedQuantity(dispatchOrder.quantity);
-      setUom(dispatchOrder['ProductInward.Product.UOM.name']);
-      setWarehouse(dispatchOrder['ProductInward.Warehouse.name']);
-      setCustomer(dispatchOrder['ProductInward.Customer.companyName']);
-      setCustomer(dispatchOrder['ProductInward.Customer.companyName']);
+      setUom(dispatchOrder.ProductInward.Product.UOM.name);
+      setWarehouse(dispatchOrder.ProductInward.Warehouse.name);
+      setCustomer(dispatchOrder.ProductInward.Customer.companyName);
+      setCustomer(dispatchOrder.ProductInward.Customer.companyName);
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
-      setProduct(dispatchOrder['ProductInward.Product.name'] || '');
+      setProduct(dispatchOrder.ProductInward.Product.name || '');
     }
     else {
       setRequestedQuantity('');
@@ -94,7 +94,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={dispatchOrderId}
                     onChange={e => selectProductInward(e.target.value)}
                   >
-                    {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder['ProductInward.Product.name']}::{dispatchOrder.quantity}</MenuItem>)}
+                    {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.ProductInward.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
                   </Select>
                 </Grid>
                 <Grid item sm={6}>
