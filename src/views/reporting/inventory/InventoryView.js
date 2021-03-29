@@ -16,6 +16,7 @@ import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import Pagination from '@material-ui/lab/Pagination';
+import FileDownload from 'js-file-download';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -96,11 +97,14 @@ export default function InventoryView() {
   }
 
   const exportToExcel = () => {
-    axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
-      .then(res => {
-        setPageCount(res.data.pages)
-        setInventories(res.data.data)
-      });
+    axios.get({
+      url: getURL('/inventory/export'),
+      method: 'GET',
+      responseType: 'blob',
+      params: { page, search: searchKeyword },
+    }).then(response => {
+      FileDownload(response.data, 'report.csv');
+    });
   }
 
   const handlePageChange = (event, newPage) => {
