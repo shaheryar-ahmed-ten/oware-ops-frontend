@@ -4,6 +4,8 @@ import {
   Button,
   TextField,
   Select,
+  InputLabel,
+  FormControl,
   MenuItem,
   Dialog,
   DialogActions,
@@ -123,46 +125,55 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="categoryId"
-                    label="Category"
-                    variant="outlined"
-                    value={categoryId}
-                    onChange={e => setCategoryId(e.target.value)}
-                  >
-                    {categories.map(category => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="categoryId"
+                      label="Category"
+                      variant="outlined"
+                      value={categoryId}
+                      onChange={e => setCategoryId(e.target.value)}
+                    >
+                      {categories.map(category => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="brandId"
-                    label="Brand"
-                    variant="outlined"
-                    value={brandId}
-                    onChange={e => setBrandId(e.target.value)}
-                  >
-                    {brands.map(brand => <MenuItem key={brand.id} value={brand.id}>{brand.name}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Brand</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="brandId"
+                      label="Brand"
+                      variant="outlined"
+                      value={brandId}
+                      onChange={e => setBrandId(e.target.value)}
+                    >
+                      {brands.map(brand => <MenuItem key={brand.id} value={brand.id}>{brand.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
 
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="uomId"
-                    label="UoM"
-                    variant="outlined"
-                    value={uomId}
-                    onChange={e => setUomId(e.target.value)}
-                  >
-                    {uoms.map(uom => <MenuItem key={uom.id} value={uom.id}>{uom.name}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>UoM</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="uomId"
+                      label="UoM"
+                      variant="outlined"
+                      value={uomId}
+                      onChange={e => setUomId(e.target.value)}
+                    >
+                      {uoms.map(uom => <MenuItem key={uom.id} value={uom.id}>{uom.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
 
                 <Grid item sm={6}>

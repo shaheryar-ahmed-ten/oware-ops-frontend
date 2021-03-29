@@ -4,6 +4,8 @@ import {
   Button,
   TextField,
   Select,
+  FormControl,
+  InputLabel,
   MenuItem,
   Dialog,
   DialogActions,
@@ -75,46 +77,55 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="customerId"
-                    label="Customer"
-                    variant="outlined"
-                    value={customerId}
-                    onChange={e => setCustomerId(e.target.value)}
-                  >
-                    {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Customer</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="customerId"
+                      label="Customer"
+                      variant="outlined"
+                      value={customerId}
+                      onChange={e => setCustomerId(e.target.value)}
+                    >
+                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="productId"
-                    label="Product"
-                    variant="outlined"
-                    value={productId}
-                    onChange={e => selectProduct(e.target.value)}
-                  >
-                    {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Product</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="productId"
+                      label="Product"
+                      variant="outlined"
+                      value={productId}
+                      onChange={e => selectProduct(e.target.value)}
+                    >
+                      {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
 
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="warehouseId"
-                    label="Warehouse"
-                    variant="outlined"
-                    value={warehouseId}
-                    onChange={e => setWarehouseId(e.target.value)}
-                  >
-                    {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Warehouse</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="warehouseId"
+                      label="Warehouse"
+                      variant="outlined"
+                      value={warehouseId}
+                      onChange={e => setWarehouseId(e.target.value)}
+                    >
+                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item sm={6}>
                   <TextField

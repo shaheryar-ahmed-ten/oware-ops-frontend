@@ -4,6 +4,8 @@ import {
   Button,
   TextField,
   Select,
+  FormControl,
+  InputLabel,
   MenuItem,
   Dialog,
   DialogActions,
@@ -81,17 +83,20 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
             <Grid container>
               <Grid container>
                 <Grid item sm={6}>
-                  <Select
-                    fullWidth={true}
-                    margin="dense"
-                    id="dispatchOrderId"
-                    label="ProductInward"
-                    variant="outlined"
-                    value={dispatchOrderId}
-                    onChange={e => selectDispatchOrder(e.target.value)}
-                  >
-                    {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
-                  </Select>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel>Customer</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      margin="dense"
+                      id="dispatchOrderId"
+                      label="ProductInward"
+                      variant="outlined"
+                      value={dispatchOrderId}
+                      onChange={e => selectDispatchOrder(e.target.value)}
+                    >
+                      {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item sm={6}>
                   <TextField

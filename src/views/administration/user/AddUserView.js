@@ -4,6 +4,8 @@ import {
   Button,
   TextField,
   Select,
+  FormControl,
+  InputLabel,
   MenuItem,
   Dialog,
   DialogActions,
@@ -123,17 +125,20 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                 />
               </Grid>
               <Grid item sm={12}>
-                <Select
-                  fullWidth={true}
-                  margin="dense"
-                  id="roleId"
-                  label="Role"
-                  variant="outlined"
-                  value={roleId}
-                  onChange={e => setRoleId(e.target.value)}
-                >
-                  {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
-                </Select>
+                <FormControl fullWidth={true} variant="outlined">
+                  <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="roleId"
+                    label="Role"
+                    variant="outlined"
+                    value={roleId}
+                    onChange={e => setRoleId(e.target.value)}
+                  >
+                    {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item sm={12}>
                 <TextField

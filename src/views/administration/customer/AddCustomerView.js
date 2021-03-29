@@ -4,6 +4,8 @@ import {
   Button,
   TextField,
   Select,
+  FormControl,
+  InputLabel,
   MenuItem,
   Dialog,
   DialogActions,
@@ -69,17 +71,20 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
                 />
               </Grid>
               <Grid item sm={12}>
-                <Select
-                  fullWidth={true}
-                  margin="dense"
-                  id="contactId"
-                  label="Brand"
-                  variant="outlined"
-                  value={contactId}
-                  onChange={e => setContactId(e.target.value)}
-                >
-                  {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
-                </Select>
+                <FormControl fullWidth={true} variant="outlined">
+                  <InputLabel>Contact</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="contactId"
+                    label="Contact"
+                    variant="outlined"
+                    value={contactId}
+                    onChange={e => setContactId(e.target.value)}
+                  >
+                    {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item sm={12}>
                 <TextField
