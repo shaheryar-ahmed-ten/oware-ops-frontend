@@ -18,7 +18,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
   const [productId, setProductId] = useState('');
   const [uom, setUom] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
-  const [isActive, setActive] = useState(false);
 
   const selectProduct = value => {
     setProductId(value);
@@ -32,14 +31,12 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       setCustomerId(selectedProductInward.customerId || '');
       selectProduct(selectedProductInward.productId || '');
       setWarehouseId(selectedProductInward.warehouseId || '');
-      setActive(!!selectedProductInward.isActive);
     } else {
       setQuantity('');
       setCustomerId('');
       selectProduct('');
       setUom('');
       setWarehouseId('');
-      setActive(false);
     }
   }, [selectedProductInward, products, warehouses, customers])
   const handleSubmit = e => {
@@ -48,8 +45,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       quantity,
       customerId,
       productId,
-      warehouseId,
-      isActive
+      warehouseId
     }
 
     addProductInward(newProductInward);
@@ -60,7 +56,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedProductInward ? 'Add ProductInward' : 'Edit ProductInward'}
+            {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
           </DialogTitle>
           <DialogContent>
             <Grid container>
@@ -111,7 +107,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   <TextField
                     fullWidth={true}
                     margin="dense"
-                    id="quantity"
+                    id="uom"
                     label="UOM"
                     type="text"
                     variant="outlined"
@@ -130,29 +126,19 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   margin="dense"
                   id="quantity"
                   label="Quantity"
-                  type="text"
+                  type="number"
                   variant="outlined"
                   value={quantity}
                   onChange={e => setQuantity(e.target.value)}
 
                 />
               </Grid>
-
-              <Grid item sm={6}>
-                <Checkbox
-                  checked={isActive}
-                  onChange={(e) => setActive(e.target.checked)}
-                  color="primary"
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-                  Active
-              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedProductInward ? 'Add ProductInward' : 'Update ProductInward'}
+              {!selectedProductInward ? 'Add Product Inward' : 'Update Product Inward'}
             </Button>
           </DialogActions>
         </Dialog>

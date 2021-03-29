@@ -20,7 +20,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
   const [categoryId, setCategoryId] = useState('');
   const [brandId, setBrandId] = useState('');
   const [uomId, setUomId] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedProduct) {
@@ -40,7 +40,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       setCategoryId('');
       setBrandId('');
       setUomId('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedProduct])
   const handleSubmit = e => {

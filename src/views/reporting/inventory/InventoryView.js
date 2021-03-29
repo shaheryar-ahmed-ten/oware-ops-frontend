@@ -46,38 +46,44 @@ const useStyles = makeStyles(theme => ({
 export default function InventoryView() {
   const classes = useStyles();
   const columns = [{
-    id: 'Product.name',
+    id: 'product',
     label: 'PRODUCT NAME',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Product.name
   }, {
-    id: 'Customer.name',
+    id: 'customer',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Customer.companyName
   }, {
-    id: 'Warehouse.name',
+    id: 'warehouse',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Warehouse.name
   }, {
-    id: 'UOM.name',
+    id: 'uom',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Product.UOM.name
   }, {
-    id: 'currentQuantity',
+    id: 'quantity',
     label: 'CURRENT AVAILABLE QUANTITY',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'committedQuantity',
+    label: 'CURRENT COMMITTED QUANTITY',
+    minWidth: 'auto',
+    className: '',
+  }, {
+    id: 'dispatchedQuantity',
+    label: 'DISPATCHED QUANTITY',
     minWidth: 'auto',
     className: '',
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [brands, setInventorys] = useState([]);
+  const [inventories, setInventories] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [formErrors, setFormErrors] = useState('');
 
@@ -85,7 +91,8 @@ export default function InventoryView() {
     axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setInventorys(res.data.data)
+        console.log(res)
+        setInventories(res.data.data)
       });
   }
 
@@ -130,15 +137,15 @@ export default function InventoryView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {brands.map((brand) => {
+            {inventories.map((inventory) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={brand.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={inventory.id}>
                   {columns.map((column) => {
-                    const value = brand[column.id];
+                    const value = inventory[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, brand) : value}
+                        {column.format ? column.format(value, inventory) : value}
                       </TableCell>
                     );
                   })}

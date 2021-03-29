@@ -17,9 +17,8 @@ axios.interceptors.request.use(request => {
 }, error => Promise.reject(error));
 
 axios.interceptors.response.use(undefined, error => {
-  const navigate = useNavigate();
   if (error.response.status == 401) {
-    if (window.location.href.split('/').pop() != 'login') navigate('/login');
+    // if (window.location.href.split('/').pop() != 'login') navigate('/login');
   }
   return Promise.reject(error)
 });

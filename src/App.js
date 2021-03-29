@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from '../src/components/GlobalStyles';
 import theme from '../src/theme';
@@ -8,6 +8,7 @@ import { getUser } from './utils/common';
 
 const App = () => {
   const routing = useRoutes(routes(getUser()));
+  const navigate = useNavigate();
 
   return (
     <ThemeProvider theme={theme}>

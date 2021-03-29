@@ -50,29 +50,29 @@ const useStyles = makeStyles(theme => ({
 export default function DispatchOrderView() {
   const classes = useStyles();
   const columns = [{
-    id: 'ProductInward.Customer.companyName',
+    id: 'Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.ProductInward.Customer.companyName
+    format: (value, entity) => entity.Customer.companyName
   }, {
-    id: 'ProductInward.Product.name',
+    id: 'Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.ProductInward.Product.name
+    format: (value, entity) => entity.Product.name
   }, {
-    id: 'ProductInward.Warehouse.name',
+    id: 'Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.ProductInward.Warehouse.name
+    format: (value, entity) => entity.Warehouse.name
   }, {
-    id: 'ProductInward.Product.UOM.name',
+    id: 'Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.ProductInward.Product.UOM.name
+    format: (value, entity) => entity.Product.UOM.name
   }, {
     id: 'receiverName',
     label: 'RECEIVER NAME',
@@ -85,7 +85,7 @@ export default function DispatchOrderView() {
     className: '',
   }, {
     id: 'quantity',
-    label: 'QUANTITY AVAILABLE',
+    label: 'REQUESTED QUANTITY',
     minWidth: 'auto',
     className: '',
   }, {
@@ -94,12 +94,6 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
     format: value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`
-  }, {
-    id: 'isActive',
-    label: 'STATUS',
-    minWidth: 'auto',
-    className: value => value ? classes.active : '',
-    format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
     label: '',
@@ -115,7 +109,7 @@ export default function DispatchOrderView() {
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
 
-  const [productInwards, setProductInwards] = useState([]);
+  const [products, setProducts] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [customers, setCustomers] = useState([]);
 
@@ -183,7 +177,7 @@ export default function DispatchOrderView() {
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
       .then(res => {
-        setProductInwards(res.data.productInwards)
+        setProducts(res.data.products)
         setWarehouses(res.data.warehouses)
         setCustomers(res.data.customers)
       });
@@ -218,10 +212,10 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD PRODUCT</Button>;
+    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
-    productInwards={productInwards}
+    products={products}
     warehouses={warehouses}
     customers={customers}
     selectedDispatchOrder={selectedDispatchOrder}

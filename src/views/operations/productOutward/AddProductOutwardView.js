@@ -22,22 +22,21 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [uom, setUom] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [customer, setCustomer] = useState('');
-  const [dispatchOrderId, setProductInwardId] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [dispatchOrderId, setDispatchOrderId] = useState('');
 
-  const selectProductInward = value => {
-    setProductInwardId(value);
+  const selectDispatchOrder = value => {
+    setDispatchOrderId(value);
     if (value) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       setRequestedQuantity(dispatchOrder.quantity);
-      setUom(dispatchOrder.ProductInward.Product.UOM.name);
-      setWarehouse(dispatchOrder.ProductInward.Warehouse.name);
-      setCustomer(dispatchOrder.ProductInward.Customer.companyName);
-      setCustomer(dispatchOrder.ProductInward.Customer.companyName);
+      setUom(dispatchOrder.Product.UOM.name);
+      setWarehouse(dispatchOrder.Warehouse.name);
+      setCustomer(dispatchOrder.Customer.companyName);
+      setCustomer(dispatchOrder.Customer.companyName);
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
-      setProduct(dispatchOrder.ProductInward.Product.name || '');
+      setProduct(dispatchOrder.Product.name || '');
     }
     else {
       setRequestedQuantity('');
@@ -53,13 +52,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
 
   useEffect(() => {
     if (!!selectedProductOutward) {
-      selectProductInward(selectedProductOutward.dispatchOrderId || '');
+      selectDispatchOrder(selectedProductOutward.dispatchOrderId || '');
       setQuantity(selectedProductOutward.quantity || '');
-      setActive(!!selectedProductOutward.isActive);
     } else {
-      selectProductInward('');
+      selectDispatchOrder('');
       setQuantity('');
-      setActive(false);
     }
   }, [selectedProductOutward, dispatchOrders])
   const handleSubmit = e => {
@@ -67,8 +64,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     const newProductOutward = {
       quantity,
       dispatchOrderId,
-      quantity,
-      isActive
+      quantity
     }
 
     addProductOutward(newProductOutward);
@@ -92,9 +88,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     label="ProductInward"
                     variant="outlined"
                     value={dispatchOrderId}
-                    onChange={e => selectProductInward(e.target.value)}
+                    onChange={e => selectDispatchOrder(e.target.value)}
                   >
-                    {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.ProductInward.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
+                    {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
                   </Select>
                 </Grid>
                 <Grid item sm={6}>
@@ -182,7 +178,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     margin="dense"
                     id="quantity"
                     label="Actual Quantity to Dispatch"
-                    type="text"
+                    type="number"
                     variant="outlined"
                     value={quantity}
                     onChange={e => setQuantity(e.target.value)}
@@ -214,15 +210,6 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       disabled
                     />
                   </Grid>
-                </Grid>
-                <Grid item sm={6}>
-                  <Checkbox
-                    checked={isActive}
-                    onChange={(e) => setActive(e.target.checked)}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                  />
-                  Active
                 </Grid>
               </Grid>
             </Grid>

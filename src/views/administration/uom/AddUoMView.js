@@ -14,7 +14,7 @@ import {
 
 export default function AddUoMView({ addUoM, open, handleClose, selectedUoM }) {
   const [name, setName] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedUoM) {
@@ -22,7 +22,7 @@ export default function AddUoMView({ addUoM, open, handleClose, selectedUoM }) {
       setActive(!!selectedUoM.isActive);
     } else {
       setName('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedUoM])
   const handleSubmit = e => {

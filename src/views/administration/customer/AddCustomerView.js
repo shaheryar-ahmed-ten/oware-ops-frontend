@@ -18,7 +18,7 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [notes, setNotes] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedCustomer) {
@@ -30,7 +30,7 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
       setCompanyName('');
       setContactId('');
       setNotes('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedCustomer])
   const handleSubmit = e => {

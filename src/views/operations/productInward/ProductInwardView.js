@@ -84,12 +84,6 @@ export default function ProductInwardView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'isActive',
-    label: 'STATUS',
-    minWidth: 'auto',
-    className: value => value ? classes.active : '',
-    format: value => value ? 'Active' : 'In-Active',
-  }, {
     id: 'actions',
     label: '',
     minWidth: 'auto',
@@ -207,7 +201,7 @@ export default function ProductInwardView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductInwardViewOpen(true)}>ADD PRODUCT</Button>;
+    onClick={() => setAddProductInwardViewOpen(true)}>ADD PRODUCT INWARD</Button>;
   const addProductInwardModal = <AddProductInwardView
     key={3}
     products={products}

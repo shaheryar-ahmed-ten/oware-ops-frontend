@@ -15,7 +15,7 @@ import {
 export default function AddBrandView({ addBrand, open, handleClose, selectedBrand }) {
   const [name, setName] = useState('');
   const [manufacturerName, setManufacturerName] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedBrand) {
@@ -25,7 +25,7 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
     } else {
       setName('');
       setManufacturerName('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedBrand])
   const handleSubmit = e => {

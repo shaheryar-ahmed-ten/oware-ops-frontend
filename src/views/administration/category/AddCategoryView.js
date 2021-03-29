@@ -14,7 +14,7 @@ import {
 
 export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory }) {
   const [name, setName] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedCategory) {
@@ -22,7 +22,7 @@ export default function AddCategoryView({ addCategory, open, handleClose, select
       setActive(!!selectedCategory.isActive);
     } else {
       setName('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedCategory])
   const handleSubmit = e => {

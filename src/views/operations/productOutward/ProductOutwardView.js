@@ -50,29 +50,29 @@ const useStyles = makeStyles(theme => ({
 export default function ProductOutwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'DispatchOrder.ProductInward.Customer.companyName',
+    id: 'DispatchOrder.Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.ProductInward.Customer.companyName
+    format: (value, entity) => entity.DispatchOrder.Customer.companyName
   }, {
-    id: 'DispatchOrder.ProductInward.Product.name',
+    id: 'DispatchOrder.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.ProductInward.Product.name
+    format: (value, entity) => entity.DispatchOrder.Product.name
   }, {
-    id: 'DispatchOrder.ProductInward.Warehouse.name',
+    id: 'DispatchOrder.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.ProductInward.Warehouse.name
+    format: (value, entity) => entity.DispatchOrder.Warehouse.name
   }, {
-    id: 'DispatchOrder.ProductInward.Product.UOM.name',
+    id: 'DispatchOrder.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.ProductInward.Product.UOM.name
+    format: (value, entity) => entity.DispatchOrder.Product.UOM.name
   }, {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',
@@ -102,12 +102,6 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => `${new Date(entity.DispatchOrder.shipmentDate).toLocaleDateString()} ${new Date(entity.DispatchOrder.shipmentDate).toLocaleTimeString()}`
-  }, {
-    id: 'isActive',
-    label: 'STATUS',
-    minWidth: 'auto',
-    className: value => value ? classes.active : '',
-    format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
     label: '',

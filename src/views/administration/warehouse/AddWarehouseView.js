@@ -17,7 +17,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
   const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
-  const [isActive, setActive] = useState(false);
+  const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedWarehouse) {
@@ -31,7 +31,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
       setBusinessWarehouseCode('');
       setAddress('');
       setCity('');
-      setActive(false);
+      setActive(true);
     }
   }, [selectedWarehouse])
   const handleSubmit = e => {
