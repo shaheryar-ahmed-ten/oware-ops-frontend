@@ -91,7 +91,14 @@ export default function InventoryView() {
     axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        console.log(res)
+        setInventories(res.data.data)
+      });
+  }
+
+  const exportToExcel = () => {
+    axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
+      .then(res => {
+        setPageCount(res.data.pages)
         setInventories(res.data.data)
       });
   }
@@ -116,7 +123,14 @@ export default function InventoryView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const headerButtons = [searchInput];
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    onClick={() => exportToExcel()
+    }> EXPORT TO EXCEL</Button >;
+  const headerButtons = [searchInput, exportButton];
 
   return (
     <Paper className={classes.root}>

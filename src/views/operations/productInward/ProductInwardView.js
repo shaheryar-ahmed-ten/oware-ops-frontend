@@ -224,7 +224,7 @@ export default function ProductInwardView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage ProductInward" buttons={headerButtons} />
+        <TableHeader title="Manage Product Inward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
