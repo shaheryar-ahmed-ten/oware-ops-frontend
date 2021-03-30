@@ -155,13 +155,13 @@ export default function InventoryView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventories.map((inventory) => {
+            {inventories.map((inventory, rId) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={inventory.id}>
-                  {columns.map((column) => {
+                <TableRow hover role="checkbox" tabIndex={-1} key={rId}>
+                  {columns.map((column, cId) => {
                     const value = inventory[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align}
+                      <TableCell key={cId} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
                         {column.format ? column.format(value, inventory) : value}
                       </TableCell>

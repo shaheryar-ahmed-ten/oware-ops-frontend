@@ -87,11 +87,6 @@ const navTreeData = [
         canActivate: user => !!user,
         href: '/reporting/inventory',
         title: 'Inventory'
-      },
-      {
-        canActivate: user => !!user,
-        href: '/reporting/export',
-        title: 'Export'
       }
     ]
   }

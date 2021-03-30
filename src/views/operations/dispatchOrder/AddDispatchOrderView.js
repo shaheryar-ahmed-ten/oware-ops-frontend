@@ -142,7 +142,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
 
               </Grid>
             </Grid>
-            <Grid container>
+            <Grid container spacing={2}>
 
               <Grid item sm={6}>
                 <TextField
@@ -171,7 +171,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                 />
               </Grid>
             </Grid>
-            <Grid container>
+            <Grid container spacing={2}>
               <Grid item sm={6}>
                 <TextField
                   fullWidth={true}

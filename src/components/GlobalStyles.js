@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { colors, createStyles, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(() => createStyles({
   '@global': {
@@ -6,6 +6,9 @@ const useStyles = makeStyles(() => createStyles({
       boxSizing: 'border-box',
       margin: 0,
       padding: 0,
+    },
+    'input:disabled': {
+      backgroundColor: colors.common.grey
     },
     html: {
       '-webkit-font-smoothing': 'antialiased',

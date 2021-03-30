@@ -77,11 +77,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedProductOutward ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
+            {!selectedProductOutward ? 'Add Product Outward' : 'Edit Product Outward'}
           </DialogTitle>
           <DialogContent>
             <Grid container>
-              <Grid container>
+              <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
@@ -111,7 +111,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                   />
                 </Grid>
               </Grid>
-              <Grid container>
+              <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
@@ -137,7 +137,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                   />
                 </Grid>
               </Grid>
-              <Grid container>
+              <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
@@ -163,7 +163,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                   />
                 </Grid>
               </Grid>
-              <Grid container>
+              <Grid container spacing={2}>
 
                 <Grid item sm={6}>
                   <TextField
@@ -190,31 +190,31 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
 
                   />
                 </Grid>
-                <Grid container>
-                  <Grid item sm={6}>
-                    <TextField
-                      fullWidth={true}
-                      margin="dense"
-                      id="receiverName"
-                      label="Receiver Name"
-                      type="text"
-                      variant="outlined"
-                      value={receiverName}
-                      disabled
-                    />
-                  </Grid>
-                  <Grid item sm={6}>
-                    <TextField
-                      fullWidth={true}
-                      margin="dense"
-                      id="receiverPhone"
-                      label="Receiver Phone"
-                      type="text"
-                      variant="outlined"
-                      value={receiverPhone}
-                      disabled
-                    />
-                  </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="receiverName"
+                    label="Receiver Name"
+                    type="text"
+                    variant="outlined"
+                    value={receiverName}
+                    disabled
+                  />
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="receiverPhone"
+                    label="Receiver Phone"
+                    type="text"
+                    variant="outlined"
+                    value={receiverPhone}
+                    disabled
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -222,7 +222,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedProductOutward ? 'Add Dispatch Order' : 'Update Dispatch Order'}
+              {!selectedProductOutward ? 'Add Product Outward' : 'Update Product Outward'}
             </Button>
           </DialogActions>
         </Dialog>
