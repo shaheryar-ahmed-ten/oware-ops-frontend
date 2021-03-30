@@ -50,24 +50,27 @@ export default function InventoryView() {
     id: 'product',
     label: 'PRODUCT NAME',
     minWidth: 'auto',
-    className: '',
+    format: (value, entity) => entity.Product.name
   }, {
     id: 'customer',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Customer.companyName
   }, {
     id: 'warehouse',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Warehouse.name
   }, {
     id: 'uom',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
+    format: (value, entity) => entity.Product.UOM.name
   }, {
-    id: 'quantity',
+    id: 'availableQuantity',
     label: 'CURRENT AVAILABLE QUANTITY',
     minWidth: 'auto',
     className: '',

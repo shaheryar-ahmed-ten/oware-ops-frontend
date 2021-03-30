@@ -14,50 +14,59 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, products, warehouses, customers }) {
+export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, inventories }) {
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState(0);
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
-  const [availableQuantity, setAvailableQuantity] = useState('');
-  const [customerId, setCustomerId] = useState('');
-  const [productId, setProductId] = useState('');
+  const [availableQuantity, setAvailableQuantity] = useState(0);
+  const [product, setProduct] = useState('');
+  const [customer, setCustomer] = useState('');
+  const [inventory, setInventory] = useState(null);
+  const [inventoryId, setInventoryId] = useState('');
   const [uom, setUom] = useState('');
-  const [warehouseId, setWarehouseId] = useState('');
+  const [warehouse, setWarehouse] = useState('');
 
-  const selectProduct = value => {
-    setProductId(value);
-    if (value) setUom(products.find(product => product.id == value).UOM.name);
-    else setUom('');
+  const selectInventory = value => {
+    setInventoryId(value);
+    if (value) {
+      const inventory = inventories.find(inventory => inventory.id == value);
+      setInventory(inventory);
+      setAvailableQuantity(inventory.availableQuantity);
+      setCustomer(inventory.Customer.companyName || '');
+      setWarehouse(inventory.Warehouse.name || '');
+      setProduct(inventory.Product.name || '');
+      setUom(inventory.Product.UOM.name || '');
+    } else {
+      setCustomer('');
+      setWarehouse('');
+      setProduct('');
+      setUom('');
+    }
   }
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
       setQuantity(selectedDispatchOrder.quantity || '');
-      setCustomerId(selectedDispatchOrder.customerId || '');
-      selectProduct(selectedDispatchOrder.productId || '');
-      setWarehouseId(selectedDispatchOrder.warehouseId || '');
+      selectInventory(selectedDispatchOrder.inventoryId || '');
       setShipmentDate(selectedDispatchOrder.shipmentDate || '');
       setReceiverName(selectedDispatchOrder.receiverName || '');
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
     } else {
       setQuantity('');
-      setCustomerId('');
-      selectProduct('');
-      setUom('');
-      setWarehouseId('');
+      selectInventory('');
       setShipmentDate('');
       setReceiverName('');
       setReceiverPhone('');
     }
-  }, [selectedDispatchOrder, products, warehouses, customers])
+  }, [selectedDispatchOrder, inventories])
   const handleSubmit = e => {
 
     const newDispatchOrder = {
       quantity,
-      customerId,
-      productId,
-      warehouseId,
+      customer,
+      inventoryId,
+      warehouse,
       shipmentDate,
       receiverName,
       receiverPhone
@@ -78,54 +87,72 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl fullWidth={true} variant="outlined">
-                    <InputLabel>Customer</InputLabel>
+                    <InputLabel>Inventory</InputLabel>
                     <Select
                       fullWidth={true}
                       margin="dense"
-                      id="customerId"
-                      label="Customer"
+                      id="inventoryId"
+                      label="Inventory"
                       variant="outlined"
-                      value={customerId}
-                      onChange={e => setCustomerId(e.target.value)}
+                      value={inventoryId}
+                      disabled={selectedDispatchOrder}
+                      onChange={e => selectInventory(e.target.value)}
                     >
-                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                      {inventories.map(inventory => <MenuItem key={inventory.id} value={inventory.id}>{inventory.Product.name}</MenuItem>)}
                     </Select>
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
-                    <InputLabel>Product</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      margin="dense"
-                      id="productId"
-                      label="Product"
-                      variant="outlined"
-                      value={productId}
-                      onChange={e => selectProduct(e.target.value)}
-                    >
-                      {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="availableQuantity"
+                    label="Available Quantity"
+                    type="number"
+                    variant="outlined"
+                    value={availableQuantity}
+                    disabled
+                  />
                 </Grid>
               </Grid>
-
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
-                    <InputLabel>Warehouse</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      margin="dense"
-                      id="warehouseId"
-                      label="Warehouse"
-                      variant="outlined"
-                      value={warehouseId}
-                      onChange={e => setWarehouseId(e.target.value)}
-                    >
-                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
-                    </Select>
-                  </FormControl>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="customer"
+                    label="Customer"
+                    type="text"
+                    variant="outlined"
+                    value={customer}
+                    disabled
+                  />
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="product"
+                    label="Product"
+                    type="text"
+                    variant="outlined"
+                    value={product}
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="warehouse"
+                    label="Warehouse"
+                    type="text"
+                    variant="outlined"
+                    value={warehouse}
+                    disabled
+                  />
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -139,11 +166,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                     disabled
                   />
                 </Grid>
-
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-
               <Grid item sm={6}>
                 <TextField
                   fullWidth={true}
@@ -154,20 +179,20 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   variant="outlined"
                   value={shipmentDate}
                   onChange={e => setShipmentDate(e.target.value)}
-
                 />
               </Grid>
               <Grid item sm={6}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
+                  InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
                   id="quantity"
                   label="Quantity"
                   type="number"
                   variant="outlined"
                   value={quantity}
+                  disabled={selectedDispatchOrder}
                   onChange={e => setQuantity(e.target.value)}
-
                 />
               </Grid>
             </Grid>
@@ -182,7 +207,6 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   variant="outlined"
                   value={receiverName}
                   onChange={e => setReceiverName(e.target.value)}
-
                 />
               </Grid>
               <Grid item sm={6}>
@@ -195,7 +219,6 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   variant="outlined"
                   value={receiverPhone}
                   onChange={e => setReceiverPhone(e.target.value)}
-
                 />
               </Grid>
             </Grid>

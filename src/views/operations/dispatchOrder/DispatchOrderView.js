@@ -50,29 +50,29 @@ const useStyles = makeStyles(theme => ({
 export default function DispatchOrderView() {
   const classes = useStyles();
   const columns = [{
-    id: 'Customer.companyName',
+    id: 'Inventory.Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Customer.companyName
+    format: (value, entity) => entity.Inventory.Customer.companyName
   }, {
-    id: 'Product.name',
+    id: 'Inventory.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Product.name
+    format: (value, entity) => entity.Inventory.Product.name
   }, {
-    id: 'Warehouse.name',
+    id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Warehouse.name
+    format: (value, entity) => entity.Inventory.Warehouse.name
   }, {
-    id: 'Product.UOM.name',
+    id: 'Inventory.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Product.UOM.name
+    format: (value, entity) => entity.Inventory.Product.UOM.name
   }, {
     id: 'receiverName',
     label: 'RECEIVER NAME',
@@ -109,9 +109,7 @@ export default function DispatchOrderView() {
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
 
-  const [products, setProducts] = useState([]);
-  const [warehouses, setWarehouses] = useState([]);
-  const [customers, setCustomers] = useState([]);
+  const [inventories, setInventories] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
@@ -177,9 +175,7 @@ export default function DispatchOrderView() {
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
       .then(res => {
-        setProducts(res.data.products)
-        setWarehouses(res.data.warehouses)
-        setCustomers(res.data.customers)
+        setInventories(res.data.inventories)
       });
   };
 
@@ -215,9 +211,7 @@ export default function DispatchOrderView() {
     onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
-    products={products}
-    warehouses={warehouses}
-    customers={customers}
+    inventories={inventories}
     selectedDispatchOrder={selectedDispatchOrder}
     open={addDispatchOrderViewOpen}
     addDispatchOrder={addDispatchOrder}
