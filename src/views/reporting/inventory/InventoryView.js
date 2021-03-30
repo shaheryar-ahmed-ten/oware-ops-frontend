@@ -100,9 +100,7 @@ export default function InventoryView() {
   }
 
   const exportToExcel = () => {
-    axios.get({
-      url: getURL('/inventory/export'),
-      method: 'GET',
+    axios.get(getURL('/inventory/export'), {
       responseType: 'blob',
       params: { page, search: searchKeyword },
     }).then(response => {
