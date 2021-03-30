@@ -20,7 +20,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [shipmentDate, setShipmentDate] = useState(0);
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
-  const [requestedQuantity, setRequestedQuantity] = useState('');
+  const [requestedQuantity, setRequestedQuantity] = useState(0);
   const [uom, setUom] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [customer, setCustomer] = useState('');
@@ -30,25 +30,24 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     setDispatchOrderId(value);
     if (value) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
-      setRequestedQuantity(dispatchOrder.quantity);
-      setUom(dispatchOrder.Product.UOM.name);
-      setWarehouse(dispatchOrder.Warehouse.name);
-      setCustomer(dispatchOrder.Customer.companyName);
-      setCustomer(dispatchOrder.Customer.companyName);
+      setRequestedQuantity(dispatchOrder.quantity || 0);
+      setUom(dispatchOrder.Inventory.Product.UOM.name);
+      setProduct(dispatchOrder.Inventory.Product.name || '');
+      setWarehouse(dispatchOrder.Inventory.Warehouse.name);
+      setCustomer(dispatchOrder.Inventory.Customer.companyName);
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
-      setProduct(dispatchOrder.Product.name || '');
     }
     else {
-      setRequestedQuantity('');
+      setRequestedQuantity(0);
+      setProduct('');
       setUom('');
       setWarehouse('');
       setCustomer('');
       setShipmentDate('');
       setReceiverName('');
       setReceiverPhone('');
-      setProduct('');
     }
   }
 
@@ -84,7 +83,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl fullWidth={true} variant="outlined">
-                    <InputLabel>Customer</InputLabel>
+                    <InputLabel>Dispatch Order</InputLabel>
                     <Select
                       fullWidth={true}
                       margin="dense"
@@ -92,9 +91,10 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       label="ProductInward"
                       variant="outlined"
                       value={dispatchOrderId}
+                      disabled={selectedProductOutward}
                       onChange={e => selectDispatchOrder(e.target.value)}
                     >
-                      {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Product.name}::{dispatchOrder.quantity}</MenuItem>)}
+                      {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Inventory.Product.name} - {dispatchOrder.quantity}</MenuItem>)}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -183,11 +183,12 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     margin="dense"
                     id="quantity"
                     label="Actual Quantity to Dispatch"
+                    InputProps={{ inputProps: { min: 0, max: requestedQuantity } }}
                     type="number"
                     variant="outlined"
                     value={quantity}
+                    disabled={selectedProductOutward}
                     onChange={e => setQuantity(e.target.value)}
-
                   />
                 </Grid>
               </Grid>

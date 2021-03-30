@@ -50,29 +50,29 @@ const useStyles = makeStyles(theme => ({
 export default function ProductOutwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'DispatchOrder.Customer.companyName',
+    id: 'Inventory.Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.Customer.companyName
+    format: (value, entity) => entity.DispatchOrder.Inventory.Customer.companyName
   }, {
-    id: 'DispatchOrder.Product.name',
+    id: 'Inventory.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.Product.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
   }, {
-    id: 'DispatchOrder.Warehouse.name',
+    id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.Warehouse.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name
   }, {
-    id: 'DispatchOrder.Product.UOM.name',
+    id: 'Inventory.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.Product.UOM.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
   }, {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',

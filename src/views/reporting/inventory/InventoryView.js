@@ -71,12 +71,12 @@ export default function InventoryView() {
     format: (value, entity) => entity.Product.UOM.name
   }, {
     id: 'availableQuantity',
-    label: 'CURRENT AVAILABLE QUANTITY',
+    label: 'AVAILABLE QUANTITY',
     minWidth: 'auto',
     className: '',
   }, {
     id: 'committedQuantity',
-    label: 'CURRENT COMMITTED QUANTITY',
+    label: 'COMMITTED QUANTITY',
     minWidth: 'auto',
     className: '',
   }, {
