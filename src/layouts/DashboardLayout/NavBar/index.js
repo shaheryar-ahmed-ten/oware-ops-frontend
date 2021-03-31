@@ -14,7 +14,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import NavItem from './NavItem';
-import { getUser } from '../../../utils/common';
+import { getUser, isSuperAdmin } from '../../../utils/common';
 
 const navTreeData = [
   {
@@ -22,7 +22,7 @@ const navTreeData = [
     nodeId: 'administration',
     children: [
       {
-        canActivate: user => !!user && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges'),
+        canActivate: isSuperAdmin,
         href: '/administration/user',
         title: 'Manage User'
       },

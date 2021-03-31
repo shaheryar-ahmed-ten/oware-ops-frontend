@@ -13,12 +13,13 @@ import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
 import CategoryView from '../src/views/administration/category/CategoryView';
 import ProductView from '../src/views/administration/product/ProductView';
 
-import ProductInwardView from '../src/views/operations/productInward/ProductInwardView'
-import DispatchOrderView from '../src/views/operations/dispatchOrder/DispatchOrderView'
-import ProductOutwardView from '../src/views/operations/productOutward/ProductOutwardView'
+import ProductInwardView from '../src/views/operations/productInward/ProductInwardView';
+import DispatchOrderView from '../src/views/operations/dispatchOrder/DispatchOrderView';
+import ProductOutwardView from '../src/views/operations/productOutward/ProductOutwardView';
+import InventoryView from '../src/views/reporting/inventory/InventoryView';
+import ExportView from '../src/views/reporting/exports/ExportView';
+import { isSuperAdmin } from './utils/common';
 
-import InventoryView from '../src/views/reporting/inventory/InventoryView'
-import ExportView from '../src/views/reporting/exports/ExportView'
 
 const routes = (user) => [
   {
@@ -27,7 +28,7 @@ const routes = (user) => [
     children: [
       {
         path: 'user',
-        element: user && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges') ? <UserView /> : <Navigate to='404' />,
+        element: isSuperAdmin(user) ? <UserView /> : <Navigate to='404' />,
       },
       { path: 'customer', element: <CustomerView /> },
       { path: 'warehouse', element: <WarehouseView /> },

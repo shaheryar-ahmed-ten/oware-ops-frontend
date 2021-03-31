@@ -16,7 +16,7 @@ import TableHeader from '../../TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import AddUserView from './AddUserView';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -48,6 +48,10 @@ const useStyles = makeStyles(theme => ({
     height: 30,
   },
 }));
+
+function AlertMessage(props) {
+  return <Alert elevation={6} variant="filled" {...props} />;
+}
 
 export default function UserView() {
   const classes = useStyles();
@@ -106,11 +110,12 @@ export default function UserView() {
 
   const addUser = data => {
     let apiPromise = null;
+    setFormErrors('');
     if (!selectedUser) apiPromise = axios.post(getURL('/user'), data);
     else apiPromise = axios.put(getURL(`/user/${selectedUser.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddUserView();
@@ -191,6 +196,7 @@ export default function UserView() {
     onClick={() => setAddUserViewOpen(true)}>ADD USER</Button>;
   const addUserModal = <AddUserView
     key={3}
+    formErrors={formErrors}
     roles={roles}
     selectedUser={selectedUser}
     open={addUserViewOpen}

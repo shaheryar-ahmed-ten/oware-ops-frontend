@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddUserView({ addUser, roles, open, handleClose, selectedUser }) {
+export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -67,6 +67,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
             {!selectedUser ? 'Add User' : 'Edit User'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid container spacing={2} justify="space-around">
                 <Grid item sm={6}>
@@ -98,6 +99,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
               </Grid>
               <Grid item sm={12}>
                 <TextField
+                  required
                   fullWidth={true}
                   margin="dense"
                   id="username"
@@ -112,6 +114,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
               </Grid>
               <Grid item sm={12}>
                 <TextField
+                  required
                   fullWidth={true}
                   margin="dense"
                   disabled={!!selectedUser}
@@ -128,6 +131,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                 <FormControl fullWidth={true} variant="outlined">
                   <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
                   <Select
+                    required
                     fullWidth={true}
                     margin="dense"
                     id="roleId"
@@ -155,6 +159,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
               </Grid>
               {!selectedUser ? <Grid item sm={12}>
                 <TextField
+                  required
                   fullWidth={true}
                   margin="dense"
                   id="password"
