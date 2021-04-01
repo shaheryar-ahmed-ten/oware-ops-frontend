@@ -48,8 +48,12 @@ const TopBar = ({
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
-        setUser(res.data.data);
-        _setUser(res.data.data);
+        let _user = res.data.data;
+        user.firstName = _user.firstName;
+        user.lastName = _user.lastName;
+        user.phone = _user.phone;
+        setUser(user);
+        _setUser(user);
         setAddUserViewOpen(false);
       });
   };
