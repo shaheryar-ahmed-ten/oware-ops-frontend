@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 
 const useStyles = makeStyles(theme => ({
@@ -91,7 +91,7 @@ export default function InventoryView() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [formErrors, setFormErrors] = useState('');
 
-  const getInventorys = (page = 1) => {
+  const getInventorys = () => {
     axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -108,10 +108,6 @@ export default function InventoryView() {
     });
   }
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getInventorys(newPage);
-  };
   useEffect(() => {
     getInventorys();
   }, [page, searchKeyword]);
@@ -183,7 +179,7 @@ export default function InventoryView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

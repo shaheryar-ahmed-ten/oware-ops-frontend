@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -87,7 +87,7 @@ export default function CategoryView() {
     else apiPromise = axios.put(getURL(`/category/${selectedCategory.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddCategoryView();
@@ -99,7 +99,7 @@ export default function CategoryView() {
     axios.delete(getURL(`/category/${selectedCategory.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteCategoryView();
@@ -129,17 +129,13 @@ export default function CategoryView() {
 
 
 
-  const getCategories = (page = 1) => {
+  const getCategories = () => {
     axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setCategories(res.data.data)
       });
   }
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getCategories(newPage);
-  };
 
   useEffect(() => {
     getCategories();
@@ -165,6 +161,7 @@ export default function CategoryView() {
     onClick={() => setAddCategoryViewOpen(true)}>ADD CATEGORY</Button>;
   const addCategoryModal = <AddCategoryView
     key={3}
+    formErrors={formErrors}
     selectedCategory={selectedCategory}
     open={addCategoryViewOpen}
     addCategory={addCategory}
@@ -225,7 +222,7 @@ export default function CategoryView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

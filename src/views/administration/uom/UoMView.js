@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -87,7 +87,7 @@ export default function UoMView() {
     else apiPromise = axios.put(getURL(`/uom/${selectedUoM.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddUoMView();
@@ -99,7 +99,7 @@ export default function UoMView() {
     axios.delete(getURL(`/uom/${selectedUoM.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteUoMView();
@@ -127,7 +127,7 @@ export default function UoMView() {
     setDeleteUoMViewOpen(false);
   }
 
-  const getUoMs = (page = 1) => {
+  const getUoMs = () => {
     axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -135,10 +135,6 @@ export default function UoMView() {
       });
   }
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getUoMs(newPage);
-  };
   useEffect(() => {
     getUoMs();
   }, [page, searchKeyword]);
@@ -163,6 +159,7 @@ export default function UoMView() {
     onClick={() => setAddUoMViewOpen(true)}>ADD UoM</Button>;
   const addUoMModal = <AddUoMView
     key={3}
+    formErrors={formErrors}
     selectedUoM={selectedUoM}
     open={addUoMViewOpen}
     addUoM={addUoM}
@@ -223,7 +220,7 @@ export default function UoMView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

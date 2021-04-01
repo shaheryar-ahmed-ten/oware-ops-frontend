@@ -12,7 +12,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse }) {
+export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const [name, setName] = useState('');
   const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
   const [address, setAddress] = useState('');
@@ -55,6 +55,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
             {!selectedWarehouse ? 'Add Warehouse' : 'Edit Warehouse'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField

@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -92,7 +92,7 @@ export default function BrandView() {
     else apiPromise = axios.put(getURL(`/brand/${selectedBrand.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddBrandView(false);
@@ -104,7 +104,7 @@ export default function BrandView() {
     axios.delete(getURL(`/brand/${selectedBrand.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteBrandView();
@@ -132,7 +132,7 @@ export default function BrandView() {
     setDeleteBrandViewOpen(false);
   }
 
-  const getBrands = (page = 1) => {
+  const getBrands = () => {
     axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -140,10 +140,6 @@ export default function BrandView() {
       });
   }
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getBrands(newPage);
-  };
   useEffect(() => {
     getBrands();
   }, [page, searchKeyword]);
@@ -168,6 +164,7 @@ export default function BrandView() {
     onClick={() => setAddBrandViewOpen(true)}>ADD BRAND</Button>;
   const addBrandModal = <AddBrandView
     key={3}
+    formErrors={formErrors}
     selectedBrand={selectedBrand}
     open={addBrandViewOpen}
     addBrand={addBrand}
@@ -228,7 +225,7 @@ export default function BrandView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

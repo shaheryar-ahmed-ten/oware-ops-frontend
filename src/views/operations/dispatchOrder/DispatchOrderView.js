@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -124,7 +124,7 @@ export default function DispatchOrderView() {
     else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddDispatchOrderView(false);
@@ -136,7 +136,7 @@ export default function DispatchOrderView() {
     axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteDispatchOrderView();
@@ -164,7 +164,7 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   }
 
-  const getDispatchOrders = (page = 1) => {
+  const getDispatchOrders = () => {
     axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -179,10 +179,6 @@ export default function DispatchOrderView() {
       });
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getDispatchOrders(newPage);
-  };
   useEffect(() => {
     getDispatchOrders();
   }, [page, searchKeyword]);
@@ -272,7 +268,7 @@ export default function DispatchOrderView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

@@ -132,7 +132,7 @@ export default function UserView() {
     axios.delete(getURL(`/user/${selectedUser.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteUserView();

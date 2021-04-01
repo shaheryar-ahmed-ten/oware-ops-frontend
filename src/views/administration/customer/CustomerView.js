@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -111,7 +111,7 @@ export default function CustomerView() {
     else apiPromise = axios.put(getURL(`/customer/${selectedCustomer.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddCustomerView();
@@ -123,7 +123,7 @@ export default function CustomerView() {
     axios.delete(getURL(`/customer/${selectedCustomer.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteCustomerView();
@@ -151,7 +151,7 @@ export default function CustomerView() {
     setDeleteCustomerViewOpen(false);
   }
 
-  const getCustomers = (page = 1) => {
+  const getCustomers = () => {
     axios.get(getURL('/customer'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -166,10 +166,6 @@ export default function CustomerView() {
       });
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getCustomers(newPage);
-  };
 
   useEffect(() => {
     getCustomers();
@@ -199,6 +195,7 @@ export default function CustomerView() {
     onClick={() => setAddCustomerViewOpen(true)}>ADD CUSTOMER</Button>;
   const addCustomerModal = <AddCustomerView
     key={3}
+    formErrors={formErrors}
     users={users}
     selectedCustomer={selectedCustomer}
     open={addCustomerViewOpen}
@@ -260,7 +257,7 @@ export default function CustomerView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

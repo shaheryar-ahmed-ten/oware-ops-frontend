@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -115,7 +115,7 @@ export default function ProductInwardView() {
     else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddProductInwardView(false);
@@ -127,7 +127,7 @@ export default function ProductInwardView() {
     axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteProductInwardView();
@@ -155,7 +155,7 @@ export default function ProductInwardView() {
     setDeleteProductInwardViewOpen(false);
   }
 
-  const getProductInwards = (page = 1) => {
+  const getProductInwards = () => {
     axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -172,10 +172,6 @@ export default function ProductInwardView() {
       });
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getProductInwards(newPage);
-  };
   useEffect(() => {
     getProductInwards();
   }, [page, searchKeyword]);
@@ -267,7 +263,7 @@ export default function ProductInwardView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>

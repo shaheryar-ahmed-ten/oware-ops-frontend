@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import Pagination from '@material-ui/lab/Pagination';
+import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -125,7 +125,7 @@ export default function ProductView() {
     else apiPromise = axios.put(getURL(`/product/${selectedProduct.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
-        setFormErrors(res.data.message);
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       closeAddProductView(false);
@@ -137,7 +137,7 @@ export default function ProductView() {
     axios.delete(getURL(`/product/${selectedProduct.id}`))
       .then(res => {
         if (!res.data.success) {
-          setFormErrors(res.data.message);
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteProductView();
@@ -165,7 +165,7 @@ export default function ProductView() {
     setDeleteProductViewOpen(false);
   }
 
-  const getProducts = (page = 1) => {
+  const getProducts = () => {
     axios.get(getURL('/product'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -182,10 +182,6 @@ export default function ProductView() {
       });
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-    getProducts(newPage);
-  };
   useEffect(() => {
     getProducts();
   }, [page, searchKeyword]);
@@ -213,6 +209,7 @@ export default function ProductView() {
     size="small"
     onClick={() => setAddProductViewOpen(true)}>ADD PRODUCT</Button>;
   const addProductModal = <AddProductView
+    formErrors={formErrors}
     key={3}
     brands={brands}
     uoms={uoms}
@@ -277,7 +274,7 @@ export default function ProductView() {
             color="primary"
             page={page}
             className={classes.pagination}
-            onChange={handlePageChange}
+            onChange={(e, page) => setPage(page)}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
