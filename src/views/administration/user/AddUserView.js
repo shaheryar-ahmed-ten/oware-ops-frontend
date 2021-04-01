@@ -38,6 +38,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       setLastName('');
       setEmail('');
       setUsername('');
+      setPassword('');
       setPhone('');
       setRoleId('');
       setActive(true);
@@ -157,19 +158,19 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
 
                 />
               </Grid>
-              {!selectedUser ? <Grid item sm={12}>
+              <Grid item sm={12}>
                 <TextField
                   required
                   fullWidth={true}
                   margin="dense"
                   id="password"
-                  label="Password"
+                  label={(selectedUser ? 'Change ' : '') + 'Password'}
                   type="password"
                   variant="outlined"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
-              </Grid> : ''}
+              </Grid>
               <Grid item sm={12}>
                 <Checkbox
                   checked={isActive}

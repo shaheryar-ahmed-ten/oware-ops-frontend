@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddProductView({ addProduct, open, handleClose, selectedProduct, brands, uoms, categories }) {
+export default function AddProductView({ addProduct, open, handleClose, selectedProduct, brands, uoms, categories, formErrors }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dimensionsCBM, setDimensionsCBM] = useState('');
@@ -69,6 +69,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
             {!selectedProduct ? 'Add Product' : 'Edit Product'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField

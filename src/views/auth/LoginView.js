@@ -1,9 +1,17 @@
-import { Grid, makeStyles, Paper, Typography, TextField, Button, FormControl, InputLabel, BootstrapInput, Box } from '@material-ui/core'
+import {
+  Grid,
+  makeStyles,
+  Paper,
+  TextField,
+  Button,
+  Box
+} from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { setUserToken, setUser, getURL, removeUserToken, removeUser } from '../../utils/common';
-
+import Logo from '../../components/Logo';
 
 const useStyles = makeStyles(theme => ({
   paperStyle: {
@@ -19,24 +27,24 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const LoginView = (props => {
+export default function LoginView({ }) {
   const logout = () => {
     removeUserToken();
     removeUser();
   };
   logout();
 
+  const [formErrors, setFormErrors] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
   const handleSubmit = e => {
     e.preventDefault();
-    setError(null);
+    setFormErrors(null);
     setLoading(true);
     axios.post(getURL('/user/auth/login'), {
       username,
@@ -51,12 +59,14 @@ const LoginView = (props => {
       .then(() => navigate('/administration/user'))
       .catch(err => {
         setLoading(false);
+        let errorMsg;
         if (err.status === 401 || 400) {
-          setError(err.message);
+          errorMsg = err.response.data.message;
         }
         else {
-          setError("Something went wrong!");
+          errorMsg = "Something went wrong!";
         }
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
       })
   }
   return (
@@ -64,9 +74,9 @@ const LoginView = (props => {
       <Grid>
         <Paper elevation={0} className={classes.paperStyle}>
           <Grid align="center">
-            <Typography variant="h1" style={{ fontWeight: "bolder" }} component="div" color="primary">oware</Typography>
+            <Logo variant="h1"/>
           </Grid>
-
+          {formErrors}
           <Box mt={4}>
             <TextField
               label="Username or Email"
@@ -97,6 +107,4 @@ const LoginView = (props => {
       </Grid>
     </form >
   )
-})
-
-export default LoginView
+}

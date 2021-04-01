@@ -1,9 +1,7 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
-const Logo = (props) => {
+
+export default function Logo({ variant }) {
   return (
-    <Typography variant="h3" style={{ fontWeight: "bolder" }} component="div" color="primary">oware</Typography>
+    <Typography variant={variant || 'h3'} style={{ fontWeight: "bolder" }} component="div" color="primary">oware</Typography>
   );
 };
-
-export default Logo;

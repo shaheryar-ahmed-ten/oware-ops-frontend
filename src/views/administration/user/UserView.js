@@ -72,6 +72,11 @@ export default function UserView() {
     className: '',
     format: (value, entity) => entity.Role.name
   }, {
+    id: 'username',
+    label: 'Username',
+    minWidth: 'auto',
+    className: ''
+  }, {
     id: 'email',
     label: 'Email',
     minWidth: 'auto',

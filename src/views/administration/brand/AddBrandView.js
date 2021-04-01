@@ -12,7 +12,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddBrandView({ addBrand, open, handleClose, selectedBrand }) {
+export default function AddBrandView({ addBrand, open, handleClose, selectedBrand, formErrors }) {
   const [name, setName] = useState('');
   const [manufacturerName, setManufacturerName] = useState('');
   const [isActive, setActive] = useState(true);
@@ -47,6 +47,7 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
             {!selectedBrand ? 'Add Brand' : 'Edit Brand'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField

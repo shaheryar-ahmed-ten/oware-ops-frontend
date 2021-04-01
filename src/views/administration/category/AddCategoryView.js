@@ -12,7 +12,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory }) {
+export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory, formErrors }) {
   const [name, setName] = useState('');
   const [isActive, setActive] = useState(true);
 
@@ -43,6 +43,7 @@ export default function AddCategoryView({ addCategory, open, handleClose, select
             {!selectedCategory ? 'Add Category' : 'Edit Category'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField

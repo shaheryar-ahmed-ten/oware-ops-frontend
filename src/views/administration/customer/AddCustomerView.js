@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddCustomerView({ addCustomer, users, open, handleClose, selectedCustomer }) {
+export default function AddCustomerView({ addCustomer, users, open, handleClose, selectedCustomer, formErrors }) {
   const [companyName, setCompanyName] = useState('');
   const [contactId, setContactId] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -57,6 +57,7 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
             {!selectedCustomer ? 'Add Customer' : 'Edit Customer'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField

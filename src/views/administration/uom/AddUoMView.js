@@ -12,7 +12,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddUoMView({ addUoM, open, handleClose, selectedUoM }) {
+export default function AddUoMView({ addUoM, open, handleClose, selectedUoM, formErrors }) {
   const [name, setName] = useState('');
   const [isActive, setActive] = useState(true);
 
@@ -43,6 +43,7 @@ export default function AddUoMView({ addUoM, open, handleClose, selectedUoM }) {
             {!selectedUoM ? 'Add UoM' : 'Edit UoM'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid item sm={12}>
                 <TextField
