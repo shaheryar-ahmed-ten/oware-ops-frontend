@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders }) {
+export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders, formErrors }) {
   const [product, setProduct] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState(0);
@@ -79,6 +79,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
             {!selectedProductOutward ? 'Add Product Outward' : 'Edit Product Outward'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>

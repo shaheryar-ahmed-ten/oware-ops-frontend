@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, inventories }) {
+export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, inventories, formErrors }) {
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState(0);
   const [receiverName, setReceiverName] = useState('');
@@ -83,6 +83,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
             {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>

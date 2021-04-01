@@ -14,7 +14,7 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers }) {
+export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers, formErrors }) {
   const [quantity, setQuantity] = useState(0);
   const [customerId, setCustomerId] = useState('');
   const [productId, setProductId] = useState('');
@@ -61,6 +61,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
           </DialogTitle>
           <DialogContent>
+            {formErrors}
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>

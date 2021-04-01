@@ -215,6 +215,7 @@ export default function ProductOutwardView() {
     onClick={() => setAddProductOutwardViewOpen(true)}>ADD PRODUCT OUTWARD</Button>;
   const addProductOutwardModal = <AddProductOutwardView
     key={3}
+    formErrors={formErrors}
     dispatchOrders={dispatchOrders}
     selectedProductOutward={selectedProductOutward}
     open={addProductOutwardViewOpen}

@@ -207,6 +207,7 @@ export default function DispatchOrderView() {
     onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
+    formErrors={formErrors}
     inventories={inventories}
     selectedDispatchOrder={selectedDispatchOrder}
     open={addDispatchOrderViewOpen}

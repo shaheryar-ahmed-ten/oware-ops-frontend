@@ -200,6 +200,7 @@ export default function ProductInwardView() {
     onClick={() => setAddProductInwardViewOpen(true)}>ADD PRODUCT INWARD</Button>;
   const addProductInwardModal = <AddProductInwardView
     key={3}
+    formErrors={formErrors}
     products={products}
     warehouses={warehouses}
     customers={customers}
