@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography, Button } from '@material-ui/core';
+import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography, Button, Link } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import Alert from '@material-ui/lab/Alert';
 import Logo from '../../components/Logo';
-import { getUser } from '../../utils/common';
+import { getURL, getUser, setUser } from '../../utils/common';
+import AddUserView from '../../views/administration/user/AddUserView';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,9 +18,10 @@ const useStyles = makeStyles(theme => ({
     width: 60,
     height: 60
   },
-  typo: {
+  userLink: {
     color: theme.palette.primary.dark,
-    fontWeight: 'bolder'
+    fontWeight: 'bolder',
+    cursor: 'pointer'
   },
   logout: {
     color: theme.palette.error.main
@@ -31,7 +35,29 @@ const TopBar = ({
 }) => {
   const classes = useStyles();
   const [notifications] = useState([]);
-  const user = getUser();
+  const [user, _setUser] = useState(getUser());
+  const [formErrors, setFormErrors] = useState('');
+  const [addUserViewOpen, setAddUserViewOpen] = useState(false);
+  const [roles, setRoles] = useState([]);
+
+  const updateUser = data => {
+    setFormErrors('');
+    axios.put(getURL(`/user/me`), data)
+      .then(res => {
+        if (!res.data.success) {
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+          return
+        }
+        setUser(res.data.data);
+        _setUser(res.data.data);
+        setAddUserViewOpen(false);
+      });
+  };
+
+  const getRelations = () => {
+    axios.get(getURL('/user/relations'))
+      .then(res => setRoles(res.data.roles));
+  };
 
   return (
     <AppBar
@@ -39,6 +65,14 @@ const TopBar = ({
       elevation={0}
       {...rest}
     >
+      <AddUserView
+        key={3}
+        formErrors={formErrors}
+        roles={roles}
+        selectedUser={user}
+        open={addUserViewOpen}
+        addUser={updateUser}
+        handleClose={() => setAddUserViewOpen(false)} />
       <Toolbar>
         <RouterLink to="/">
           <Logo />
@@ -48,7 +82,7 @@ const TopBar = ({
           <Grid item sm></Grid>
           <Grid item>
             <Box mr={4} mt={1}>
-              <Typography variant="h5" component="div" className={classes.typo}>Welcome, {user.firstName}</Typography>
+              <Typography variant="h5" component="div" className={classes.userLink} onClick={e => setAddUserViewOpen(true)}>Welcome, {user.firstName}</Typography>
             </Box>
           </Grid>
           <Grid item>

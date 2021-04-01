@@ -13,6 +13,7 @@ import {
   DialogTitle,
   Checkbox
 } from '@material-ui/core'
+import { isSuperAdmin } from '../../../utils/common';
 
 export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
   const [firstName, setFirstName] = useState('');
@@ -128,23 +129,25 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
 
                 />
               </Grid>
-              <Grid item sm={12}>
-                <FormControl fullWidth={true} variant="outlined">
-                  <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
-                  <Select
-                    required
-                    fullWidth={true}
-                    margin="dense"
-                    id="roleId"
-                    label="Role"
-                    variant="outlined"
-                    value={roleId}
-                    onChange={e => setRoleId(e.target.value)}
-                  >
-                    {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
+              {isSuperAdmin() ?
+                <Grid item sm={12}>
+                  <FormControl fullWidth={true} variant="outlined">
+                    <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
+                    <Select
+                      required
+                      fullWidth={true}
+                      margin="dense"
+                      id="roleId"
+                      label="Role"
+                      variant="outlined"
+                      value={roleId}
+                      onChange={e => setRoleId(e.target.value)}
+                    >
+                      {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                : ''}
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
@@ -171,15 +174,17 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   onChange={e => setPassword(e.target.value)}
                 />
               </Grid>
-              <Grid item sm={12}>
-                <Checkbox
-                  checked={isActive}
-                  onChange={(e) => setActive(e.target.checked)}
-                  color="primary"
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
+              {isSuperAdmin() ?
+                <Grid item sm={12}>
+                  <Checkbox
+                    checked={isActive}
+                    onChange={(e) => setActive(e.target.checked)}
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
                   Active
               </Grid>
+                : ''}
             </Grid>
           </DialogContent>
           <DialogActions>

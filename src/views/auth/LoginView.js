@@ -74,7 +74,7 @@ export default function LoginView({ }) {
       <Grid>
         <Paper elevation={0} className={classes.paperStyle}>
           <Grid align="center">
-            <Logo variant="h1"/>
+            <Logo variant="h1" />
           </Grid>
           {formErrors}
           <Box mt={4}>
