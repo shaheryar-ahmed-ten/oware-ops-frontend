@@ -13,7 +13,7 @@ import {
   DialogTitle,
   Checkbox
 } from '@material-ui/core'
-import { isSuperAdmin } from '../../../utils/common';
+import { getUser, isSuperAdmin } from '../../../utils/common';
 
 export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
   const [firstName, setFirstName] = useState('');
@@ -129,7 +129,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
 
                 />
               </Grid>
-              {isSuperAdmin() ?
+              {isSuperAdmin(getUser()) ?
                 <Grid item sm={12}>
                   <FormControl fullWidth={true} variant="outlined">
                     <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
@@ -174,7 +174,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   onChange={e => setPassword(e.target.value)}
                 />
               </Grid>
-              {isSuperAdmin() ?
+              {isSuperAdmin(getUser()) ?
                 <Grid item sm={12}>
                   <Checkbox
                     checked={isActive}
