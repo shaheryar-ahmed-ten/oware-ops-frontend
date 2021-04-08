@@ -55,6 +55,11 @@ export default function CustomerView() {
     minWidth: 'auto',
     className: '',
   }, {
+    id: 'type',
+    label: 'Customer Type',
+    minWidth: 'auto',
+    className: ''
+  }, {
     id: 'firstName',
     label: 'Contact Name',
     minWidth: 'auto',
@@ -98,6 +103,7 @@ export default function CustomerView() {
   const [page, setPage] = useState(1);
   const [customers, setCustomers] = useState([]);
   const [users, setUsers] = useState([]);
+  const [customerTypes, setCustomerTypes] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [formErrors, setFormErrors] = useState('');
@@ -162,7 +168,8 @@ export default function CustomerView() {
   const getRelations = () => {
     axios.get(getURL('/customer/relations'))
       .then(res => {
-        setUsers(res.data.users)
+        setUsers(res.data.users);
+        setCustomerTypes(res.data.customerTypes);
       });
   };
 
@@ -197,6 +204,7 @@ export default function CustomerView() {
     key={3}
     formErrors={formErrors}
     users={users}
+    customerTypes={customerTypes}
     selectedCustomer={selectedCustomer}
     open={addCustomerViewOpen}
     addCustomer={addCustomer}

@@ -103,7 +103,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     fullWidth={true}
                     margin="dense"
                     id="dimensionsCBM"
-                    label="Dimensions CBM"
+                    label="Volume cm3"
                     type="text"
                     variant="outlined"
                     value={dimensionsCBM}
@@ -116,7 +116,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     fullWidth={true}
                     margin="dense"
                     id="weight"
-                    label="Weight"
+                    label="Weight in KGs"
                     type="text"
                     variant="outlined"
                     value={weight}

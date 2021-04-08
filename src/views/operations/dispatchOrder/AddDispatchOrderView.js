@@ -80,7 +80,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
+            {!selectedDispatchOrder ? 'Add Dispatch' : 'Edit Dispatch'}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -227,7 +227,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Update Dispatch Order'}
+              {!selectedDispatchOrder ? 'Add Dispatch' : 'Update Dispatch'}
             </Button>
           </DialogActions>
         </Dialog>

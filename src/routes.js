@@ -36,7 +36,7 @@ const routes = (user) => [
       { path: 'uom', element: <UoMView /> },
       { path: 'category', element: <CategoryView /> },
       { path: 'product', element: <ProductView /> },
-      { path: '/', element: <Navigate to='/administration/customer' /> },
+      { path: '/', element: isSuperAdmin(user) ? <Navigate to='/administration/user' /> : <Navigate to='/administration/customer' /> },
       { path: '*', element: <Navigate to='/404' /> }
     ]
   },

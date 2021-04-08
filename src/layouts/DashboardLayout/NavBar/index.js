@@ -70,7 +70,7 @@ const navTreeData = [
       {
         canActivate: user => !!user,
         href: '/operations/dispatch-order',
-        title: 'Dispatch Order'
+        title: 'Dispatch'
       },
       {
         canActivate: user => !!user,

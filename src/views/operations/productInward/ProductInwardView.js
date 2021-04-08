@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, digitize, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
@@ -50,11 +50,6 @@ const useStyles = makeStyles(theme => ({
 export default function ProductInwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'id',
-    label: 'INWARD ID',
-    minWidth: 'auto',
-    className: '',
-  }, {
     id: 'Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
@@ -80,9 +75,15 @@ export default function ProductInwardView() {
     format: (value, entity) => entity.Product.UOM.name,
   }, {
     id: 'quantity',
-    label: 'QUANTITY IN-PRODUCT',
+    label: 'QUANTITY RECEIVED',
     minWidth: 'auto',
     className: '',
+  }, {
+    id: 'createdAt',
+    label: 'INWARD DATE',
+    minWidth: 'auto',
+    className: '',
+    format: dateFormat
   }, {
     id: 'actions',
     label: '',

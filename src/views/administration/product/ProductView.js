@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
@@ -50,6 +50,12 @@ const useStyles = makeStyles(theme => ({
 export default function ProductView() {
   const classes = useStyles();
   const columns = [{
+    id: 'id',
+    label: 'PRODUCT ID',
+    minWidth: 'auto',
+    className: '',
+    format: value => digitize(value, 6)
+  }, {
     id: 'name',
     label: 'Name',
     minWidth: 'auto',
@@ -61,12 +67,12 @@ export default function ProductView() {
     className: '',
   }, {
     id: 'dimensionsCBM',
-    label: 'Dimensions CBM',
+    label: <span>Volume cm<sup>3</sup></span>,
     minWidth: 'auto',
     className: '',
   }, {
     id: 'weight',
-    label: 'Weight',
+    label: 'Weight in KGs',
     minWidth: 'auto',
     className: '',
   }, {
@@ -83,7 +89,7 @@ export default function ProductView() {
     format: (value, entity) => entity.Brand.name
   }, {
     id: 'UOM.name',
-    label: 'Uom',
+    label: 'UoM',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.UOM.name

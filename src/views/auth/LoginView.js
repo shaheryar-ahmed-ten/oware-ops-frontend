@@ -56,7 +56,9 @@ export default function LoginView({ }) {
       })
       .then(() => axios.get(getURL('/user/me')))
       .then(res => setUser(res.data.data))
-      .then(() => navigate('/administration/user'))
+      .then(() => {
+        navigate('/administration')
+      })
       .catch(err => {
         setLoading(false);
         let errorMsg;

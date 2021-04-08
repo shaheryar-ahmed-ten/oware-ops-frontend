@@ -84,7 +84,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl fullWidth={true} variant="outlined">
-                    <InputLabel>Dispatch Order</InputLabel>
+                    <InputLabel>Dispatch</InputLabel>
                     <Select
                       fullWidth={true}
                       margin="dense"

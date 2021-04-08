@@ -33,3 +33,10 @@ export const getURL = uri => {
 export const isSuperAdmin = user => {
   return user && user.Role && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges');
 }
+
+export const digitize = (value, places) => {
+  let strVal = (value + '');
+  return new Array(places - strVal.length).fill('0').join('') + strVal;
+}
+
+export const dateFormat = value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`;

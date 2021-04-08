@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
@@ -89,11 +89,22 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'shipmentDate',
-    label: 'SHIPMENT DATE',
+    id: 'quantity',
+    label: 'DISPATCHED QUANTITY',
     minWidth: 'auto',
     className: '',
-    format: value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`
+    format: (quantity, entity) => {
+      const available = quantity - entity.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0)
+      if (available == quantity) return 'Pending';
+      else if (available == 0) return 'Fulfilled';
+      else return 'Partially Fulfilled';
+    }
+  }, {
+    id: 'shipmentDate',
+    label: 'FULFILMENT DATE',
+    minWidth: 'auto',
+    className: '',
+    format: dateFormat
   }, {
     id: 'actions',
     label: '',
@@ -204,7 +215,7 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
+    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
     formErrors={formErrors}
@@ -226,7 +237,7 @@ export default function DispatchOrderView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Dispatch Order" buttons={headerButtons} />
+        <TableHeader title="Manage Dispatch" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

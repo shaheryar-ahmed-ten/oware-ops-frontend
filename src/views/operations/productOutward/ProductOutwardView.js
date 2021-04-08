@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, digitize, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
@@ -50,6 +50,12 @@ const useStyles = makeStyles(theme => ({
 export default function ProductOutwardView() {
   const classes = useStyles();
   const columns = [{
+    id: 'id',
+    label: 'OUTWARD ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => `PD-${entity.DispatchOrder.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
+  }, {
     id: 'Inventory.Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
@@ -93,15 +99,21 @@ export default function ProductOutwardView() {
     format: (value, entity) => entity.DispatchOrder.quantity
   }, {
     id: 'quantity',
-    label: 'Actual Quantity to Dispatch',
+    label: 'Actual Quantity Dispatched',
     minWidth: 'auto',
     className: '',
   }, {
     id: 'DispatchOrder.shipmentDate',
-    label: 'SHIPMENT DATE',
+    label: 'EXPECTED SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => `${new Date(entity.DispatchOrder.shipmentDate).toLocaleDateString()} ${new Date(entity.DispatchOrder.shipmentDate).toLocaleTimeString()}`
+    format: (value, entity) => dateFormat(entity.DispatchOrder.shipmentDate)
+  }, {
+    id: 'createdAt',
+    label: 'ACTUAL DISPATCH DATE',
+    minWidth: 'auto',
+    className: '',
+    format: dateFormat
   }, {
     id: 'actions',
     label: '',

@@ -14,9 +14,10 @@ import {
   Checkbox
 } from '@material-ui/core'
 
-export default function AddCustomerView({ addCustomer, users, open, handleClose, selectedCustomer, formErrors }) {
+export default function AddCustomerView({ addCustomer, users, customerTypes, open, handleClose, selectedCustomer, formErrors }) {
   const [companyName, setCompanyName] = useState('');
   const [contactId, setContactId] = useState('');
+  const [type, setType] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [notes, setNotes] = useState('');
@@ -25,11 +26,13 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
   useEffect(() => {
     if (!!selectedCustomer) {
       setCompanyName(selectedCustomer.companyName || '');
+      setType(selectedCustomer.type || '');
       setContactId(selectedCustomer.contactId || '');
       setNotes(selectedCustomer.notes || '');
       setActive(!!selectedCustomer.isActive);
     } else {
       setCompanyName('');
+      setType('');
       setContactId('');
       setNotes('');
       setActive(true);
@@ -40,6 +43,7 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
     const newCustomer = {
       companyName,
       contactId,
+      type,
       contactEmail,
       contactPhone,
       notes,
@@ -70,6 +74,22 @@ export default function AddCustomerView({ addCustomer, users, open, handleClose,
                   value={companyName}
                   onChange={e => setCompanyName(e.target.value)}
                 />
+              </Grid>
+              <Grid item sm={12}>
+                <FormControl fullWidth={true} variant="outlined">
+                  <InputLabel>Customer Type</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    margin="dense"
+                    id="type"
+                    label="Customer Type"
+                    variant="outlined"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                  >
+                    {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item sm={12}>
                 <FormControl fullWidth={true} variant="outlined">
