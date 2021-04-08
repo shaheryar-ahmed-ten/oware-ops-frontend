@@ -14,7 +14,7 @@ import {
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const [name, setName] = useState('');
-  const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
+  // const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [isActive, setActive] = useState(true);
@@ -22,13 +22,13 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
   useEffect(() => {
     if (!!selectedWarehouse) {
       setName(selectedWarehouse.name || '');
-      setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || '');
+      // setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || '');
       setAddress(selectedWarehouse.address || '');
       setCity(selectedWarehouse.city || '');
       setActive(!!selectedWarehouse.isActive);
     } else {
       setName('');
-      setBusinessWarehouseCode('');
+      // setBusinessWarehouseCode('');
       setAddress('');
       setCity('');
       setActive(true);
@@ -36,9 +36,10 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
   }, [selectedWarehouse])
   const handleSubmit = e => {
 
+    // setBusinessWarehouseCode(city.slice(0, 3).toUpperCase())
     const newWarehouse = {
       name,
-      businessWarehouseCode,
+      // businessWarehouseCode,
       address,
       city,
       isActive
@@ -70,7 +71,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
 
                 />
               </Grid>
-              <Grid item sm={12}>
+              {/* <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -82,7 +83,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   onChange={e => setBusinessWarehouseCode(e.target.value)}
 
                 />
-              </Grid>
+              </Grid> */}
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}

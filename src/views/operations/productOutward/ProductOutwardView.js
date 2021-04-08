@@ -177,6 +177,7 @@ export default function ProductOutwardView() {
   const closeAddProductOutwardView = () => {
     setSelectedProductOutward(null);
     setAddProductOutwardViewOpen(false);
+    getRelations();
   }
 
   const closeDeleteProductOutwardView = () => {

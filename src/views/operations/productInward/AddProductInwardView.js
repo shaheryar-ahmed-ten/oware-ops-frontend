@@ -74,7 +74,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       label="Customer"
                       variant="outlined"
                       value={customerId}
-                      disabled={selectedProductInward}
+                      disabled={!!selectedProductInward}
                       onChange={e => setCustomerId(e.target.value)}
                     >
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
@@ -91,7 +91,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       label="Product"
                       variant="outlined"
                       value={productId}
-                      disabled={selectedProductInward}
+                      disabled={!!selectedProductInward}
                       onChange={e => selectProduct(e.target.value)}
                     >
                       {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
@@ -111,7 +111,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       label="Warehouse"
                       variant="outlined"
                       value={warehouseId}
-                      disabled={selectedProductInward}
+                      disabled={!!selectedProductInward}
                       onChange={e => setWarehouseId(e.target.value)}
                     >
                       {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
@@ -144,7 +144,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   type="number"
                   variant="outlined"
                   value={quantity}
-                  disabled={selectedProductInward}
+                  disabled={!!selectedProductInward}
                   onChange={e => setQuantity(e.target.value)}
 
                 />

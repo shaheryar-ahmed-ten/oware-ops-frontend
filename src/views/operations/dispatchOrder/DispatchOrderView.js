@@ -89,11 +89,12 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'quantity',
+    id: 'dispatchedQuantity',
     label: 'DISPATCHED QUANTITY',
     minWidth: 'auto',
     className: '',
-    format: (quantity, entity) => {
+    format: (value, entity) => {
+      const quantity = entity.quantity;
       const available = quantity - entity.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0)
       if (available == quantity) return 'Pending';
       else if (available == 0) return 'Fulfilled';
