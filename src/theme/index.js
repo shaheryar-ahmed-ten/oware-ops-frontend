@@ -25,8 +25,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiAppBar: {
       root: {
-        borderBottom: '0.5px solid #D3D3D3',
-        boxShadow: '0px',
+        borderBottom: '0.5px solid #D3D3D3'
       }
     }
   },

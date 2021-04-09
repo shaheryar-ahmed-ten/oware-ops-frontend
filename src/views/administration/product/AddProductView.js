@@ -126,11 +126,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Category</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="categoryId"
                       label="Category"
                       variant="outlined"
@@ -142,11 +141,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Brand</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="brandId"
                       label="Brand"
                       variant="outlined"
@@ -161,11 +159,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
 
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>UoM</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="uomId"
                       label="UoM"
                       variant="outlined"

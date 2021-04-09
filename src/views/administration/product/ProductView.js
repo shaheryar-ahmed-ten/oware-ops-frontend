@@ -30,9 +30,6 @@ const useStyles = makeStyles(theme => ({
     maxHeight: 450,
     padding: 20,
   },
-  pagination: {
-    border: 'none'
-  },
   active: {
     color: theme.palette.success.main
   },
@@ -271,7 +268,8 @@ export default function ProductView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container>
+      <Grid container justify="space-between">
+        <Grid item></Grid>
         <Grid item>
           <Pagination
             component="div"

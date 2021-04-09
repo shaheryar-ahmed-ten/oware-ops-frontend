@@ -76,11 +76,10 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                 />
               </Grid>
               <Grid item sm={12}>
-                <FormControl fullWidth={true} variant="outlined">
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <InputLabel>Customer Type</InputLabel>
                   <Select
                     fullWidth={true}
-                    margin="dense"
                     id="type"
                     label="Customer Type"
                     variant="outlined"
@@ -92,11 +91,10 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                 </FormControl>
               </Grid>
               <Grid item sm={12}>
-                <FormControl fullWidth={true} variant="outlined">
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <InputLabel>Contact</InputLabel>
                   <Select
                     fullWidth={true}
-                    margin="dense"
                     id="contactId"
                     label="Contact"
                     variant="outlined"

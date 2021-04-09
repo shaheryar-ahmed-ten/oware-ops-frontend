@@ -30,9 +30,6 @@ const useStyles = makeStyles(theme => ({
     maxHeight: 450,
     padding: 20,
   },
-  pagination: {
-    border: 'none'
-  },
   active: {
     color: theme.palette.success.main
   },
@@ -90,7 +87,7 @@ export default function DispatchOrderView() {
     className: '',
   }, {
     id: 'dispatchedQuantity',
-    label: 'DISPATCHED QUANTITY',
+    label: 'DISPATCH STATUS',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => {
@@ -272,7 +269,8 @@ export default function DispatchOrderView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container>
+      <Grid container justify="space-between">
+        <Grid item></Grid>
         <Grid item>
           <Pagination
             component="div"

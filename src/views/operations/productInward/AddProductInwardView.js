@@ -65,11 +65,10 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="customerId"
                       label="Customer"
                       variant="outlined"
@@ -82,11 +81,10 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Product</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="productId"
                       label="Product"
                       variant="outlined"
@@ -102,11 +100,10 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
 
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Warehouse</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="warehouseId"
                       label="Warehouse"
                       variant="outlined"
@@ -133,8 +130,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
 
               </Grid>
             </Grid>
-            <Grid container>
-
+            <Grid container spacing={2}>
               <Grid item sm={6}>
                 <TextField
                   fullWidth={true}

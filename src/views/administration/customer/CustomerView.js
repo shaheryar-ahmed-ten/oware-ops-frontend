@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
@@ -29,9 +29,6 @@ const useStyles = makeStyles(theme => ({
   container: {
     maxHeight: 450,
     padding: 20,
-  },
-  pagination: {
-    border: 'none'
   },
   active: {
     color: theme.palette.success.main
@@ -50,6 +47,12 @@ const useStyles = makeStyles(theme => ({
 export default function CustomerView() {
   const classes = useStyles();
   const columns = [{
+    id: 'id',
+    label: 'ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => `${entity.companyName[0]}${entity.type[0]}-${digitize(value, 3)}`
+  }, {
     id: 'companyName',
     label: 'Company',
     minWidth: 'auto',
@@ -256,7 +259,8 @@ export default function CustomerView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container>
+      <Grid container justify="space-between">
+        <Grid item></Grid>
         <Grid item>
           <Pagination
             component="div"

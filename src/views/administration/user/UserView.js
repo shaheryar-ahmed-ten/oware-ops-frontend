@@ -254,7 +254,8 @@ export default function UserView() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container>
+      <Grid container justify="space-between">
+        <Grid item></Grid>
         <Grid item>
           <Pagination
             component="div"

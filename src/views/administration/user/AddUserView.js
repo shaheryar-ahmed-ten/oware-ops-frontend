@@ -131,12 +131,11 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
               </Grid>
               {isSuperAdmin(getUser()) ?
                 <Grid item sm={12}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
                     <Select
                       required
                       fullWidth={true}
-                      margin="dense"
                       id="roleId"
                       label="Role"
                       variant="outlined"

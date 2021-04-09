@@ -10,13 +10,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  Checkbox
+  DialogTitle
 } from '@material-ui/core'
+import { dateToPickerFormat } from '../../../utils/common';
 
 export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, inventories, formErrors }) {
   const [quantity, setQuantity] = useState(0);
-  const [shipmentDate, setShipmentDate] = useState(0);
+  const [shipmentDate, setShipmentDate] = useState('');
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
   const [availableQuantity, setAvailableQuantity] = useState(0);
@@ -49,19 +49,18 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
     if (!!selectedDispatchOrder) {
       setQuantity(selectedDispatchOrder.quantity || '');
       selectInventory(selectedDispatchOrder.inventoryId || '');
-      setShipmentDate(selectedDispatchOrder.shipmentDate || '');
+      setShipmentDate(dateToPickerFormat(selectedDispatchOrder.shipmentDate) || '');
       setReceiverName(selectedDispatchOrder.receiverName || '');
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
     } else {
       setQuantity('');
       selectInventory('');
-      setShipmentDate('');
+      setShipmentDate(dateToPickerFormat(new Date()));
       setReceiverName('');
       setReceiverPhone('');
     }
   }, [selectedDispatchOrder, inventories])
   const handleSubmit = e => {
-
     const newDispatchOrder = {
       quantity,
       customer,
@@ -87,16 +86,15 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
             <Grid container>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl fullWidth={true} variant="outlined">
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Inventory</InputLabel>
                     <Select
                       fullWidth={true}
-                      margin="dense"
                       id="inventoryId"
                       label="Inventory"
                       variant="outlined"
                       value={inventoryId}
-                      disabled={selectedDispatchOrder}
+                      disabled={!!selectedDispatchOrder}
                       onChange={e => selectInventory(e.target.value)}
                     >
                       {inventories.map(inventory => <MenuItem key={inventory.id} value={inventory.id}>{inventory.Product.name}</MenuItem>)}
@@ -176,10 +174,11 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   margin="dense"
                   id="shipmentDate"
                   label="Shipment Date"
+                  placeholder="Shipment Date"
                   type="datetime-local"
                   variant="outlined"
                   value={shipmentDate}
-                  onChange={e => setShipmentDate(e.target.value)}
+                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
                 />
               </Grid>
               <Grid item sm={6}>
@@ -192,7 +191,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                   type="number"
                   variant="outlined"
                   value={quantity}
-                  disabled={selectedDispatchOrder}
+                  disabled={!!selectedDispatchOrder}
                   onChange={e => setQuantity(e.target.value)}
                 />
               </Grid>
