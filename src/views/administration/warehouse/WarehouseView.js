@@ -154,7 +154,6 @@ export default function WarehouseView() {
   const searchInput = <InputBase
     placeholder="Search"
     className={classes.searchInput}
-    margin="dense"
     id="search"
     label="Search"
     type="text"

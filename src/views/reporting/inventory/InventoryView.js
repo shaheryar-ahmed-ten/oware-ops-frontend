@@ -112,7 +112,6 @@ export default function InventoryView() {
   const searchInput = <InputBase
     placeholder="Product / Customer /Warehouse"
     className={classes.searchInput}
-    margin="dense"
     id="search"
     label="Product / Customer /Warehouse"
     type="text"
