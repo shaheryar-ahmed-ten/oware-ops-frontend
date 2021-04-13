@@ -86,18 +86,6 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'dispatchedQuantity',
-    label: 'DISPATCH STATUS',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => {
-      const quantity = entity.quantity;
-      const available = quantity - entity.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0)
-      if (available == quantity) return 'Pending';
-      else if (available == 0) return 'Fulfilled';
-      else return 'Partially Fulfilled';
-    }
-  }, {
     id: 'shipmentDate',
     label: 'FULFILMENT DATE',
     minWidth: 'auto',
@@ -118,7 +106,9 @@ export default function DispatchOrderView() {
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
 
-  const [inventories, setInventories] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
@@ -184,8 +174,15 @@ export default function DispatchOrderView() {
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
       .then(res => {
-        setInventories(res.data.inventories)
+        setCustomers(res.data.customers);
+        setWarehouses(res.data.warehouses);
+        setProducts(res.data.products);
       });
+  };
+
+  const getInventory = (params) => {
+    return axios.get(getURL('/dispatch-order/inventory'), { params })
+      .then(res => res.data.inventory);
   };
 
   useEffect(() => {
@@ -216,10 +213,13 @@ export default function DispatchOrderView() {
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
     formErrors={formErrors}
-    inventories={inventories}
+    customers={customers}
+    warehouses={warehouses}
+    products={products}
     selectedDispatchOrder={selectedDispatchOrder}
     open={addDispatchOrderViewOpen}
     addDispatchOrder={addDispatchOrder}
+    getInventory={getInventory}
     handleClose={() => closeAddDispatchOrderView()} />
   const deleteDispatchOrderModal = <ConfirmDelete
     key={4}

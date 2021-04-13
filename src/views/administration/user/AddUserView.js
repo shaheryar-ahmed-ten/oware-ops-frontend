@@ -24,6 +24,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
   const [roleId, setRoleId] = useState(0);
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false)
+  const isCurrentUser = () => selectedUser && getUser().id == selectedUser.id;
 
   useEffect(() => {
     if (!!selectedUser) {
@@ -129,7 +130,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
 
                 />
               </Grid>
-              {isSuperAdmin(getUser()) ?
+              {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>

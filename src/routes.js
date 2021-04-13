@@ -56,8 +56,7 @@ const routes = (user) => [
     children: [
       { path: 'login', element: <LoginView /> },
       { path: '404', element: <NotFoundView /> },
-      { path: '/', element: <Navigate to='/administration' /> },
-      { path: '*', element: <Navigate to='/404' /> }
+      { path: '/', element: !!user ? <Navigate to='/administration' /> : <Navigate to='/login' /> }
     ]
   },
   {

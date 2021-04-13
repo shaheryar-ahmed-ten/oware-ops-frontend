@@ -14,58 +14,71 @@ import {
 } from '@material-ui/core'
 import { dateToPickerFormat } from '../../../utils/common';
 
-export default function AddDispatchOrderView({ addDispatchOrder, open, handleClose, selectedDispatchOrder, inventories, formErrors }) {
+export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
+  open, handleClose, selectedDispatchOrder, customers, warehouses, products, formErrors }) {
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState('');
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
   const [availableQuantity, setAvailableQuantity] = useState(0);
-  const [product, setProduct] = useState('');
-  const [customer, setCustomer] = useState('');
   const [inventory, setInventory] = useState(null);
   const [inventoryId, setInventoryId] = useState('');
   const [uom, setUom] = useState('');
-  const [warehouse, setWarehouse] = useState('');
+  const [customerId, setCustomerId] = useState('');
+  const [warehouseId, setWarehouseId] = useState('');
+  const [productId, setProductId] = useState('');
 
-  const selectInventory = value => {
-    setInventoryId(value);
-    if (value) {
-      const inventory = inventories.find(inventory => inventory.id == value);
-      setInventory(inventory);
-      setAvailableQuantity(inventory.availableQuantity);
-      setCustomer(inventory.Customer.companyName || '');
-      setWarehouse(inventory.Warehouse.name || '');
-      setProduct(inventory.Product.name || '');
-      setUom(inventory.Product.UOM.name || '');
-    } else {
-      setCustomer('');
-      setWarehouse('');
-      setProduct('');
-      setUom('');
+  const selectInventory = () => {
+    if (customerId && warehouseId && productId) {
+      setAvailableQuantity(0);
+      setInventoryId('');
+      getInventory({ customerId, warehouseId, productId })
+        .then(inventory => {
+          if (inventory) {
+            setAvailableQuantity(inventory.availableQuantity);
+            setInventoryId(inventory.id);
+          }
+        })
     }
+    if (productId) {
+      const product = products.find(product => product.id == productId);
+      setUom(product.UOM.name || '');
+    }
+
   }
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
       setQuantity(selectedDispatchOrder.quantity || '');
-      selectInventory(selectedDispatchOrder.inventoryId || '');
       setShipmentDate(dateToPickerFormat(selectedDispatchOrder.shipmentDate) || '');
       setReceiverName(selectedDispatchOrder.receiverName || '');
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
+      setInventoryId(selectedDispatchOrder.inventoryId || '');
+      setCustomerId(selectedDispatchOrder.Inventory.customerId);
+      setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
+      setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
+      setInventoryId('');
       setQuantity('');
-      selectInventory('');
+      setCustomerId('');
+      setWarehouseId('');
+      setProductId('');
       setShipmentDate(dateToPickerFormat(new Date()));
       setReceiverName('');
       setReceiverPhone('');
     }
-  }, [selectedDispatchOrder, inventories])
+  }, [selectedDispatchOrder, customers, warehouses, products])
+
+  useEffect(() => {
+    selectInventory();
+  }, [customerId, warehouseId, productId])
   const handleSubmit = e => {
     const newDispatchOrder = {
       quantity,
-      customer,
       inventoryId,
-      warehouse,
+      customerId,
+      warehouseId,
+      productId,
       shipmentDate,
       receiverName,
       receiverPhone
@@ -87,73 +100,55 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Inventory</InputLabel>
+                    <InputLabel>Customer</InputLabel>
                     <Select
                       fullWidth={true}
-                      id="inventoryId"
+                      id="customerId"
                       label="Inventory"
                       variant="outlined"
-                      value={inventoryId}
+                      value={customerId}
                       disabled={!!selectedDispatchOrder}
-                      onChange={e => selectInventory(e.target.value)}
+                      onChange={e => setCustomerId(e.target.value)}
                     >
-                      {inventories.map(inventory => <MenuItem key={inventory.id} value={inventory.id}>{inventory.Product.name}</MenuItem>)}
+                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
                     </Select>
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="availableQuantity"
-                    label="Available Quantity"
-                    type="number"
-                    variant="outlined"
-                    value={availableQuantity}
-                    disabled
-                  />
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Warehouse</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="warehouseId"
+                      label="Inventory"
+                      variant="outlined"
+                      value={warehouseId}
+                      disabled={!!selectedDispatchOrder}
+                      onChange={e => setWarehouseId(e.target.value)}
+                    >
+                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="customer"
-                    label="Customer"
-                    type="text"
-                    variant="outlined"
-                    value={customer}
-                    disabled
-                  />
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Product</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="productId"
+                      label="Inventory"
+                      variant="outlined"
+                      value={productId}
+                      disabled={!!selectedDispatchOrder}
+                      onChange={e => setProductId(e.target.value)}
+                    >
+                      {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="product"
-                    label="Product"
-                    type="text"
-                    variant="outlined"
-                    value={product}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="warehouse"
-                    label="Warehouse"
-                    type="text"
-                    variant="outlined"
-                    value={warehouse}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
+                <Grid item sm={3}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
@@ -165,6 +160,20 @@ export default function AddDispatchOrderView({ addDispatchOrder, open, handleClo
                     disabled
                   />
                 </Grid>
+                <Grid item sm={3}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="availableQuantity"
+                    label="Quantity"
+                    type="number"
+                    variant="outlined"
+                    value={availableQuantity}
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
               </Grid>
             </Grid>
             <Grid container spacing={2}>
