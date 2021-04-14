@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
 import { getUserToken } from './utils/common';
-// import { useNavigate } from "react-router-dom";
 
 axios.interceptors.request.use(request => {
   const token = getUserToken();
