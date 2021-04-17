@@ -3,16 +3,17 @@ import {
   Grid,
   Button,
   TextField,
-  Select,
-  MenuItem,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddBrandView({ addBrand, open, handleClose, selectedBrand, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [manufacturerName, setManufacturerName] = useState('');
   const [isActive, setActive] = useState(true);
@@ -35,8 +36,12 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
       manufacturerName,
       isActive
     }
-
-    addBrand(newBrand);
+    setValidation({
+      name: true
+    });
+    if (isRequired(name)) {
+      addBrand(newBrand);
+    }
   }
 
   return (
@@ -59,8 +64,9 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                   variant="outlined"
                   value={name}
                   onChange={e => setName(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, name: true })}
                 />
+                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -72,8 +78,9 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                   variant="outlined"
                   value={manufacturerName}
                   onChange={e => setManufacturerName(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, manufacturerName: true })}
                 />
+                {validation.manufacturerName && !isRequired(manufacturerName) ? <Typography color="error">Manufacturer name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <Checkbox

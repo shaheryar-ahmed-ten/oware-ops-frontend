@@ -9,10 +9,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [isActive, setActive] = useState(true);
 
@@ -32,7 +35,12 @@ export default function AddCategoryView({ addCategory, open, handleClose, select
       isActive
     }
 
-    addCategory(newCategory);
+    setValidation({
+      name: true
+    });
+    if (isRequired(name)) {
+      addCategory(newCategory);
+    }
   }
 
   return (
@@ -55,8 +63,9 @@ export default function AddCategoryView({ addCategory, open, handleClose, select
                   variant="outlined"
                   value={name}
                   onChange={e => setName(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, name: true })}
                 />
+                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <Checkbox

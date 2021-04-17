@@ -10,12 +10,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Typography
 } from '@material-ui/core'
+import { isRequired, isPhone } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 
 export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
   open, handleClose, selectedDispatchOrder, customers, warehouses, products, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState('');
   const [receiverName, setReceiverName] = useState('');
@@ -84,7 +87,25 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
       receiverPhone
     }
 
-    addDispatchOrder(newDispatchOrder);
+    setValidation({
+      quantity: true,
+      inventoryId: true,
+      customerId: true,
+      warehouseId: true,
+      productId: true,
+      shipmentDate: true,
+      receiverName: true,
+      receiverPhone: true
+    });
+    if (isRequired(quantity) &&
+      isRequired(inventoryId) &&
+      isRequired(customerId) &&
+      isRequired(productId) &&
+      isRequired(shipmentDate) &&
+      isRequired(receiverName) &&
+      isRequired(receiverPhone)) {
+      addDispatchOrder(newDispatchOrder);
+    }
   }
 
   return (
@@ -109,9 +130,11 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       value={customerId}
                       disabled={!!selectedDispatchOrder}
                       onChange={e => setCustomerId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, customerId: true })}
                     >
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
                     </Select>
+                    {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
@@ -125,9 +148,11 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       value={warehouseId}
                       disabled={!!selectedDispatchOrder}
                       onChange={e => setWarehouseId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
                       {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
                     </Select>
+                    {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
               </Grid>
@@ -143,9 +168,11 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       value={productId}
                       disabled={!!selectedDispatchOrder}
                       onChange={e => setProductId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, productId: true })}
                     >
                       {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
                     </Select>
+                    {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={3}>
@@ -188,7 +215,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                   variant="outlined"
                   value={shipmentDate}
                   onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
+                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
                 />
+                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
               </Grid>
               <Grid item sm={6}>
                 <TextField
@@ -202,7 +231,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                   value={quantity}
                   disabled={!!selectedDispatchOrder}
                   onChange={e => setQuantity(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, quantity: true })}
                 />
+                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -216,7 +247,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                   variant="outlined"
                   value={receiverName}
                   onChange={e => setReceiverName(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, receiverName: true })}
                 />
+                {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={6}>
                 <TextField
@@ -228,7 +261,10 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                   variant="outlined"
                   value={receiverPhone}
                   onChange={e => setReceiverPhone(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, receiverPhone: true })}
                 />
+                {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
+                {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
               </Grid>
             </Grid>
           </DialogContent>

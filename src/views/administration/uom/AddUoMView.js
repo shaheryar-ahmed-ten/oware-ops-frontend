@@ -3,16 +3,17 @@ import {
   Grid,
   Button,
   TextField,
-  Select,
-  MenuItem,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddUoMView({ addUoM, open, handleClose, selectedUoM, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [isActive, setActive] = useState(true);
 
@@ -31,8 +32,12 @@ export default function AddUoMView({ addUoM, open, handleClose, selectedUoM, for
       name,
       isActive
     }
-
-    addUoM(newUoM);
+    setValidation({
+      name: true
+    });
+    if (isRequired(name)) {
+      addUoM(newUoM);
+    }
   }
 
   return (
@@ -55,8 +60,9 @@ export default function AddUoMView({ addUoM, open, handleClose, selectedUoM, for
                   variant="outlined"
                   value={name}
                   onChange={e => setName(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, name: true })}
                 />
+                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <Checkbox

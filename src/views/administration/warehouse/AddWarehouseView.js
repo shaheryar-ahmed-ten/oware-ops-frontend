@@ -9,10 +9,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   // const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
   const [address, setAddress] = useState('');
@@ -36,16 +39,20 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
   }, [selectedWarehouse])
   const handleSubmit = e => {
 
-    // setBusinessWarehouseCode(city.slice(0, 3).toUpperCase())
     const newWarehouse = {
       name,
-      // businessWarehouseCode,
       address,
       city,
       isActive
     }
-
-    addWarehouse(newWarehouse);
+    setValidation({
+      name: true,
+      address: true,
+      city: true
+    });
+    if (isRequired(name) && isRequired(address) && isRequired(city)) {
+      addWarehouse(newWarehouse);
+    }
   }
 
   return (
@@ -68,22 +75,10 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   variant="outlined"
                   value={name}
                   onChange={e => setName(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, name: true })}
                 />
+                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
               </Grid>
-              {/* <Grid item sm={12}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="businessWarehouseCode"
-                  label="Business Warehouse Code"
-                  type="text"
-                  variant="outlined"
-                  value={businessWarehouseCode}
-                  onChange={e => setBusinessWarehouseCode(e.target.value)}
-
-                />
-              </Grid> */}
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
@@ -94,8 +89,9 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   variant="outlined"
                   value={address}
                   onChange={e => setAddress(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, address: true })}
                 />
+                {validation.address && !isRequired(address) ? <Typography color="error">Address is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -107,8 +103,9 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   variant="outlined"
                   value={city}
                   onChange={e => setCity(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, city: true })}
                 />
+                {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <Checkbox

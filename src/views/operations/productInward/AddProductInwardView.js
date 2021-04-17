@@ -11,10 +11,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [quantity, setQuantity] = useState(0);
   const [customerId, setCustomerId] = useState('');
   const [productId, setProductId] = useState('');
@@ -50,7 +52,18 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       warehouseId
     }
 
-    addProductInward(newProductInward);
+    setValidation({
+      quantity: true,
+      customerId: true,
+      productId: true,
+      warehouseId: true
+    });
+    if (isRequired(quantity) &&
+      isRequired(customerId) &&
+      isRequired(productId) &&
+      isRequired(warehouseId)) {
+      addProductInward(newProductInward);
+    }
   }
 
   return (
@@ -75,9 +88,11 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       value={customerId}
                       disabled={!!selectedProductInward}
                       onChange={e => setCustomerId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, customerId: true })}
                     >
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
                     </Select>
+                    {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
@@ -91,9 +106,11 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       value={productId}
                       disabled={!!selectedProductInward}
                       onChange={e => selectProduct(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, productId: true })}
                     >
                       {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
                     </Select>
+                    {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
               </Grid>
@@ -110,9 +127,11 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       value={warehouseId}
                       disabled={!!selectedProductInward}
                       onChange={e => setWarehouseId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
                       {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
                     </Select>
+                    {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
@@ -142,8 +161,9 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   value={quantity}
                   disabled={!!selectedProductInward}
                   onChange={e => setQuantity(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, quantity: true })}
                 />
+                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
               </Grid>
             </Grid>
           </DialogContent>

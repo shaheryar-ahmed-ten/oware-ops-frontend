@@ -11,10 +11,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Typography
 } from '@material-ui/core'
+import { isRequired, isPhone } from '../../../utils/validators';
 
 export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [product, setProduct] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState(0);
@@ -68,11 +70,17 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   }, [selectedProductOutward, dispatchOrders])
   const handleSubmit = e => {
     const newProductOutward = {
-      quantity,
       dispatchOrderId,
       quantity
     }
-    addProductOutward(newProductOutward);
+    setValidation({
+      quantity: true,
+      dispatchOrderId: true,
+    });
+    if (isRequired(dispatchOrderId) &&
+      isRequired(quantity)) {
+      addProductOutward(newProductOutward);
+    }
   }
 
   return (
@@ -97,9 +105,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       value={dispatchOrderId}
                       disabled={!!selectedProductOutward}
                       onChange={e => selectDispatchOrder(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
                     >
                       {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Inventory.Product.name} - {dispatchOrder.quantity}</MenuItem>)}
                     </Select>
+                    {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
               </Grid>
@@ -207,7 +217,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={quantity}
                     disabled={!!selectedProductOutward}
                     onChange={e => setQuantity(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, quantity: true })}
                   />
+                  {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
