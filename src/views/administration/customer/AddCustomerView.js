@@ -11,10 +11,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
+import { isRequired } from '../../../utils/validators';
 
 export default function AddCustomerView({ addCustomer, users, customerTypes, open, handleClose, selectedCustomer, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [companyName, setCompanyName] = useState('');
   const [contactId, setContactId] = useState('');
   const [type, setType] = useState('');
@@ -22,6 +25,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
   const [contactPhone, setContactPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [isActive, setActive] = useState(true);
+
 
   useEffect(() => {
     if (!!selectedCustomer) {
@@ -37,9 +41,9 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
       setNotes('');
       setActive(true);
     }
-  }, [selectedCustomer])
-  const handleSubmit = e => {
+  }, [selectedCustomer]);
 
+  const handleSubmit = e => {
     const newCustomer = {
       companyName,
       contactId,
@@ -49,8 +53,14 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
       notes,
       isActive
     }
-
-    addCustomer(newCustomer);
+    setValidation({
+      companyName: true,
+      contactId: true,
+      type: true
+    });
+    if (isRequired(companyName) && isRequired(contactId) && isRequired(type)) {
+      addCustomer(newCustomer);
+    }
   }
 
   return (
@@ -73,7 +83,9 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                   variant="outlined"
                   value={companyName}
                   onChange={e => setCompanyName(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, companyName: true })}
                 />
+                {validation.companyName && !isRequired(companyName) ? <Typography color="error">Company name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -85,9 +97,11 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                     variant="outlined"
                     value={type}
                     onChange={e => setType(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, type: true })}
                   >
                     {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
                   </Select>
+                  {validation.type && !isRequired(type) ? <Typography color="error">Customer type is required!</Typography> : ''}
                 </FormControl>
               </Grid>
               <Grid item sm={12}>
@@ -100,9 +114,11 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                     variant="outlined"
                     value={contactId}
                     onChange={e => setContactId(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, contactId: true })}
                   >
                     {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
                   </Select>
+                  {validation.contactId && !isRequired(contactId) ? <Typography color="error">Contact is required!</Typography> : ''}
                 </FormControl>
               </Grid>
               <Grid item sm={12}>
@@ -115,7 +131,6 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                   variant="outlined"
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-
                 />
               </Grid>
               <Grid item sm={12}>

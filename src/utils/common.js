@@ -41,4 +41,4 @@ export const digitize = (value, places) => {
 
 export const dateFormat = value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`;
 
-export const dateToPickerFormat = value => new Date(value).toISOString().split(':').slice(0,-1).join(':');
+export const dateToPickerFormat = value => new Date(value).toISOString().split(':').slice(0, -1).join(':');

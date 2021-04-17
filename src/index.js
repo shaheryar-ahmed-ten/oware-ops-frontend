@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { getUserToken } from './utils/common';
+import { getUserToken, removeUserToken, removeUser } from './utils/common';
 
 axios.interceptors.request.use(request => {
   const token = getUserToken();
@@ -17,7 +17,11 @@ axios.interceptors.request.use(request => {
 
 axios.interceptors.response.use(undefined, error => {
   if (error.response && error.response.status == 401) {
-    if (window.location.href.split('/').pop() != 'login') window.location.href = '/';
+    if (window.location.href.split('/').pop() != 'login') {
+      removeUserToken();
+      removeUser();
+      window.location.href = '/';
+    }
   }
   return Promise.reject(error)
 });

@@ -11,11 +11,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox
+  Checkbox,
+  Typography
 } from '@material-ui/core'
 import { getUser, isSuperAdmin } from '../../../utils/common';
+import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
+  const [validation, setValidation] = useState({});
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,7 +45,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       setUsername('');
       setPassword('');
       setPhone('');
-      setRoleId('');
+      setRoleId(0);
       setActive(true);
     }
   }, [selectedUser])
@@ -59,7 +62,21 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       password
     }
 
-    addUser(newUser);
+    setValidation({
+      firstName: true,
+      lastName: true,
+      username: true,
+      roleId: true,
+      phone: true,
+      email: true
+    });
+    if (isRequired(firstName) &&
+      isRequired(lastName) &&
+      isUsername(username) &&
+      isEmail(email) &&
+      isPhone(phone)) {
+      addUser(newUser);
+    }
   }
 
   return (
@@ -84,7 +101,9 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                     variant="outlined"
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, firstName: true })}
                   />
+                  {validation.firstName && !isRequired(firstName) ? <Typography color="error">First name is required!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -96,8 +115,9 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                     variant="outlined"
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
-
+                    onBlur={e => setValidation({ ...validation, lastName: true })}
                   />
+                  {validation.lastName && !isRequired(lastName) ? <Typography color="error">Last name is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid item sm={12}>
@@ -112,8 +132,10 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   variant="outlined"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, username: true })}
                 />
+                {validation.username && !isRequired(username) ? <Typography color="error">Username is required!</Typography> : ''}
+                {validation.username && !isUsername(username) ? <Typography color="error">Username should contain only letters and numbers!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -127,8 +149,10 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   variant="outlined"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, email: true })}
                 />
+                {validation.email && !isRequired(email) ? <Typography color="error">Email is required!</Typography> : ''}
+                {validation.email && !isEmail(email) ? <Typography color="error">Incorrect email!</Typography> : ''}
               </Grid>
               {!isCurrentUser() ?
                 <Grid item sm={12}>
@@ -142,9 +166,11 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                       variant="outlined"
                       value={roleId}
                       onChange={e => setRoleId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, roleId: true })}
                     >
                       {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
                     </Select>
+                    {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 : ''}
@@ -158,8 +184,10 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   variant="outlined"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-
+                  onBlur={e => setValidation({ ...validation, phone: true })}
                 />
+                {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
+                {validation.phone && !isPhone(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -172,7 +200,9 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   variant="outlined"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, password: true })}
                 />
+                {validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
               </Grid>
               {isSuperAdmin(getUser()) ?
                 <Grid item sm={12}>
