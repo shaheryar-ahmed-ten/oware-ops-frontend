@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -17,6 +17,7 @@ import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -88,13 +89,17 @@ export default function InventoryView() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [formErrors, setFormErrors] = useState('');
 
-  const getInventorys = () => {
+  const _getInventories = (page, searchKeyword) => {
     axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setInventories(res.data.data)
       });
   }
+
+  const getInventories = useCallback(debounce((page, searchKeyword) => {
+    _getInventories(page, searchKeyword);
+  }, 300), []);
 
   const exportToExcel = () => {
     axios.get(getURL('/inventory/export'), {
@@ -106,7 +111,7 @@ export default function InventoryView() {
   }
 
   useEffect(() => {
-    getInventorys();
+    getInventories(page, searchKeyword);
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase

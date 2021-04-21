@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCategoryView from './AddCategoryView';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -124,7 +125,7 @@ export default function CategoryView() {
     setDeleteCategoryViewOpen(false);
   }
 
-  const _getCategories = () => {
+  const _getCategories = (page, searchKeyword) => {
     axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages);

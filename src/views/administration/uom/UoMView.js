@@ -124,7 +124,7 @@ export default function UoMView() {
     setDeleteUoMViewOpen(false);
   }
 
-  const _getUoMs = () => {
+  const _getUoMs = (page, searchKeyword) => {
     axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)

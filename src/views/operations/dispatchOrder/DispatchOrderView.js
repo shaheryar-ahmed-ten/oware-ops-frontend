@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddDispatchOrderView from './AddDispatchOrderView';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -163,13 +164,17 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   }
 
-  const getDispatchOrders = () => {
+  const _getDispatchOrders = (page, searchKeyword) => {
     axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setDispatchOrders(res.data.data)
       });
   }
+
+  const getDispatchOrders = useCallback(debounce((page, searchKeyword) => {
+    _getDispatchOrders(page, searchKeyword);
+  }, 300), []);
 
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
@@ -186,7 +191,7 @@ export default function DispatchOrderView() {
   };
 
   useEffect(() => {
-    getDispatchOrders();
+    getDispatchOrders(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {

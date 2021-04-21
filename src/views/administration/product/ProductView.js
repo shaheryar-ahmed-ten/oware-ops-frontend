@@ -169,7 +169,7 @@ export default function ProductView() {
     setDeleteProductViewOpen(false);
   }
 
-  const _getProducts = () => {
+  const _getProducts = (page, searchKeyword) => {
     axios.get(getURL('/product'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)

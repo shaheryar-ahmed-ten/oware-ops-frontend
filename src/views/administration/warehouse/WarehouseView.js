@@ -140,7 +140,7 @@ export default function WarehouseView() {
     setDeleteWarehouseViewOpen(false);
   }
 
-  const _getWarehouses = () => {
+  const _getWarehouses = (page, searchKeyword) => {
     axios.get(getURL('/warehouse'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)

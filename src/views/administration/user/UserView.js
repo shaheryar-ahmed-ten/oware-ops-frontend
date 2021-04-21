@@ -161,7 +161,7 @@ export default function UserView() {
     setDeleteUserViewOpen(false);
   }
 
-  const _getUsers = () => {
+  const _getUsers = (page, searchKeyword) => {
     axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)

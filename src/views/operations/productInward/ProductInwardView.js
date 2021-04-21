@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddProductInwardView from './AddProductInwardView';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -153,13 +154,17 @@ export default function ProductInwardView() {
     setDeleteProductInwardViewOpen(false);
   }
 
-  const getProductInwards = () => {
+  const _getProductInwards = (page, searchKeyword) => {
     axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
       });
   }
+
+  const getProductInwards = useCallback(debounce((page, searchKeyword) => {
+    _getProductInwards(page, searchKeyword);
+  }, 300), []);
 
   const getRelations = () => {
     axios.get(getURL('/product-inward/relations'))
@@ -171,7 +176,7 @@ export default function ProductInwardView() {
   };
 
   useEffect(() => {
-    getProductInwards();
+    getProductInwards(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {
