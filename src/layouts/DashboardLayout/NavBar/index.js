@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { TreeItem, TreeView } from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { SharedContext } from '../../../utils/common';
 
 import {
   Box,
@@ -125,7 +126,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
   const location = useLocation();
-  const user = getUser();
+  const { currentUser } = useContext(SharedContext);
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -170,7 +171,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
               {treeData.children.map((treeItem, j) => (
-                treeItem.canActivate(user) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} /> : ''
+                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} /> : ''
               ))}
             </TreeItem>
           ))}

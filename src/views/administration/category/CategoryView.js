@@ -129,8 +129,8 @@ export default function CategoryView() {
   const getCategories = () => {
     axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
       .then(res => {
-        setPageCount(res.data.pages)
-        setCategories(res.data.data)
+        setPageCount(res.data.pages);
+        setCategories(res.data.data);
       });
   }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   Grid,
   Button,
@@ -14,7 +14,7 @@ import {
   Checkbox,
   Typography
 } from '@material-ui/core'
-import { getUser, isSuperAdmin } from '../../../utils/common';
+import { getUser, isSuperAdmin, SharedContext } from '../../../utils/common';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
@@ -26,8 +26,9 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
   const [phone, setPhone] = useState('');
   const [roleId, setRoleId] = useState(0);
   const [password, setPassword] = useState('');
-  const [isActive, setActive] = useState(false)
-  const isCurrentUser = () => selectedUser && getUser().id == selectedUser.id;
+  const [isActive, setActive] = useState(false);
+  const { currentUser } = useContext(SharedContext);
+  const isCurrentUser = () => selectedUser && currentUser.id == selectedUser.id;
 
   useEffect(() => {
     if (!!selectedUser) {
@@ -68,11 +69,13 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       username: true,
       roleId: true,
       phone: true,
-      email: true
+      email: true,
+      password: true
     });
     if (isRequired(firstName) &&
       isRequired(lastName) &&
       isUsername(username) &&
+      isRequired(password) &&
       isEmail(email) &&
       isPhone(phone)) {
       addUser(newUser);
@@ -204,7 +207,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                 />
                 {validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
               </Grid>
-              {isSuperAdmin(getUser()) ?
+              {isSuperAdmin(currentUser) ?
                 <Grid item sm={12}>
                   <Checkbox
                     checked={isActive}

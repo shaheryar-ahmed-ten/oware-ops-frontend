@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
 import LoaderOverlay from './LoaderOverlay';
+import { SharedContext } from '../../utils/common';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const DashboardLayout = () => {
   const classes = useStyles();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-  const [_isLoading, setIsLoading] = useState(false);
+  const { isLoading } = useContext(SharedContext);
 
   return (
     <div className={classes.root}>
@@ -49,7 +50,7 @@ const DashboardLayout = () => {
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            {_isLoading ? <LoaderOverlay /> : ''}
+            {isLoading ? <LoaderOverlay /> : ''}
             <Outlet />
           </div>
         </div>

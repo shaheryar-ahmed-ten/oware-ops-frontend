@@ -35,8 +35,6 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       setRequestedQuantity(dispatchOrder.quantity || 0);
-      console.log(dispatchOrder.quantity, totalQuantityDispatched)
-      console.log(dispatchOrder.quantity - totalQuantityDispatched)
       setAvailableQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0);
       setUom(dispatchOrder.Inventory.Product.UOM.name);
       setProduct(dispatchOrder.Inventory.Product.name || '');

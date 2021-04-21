@@ -3,28 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import axios from 'axios';
 import { BrowserRouter } from 'react-router-dom';
-import { getUserToken, removeUserToken, removeUser } from './utils/common';
-
-axios.interceptors.request.use(request => {
-  const token = getUserToken();
-  if (token) {
-    request.headers['authorization'] = `Bearer ${token}`
-  } else delete request.headers['authorization'];
-  return request;
-}, error => Promise.reject(error));
-
-axios.interceptors.response.use(undefined, error => {
-  if (error.response && error.response.status == 401) {
-    if (window.location.href.split('/').pop() != 'login') {
-      removeUserToken();
-      removeUser();
-      window.location.href = '/';
-    }
-  }
-  return Promise.reject(error)
-});
 
 ReactDOM.render((
   <BrowserRouter>

@@ -1,4 +1,6 @@
-export const apiBaseURL = 'http://localhost:3000/api/v1';
+import { createContext } from "react";
+
+export const apiBaseURL = (process.env.NODE_ENV == 'development' ? 'http://localhost:3000' : '') + '/api/v1';
 export const user = null;
 
 export const getUserToken = () => {
@@ -26,6 +28,11 @@ export const removeUser = () => {
   localStorage.removeItem('user');
 }
 
+export const removeAuth = () => {
+  removeUserToken();
+  removeUser();
+}
+
 export const getURL = uri => {
   return `${apiBaseURL}${uri}`;
 }
@@ -42,3 +49,5 @@ export const digitize = (value, places) => {
 export const dateFormat = value => `${new Date(value).toLocaleDateString()} ${new Date(value).toLocaleTimeString()}`;
 
 export const dateToPickerFormat = value => new Date(value).toISOString().split(':').slice(0, -1).join(':');
+
+export const SharedContext = createContext(null);

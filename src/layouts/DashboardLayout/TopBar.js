@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -7,7 +7,7 @@ import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography,
 import MenuIcon from '@material-ui/icons/Menu';
 import Alert from '@material-ui/lab/Alert';
 import Logo from '../../components/Logo';
-import { getURL, getUser, setUser } from '../../utils/common';
+import { getURL, setUser, SharedContext, removeAuth } from '../../utils/common';
 import AddUserView from '../../views/administration/user/AddUserView';
 
 const useStyles = makeStyles(theme => ({
@@ -34,11 +34,11 @@ const TopBar = ({
   ...rest
 }) => {
   const classes = useStyles();
-  const [notifications] = useState([]);
-  const [user, _setUser] = useState(getUser());
+  const { currentUser, setCurrentUser } = useContext(SharedContext);
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
-  const [roles, setRoles] = useState([]);
+  const [roles] = useState([]);
+  const navigate = useNavigate();
 
   const updateUser = data => {
     setFormErrors('');
@@ -49,19 +49,19 @@ const TopBar = ({
           return
         }
         let _user = res.data.data;
-        user.firstName = _user.firstName;
-        user.lastName = _user.lastName;
-        user.phone = _user.phone;
-        setUser(user);
-        _setUser(user);
+        currentUser.firstName = _user.firstName;
+        currentUser.lastName = _user.lastName;
+        currentUser.phone = _user.phone;
+        setUser(currentUser);
+        setCurrentUser(currentUser);
         setAddUserViewOpen(false);
       });
   };
 
-  const getRelations = () => {
-    axios.get(getURL('/user/relations'))
-      .then(res => setRoles(res.data.roles));
-  };
+  const logout = () => {
+    removeAuth();
+    navigate('/login');
+  }
 
   return (
     <AppBar
@@ -73,7 +73,7 @@ const TopBar = ({
         key={3}
         formErrors={formErrors}
         roles={roles}
-        selectedUser={user}
+        selectedUser={currentUser}
         open={addUserViewOpen}
         addUser={updateUser}
         handleClose={() => setAddUserViewOpen(false)} />
@@ -86,11 +86,11 @@ const TopBar = ({
           <Grid item sm></Grid>
           <Grid item>
             <Box mr={4} mt={1}>
-              <Typography variant="h5" component="div" className={classes.userLink} onClick={e => setAddUserViewOpen(true)}>Welcome, {user.firstName}</Typography>
+              <Typography variant="h5" component="div" className={classes.userLink} onClick={e => setAddUserViewOpen(true)}>Welcome, {currentUser.firstName}</Typography>
             </Box>
           </Grid>
           <Grid item>
-            <Button size="medium" type="submit" to="/login" component={RouterLink} className={classes.logout}>Logout</Button>
+            <Button size="medium" type="submit" onClick={logout} to="/login" component={RouterLink} className={classes.logout}>Logout</Button>
           </Grid>
         </Grid>
         <Hidden lgUp>

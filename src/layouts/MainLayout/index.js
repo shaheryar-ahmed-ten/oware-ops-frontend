@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
-import TopBar from './TopBar';
+import { SharedContext } from '../../utils/common';
+import LoaderOverlay from '../DashboardLayout/LoaderOverlay';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,12 +31,14 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = () => {
   const classes = useStyles();
+  const { isLoading } = useContext(SharedContext);
 
   return (
     <div className={classes.root}>
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
+            {/* {isLoading ? <LoaderOverlay /> : ''} */}
             <Outlet />
           </div>
         </div>
