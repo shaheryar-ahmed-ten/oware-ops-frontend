@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,7 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddUoMView from './AddUoMView';
-import _ from 'lodash';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -124,7 +124,7 @@ export default function UoMView() {
     setDeleteUoMViewOpen(false);
   }
 
-  const getUoMs = () => {
+  const _getUoMs = () => {
     axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -132,8 +132,12 @@ export default function UoMView() {
       });
   }
 
+  const getUoMs = useCallback(debounce((page, searchKeyword) => {
+    _getUoMs(page, searchKeyword);
+  }, 300), []);
+
   useEffect(() => {
-    getUoMs();
+    getUoMs(page, searchKeyword);
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase

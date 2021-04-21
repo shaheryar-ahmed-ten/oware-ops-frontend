@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Grid,
@@ -20,6 +20,7 @@ import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -160,7 +161,7 @@ export default function UserView() {
     setDeleteUserViewOpen(false);
   }
 
-  const getUsers = () => {
+  const _getUsers = () => {
     axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -168,13 +169,17 @@ export default function UserView() {
       });
   };
 
+  const getUsers = useCallback(debounce((page, searchKeyword) => {
+    _getUsers(page, searchKeyword);
+  }, 300), []);
+
   const getRelations = () => {
     axios.get(getURL('/user/relations'))
       .then(res => setRoles(res.data.roles));
   };
 
   useEffect(() => {
-    getUsers();
+    getUsers(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddBrandView from './AddBrandView';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -129,7 +130,7 @@ export default function BrandView() {
     setDeleteBrandViewOpen(false);
   }
 
-  const getBrands = () => {
+  const _getBrands = () => {
     axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -137,8 +138,12 @@ export default function BrandView() {
       });
   }
 
+  const getBrands = useCallback(debounce((page, searchKeyword) => {
+    _getBrands(page, searchKeyword);
+  }, 300), []);
+
   useEffect(() => {
-    getBrands();
+    getBrands(page, searchKeyword);
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase

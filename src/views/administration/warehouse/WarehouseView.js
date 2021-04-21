@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddWarehouseView from './AddWarehouseView';
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -139,7 +140,7 @@ export default function WarehouseView() {
     setDeleteWarehouseViewOpen(false);
   }
 
-  const getWarehouses = () => {
+  const _getWarehouses = () => {
     axios.get(getURL('/warehouse'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -147,8 +148,12 @@ export default function WarehouseView() {
       });
   }
 
+  const getWarehouses = useCallback(debounce((page, searchKeyword) => {
+    _getWarehouses(page, searchKeyword);
+  }, 300), []);
+
   useEffect(() => {
-    getWarehouses();
+    getWarehouses(page, searchKeyword);
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase

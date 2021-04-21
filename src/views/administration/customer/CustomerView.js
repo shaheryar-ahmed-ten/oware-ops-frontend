@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   makeStyles,
   Paper,
@@ -20,6 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCustomerView from './AddCustomerView';
+import {debounce} from 'lodash';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -160,13 +161,17 @@ export default function CustomerView() {
     setDeleteCustomerViewOpen(false);
   }
 
-  const getCustomers = () => {
+  const _getCustomers = (page, searchKeyword) => {
     axios.get(getURL('/customer'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setCustomers(res.data.data)
       });
   }
+
+  const getCustomers = useCallback(debounce((page, searchKeyword) => {
+    _getCustomers(page, searchKeyword);
+  }, 300), []);
 
   const getRelations = () => {
     axios.get(getURL('/customer/relations'))
@@ -178,7 +183,7 @@ export default function CustomerView() {
 
 
   useEffect(() => {
-    getCustomers();
+    getCustomers(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -124,9 +124,7 @@ export default function CategoryView() {
     setDeleteCategoryViewOpen(false);
   }
 
-
-
-  const getCategories = () => {
+  const _getCategories = () => {
     axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages);
@@ -134,8 +132,12 @@ export default function CategoryView() {
       });
   }
 
+  const getCategories = useCallback(debounce((page, searchKeyword) => {
+    _getCategories(page, searchKeyword);
+  }, 300), []);
+
   useEffect(() => {
-    getCategories();
+    getCategories(page, searchKeyword);
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase
