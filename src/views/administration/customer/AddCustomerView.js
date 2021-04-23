@@ -99,6 +99,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                     onChange={e => setType(e.target.value)}
                     onBlur={e => setValidation({ ...validation, type: true })}
                   >
+                    <MenuItem value="" disabled>Select a customer type</MenuItem>
                     {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
                   </Select>
                   {validation.type && !isRequired(type) ? <Typography color="error">Customer type is required!</Typography> : ''}
@@ -116,6 +117,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                     onChange={e => setContactId(e.target.value)}
                     onBlur={e => setValidation({ ...validation, contactId: true })}
                   >
+                    <MenuItem value="" disabled>Select a contact</MenuItem>
                     {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
                   </Select>
                   {validation.contactId && !isRequired(contactId) ? <Typography color="error">Contact is required!</Typography> : ''}

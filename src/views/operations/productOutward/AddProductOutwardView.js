@@ -105,6 +105,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       onChange={e => selectDispatchOrder(e.target.value)}
                       onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
                     >
+                      <MenuItem value="" disabled>Select a dispatch order</MenuItem>
                       {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Inventory.Product.name} - {dispatchOrder.quantity}</MenuItem>)}
                     </Select>
                     {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}

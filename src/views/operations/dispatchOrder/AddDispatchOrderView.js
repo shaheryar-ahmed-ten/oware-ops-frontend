@@ -16,8 +16,11 @@ import {
 import { isRequired, isPhone } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 
-export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
-  open, handleClose, selectedDispatchOrder, customers, warehouses, products, formErrors }) {
+export default function AddDispatchOrderView({ addDispatchOrder, getInventory, getWarehouses, getProducts,
+  open, handleClose, selectedDispatchOrder, customers, formErrors }) {
+
+  const [warehouses, setWarehouses] = useState([]);
+  const [products, setProducts] = useState([]);
   const [validation, setValidation] = useState({});
   const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState('');
@@ -30,25 +33,6 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
   const [customerId, setCustomerId] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
-
-  const selectInventory = () => {
-    if (customerId && warehouseId && productId) {
-      setAvailableQuantity(0);
-      setInventoryId('');
-      getInventory({ customerId, warehouseId, productId })
-        .then(inventory => {
-          if (inventory) {
-            setAvailableQuantity(inventory.availableQuantity);
-            setInventoryId(inventory.id);
-          }
-        })
-    }
-    if (productId) {
-      const product = products.find(product => product.id == productId);
-      setUom(product.UOM.name || '');
-    }
-
-  }
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -70,11 +54,43 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
       setReceiverName('');
       setReceiverPhone('');
     }
-  }, [selectedDispatchOrder, customers, warehouses, products])
+  }, [selectedDispatchOrder, customers])
 
   useEffect(() => {
-    selectInventory();
-  }, [customerId, warehouseId, productId])
+    setWarehouses([]);
+    setWarehouseId('');
+    setProducts([]);
+    setProductId('');
+    if (!customerId) return;
+    getWarehouses({ customerId })
+      .then(warehouses => setWarehouses(warehouses));
+  }, [customerId])
+
+  useEffect(() => {
+    setProducts([]);
+    setProductId('');
+    if (!customerId && !warehouseId) return;
+    getProducts({ customerId, warehouseId })
+      .then(products => setProducts(products));
+  }, [warehouseId])
+
+  useEffect(() => {
+    setUom('');
+    setAvailableQuantity(0);
+    setInventoryId('');
+    if (customerId && warehouseId && productId) {
+      const product = products.find(product => product.id == productId);
+      setUom(product.UOM.name);
+      getInventory({ customerId, warehouseId, productId })
+        .then(inventory => {
+          if (inventory) {
+            setAvailableQuantity(inventory.availableQuantity);
+            setInventoryId(inventory.id);
+          }
+        })
+    }
+
+  }, [productId])
   const handleSubmit = e => {
     const newDispatchOrder = {
       quantity,
@@ -119,7 +135,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
                     <Select
@@ -132,12 +148,15 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       onChange={e => setCustomerId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, customerId: true })}
                     >
+                      <MenuItem value="" disabled>Select a customer</MenuItem>
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
                     </Select>
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-                <Grid item sm={6}>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Warehouse</InputLabel>
                     <Select
@@ -150,6 +169,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       onChange={e => setWarehouseId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
+                      <MenuItem value="" disabled>Select a warehouse</MenuItem>
                       {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
                     </Select>
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
@@ -170,6 +190,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory,
                       onChange={e => setProductId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, productId: true })}
                     >
+                      <MenuItem value="" disabled>Select a product</MenuItem>
                       {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
                     </Select>
                     {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}

@@ -9,7 +9,7 @@ import React from 'react'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: 'transparent',
+    marginBottom: '20px',
   },
   pageHeader: {
     padding: theme.spacing(2),

@@ -25,10 +25,10 @@ import { debounce } from 'lodash';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    backgroundColor: 'transparent'
+    marginBottom: '20px'
   },
   container: {
-    maxHeight: 450,
+    // maxHeight: 450,
     padding: 20,
   },
   active: {
@@ -190,6 +190,16 @@ export default function DispatchOrderView() {
       .then(res => res.data.inventory);
   };
 
+  const getWarehouses = (params) => {
+    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+      .then(res => res.data.warehouses);
+  };
+
+  const getProducts = (params) => {
+    return axios.get(getURL('/dispatch-order/products'), { params })
+      .then(res => res.data.products);
+  };
+
   useEffect(() => {
     getDispatchOrders(page, searchKeyword);
   }, [page, searchKeyword]);
@@ -225,6 +235,8 @@ export default function DispatchOrderView() {
     open={addDispatchOrderViewOpen}
     addDispatchOrder={addDispatchOrder}
     getInventory={getInventory}
+    getWarehouses={getWarehouses}
+    getProducts={getProducts}
     handleClose={() => closeAddDispatchOrderView()} />
   const deleteDispatchOrderModal = <ConfirmDelete
     key={4}

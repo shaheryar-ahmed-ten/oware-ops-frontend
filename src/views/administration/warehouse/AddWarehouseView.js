@@ -10,14 +10,17 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
+  FormControl,
+  InputLabel,
   Typography
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
+  const cities = ['Karachi', 'Lahore'];
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
-  // const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
+  const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [isActive, setActive] = useState(true);
@@ -25,13 +28,13 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
   useEffect(() => {
     if (!!selectedWarehouse) {
       setName(selectedWarehouse.name || '');
-      // setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || '');
+      setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || '');
       setAddress(selectedWarehouse.address || '');
       setCity(selectedWarehouse.city || '');
       setActive(!!selectedWarehouse.isActive);
     } else {
       setName('');
-      // setBusinessWarehouseCode('');
+      setBusinessWarehouseCode('');
       setAddress('');
       setCity('');
       setActive(true);
@@ -41,6 +44,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
 
     const newWarehouse = {
       name,
+      businessWarehouseCode,
       address,
       city,
       isActive
@@ -83,6 +87,20 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                 <TextField
                   fullWidth={true}
                   margin="dense"
+                  id="businessWarehouseCode"
+                  label="Business Warehouse Code"
+                  type="text"
+                  variant="outlined"
+                  value={businessWarehouseCode}
+                  onChange={e => setBusinessWarehouseCode(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, businessWarehouseCode: true })}
+                />
+                {validation.businessWarehouseCode && !isRequired(businessWarehouseCode) ? <Typography color="error">Business warehouse code is required!</Typography> : ''}
+              </Grid>
+              <Grid item sm={12}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
                   id="address"
                   label="Address"
                   type="text"
@@ -94,18 +112,22 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                 {validation.address && !isRequired(address) ? <Typography color="error">Address is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="city"
-                  label="City"
-                  type="text"
-                  variant="outlined"
-                  value={city}
-                  onChange={e => setCity(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, city: true })}
-                />
-                {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ''}
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <InputLabel>City</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    id="city"
+                    label="Category"
+                    variant="outlined"
+                    value={city}
+                    onChange={e => setCity(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, city: true })}
+                  >
+                    <MenuItem value="" disabled>Select a city</MenuItem>
+                    {cities.map(city => <MenuItem key={city} value={city}>{city}</MenuItem>)}
+                  </Select>
+                  {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ''}
+                </FormControl>
               </Grid>
               <Grid item sm={12}>
                 <Checkbox

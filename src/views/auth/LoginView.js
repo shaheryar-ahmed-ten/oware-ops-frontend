@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   paperStyle: {
-    backgroundColor: 'transparent',
+    marginBottom: '20px',
     padding: 5,
     height: "55vh",
     maxWidth: "350px",

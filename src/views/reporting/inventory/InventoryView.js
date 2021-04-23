@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -22,10 +22,10 @@ import { debounce } from 'lodash';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    backgroundColor: 'transparent'
+    marginBottom: '20px'
   },
   container: {
-    maxHeight: 450,
+    // maxHeight: 450,
     padding: 20,
   },
   active: {

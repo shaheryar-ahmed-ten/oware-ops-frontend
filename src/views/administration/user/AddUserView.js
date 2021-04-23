@@ -171,6 +171,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                       onChange={e => setRoleId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, roleId: true })}
                     >
+                      <MenuItem value="" disabled>Select a role</MenuItem>
                       {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
                     </Select>
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}

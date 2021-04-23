@@ -90,6 +90,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       onChange={e => setCustomerId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, customerId: true })}
                     >
+                      <MenuItem value="" disabled>Select a customer</MenuItem>
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
                     </Select>
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
@@ -108,6 +109,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       onChange={e => selectProduct(e.target.value)}
                       onBlur={e => setValidation({ ...validation, productId: true })}
                     >
+                      <MenuItem value="" disabled>Select a product</MenuItem>
                       {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
                     </Select>
                     {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
@@ -129,6 +131,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       onChange={e => setWarehouseId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
+                      <MenuItem value="" disabled>Select a warehouse</MenuItem>
                       {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
                     </Select>
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}

@@ -163,6 +163,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       onChange={e => setCategoryId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, categoryId: true })}
                     >
+                      <MenuItem value="" disabled>Select a category</MenuItem>
                       {categories.map(category => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
                     </Select>
                     {validation.categoryId && !isRequired(categoryId) ? <Typography color="error">Category is required!</Typography> : ''}
@@ -180,6 +181,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       onChange={e => setBrandId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, brandId: true })}
                     >
+                      <MenuItem value="" disabled>Select a brand</MenuItem>
                       {brands.map(brand => <MenuItem key={brand.id} value={brand.id}>{brand.name}</MenuItem>)}
                     </Select>
                     {validation.brandId && !isRequired(brandId) ? <Typography color="error">Brand is required!</Typography> : ''}
@@ -200,6 +202,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       onChange={e => setUomId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, uomId: true })}
                     >
+                      <MenuItem value="" disabled>Select a UoM</MenuItem>
                       {uoms.map(uom => <MenuItem key={uom.id} value={uom.id}>{uom.name}</MenuItem>)}
                     </Select>
                     {validation.uomId && !isRequired(uomId) ? <Typography color="error">UoM is required!</Typography> : ''}
