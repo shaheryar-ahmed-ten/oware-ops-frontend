@@ -42,8 +42,6 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
-      setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
-      setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       setInventoryId('');
       setQuantity('');
@@ -62,16 +60,26 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
     setProducts([]);
     setProductId('');
     if (!customerId) return;
-    getWarehouses({ customerId })
-      .then(warehouses => setWarehouses(warehouses));
+    if (!!selectedDispatchOrder) {
+      setWarehouses([selectedDispatchOrder.Inventory.Warehouse]);
+      setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
+    } else {
+      getWarehouses({ customerId })
+        .then(warehouses => setWarehouses(warehouses));
+    }
   }, [customerId])
 
   useEffect(() => {
     setProducts([]);
     setProductId('');
     if (!customerId && !warehouseId) return;
-    getProducts({ customerId, warehouseId })
-      .then(products => setProducts(products));
+    if (!!selectedDispatchOrder) {
+      setProducts([selectedDispatchOrder.Inventory.Product]);
+      setProductId(selectedDispatchOrder.Inventory.productId);
+    } else {
+      getProducts({ customerId, warehouseId })
+        .then(products => setProducts(products));
+    }
   }, [warehouseId])
 
   useEffect(() => {
@@ -90,7 +98,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
         })
     }
 
-  }, [productId])
+  }, [productId]);
   const handleSubmit = e => {
     const newDispatchOrder = {
       quantity,

@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import moment from 'moment';
 
 export const apiBaseURL = (process.env.NODE_ENV == 'development' ? 'http://localhost:3000' : '') + '/api/v1';
 export const user = null;
@@ -46,8 +47,8 @@ export const digitize = (value, places) => {
   return new Array(places - strVal.length).fill('0').join('') + strVal;
 }
 
-export const dateFormat = value => `${new Date(value).toDateString()} ${new Date(value).toLocaleTimeString()}`;
+export const dateFormat = value => moment(value).format('DD-MM-yyyy hh:mm A');
 
-export const dateToPickerFormat = value => new Date(value).toISOString().split(':').slice(0, -1).join(':');
+export const dateToPickerFormat = value => moment(value).format('yyyy-MM-DDTHH:mm')
 
 export const SharedContext = createContext(null);
