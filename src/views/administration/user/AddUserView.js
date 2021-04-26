@@ -70,12 +70,12 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       roleId: true,
       phone: true,
       email: true,
-      password: true
+      password: !!selectedUser
     });
     if (isRequired(firstName) &&
       isRequired(lastName) &&
       isUsername(username) &&
-      isRequired(password) &&
+      (!!selectedUser || isRequired(password)) &&
       isEmail(email) &&
       isPhone(phone)) {
       addUser(newUser);
@@ -206,7 +206,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                   onChange={e => setPassword(e.target.value)}
                   onBlur={e => setValidation({ ...validation, password: true })}
                 />
-                {validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
+                {!selectedUser && validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
               </Grid>
               {isSuperAdmin(currentUser) ?
                 <Grid item sm={12}>
