@@ -18,6 +18,7 @@ import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -87,7 +88,6 @@ export default function InventoryView() {
   const [page, setPage] = useState(1);
   const [inventories, setInventories] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [formErrors, setFormErrors] = useState('');
 
   const _getInventories = (page, searchKeyword) => {
     axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
@@ -106,7 +106,7 @@ export default function InventoryView() {
       responseType: 'blob',
       params: { page, search: searchKeyword },
     }).then(response => {
-      FileDownload(response.data, 'report.csv');
+      FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
 
