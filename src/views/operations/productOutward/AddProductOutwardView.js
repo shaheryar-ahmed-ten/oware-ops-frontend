@@ -111,6 +111,48 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="quantity"
+                    label="Actual Quantity to Dispatch"
+                    InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+                    type="number"
+                    variant="outlined"
+                    value={quantity}
+                    disabled={!!selectedProductOutward}
+                    onChange={e => setQuantity(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, quantity: true })}
+                  />
+                  {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="customer"
+                    label="Customer"
+                    type="text"
+                    variant="outlined"
+                    value={customer}
+                    disabled
+                  />
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="warehouse"
+                    label="Warehouse"
+                    type="text"
+                    variant="outlined"
+                    value={warehouse}
+                    disabled
+                  />
+                </Grid>
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
@@ -165,34 +207,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="customer"
-                    label="Customer"
-                    type="text"
-                    variant="outlined"
-                    value={customer}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="warehouse"
-                    label="Warehouse"
-                    type="text"
-                    variant="outlined"
-                    value={warehouse}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
 
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
@@ -203,22 +219,6 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={shipmentDate}
                     disabled
                   />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="quantity"
-                    label="Actual Quantity to Dispatch"
-                    InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
-                    type="number"
-                    variant="outlined"
-                    value={quantity}
-                    disabled={!!selectedProductOutward}
-                    onChange={e => setQuantity(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, quantity: true })}
-                  />
-                  {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>

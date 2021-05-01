@@ -172,7 +172,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                       onBlur={e => setValidation({ ...validation, roleId: true })}
                     >
                       <MenuItem value="" disabled>Select a role</MenuItem>
-                      {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}::{role.type}</MenuItem>)}
+                      {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
                     </Select>
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
                   </FormControl>
@@ -208,7 +208,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                 />
                 {!selectedUser && validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
               </Grid>
-              {isSuperAdmin(currentUser) ?
+              {(isSuperAdmin(currentUser) && !isCurrentUser()) ?
                 <Grid item sm={12}>
                   <Checkbox
                     checked={isActive}
