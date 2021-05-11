@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   makeStyles,
   Paper,
@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddProductInwardView from './AddProductInwardView';
 import { debounce } from 'lodash';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import InwardProductDetailsView from './InwardProductDetailsView';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -89,10 +91,12 @@ export default function ProductInwardView() {
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
-  }];
+  },
+];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [productInwards, setProductInwards] = useState([]);
@@ -107,6 +111,7 @@ export default function ProductInwardView() {
   const [addProductInwardViewOpen, setAddProductInwardViewOpen] = useState(false);
   const [deleteProductInwardViewOpen, setDeleteProductInwardViewOpen] = useState(false);
 
+  const [inwardProductDetailsViewOpen, setInwardProductDetailsViewOpen] = useState(false)
 
   const addProductInward = data => {
     let apiPromise = null;
@@ -139,6 +144,11 @@ export default function ProductInwardView() {
     setAddProductInwardViewOpen(true);
   }
 
+  const openViewDetails = productInward => {
+    setSelectedProductInward(productInward);
+    setInwardProductDetailsViewOpen(true)
+  }
+
   const openDeleteView = productInward => {
     setSelectedProductInward(productInward);
     setDeleteProductInwardViewOpen(true);
@@ -152,6 +162,11 @@ export default function ProductInwardView() {
   const closeDeleteProductInwardView = () => {
     setSelectedProductInward(null);
     setDeleteProductInwardViewOpen(false);
+  }
+
+  const closeInwardProductDetailsView = () => {
+    setSelectedProductInward(null);
+    setInwardProductDetailsViewOpen(false)
   }
 
   const _getProductInwards = (page, searchKeyword) => {
@@ -218,7 +233,17 @@ export default function ProductInwardView() {
     selectedEntity={selectedProductInward && selectedProductInward.name}
     title={"ProductInward"}
   />
-  const headerButtons = [searchInput, addProductInwardButton, addProductInwardModal, deleteProductInwardModal];
+
+  const inwardProductDetailsModal = <InwardProductDetailsView
+  key={5}
+  formErrors={formErrors}
+  selectedProductInward={selectedProductInward}
+  open={inwardProductDetailsViewOpen}
+  handleClose={() => closeInwardProductDetailsView()}
+  />
+
+
+  const headerButtons = [searchInput, addProductInwardButton, addProductInwardModal, deleteProductInwardModal, inwardProductDetailsModal];
 
   return (
     <Paper className={classes.root}>
