@@ -122,7 +122,6 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                             Data & Time Process :
                         </Box>
                     </Grid>
-                    {console.log(dateFormat(updatedAt))}
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
                             {dateFormat(updatedAt)}

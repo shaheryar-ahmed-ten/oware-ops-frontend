@@ -23,6 +23,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
 
 
 const useStyles = makeStyles(theme => ({
@@ -110,6 +112,7 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
@@ -127,6 +130,8 @@ export default function DispatchOrderView() {
   const [formErrors, setFormErrors] = useState('');
   const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
+
+  const [dispatchOrderDetailsViewOpen, setdispatchOrderDetailsViewOpen] = useState(false)
 
 
   const addDispatchOrder = data => {
@@ -160,6 +165,11 @@ export default function DispatchOrderView() {
     setAddDispatchOrderViewOpen(true);
   }
 
+  const openViewDetails = dispatchOrder => {
+    setSelectedDispatchOrder(dispatchOrder);
+    setdispatchOrderDetailsViewOpen(true);
+  }
+
   const openDeleteView = dispatchOrder => {
     setSelectedDispatchOrder(dispatchOrder);
     setDeleteDispatchOrderViewOpen(true);
@@ -168,6 +178,11 @@ export default function DispatchOrderView() {
   const closeAddDispatchOrderView = () => {
     setSelectedDispatchOrder(null);
     setAddDispatchOrderViewOpen(false);
+  }
+
+  const closeDispatchOrderDetailsView = () => {
+    setSelectedDispatchOrder(null);
+    setdispatchOrderDetailsViewOpen(false)
   }
 
   const closeDeleteDispatchOrderView = () => {
@@ -261,9 +276,22 @@ export default function DispatchOrderView() {
     title={"DispatchOrder"}
   />
 
-  
+  const dispatchOrderDetailsModal = <ViewDispatchOrderDetails
+  key={5}
+  formErrors={formErrors}
+  customers={customers}
+    warehouses={warehouses}
+    products={products}
+    selectedDispatchOrder={selectedDispatchOrder}
+    open={dispatchOrderDetailsViewOpen}
+    getInventory={getInventory}
+    getWarehouses={getWarehouses}
+    getProducts={getProducts}
+    handleClose={() => closeDispatchOrderDetailsView()}
+    dispatchedOrdersLength={dispatchOrders.length}
+  />
 
-  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal, dispatchOrderDetailsModal];
 
   return (
     <Paper className={classes.root}>
