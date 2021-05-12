@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   makeStyles,
   Paper,
@@ -10,7 +10,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
@@ -128,6 +128,7 @@ export default function ProductOutwardView() {
   const [productOutwards, setProductOutwards] = useState([]);
 
   const [dispatchOrders, setDispatchOrders] = useState([]);
+  const [vehicleTypes, setvehicleTypes] = useState([])
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
@@ -163,6 +164,7 @@ export default function ProductOutwardView() {
   };
 
   const openEditView = productOutward => {
+    getRelations();
     setSelectedProductOutward(productOutward);
     setAddProductOutwardViewOpen(true);
   }
@@ -197,7 +199,9 @@ export default function ProductOutwardView() {
 
   const getRelations = () => {
     axios.get(getURL('/product-outward/relations'))
-      .then(res => {
+      .then(res => {  
+        // setting dispatchOrder details and vehicleTypes in local State
+        setvehicleTypes((prevState)=>res.data.vehicleTypes)
         setDispatchOrders(res.data.dispatchOrders)
       });
   };
@@ -234,7 +238,8 @@ export default function ProductOutwardView() {
     selectedProductOutward={selectedProductOutward}
     open={addProductOutwardViewOpen}
     addProductOutward={addProductOutward}
-    handleClose={() => closeAddProductOutwardView()} />
+    handleClose={() => closeAddProductOutwardView()}
+    vehicleTypes={vehicleTypes} />
   const deleteProductOutwardModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProductOutward}
@@ -243,13 +248,15 @@ export default function ProductOutwardView() {
     selectedEntity={selectedProductOutward && selectedProductOutward.name}
     title={"ProductOutward"}
   />
+
+
   const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product Outward" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <TableHeader title="Manage Product Outward" buttons={headerButtons}/>
+        <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
               {columns.map((column) => (

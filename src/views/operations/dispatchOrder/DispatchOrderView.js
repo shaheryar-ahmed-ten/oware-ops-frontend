@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   makeStyles,
   Paper,
@@ -10,17 +10,20 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip,
+  IconButton
 } from '@material-ui/core';
 import TableHeader from '../../TableHeader'
 import axios from 'axios';
-import { getURL, dateFormat } from '../../../utils/common';
+import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,6 +51,14 @@ const useStyles = makeStyles(theme => ({
 export default function DispatchOrderView() {
   const classes = useStyles();
   const columns = [{
+    id: 'id',
+    label: 'OUTWARD ID',
+    minWidth: 'auto',
+    className: '',
+    // format: (value, entity) => `DO-${entity.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
+    format: (value, entity) => entity.dispatchorderIdForBusiness
+  },
+    {
     id: 'Inventory.Customer.companyName',
     label: 'CUSTOMER',
     minWidth: 'auto',
@@ -192,7 +203,9 @@ export default function DispatchOrderView() {
 
   const getWarehouses = (params) => {
     return axios.get(getURL('/dispatch-order/warehouses'), { params })
-      .then(res => res.data.warehouses);
+      .then(res => {
+        return res.data.warehouses
+      });
   };
 
   const getProducts = (params) => {
@@ -224,7 +237,7 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH</Button>;
+    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
     formErrors={formErrors}
@@ -237,7 +250,8 @@ export default function DispatchOrderView() {
     getInventory={getInventory}
     getWarehouses={getWarehouses}
     getProducts={getProducts}
-    handleClose={() => closeAddDispatchOrderView()} />
+    handleClose={() => closeAddDispatchOrderView()}
+    dispatchedOrdersLength={dispatchOrders.length} />
   const deleteDispatchOrderModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteDispatchOrder}
@@ -246,13 +260,16 @@ export default function DispatchOrderView() {
     selectedEntity={selectedDispatchOrder && selectedDispatchOrder.name}
     title={"DispatchOrder"}
   />
+
+  
+
   const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Dispatch" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <TableHeader title="Manage Dispatch Order" buttons={headerButtons}/>
+        <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
               {columns.map((column) => (
