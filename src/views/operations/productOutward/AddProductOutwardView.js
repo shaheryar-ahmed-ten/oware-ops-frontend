@@ -129,7 +129,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       <Autocomplete
                         id="dispatchOrderId"
                         value={dispatchOrderBusinessId}
-                        options={dispatchOrders}
+                        options={dispatchOrdersForDropdown}
                         getOptionLabel={(dispatchOrder) => dispatchOrder.dispatchorderIdForBusiness}
                         renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
                         onChange={(event, newValue) => {
