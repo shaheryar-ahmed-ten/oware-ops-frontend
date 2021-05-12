@@ -3,13 +3,16 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
 
-function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, warehouses, products, selectedDispatchOrder}) {
-    
+function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, handleClose}) {
+
+    const [dispatchOrderId, setdispatchOrderId] = useState('')
+    const [quantity, setquantity] = useState('')
+    const [vehivleType, setvehivleType] = useState('')
+    const [vehicleNumber, setvehicleNumber] = useState('')
     const [customer, setcustomer] = useState('')
     const [warehouse, setwarehouse] = useState('')
     const [warehouseCity, setwarehouseCity] = useState('')
     const [product, setproduct] = useState('')
-    const [quantity, setquantity] = useState('')
     const [UoM, setUoM] = useState('')
     const [updatedAt, setupdatedAt] = useState('')
     const [receiverName, setreceiverName] = useState('')
@@ -19,34 +22,38 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
     const [committedQuantity, setcommittedQuantity] = useState('')
     const [dispatchedQuantity, setdispatchedQuantity] = useState('')
     const [inwardQuantity, setinwardQuantity] = useState('')
-
     useEffect(() => {
-        if(selectedDispatchOrder)
+        if(selectedProductOutward)
         {
-            setcustomer((prevState)=>selectedDispatchOrder.Inventory.Customer.companyName)
-            setwarehouse((prevState)=>selectedDispatchOrder.Inventory.Warehouse.name)
-            setwarehouseCity((prevState)=>selectedDispatchOrder.Inventory.Warehouse.city)
-            setproduct((prevState)=>selectedDispatchOrder.Inventory.Product.name)
-            setUoM((prevState)=>selectedDispatchOrder.Inventory.Product.UOM.name)
-            setquantity(selectedDispatchOrder.quantity)
-            setupdatedAt(selectedDispatchOrder.updatedAt)
-            setreceiverName(selectedDispatchOrder.receiverName)
-            setreceiverPhone(selectedDispatchOrder.receiverPhone)
-            setshipmentDate(selectedDispatchOrder.shipmentDate)
-            setavailableQuantity(selectedDispatchOrder.Inventory.availableQuantity)
-            setcommittedQuantity(selectedDispatchOrder.Inventory.committedQuantity)
-            setdispatchedQuantity(selectedDispatchOrder.Inventory.dispatchedQuantity)
-            setinwardQuantity(selectedDispatchOrder.Inventory.totalInwardQuantity)
-        }
+            setdispatchOrderId(selectedProductOutward.dispatchOrderId)
+            setquantity(selectedProductOutward.quantity)
+            setvehivleType(selectedProductOutward.Vehicle.vehicleType)
+            setvehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
+            setcustomer((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Customer.companyName)
+            setwarehouse((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Warehouse.name)
+            setwarehouseCity((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Warehouse.city)
+            setproduct((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Product.name)
 
-        return () => {
+            setUoM((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name)
+            setupdatedAt(selectedProductOutward.updatedAt)
+            setreceiverName(selectedProductOutward.DispatchOrder.receiverName)
+            setreceiverPhone(selectedProductOutward.DispatchOrder.receiverPhone)
+            setshipmentDate(selectedProductOutward.shipmentDate)
+            setavailableQuantity(selectedProductOutward.DispatchOrder.Inventory.availableQuantity)
+            setcommittedQuantity(selectedProductOutward.DispatchOrder.Inventory.committedQuantity)
+            setdispatchedQuantity(selectedProductOutward.DispatchOrder.Inventory.dispatchedQuantity)
+            setinwardQuantity(selectedProductOutward.DispatchOrder.Inventory.totalInwardQuantity)
         }
-    }, [selectedDispatchOrder])
+        return () => {
+            
+        }
+    }, [selectedProductOutward])
 
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
       content: () => componentRef.current,
     });
+
 
     return (
         <div style={{ display: "inline" }}>
@@ -55,15 +62,16 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
             <Box display="block" displayPrint="block" ref={componentRef}>
                 <Box display="none" displayPrint="block">
                     <DialogTitle>
-                         Dispatch Order
+                         Product Outwards
                     </DialogTitle>                
                 </Box>
 
                 <Box display="block" displayPrint="none"> 
-                    <DialogTitle>
-                        View Dispatch Order
-                    </DialogTitle>
+                <DialogTitle>
+                  View Product Outward
+              </DialogTitle>
                 </Box>
+
 
                 <Box display="none" displayPrint="block">
                 <DialogContent>
@@ -319,15 +327,15 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                 </Grid>
                   </DialogContent>
                 </Box>
-                          
-                <Box displayPrint="none">
-                    <DialogActions>
-                      <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-                      <Button onClick={handlePrint} color="primary" variant="contained">
+
+              <Box displayPrint="none">
+              <DialogActions>
+                <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+                <Button onClick={handlePrint} color="primary" variant="contained">
                             Print
                         </Button>
-                    </DialogActions>
-                </Box>
+              </DialogActions>
+              </Box>
             </Box>
             </Dialog>
           </form>
@@ -335,4 +343,4 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
       );
 }
 
-export default ViewDispatchOrderDetails
+export default ViewProductOutwardDetails

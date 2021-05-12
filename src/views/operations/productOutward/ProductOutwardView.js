@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddProductOutwardView from './AddProductOutwardView';
 import { debounce } from 'lodash';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ViewProductOutwardDetails from './ViewProductOutwardDetails';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -119,6 +121,7 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
@@ -135,6 +138,8 @@ export default function ProductOutwardView() {
   const [formErrors, setFormErrors] = useState('');
   const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
+
+  const [productOutwardsDetailsViewOpen, setproductOutwardsDetailsViewOpen] = useState(false)
 
 
   const addProductOutward = data => {
@@ -169,6 +174,12 @@ export default function ProductOutwardView() {
     setAddProductOutwardViewOpen(true);
   }
 
+  const openViewDetails = productOutward => {
+    getRelations();
+    setSelectedProductOutward(productOutward);
+    setproductOutwardsDetailsViewOpen(true);
+  }
+
   const openDeleteView = productOutward => {
     setSelectedProductOutward(productOutward);
     setDeleteProductOutwardViewOpen(true);
@@ -177,6 +188,12 @@ export default function ProductOutwardView() {
   const closeAddProductOutwardView = () => {
     setSelectedProductOutward(null);
     setAddProductOutwardViewOpen(false);
+    getRelations();
+  }
+
+  const closeViewProductOutwardDetailsView = () => {
+    setSelectedProductOutward(null);
+    setproductOutwardsDetailsViewOpen(false);
     getRelations();
   }
 
@@ -249,8 +266,14 @@ export default function ProductOutwardView() {
     title={"ProductOutward"}
   />
 
+  const viewProductOutwardsDetailsModal = <ViewProductOutwardDetails
+    key={5}
+    formErrors={formErrors}
+    selectedProductOutward={selectedProductOutward}
+    open={productOutwardsDetailsViewOpen}
+    handleClose={() => closeViewProductOutwardDetailsView()}/>
 
-  const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal];
+  const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
 
   return (
     <Paper className={classes.root}>
