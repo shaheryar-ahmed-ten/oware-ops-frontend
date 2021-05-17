@@ -16,7 +16,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
           <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
             <Box display="block" displayPrint="block" ref={componentRef}>
 
-            <Box display="none" displayPrint="block">
+            <Box display="none" displayPrint="block" style={{margin:"25mm 25mm 0mm 25mm"}}>
                 <DialogTitle>
                      Product Inward
                 </DialogTitle>                
@@ -28,7 +28,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                 </DialogTitle>
             </Box>
 
-            <Box display="none" displayPrint="block">
+            <Box display="none" displayPrint="block" style={{margin:"0mm 25mm 0mm 25mm"}}>
                 <DialogContent>
                 {formErrors}
                     <Grid container spacing={2}>
