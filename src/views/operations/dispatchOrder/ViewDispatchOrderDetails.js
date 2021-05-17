@@ -1,54 +1,17 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
 
 function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, warehouses, products, selectedDispatchOrder}) {
     
-    const [customer, setcustomer] = useState('')
-    const [warehouse, setwarehouse] = useState('')
-    const [warehouseCity, setwarehouseCity] = useState('')
-    const [product, setproduct] = useState('')
-    const [quantity, setquantity] = useState('')
-    const [UoM, setUoM] = useState('')
-    const [updatedAt, setupdatedAt] = useState('')
-    const [receiverName, setreceiverName] = useState('')
-    const [receiverPhone, setreceiverPhone] = useState('')
-    const [shipmentDate, setshipmentDate] = useState('')
-    const [availableQuantity, setavailableQuantity] = useState('')
-    const [committedQuantity, setcommittedQuantity] = useState('')
-    const [dispatchedQuantity, setdispatchedQuantity] = useState('')
-    const [inwardQuantity, setinwardQuantity] = useState('')
-
-    useEffect(() => {
-        if(selectedDispatchOrder)
-        {
-            setcustomer((prevState)=>selectedDispatchOrder.Inventory.Customer.companyName)
-            setwarehouse((prevState)=>selectedDispatchOrder.Inventory.Warehouse.name)
-            setwarehouseCity((prevState)=>selectedDispatchOrder.Inventory.Warehouse.city)
-            setproduct((prevState)=>selectedDispatchOrder.Inventory.Product.name)
-            setUoM((prevState)=>selectedDispatchOrder.Inventory.Product.UOM.name)
-            setquantity(selectedDispatchOrder.quantity)
-            setupdatedAt(selectedDispatchOrder.updatedAt)
-            setreceiverName(selectedDispatchOrder.receiverName)
-            setreceiverPhone(selectedDispatchOrder.receiverPhone)
-            setshipmentDate(selectedDispatchOrder.shipmentDate)
-            setavailableQuantity(selectedDispatchOrder.Inventory.availableQuantity)
-            setcommittedQuantity(selectedDispatchOrder.Inventory.committedQuantity)
-            setdispatchedQuantity(selectedDispatchOrder.Inventory.dispatchedQuantity)
-            setinwardQuantity(selectedDispatchOrder.Inventory.totalInwardQuantity)
-        }
-
-        return () => {
-        }
-    }, [selectedDispatchOrder])
-
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
       content: () => componentRef.current,
     });
 
     return (
+        selectedDispatchOrder ? 
         <div style={{ display: "inline" }}>
           <form>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -76,7 +39,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {customer}
+                            {selectedDispatchOrder.Inventory.Customer.companyName}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -86,7 +49,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {product}
+                            {selectedDispatchOrder.Inventory.Product.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -96,7 +59,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {UoM}
+                            {selectedDispatchOrder.Inventory.Product.UOM.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -106,7 +69,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {quantity}
+                            {selectedDispatchOrder.quantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -116,7 +79,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {availableQuantity}
+                            {selectedDispatchOrder.Inventory.availableQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -126,7 +89,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {committedQuantity}
+                            {selectedDispatchOrder.Inventory.committedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -136,7 +99,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {inwardQuantity}
+                            {selectedDispatchOrder.Inventory.totalInwardQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -145,7 +108,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                         </Box>
                     </Grid><Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dispatchedQuantity}
+                            {selectedDispatchOrder.Inventory.dispatchedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -155,7 +118,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouse}
+                            {selectedDispatchOrder.Inventory.Warehouse.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -165,7 +128,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouseCity}
+                            {selectedDispatchOrder.Inventory.Warehouse.city}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -175,7 +138,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dateFormat(shipmentDate)}
+                            {dateFormat(selectedDispatchOrder.shipmentDate)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -196,7 +159,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={customer}
+                          value={selectedDispatchOrder.Inventory.Customer.companyName}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -209,7 +172,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={warehouse}
+                          value={selectedDispatchOrder.Inventory.Warehouse.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -222,7 +185,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={product}
+                          value={selectedDispatchOrder.Inventory.Product.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -235,7 +198,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={quantity}
+                          value={selectedDispatchOrder.quantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -248,7 +211,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={availableQuantity}
+                          value={selectedDispatchOrder.Inventory.availableQuantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -261,7 +224,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={committedQuantity}
+                          value={selectedDispatchOrder.Inventory.committedQuantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -274,7 +237,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={UoM}
+                          value={selectedDispatchOrder.Inventory.Product.UOM.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -287,7 +250,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={receiverName}
+                          value={selectedDispatchOrder.receiverName}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -300,7 +263,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={receiverPhone}
+                          value={selectedDispatchOrder.receiverPhone}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -313,7 +276,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           }}
                           disabled
                           variant="filled"
-                          value={dateFormat(shipmentDate)}
+                          value={dateFormat(selectedDispatchOrder.shipmentDate)}
                         />
                     </Grid>
                 </Grid>
@@ -332,6 +295,8 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
             </Dialog>
           </form>
         </div >
+        :
+        null
       );
 }
 
