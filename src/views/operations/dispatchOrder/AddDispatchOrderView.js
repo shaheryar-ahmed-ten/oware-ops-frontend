@@ -33,9 +33,9 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [customerId, setCustomerId] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
-  const [referenceId, setreferenceId] = useState('');
-  const [selectedWarehouse, setselectedWarehouse] = useState(null);
-  const [dispatchorderIdForBusiness, setdispatchorderIdForBusiness] = useState('');
+  const [referenceId, setReferenceId] = useState('');
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+  const [dispatchorderIdForBusiness, setDispatchorderIdForBusiness] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -45,7 +45,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
-      setreferenceId(selectedDispatchOrder.referenceId || '');
+      setReferenceId(selectedDispatchOrder.referenceId || '');
     } else {
       setInventoryId('');
       setQuantity('');
@@ -55,7 +55,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setShipmentDate(dateToPickerFormat(new Date()));
       setReceiverName('');
       setReceiverPhone('');
-      setreferenceId('');
+      setReferenceId('');
     }
   }, [selectedDispatchOrder, customers])
 
@@ -85,11 +85,11 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       // console.log(warehouses)
-      setselectedWarehouse((prevState)=>{
+      setSelectedWarehouse((prevState)=>{
         warehouses.forEach(element => {
           if(customerId == element.id)
-            // setdispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-${digitize(dispatchedOrdersLength+1, 6)}`)
-            setdispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-`)
+            // setDispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-${digitize(dispatchedOrdersLength+1, 6)}`)
+            setDispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-`)
           });
       })
       getProducts({ customerId, warehouseId })
@@ -324,7 +324,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                   type="text"
                   variant="outlined"
                   value={referenceId}
-                  onChange={e => setreferenceId(e.target.value)}
+                  onChange={e => setReferenceId(e.target.value)}
                   inputProps={{ maxLength: 30 }}
                   onBlur={e => setValidation({ ...validation, referneceId: true })}
                 />

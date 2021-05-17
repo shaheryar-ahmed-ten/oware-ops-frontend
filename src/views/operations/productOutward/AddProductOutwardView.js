@@ -43,10 +43,10 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [customer, setCustomer] = useState('');
   const [dispatchOrderId, setDispatchOrderId] = useState('');
   const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
-  const [referenceId, setreferenceId] = useState('');
-  const [vehicleNumber, setvehicleNumber] = useState('');
-  const [vehicleType, setvehicleType] = useState('');
-  const [disabledFlag,setdisabledFlag] = useState(false)
+  const [referenceId, setReferenceId] = useState('');
+  const [vehicleNumber, setVehicleNumber] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [disabledFlag,setDisabledFlag] = useState(false)
   // resolved: error occurs on product outward edit.
   const selectDispatchOrder = (value,businessId) => {
     setDispatchOrderId(value);
@@ -64,9 +64,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
-      setreferenceId(dispatchOrder.referenceId || '')
-      setvehicleType(selectedProductOutward.Vehicle.vehicleType)
-      setvehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
+      setReferenceId(dispatchOrder.referenceId || '')
+      setVehicleType(selectedProductOutward.Vehicle.vehicleType)
+      setVehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
     }
     else {
       setRequestedQuantity(0);
@@ -78,19 +78,19 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setShipmentDate('');
       setReceiverName('');
       setReceiverPhone('');
-      setreferenceId('');
-      setvehicleType('')
-      setvehicleNumber('')
+      setReferenceId('');
+      setVehicleType('')
+      setVehicleNumber('')
     }
   }
 
   useEffect(() => {
     if (!!selectedProductOutward) {
-      setdisabledFlag(true)
+      setDisabledFlag(true)
       selectDispatchOrder(selectedProductOutward.dispatchOrderId || '');
       setQuantity(selectedProductOutward.quantity || '');
     } else {
-      setdisabledFlag(false)
+      setDisabledFlag(false)
       selectDispatchOrder('');
       setQuantity('');
     }
@@ -157,7 +157,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={referenceId}
                     // disabled
                     inputProps={{ maxLength: 30 }}
-                    onChange={(e)=>{setreferenceId(e.target.value)}}
+                    onChange={(e)=>{setReferenceId(e.target.value)}}
                   />
                 </Grid>
               </Grid>
@@ -308,7 +308,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       label="Vehicle Type"
                       variant="outlined"
                       value={vehicleType}
-                      onChange={e => setvehicleType(e.target.value)}
+                      onChange={e => setVehicleType(e.target.value)}
                     >
                       {
                         vehicleType == ''? 
@@ -330,7 +330,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     variant="outlined"
                     value={vehicleNumber}
                     inputProps={{ maxLength: 30 }}
-                    onChange={(e)=>{setvehicleNumber(e.target.value)}}
+                    onChange={(e)=>{setVehicleNumber(e.target.value)}}
                   />
                 </Grid>
               </Grid>
