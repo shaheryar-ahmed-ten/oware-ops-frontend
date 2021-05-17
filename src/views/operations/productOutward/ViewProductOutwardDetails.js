@@ -7,7 +7,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
 
     const [dispatchOrderId, setdispatchOrderId] = useState('')
     const [quantity, setquantity] = useState('')
-    const [vehivleType, setvehivleType] = useState('')
+    const [vehicleType, setvehicleType] = useState('')
     const [vehicleNumber, setvehicleNumber] = useState('')
     const [customer, setcustomer] = useState('')
     const [warehouse, setwarehouse] = useState('')
@@ -27,7 +27,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
         {
             setdispatchOrderId(selectedProductOutward.dispatchOrderId)
             setquantity(selectedProductOutward.quantity)
-            setvehivleType(selectedProductOutward.Vehicle.vehicleType)
+            setvehicleType(selectedProductOutward.Vehicle.vehicleType)
             setvehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
             setcustomer((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Customer.companyName)
             setwarehouse((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Warehouse.name)
@@ -322,6 +322,32 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           variant="filled"
                           value={dateFormat(shipmentDate)}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="vehicle"
+                          label="Vehicle Type"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          variant="filled"
+                          value={vehicleType}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="vehicle"
+                          label="Vehicle Number"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          variant="filled"
+                          value={vehicleNumber}
                         />
                     </Grid>
                 </Grid>

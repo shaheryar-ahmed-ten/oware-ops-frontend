@@ -47,7 +47,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [vehicleNumber, setvehicleNumber] = useState('');
   const [vehicleType, setvehicleType] = useState('');
   const [disabledFlag,setdisabledFlag] = useState(false)
-  // ERROR: error occurs on product outward edit.
+  // resolved: error occurs on product outward edit.
   const selectDispatchOrder = (value,businessId) => {
     setDispatchOrderId(value);
     setDispatchOrderBusinessId(businessId)
@@ -65,6 +65,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
       setreferenceId(dispatchOrder.referenceId || '')
+      setvehicleType(selectedProductOutward.Vehicle.vehicleType)
+      setvehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
     }
     else {
       setRequestedQuantity(0);
@@ -77,6 +79,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName('');
       setReceiverPhone('');
       setreferenceId('');
+      setvehicleType('')
+      setvehicleNumber('')
     }
   }
 
@@ -293,18 +297,25 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
+                {console.log(vehicleType == '')}
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Vehicle Type</InputLabel>
                     <Select
                       fullWidth={true}
-                      id="vehicleType"
+                      displayEmpty
+                      id="vehicle"
                       label="Vehicle Type"
                       variant="outlined"
                       value={vehicleType}
                       onChange={e => setvehicleType(e.target.value)}
                     >
-                      <MenuItem value="" disable>Select a Vehicle Type</MenuItem>
+                      {
+                        vehicleType == ''? 
+                        <MenuItem value=""></MenuItem>
+                        :
+                        <MenuItem value={vehicleType} disable> {vehicleType} </MenuItem>
+                      }
                       {vehicleTypes.map((vehicle,index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
                     </Select>
                   </FormControl>

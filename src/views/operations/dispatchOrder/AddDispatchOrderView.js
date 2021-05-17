@@ -251,22 +251,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="shipmentDate"
-                  label="Shipment Date"
-                  placeholder="Shipment Date"
-                  type="datetime-local"
-                  variant="outlined"
-                  value={shipmentDate}
-                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
-                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
-                />
-                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
+              <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -315,7 +300,22 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item sm={12}>
+            <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="shipmentDate"
+                  label="Shipment Date"
+                  placeholder="Shipment Date"
+                  type="datetime-local"
+                  variant="outlined"
+                  value={shipmentDate}
+                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
+                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
+                />
+                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
+              </Grid>
+              <Grid item sm={6}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
