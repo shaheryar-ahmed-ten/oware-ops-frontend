@@ -1,41 +1,16 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
 
 function InwardProductDetailsView({open, handleClose, selectedProductInward, formErrors}) {
-    // var {Customer, User, Product, Warehouse} = selectedProductInward ? selectedProductInward : '' 
-    const [customer, setcustomer] = useState('')
-    const [warehouse, setwarehouse] = useState('')
-    const [user, setuser] = useState('')
-    const [product, setproduct] = useState('')
-    const [quantity, setquantity] = useState('')
-    const [UoM, setUoM] = useState('')
-    const [updatedAt, setupdatedAt] = useState('')
-    useEffect(() => {
-        if(selectedProductInward)
-        {
-            setcustomer(selectedProductInward.Customer)
-            setwarehouse(selectedProductInward.Warehouse)
-            setuser(selectedProductInward.User)
-            setproduct(selectedProductInward.Product)
-            setquantity(selectedProductInward.quantity)
-            setUoM(selectedProductInward.Product.UOM.name)
-            setupdatedAt(selectedProductInward.updatedAt)
-        }
-        else {
-
-        }
-        return () => {
-        
-        }
-    }, [selectedProductInward])
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
       content: () => componentRef.current,
     });
   
     return (
+        selectedProductInward ? 
         <div style={{ display: "inline" }}>
         <form>
           <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -64,7 +39,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {customer.companyName}
+                            {selectedProductInward.Customer.companyName}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -74,7 +49,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {product.name}
+                            {selectedProductInward.Product.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -84,7 +59,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {UoM}
+                            {selectedProductInward.Product.UOM.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -94,7 +69,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {quantity}
+                            {selectedProductInward.quantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -104,7 +79,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouse.name}
+                            {selectedProductInward.Warehouse.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -114,7 +89,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouse.city}
+                            {selectedProductInward.Warehouse.city}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -124,7 +99,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dateFormat(updatedAt)}
+                            {dateFormat(selectedProductInward.updatedAt)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -145,7 +120,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               }}
                               disabled
                               variant="filled"
-                              value={customer.companyName}
+                              value={selectedProductInward.Customer.companyName}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -158,7 +133,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               }}
                               disabled
                               variant="filled"
-                              value={product.name}
+                              value={selectedProductInward.Product.name}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -171,7 +146,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               }}
                               disabled
                               variant="filled"
-                              value={warehouse.name}
+                              value={selectedProductInward.Warehouse.name}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -184,7 +159,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               }}
                               disabled
                               variant="filled"
-                              value={UoM}
+                              value={selectedProductInward.Product.UOM.name}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -197,7 +172,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               }}
                               disabled
                               variant="filled"
-                              value={quantity}
+                              value={selectedProductInward.quantity}
                             />
                         </Grid>
                     </Grid>
@@ -222,6 +197,8 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
           </Dialog>
         </form>
       </div >
+        :
+        null
     )
 }
 
