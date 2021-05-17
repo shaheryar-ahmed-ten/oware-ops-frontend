@@ -5,57 +5,13 @@ import { dateFormat } from '../../../utils/common';
 
 function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, handleClose}) {
 
-    const [dispatchOrderId, setdispatchOrderId] = useState('')
-    const [quantity, setquantity] = useState('')
-    const [vehicleType, setvehicleType] = useState('')
-    const [vehicleNumber, setvehicleNumber] = useState('')
-    const [customer, setcustomer] = useState('')
-    const [warehouse, setwarehouse] = useState('')
-    const [warehouseCity, setwarehouseCity] = useState('')
-    const [product, setproduct] = useState('')
-    const [UoM, setUoM] = useState('')
-    const [updatedAt, setupdatedAt] = useState('')
-    const [receiverName, setreceiverName] = useState('')
-    const [receiverPhone, setreceiverPhone] = useState('')
-    const [shipmentDate, setshipmentDate] = useState('')
-    const [availableQuantity, setavailableQuantity] = useState('')
-    const [committedQuantity, setcommittedQuantity] = useState('')
-    const [dispatchedQuantity, setdispatchedQuantity] = useState('')
-    const [inwardQuantity, setinwardQuantity] = useState('')
-    useEffect(() => {
-        if(selectedProductOutward)
-        {
-            setdispatchOrderId(selectedProductOutward.dispatchOrderId)
-            setquantity(selectedProductOutward.quantity)
-            setvehicleType(selectedProductOutward.Vehicle.vehicleType)
-            setvehicleNumber(selectedProductOutward.Vehicle.vehicleNumber)
-            setcustomer((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Customer.companyName)
-            setwarehouse((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Warehouse.name)
-            setwarehouseCity((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Warehouse.city)
-            setproduct((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Product.name)
-
-            setUoM((prevState)=>selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name)
-            setupdatedAt(selectedProductOutward.updatedAt)
-            setreceiverName(selectedProductOutward.DispatchOrder.receiverName)
-            setreceiverPhone(selectedProductOutward.DispatchOrder.receiverPhone)
-            setshipmentDate(selectedProductOutward.shipmentDate)
-            setavailableQuantity(selectedProductOutward.DispatchOrder.Inventory.availableQuantity)
-            setcommittedQuantity(selectedProductOutward.DispatchOrder.Inventory.committedQuantity)
-            setdispatchedQuantity(selectedProductOutward.DispatchOrder.Inventory.dispatchedQuantity)
-            setinwardQuantity(selectedProductOutward.DispatchOrder.Inventory.totalInwardQuantity)
-        }
-        return () => {
-            
-        }
-    }, [selectedProductOutward])
-
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
       content: () => componentRef.current,
     });
 
-
     return (
+      selectedProductOutward ? 
         <div style={{ display: "inline" }}>
           <form>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -84,7 +40,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {customer}
+                            {selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -94,7 +50,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {product}
+                            {selectedProductOutward.DispatchOrder.Inventory.Product.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -104,7 +60,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {UoM}
+                            {selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -114,7 +70,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {quantity}
+                            {selectedProductOutward.quantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -124,7 +80,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {availableQuantity}
+                            {selectedProductOutward.DispatchOrder.Inventory.availableQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -134,7 +90,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {committedQuantity}
+                            {selectedProductOutward.DispatchOrder.Inventory.committedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -144,7 +100,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {inwardQuantity}
+                            {selectedProductOutward.DispatchOrder.Inventory.totalInwardQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -153,7 +109,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                         </Box>
                     </Grid><Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dispatchedQuantity}
+                            {selectedProductOutward.DispatchOrder.Inventory.dispatchedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -163,7 +119,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouse}
+                            {selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -173,7 +129,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {warehouseCity}
+                            {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -183,7 +139,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dateFormat(shipmentDate)}
+                            {dateFormat(selectedProductOutward.shipmentDate)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -204,7 +160,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={customer}
+                          value={selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -217,7 +173,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={warehouse}
+                          value={selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -230,7 +186,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={product}
+                          value={selectedProductOutward.DispatchOrder.Inventory.Product.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -243,7 +199,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={quantity}
+                          value={selectedProductOutward.quantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -256,7 +212,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={availableQuantity}
+                          value={selectedProductOutward.DispatchOrder.Inventory.availableQuantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -269,7 +225,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={committedQuantity}
+                          value={selectedProductOutward.DispatchOrder.Inventory.committedQuantity}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -282,7 +238,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={UoM}
+                          value={selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -295,7 +251,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={receiverName}
+                          value={selectedProductOutward.DispatchOrder.receiverName}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -308,7 +264,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={receiverPhone}
+                          value={selectedProductOutward.DispatchOrder.receiverPhone}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -321,7 +277,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={dateFormat(shipmentDate)}
+                          value={dateFormat(selectedProductOutward.shipmentDate)}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -334,7 +290,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={vehicleType}
+                          value={selectedProductOutward.Vehicle.vehicleType}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -347,7 +303,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           }}
                           disabled
                           variant="filled"
-                          value={vehicleNumber}
+                          value={selectedProductOutward.Vehicle.vehicleNumber}
                         />
                     </Grid>
                 </Grid>
@@ -366,6 +322,8 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
             </Dialog>
           </form>
         </div >
+      :
+      null
       );
 }
 

@@ -297,7 +297,6 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-                {console.log(vehicleType == '')}
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Vehicle Type</InputLabel>
