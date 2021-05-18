@@ -1,7 +1,8 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
+import PrintIcon from '@material-ui/icons/Print';
 
 function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, handleClose}) {
 
@@ -27,6 +28,9 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                 <Box display="block" displayPrint="none"> 
                 <DialogTitle>
                   View Product Outward
+                  <IconButton aria-label="print" onClick={handlePrint}>
+                    <PrintIcon/>
+                  </IconButton>
               </DialogTitle>
                 </Box>
 
@@ -401,9 +405,6 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
               <Box displayPrint="none">
               <DialogActions>
                 <Button onClick={handleClose} color="default" variant="contained">Close</Button>
-                <Button onClick={handlePrint} color="primary" variant="contained">
-                            Print
-                        </Button>
               </DialogActions>
               </Box>
             </Box>

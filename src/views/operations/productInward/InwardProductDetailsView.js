@@ -1,7 +1,8 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography } from '@material-ui/core'
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
+import PrintIcon from '@material-ui/icons/Print';
 
 function InwardProductDetailsView({open, handleClose, selectedProductInward, formErrors}) {
     const componentRef = useRef();
@@ -24,10 +25,13 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                 </DialogTitle>                
             </Box>
 
-            <Box display="block" displayPrint="none"> 
-                <DialogTitle>
-                    View Product Inward
-                </DialogTitle>
+            <Box display="block" displayPrint="none">  
+                    <DialogTitle>
+                        View Product Inward
+                        <IconButton aria-label="print" onClick={handlePrint}>
+                    <PrintIcon/>
+                  </IconButton>
+                    </DialogTitle>
             </Box>
 
             <Box display="none" displayPrint="block" style={{margin:"0mm 25mm 0mm 25mm"}}>
@@ -255,14 +259,6 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
             <Box displayPrint="none">
                 <DialogActions>
                   <Button onClick={handleClose} color="default" variant="contained">Close</Button>
-                  {
-                    !selectedProductInward ? 
-                    ''
-                    :
-                  <Button onClick={handlePrint} color="primary" variant="contained">
-                    Print
-                  </Button>
-                  }
                 </DialogActions>
             </Box>
             

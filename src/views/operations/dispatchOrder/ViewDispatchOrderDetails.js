@@ -1,7 +1,8 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
+import PrintIcon from '@material-ui/icons/Print';
 
 function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, warehouses, products, selectedDispatchOrder}) {
     
@@ -24,9 +25,12 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </DialogTitle>                
                 </Box>
 
-                <Box display="block" displayPrint="none"> 
+                <Box display="block" displayPrint="none">  
                     <DialogTitle>
                         View Dispatch Order
+                        <IconButton aria-label="print" onClick={handlePrint}>
+                    <PrintIcon/>
+                  </IconButton>
                     </DialogTitle>
                 </Box>
 
@@ -327,9 +331,6 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                 <Box displayPrint="none">
                     <DialogActions>
                       <Button onClick={handleClose} color="default" variant="contained">Close</Button>
-                      <Button onClick={handlePrint} color="primary" variant="contained">
-                            Print
-                        </Button>
                     </DialogActions>
                 </Box>
             </Box>
