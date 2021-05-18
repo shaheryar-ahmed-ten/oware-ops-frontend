@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core';
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
@@ -18,7 +18,9 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
             <Box display="block" displayPrint="block" ref={componentRef}>
                 <Box display="none" displayPrint="block" style={{margin:"25mm 25mm 0mm 25mm"}}>
                     <DialogTitle>
-                         Product Outwards
+                      <Typography variant="h3">
+                      Product Outwards
+                      </Typography>
                     </DialogTitle>                
                 </Box>
 
@@ -35,81 +37,22 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
+                          Dispatch Order Id : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.dispatchorderIdForBusiness}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
                           Customer Name : 
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
                             {selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Product :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Product.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            UoM
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Requested Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.quantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Available Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.availableQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Committed Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.committedQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Total Inward Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.totalInwardQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Dispatched Quantity
-                        </Box>
-                    </Grid><Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.dispatchedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -124,7 +67,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Warehouse City :
+                            City :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -134,12 +77,102 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Shipment Date :
+                            Product :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.Inventory.Product.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Product Weight :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.Inventory.Product.weight} Kg/unit
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Requested Quantity :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.quantity + ` ` + selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Available Quantity :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.Inventory.availableQuantity + ` ` + selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Receiver Name :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.receiverName}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Receiver Phone :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.DispatchOrder.receiverPhone}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Vehicle Type :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.Vehicle.vehicleType}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Vehicle Number : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.Vehicle.vehicleNumber}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Requested Shipment Date&Time :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
                             {dateFormat(selectedProductOutward.shipmentDate)}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Shipment Date&Time :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {dateFormat(selectedProductOutward.createdAt)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -312,7 +345,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
 
               <Box displayPrint="none">
               <DialogActions>
-                <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+                <Button onClick={handleClose} color="default" variant="contained">Close</Button>
                 <Button onClick={handlePrint} color="primary" variant="contained">
                             Print
                         </Button>

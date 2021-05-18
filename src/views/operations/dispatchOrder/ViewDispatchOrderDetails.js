@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core';
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
@@ -18,7 +18,9 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
             <Box display="block" displayPrint="block" ref={componentRef}>
                 <Box display="none" displayPrint="block" style={{margin:"25mm 25mm 0mm 25mm"}}>
                     <DialogTitle>
-                         Dispatch Order
+                        <Typography variant="h3">
+                        Dispatch Order
+                        </Typography>
                     </DialogTitle>                
                 </Box>
 
@@ -34,81 +36,22 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
+                          Dispatch Order Id : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.dispatchorderIdForBusiness}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
                           Customer Name : 
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
                             {selectedDispatchOrder.Inventory.Customer.companyName}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Product :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.Product.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            UoM
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.Product.UOM.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Requested Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.quantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Available Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.availableQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Committed Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.committedQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Total Inward Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.totalInwardQuantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Dispatched Quantity
-                        </Box>
-                    </Grid><Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.dispatchedQuantity}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -123,7 +66,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Warehouse City :
+                            City :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -133,7 +76,67 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Shipment Date :
+                            Product :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.Inventory.Product.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Product Weight :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.Inventory.Product.weight} Kg/unit
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Requested Quantity :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.quantity + ` ` + selectedDispatchOrder.Inventory.Product.UOM.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Available Quantity :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.Inventory.availableQuantity + ` ` + selectedDispatchOrder.Inventory.Product.UOM.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Receiver Name :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.receiverName}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Receiver Phone : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedDispatchOrder.receiverPhone}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                        Requested Shipment Date&Time : 
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -217,19 +220,6 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
-                          label="Commited Qt"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          variant="filled"
-                          value={selectedDispatchOrder.Inventory.committedQuantity}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
                           label="UoM"
                           type="text"
                           InputLabelProps={{
@@ -269,7 +259,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
-                          label="ShipmentDate"
+                          label="Expected Shipment Date"
                           type="text"
                           InputLabelProps={{
                             shrink: true,
@@ -285,7 +275,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           
                 <Box displayPrint="none">
                     <DialogActions>
-                      <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+                      <Button onClick={handleClose} color="default" variant="contained">Close</Button>
                       <Button onClick={handlePrint} color="primary" variant="contained">
                             Print
                         </Button>

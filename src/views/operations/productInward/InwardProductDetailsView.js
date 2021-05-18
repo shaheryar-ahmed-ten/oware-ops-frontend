@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@material-ui/core'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@material-ui/core'
 import React, { useRef } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat } from '../../../utils/common';
@@ -18,7 +18,9 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
 
             <Box display="none" displayPrint="block" style={{margin:"25mm 25mm 0mm 25mm"}}>
                 <DialogTitle>
-                     Product Inward
+                    <Typography variant="h3">
+                        Product Inward
+                    </Typography>
                 </DialogTitle>                
             </Box>
 
@@ -44,36 +46,6 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Product :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductInward.Product.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            UoM
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductInward.Product.UOM.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Quantity
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductInward.quantity}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
                             Warehouse :
                         </Box>
                     </Grid>
@@ -84,7 +56,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Warehouse City :
+                            City :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -94,12 +66,52 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            Data & Time Process :
+                            Product :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {dateFormat(selectedProductInward.updatedAt)}
+                            {selectedProductInward.Product.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Product Weight :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductInward.Product.weight} Kg/unit
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Quantity : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductInward.quantity + ` ` + selectedProductInward.Product.UOM.name}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            UserName :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductInward.User.firstName + ` ` + selectedProductInward.User.lastName} 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            Created at :
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {dateFormat(selectedProductInward.createdAt)}
                         </Box>
                     </Grid>
                 </Grid>
@@ -181,7 +193,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
             
             <Box displayPrint="none">
                 <DialogActions>
-                  <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+                  <Button onClick={handleClose} color="default" variant="contained">Close</Button>
                   {
                     !selectedProductInward ? 
                     ''
