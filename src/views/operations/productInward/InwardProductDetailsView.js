@@ -96,7 +96,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            UserName :
+                            Processed By :
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -122,7 +122,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                 <DialogContent>
                     {formErrors}
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
                             <TextField
                               id="customername"
                               label="Customer"
@@ -131,6 +131,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                                 shrink: true,
                               }}
                               disabled
+                              fullWidth
                               variant="filled"
                               value={selectedProductInward.Customer.companyName}
                             />
@@ -144,8 +145,23 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                                 shrink: true,
                               }}
                               disabled
+                              fullWidth
                               variant="filled"
                               value={selectedProductInward.Product.name}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                              id="filled-number"
+                              label="Product Weight in KGs/unit"
+                              type="text"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              disabled
+                              fullWidth
+                              variant="filled"
+                              value={selectedProductInward.Product.weight}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -157,8 +173,23 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                                 shrink: true,
                               }}
                               disabled
+                              fullWidth
                               variant="filled"
                               value={selectedProductInward.Warehouse.name}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                              id="filled-number"
+                              label="City"
+                              type="text"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              disabled
+                              fullWidth
+                              variant="filled"
+                              value={selectedProductInward.Warehouse.city}
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -170,6 +201,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                                 shrink: true,
                               }}
                               disabled
+                              fullWidth
                               variant="filled"
                               value={selectedProductInward.Product.UOM.name}
                             />
@@ -183,8 +215,37 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                                 shrink: true,
                               }}
                               disabled
+                              fullWidth
                               variant="filled"
                               value={selectedProductInward.quantity}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                              id="filled-number"
+                              label="Processed By"
+                              type="text"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              disabled
+                              fullWidth
+                              variant="filled"
+                              value={selectedProductInward.User.firstName + ` ` + selectedProductInward.User.lastName}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                              id="filled-number"
+                              label="Created At"
+                              type="text"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              disabled
+                              fullWidth
+                              variant="filled"
+                              value={dateFormat(selectedProductInward.createdAt)}
                             />
                         </Grid>
                     </Grid>

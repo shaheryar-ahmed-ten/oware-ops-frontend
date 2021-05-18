@@ -155,12 +155,27 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
+                          label="Dispatch Order Id"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedDispatchOrder.dispatchorderIdForBusiness}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
                           label="Customer"
                           type="text"
                           InputLabelProps={{
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.Inventory.Customer.companyName}
                         />
@@ -174,8 +189,23 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.Inventory.Warehouse.name}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="City"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedDispatchOrder.Inventory.Warehouse.city}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -187,8 +217,23 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.Inventory.Product.name}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="Product Weight"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedDispatchOrder.Inventory.Product.weight}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -200,6 +245,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.quantity}
                         />
@@ -213,6 +259,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.Inventory.availableQuantity}
                         />
@@ -226,6 +273,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.Inventory.Product.UOM.name}
                         />
@@ -239,6 +287,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.receiverName}
                         />
@@ -252,6 +301,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedDispatchOrder.receiverPhone}
                         />
@@ -259,12 +309,13 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
-                          label="Expected Shipment Date"
+                          label="Req Shipment Date&Time"
                           type="text"
                           InputLabelProps={{
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={dateFormat(selectedDispatchOrder.shipmentDate)}
                         />

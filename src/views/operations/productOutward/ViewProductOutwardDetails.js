@@ -183,6 +183,20 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                   <DialogContent>
                     {formErrors}
                     <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                          id="filled-number"
+                          label="Dispatch Order Id"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedProductOutward.DispatchOrder.dispatchorderIdForBusiness}
+                        />
+                    </Grid>
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
@@ -192,6 +206,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
                         />
@@ -205,8 +220,23 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="City"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -218,8 +248,23 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.Inventory.Product.name}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="Product Weight in KGs/unit"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedProductOutward.DispatchOrder.Inventory.Product.weight}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -231,6 +276,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.quantity}
                         />
@@ -244,23 +290,12 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.Inventory.availableQuantity}
                         />
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Commited Qt"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.committedQuantity}
-                        />
-                    </Grid>
+                    
                     <Grid item xs={6}>
                         <TextField
                           id="filled-number"
@@ -270,6 +305,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
                         />
@@ -283,6 +319,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.receiverName}
                         />
@@ -296,21 +333,9 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.DispatchOrder.receiverPhone}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="ShipmentDate"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          variant="filled"
-                          value={dateFormat(selectedProductOutward.shipmentDate)}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -322,6 +347,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.Vehicle.vehicleType}
                         />
@@ -335,8 +361,37 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                             shrink: true,
                           }}
                           disabled
+                          fullWidth
                           variant="filled"
                           value={selectedProductOutward.Vehicle.vehicleNumber}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="Req Shipment Date&Time"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={dateFormat(selectedProductOutward.shipmentDate)}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="Created at"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={dateFormat(selectedProductOutward.createdAt)}
                         />
                     </Grid>
                 </Grid>
