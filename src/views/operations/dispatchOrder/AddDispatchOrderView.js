@@ -14,9 +14,9 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat } from '../../../utils/common';
+import { dateToPickerFormat, digitize } from '../../../utils/common';
 
-export default function AddDispatchOrderView({ addDispatchOrder, getInventory, getWarehouses, getProducts,
+export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,
   open, handleClose, selectedDispatchOrder, customers, formErrors }) {
 
   const [warehouses, setWarehouses] = useState([]);
@@ -33,6 +33,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
   const [customerId, setCustomerId] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
+  const [referenceId, setReferenceId] = useState('');
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+  const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -42,6 +45,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
+      setReferenceId(selectedDispatchOrder.referenceId || '');
     } else {
       setInventoryId('');
       setQuantity('');
@@ -51,6 +55,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       setShipmentDate(dateToPickerFormat(new Date()));
       setReceiverName('');
       setReceiverPhone('');
+      setReferenceId('');
     }
   }, [selectedDispatchOrder, customers])
 
@@ -65,7 +70,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
     } else {
       getWarehouses({ customerId })
-        .then(warehouses => setWarehouses(warehouses));
+        .then(warehouses => {
+          return setWarehouses(warehouses)
+        });
     }
   }, [customerId])
 
@@ -77,6 +84,12 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       setProducts([selectedDispatchOrder.Inventory.Product]);
       setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
+      setSelectedWarehouse((prevState)=>{
+        warehouses.forEach(element => {
+          if(customerId == element.id)
+            setBusinessId((prevState)=>  `DO-${element.businessWarehouseCode}-`)
+          });
+      })
       getProducts({ customerId, warehouseId })
         .then(products => setProducts(products));
     }
@@ -99,6 +112,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
     }
 
   }, [productId]);
+  // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
     const newDispatchOrder = {
       quantity,
@@ -108,7 +122,9 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       productId,
       shipmentDate,
       receiverName,
-      receiverPhone
+      receiverPhone,
+      referenceId,
+      businessId
     }
 
     setValidation({
@@ -137,7 +153,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedDispatchOrder ? 'Add Dispatch' : 'Edit Dispatch'}
+            {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -174,11 +190,11 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
                       variant="outlined"
                       value={warehouseId}
                       disabled={!!selectedDispatchOrder}
-                      onChange={e => setWarehouseId(e.target.value)}
+                      onChange={e => {setWarehouseId(e.target.value)}}
                       onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
                       <MenuItem value="" disabled>Select a warehouse</MenuItem>
-                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
+                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id} name="name">{warehouse.name}</MenuItem>)}
                     </Select>
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
@@ -221,7 +237,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
                     fullWidth={true}
                     margin="dense"
                     id="availableQuantity"
-                    label="Quantity"
+                    label="Available Qt"
                     type="number"
                     variant="outlined"
                     value={availableQuantity}
@@ -233,22 +249,7 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="shipmentDate"
-                  label="Shipment Date"
-                  placeholder="Shipment Date"
-                  type="datetime-local"
-                  variant="outlined"
-                  value={shipmentDate}
-                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
-                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
-                />
-                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
+              <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -296,11 +297,44 @@ export default function AddDispatchOrderView({ addDispatchOrder, getInventory, g
                 {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
               </Grid>
             </Grid>
+            <Grid container spacing={2}>
+            <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="shipmentDate"
+                  label="Shipment Date"
+                  placeholder="Shipment Date"
+                  type="datetime-local"
+                  variant="outlined"
+                  value={shipmentDate}
+                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
+                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
+                />
+                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
+              </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="referenceId"
+                  label="Reference Id"
+                  type="text"
+                  variant="outlined"
+                  value={referenceId}
+                  onChange={e => setReferenceId(e.target.value)}
+                  inputProps={{ maxLength: 30 }}
+                  onBlur={e => setValidation({ ...validation, referneceId: true })}
+                />
+                {/* {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''} */}
+              </Grid>
+            </Grid>
+            
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedDispatchOrder ? 'Add Dispatch' : 'Update Dispatch'}
+              {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Update Dispatch Order'}
             </Button>
           </DialogActions>
         </Dialog>

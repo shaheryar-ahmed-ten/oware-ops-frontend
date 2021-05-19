@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Grid,
   Button,
@@ -14,6 +14,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
+import { useReactToPrint } from 'react-to-print';
 
 export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -66,14 +67,20 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
     }
   }
 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   return (
     <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
+              {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
           </DialogTitle>
-          <DialogContent>
+          
+          <DialogContent ref={componentRef}>
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
@@ -175,6 +182,14 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             <Button onClick={handleSubmit} color="primary" variant="contained">
               {!selectedProductInward ? 'Add Product Inward' : 'Update Product Inward'}
             </Button>
+            {/* {
+              !selectedProductInward ? 
+              ''
+              :
+            <Button onClick={handlePrint} color="primary" variant="contained">
+              Print
+            </Button>
+            } */}
           </DialogActions>
         </Dialog>
       </form>

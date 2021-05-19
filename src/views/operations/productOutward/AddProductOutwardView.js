@@ -14,8 +14,22 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
+import { Autocomplete } from '@material-ui/lab';
+import { ControlPointSharp } from '@material-ui/icons';
 
-export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders, formErrors }) {
+export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders, formErrors, vehicleTypes }) {
+  const dispatchOrdersForDropdown = []
+  const filterDispatchOrdersForDropdown = () => {
+    dispatchOrders.forEach(dispatchOrder => {
+      //    loop to get the PO of each DO
+            let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
+        let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
+          if(remainingQuantityOfDispatch != 0){
+            dispatchOrdersForDropdown.push(dispatchOrder)
+          }
+        });
+  }
+  filterDispatchOrdersForDropdown()
   const [validation, setValidation] = useState({});
   const [product, setProduct] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -23,30 +37,46 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
   const [requestedQuantity, setRequestedQuantity] = useState(0);
-  const [availableQuantity, setAvailableQuantity] = useState(0);
+  const [remainingQuantity, setRemainingQuantity] = useState(0);
   const [uom, setUom] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [customer, setCustomer] = useState('');
   const [dispatchOrderId, setDispatchOrderId] = useState('');
+  const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
+  const [referenceId, setReferenceId] = useState('');
+  const [vehicleNumber, setVehicleNumber] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [disabledFlag,setDisabledFlag] = useState(false)
+  const [businessId, setBusinessId] = useState('');
 
-  const selectDispatchOrder = value => {
+  // resolved: error occurs on product outward edit.
+  const selectDispatchOrder = (value,businessId) => {
     setDispatchOrderId(value);
+    setDispatchOrderBusinessId(businessId)
     if (value) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
+      setDispatchOrderBusinessId(dispatchOrder.businessId)
       let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       setRequestedQuantity(dispatchOrder.quantity || 0);
-      setAvailableQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0);
-      setUom(dispatchOrder.Inventory.Product.UOM.name);
+      setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
+      setUom(dispatchOrder.Inventory.Product.UOM.name); 
       setProduct(dispatchOrder.Inventory.Product.name || '');
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
       setCustomer(dispatchOrder.Inventory.Customer.companyName);
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
+      setReferenceId(dispatchOrder.referenceId || '')
+      setBusinessId(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
+      if(selectedProductOutward)
+      {
+      setVehicleType(selectedProductOutward.Vehicle.number || '')
+      setVehicleNumber(selectedProductOutward.Vehicle.type || '')
+      }
     }
     else {
       setRequestedQuantity(0);
-      setAvailableQuantity(0);
+      setRemainingQuantity(0);
       setProduct('');
       setUom('');
       setWarehouse('');
@@ -54,22 +84,36 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setShipmentDate('');
       setReceiverName('');
       setReceiverPhone('');
+      setReferenceId('');
+      setBusinessId('');
+      setVehicleType('');
+      setVehicleNumber('');
     }
   }
 
   useEffect(() => {
     if (!!selectedProductOutward) {
+      setDisabledFlag(true)
       selectDispatchOrder(selectedProductOutward.dispatchOrderId || '');
       setQuantity(selectedProductOutward.quantity || '');
     } else {
+      setDisabledFlag(false)
       selectDispatchOrder('');
       setQuantity('');
     }
   }, [selectedProductOutward, dispatchOrders])
+  // Done: add reference id in sending obj
+  // Done: add vehicleNumber and vehicleType
   const handleSubmit = e => {
     const newProductOutward = {
       dispatchOrderId,
-      quantity
+      quantity,
+      referenceId,
+      vehicle: {
+        number: vehicleNumber,
+        type: vehicleType
+      },
+      businessId
     }
     setValidation({
       quantity: true,
@@ -94,20 +138,19 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Dispatch</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="dispatchOrderId"
-                      label="ProductInward"
-                      variant="outlined"
-                      value={dispatchOrderId}
-                      disabled={!!selectedProductOutward}
-                      onChange={e => selectDispatchOrder(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a dispatch order</MenuItem>
-                      {dispatchOrders.map(dispatchOrder => <MenuItem key={dispatchOrder.id} value={dispatchOrder.id}>{dispatchOrder.Inventory.Product.name} - {dispatchOrder.quantity}</MenuItem>)}
-                    </Select>
+                      <Autocomplete
+                        id="dispatchOrderId"
+                        value={dispatchOrderBusinessId}
+                        options={dispatchOrdersForDropdown}
+                        getOptionLabel={(dispatchOrder) => dispatchOrder.businessId}
+                        renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
+                        onChange={(event, newValue) => {
+                          selectDispatchOrder(newValue.id,newValue.businessId)
+                        }}
+                        inputValue={dispatchOrderBusinessId}
+                        onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
+                        disabled={disabledFlag}
+                      />
                     {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -117,7 +160,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     margin="dense"
                     id="quantity"
                     label="Actual Quantity to Dispatch"
-                    InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+                    InputProps={{ inputProps: { min: 0, max: remainingQuantity } }}
                     type="number"
                     variant="outlined"
                     value={quantity}
@@ -130,29 +173,57 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="customer"
-                    label="Customer"
-                    type="text"
-                    variant="outlined"
-                    value={customer}
-                    disabled
-                  />
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Vehicle Type</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      displayEmpty
+                      id="vehicle"
+                      label="Vehicle Type"
+                      variant="outlined"
+                      value={vehicleType}
+                      onChange={e => setVehicleType(e.target.value)}
+                    >
+                      {
+                        vehicleType == ''? 
+                        <MenuItem value=""></MenuItem>
+                        :
+                        <MenuItem value={vehicleType} disable> {vehicleType} </MenuItem>
+                      }
+                      {vehicleTypes.map((vehicle,index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
-                    id="warehouse"
-                    label="Warehouse"
+                    id="vehicleNumber"
+                    label="Vehicle Number"
                     type="text"
                     variant="outlined"
-                    value={warehouse}
-                    disabled
+                    value={vehicleNumber}
+                    inputProps={{ maxLength: 30 }}
+                    onChange={(e)=>{setVehicleNumber(e.target.value)}}
                   />
                 </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+              <Grid item sm={12}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="referenceId"
+                    label="Reference Id"
+                    type="text"
+                    variant="outlined"
+                    value={referenceId}
+                    // disabled
+                    inputProps={{ maxLength: 30 }}
+                    onChange={(e)=>{setReferenceId(e.target.value)}}
+                  />
+                </Grid>
+              
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
@@ -197,17 +268,42 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                   <TextField
                     fullWidth={true}
                     margin="dense"
-                    id="availableQuantity"
-                    label="Available quantity"
+                    id="remainingQuantity"
+                    label="Remaining quantity"
                     type="text"
                     variant="outlined"
-                    value={availableQuantity}
+                    value={remainingQuantity}
                     disabled
                   />
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="customer"
+                    label="Customer"
+                    type="text"
+                    variant="outlined"
+                    value={customer}
+                    disabled
+                  />
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="warehouse"
+                    label="Warehouse"
+                    type="text"
+                    variant="outlined"
+                    value={warehouse}
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
