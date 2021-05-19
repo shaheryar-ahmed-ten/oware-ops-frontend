@@ -54,7 +54,8 @@ export default function ProductOutwardView() {
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => `PD-${entity.DispatchOrder.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
+    // format: (value, entity) => `PD-${entity.DispatchOrder.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
+    format: (value, entity) => entity.businessId
   }, {
     id: 'Inventory.Customer.companyName',
     label: 'CUSTOMER',

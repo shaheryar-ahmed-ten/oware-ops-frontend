@@ -14,7 +14,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat, digitize, getRandomId } from '../../../utils/common';
+import { dateToPickerFormat, digitize } from '../../../utils/common';
 
 export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,
   open, handleClose, selectedDispatchOrder, customers, formErrors }) {
@@ -35,7 +35,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
   const [selectedWarehouse, setSelectedWarehouse] = useState(null);
-  const [dispatchorderIdForBusiness, setDispatchorderIdForBusiness] = useState('');
+  const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -84,12 +84,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setProducts([selectedDispatchOrder.Inventory.Product]);
       setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
-      // console.log(warehouses)
       setSelectedWarehouse((prevState)=>{
         warehouses.forEach(element => {
           if(customerId == element.id)
-            // setDispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-${digitize(dispatchedOrdersLength+1, 6)}`)
-            setDispatchorderIdForBusiness((prevState)=>  `DO-${element.businessWarehouseCode}-`)
+            setBusinessId((prevState)=>  `DO-${element.businessWarehouseCode}-`)
           });
       })
       getProducts({ customerId, warehouseId })
@@ -126,7 +124,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       receiverName,
       receiverPhone,
       referenceId,
-      businessId: dispatchorderIdForBusiness
+      businessId
     }
 
     setValidation({

@@ -47,6 +47,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [disabledFlag,setDisabledFlag] = useState(false)
+  const [businessId, setBusinessId] = useState('');
+
   // resolved: error occurs on product outward edit.
   const selectDispatchOrder = (value,businessId) => {
     setDispatchOrderId(value);
@@ -65,6 +67,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
       setReferenceId(dispatchOrder.referenceId || '')
+      setBusinessId(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
       if(selectedProductOutward)
       {
       setVehicleType(selectedProductOutward.Vehicle.number || '')
@@ -82,8 +85,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName('');
       setReceiverPhone('');
       setReferenceId('');
-      setVehicleType('')
-      setVehicleNumber('')
+      setBusinessId('');
+      setVehicleType('');
+      setVehicleNumber('');
     }
   }
 
@@ -108,7 +112,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       vehicle: {
         number: vehicleNumber,
         type: vehicleType
-      }
+      },
+      businessId
     }
     setValidation({
       quantity: true,
