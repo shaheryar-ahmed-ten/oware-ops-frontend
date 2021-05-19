@@ -330,7 +330,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           
                 <Box displayPrint="none">
                     <DialogActions>
-                      <Button onClick={handleClose} color="default" variant="contained">Close</Button>
+                      <Button onClick={handleClose} color="primary" variant="contained">Close</Button>
                     </DialogActions>
                 </Box>
             </Box>
