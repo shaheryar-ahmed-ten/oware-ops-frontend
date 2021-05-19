@@ -58,7 +58,7 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
     // format: (value, entity) => `DO-${entity.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
-    format: (value, entity) => entity.dispatchorderIdForBusiness
+    format: (value, entity) => entity.businessId
   },
     {
     id: 'Inventory.Customer.companyName',

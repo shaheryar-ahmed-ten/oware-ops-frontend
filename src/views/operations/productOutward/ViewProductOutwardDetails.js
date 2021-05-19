@@ -46,7 +46,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.dispatchorderIdForBusiness}
+                            {selectedProductOutward.DispatchOrder.businessId}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -146,7 +146,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.Vehicle.vehicleType}
+                            {selectedProductOutward.Vehicle.type}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -156,7 +156,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.Vehicle.vehicleNumber}
+                            {selectedProductOutward.Vehicle.number}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -198,7 +198,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.DispatchOrder.dispatchorderIdForBusiness}
+                          value={selectedProductOutward.DispatchOrder.businessId}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -353,7 +353,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.Vehicle.vehicleType}
+                          value={selectedProductOutward.Vehicle.type}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -367,7 +367,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.Vehicle.vehicleNumber}
+                          value={selectedProductOutward.Vehicle.number}
                         />
                     </Grid>
                     <Grid item xs={6}>
