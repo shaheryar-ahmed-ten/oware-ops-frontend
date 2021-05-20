@@ -151,7 +151,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                     id="uom"
                     label="UOM"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={uom}
                     disabled
                   />

@@ -233,7 +233,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="product"
                     label="Product Name"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={product}
                     disabled
                   />
@@ -245,7 +245,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="uom"
                     label="UoM"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={uom}
                     disabled
                   />
@@ -259,7 +259,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="requestedQuantity"
                     label="Quantity of Product to Dispatch"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={requestedQuantity}
                     disabled
                   />
@@ -271,7 +271,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="remainingQuantity"
                     label="Remaining quantity"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={remainingQuantity}
                     disabled
                   />
@@ -285,7 +285,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="customer"
                     label="Customer"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={customer}
                     disabled
                   />
@@ -297,7 +297,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="warehouse"
                     label="Warehouse"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={warehouse}
                     disabled
                   />
@@ -311,7 +311,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="shipmentDate"
                     label="Shipment Date"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={shipmentDate}
                     disabled
                   />
@@ -325,7 +325,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="receiverName"
                     label="Receiver Name"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={receiverName}
                     disabled
                   />
@@ -337,7 +337,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     id="receiverPhone"
                     label="Receiver Phone"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={receiverPhone}
                     disabled
                   />

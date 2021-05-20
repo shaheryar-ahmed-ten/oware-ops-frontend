@@ -227,7 +227,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                     id="uom"
                     label="UOM"
                     type="text"
-                    variant="outlined"
+                    variant="filled"
                     value={uom}
                     disabled
                   />
@@ -239,7 +239,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                     id="availableQuantity"
                     label="Available Qt"
                     type="number"
-                    variant="outlined"
+                    variant="filled"
                     value={availableQuantity}
                     disabled
                   />
