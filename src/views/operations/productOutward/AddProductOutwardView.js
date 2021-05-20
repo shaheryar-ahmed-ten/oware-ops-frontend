@@ -97,6 +97,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       selectDispatchOrder(selectedProductOutward.dispatchOrderId || '');
       setQuantity(selectedProductOutward.quantity || '');
     } else {
+      setValidation({})
       setDisabledFlag(false)
       selectDispatchOrder('');
       setQuantity('');
@@ -118,9 +119,10 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     setValidation({
       quantity: true,
       dispatchOrderId: true,
+      vehicleType:true
     });
     if (isRequired(dispatchOrderId) &&
-      isRequired(quantity)) {
+      isRequired(quantity) && isRequired(vehicleType)) {
       addProductOutward(newProductOutward);
     }
   }
@@ -183,6 +185,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       variant="outlined"
                       value={vehicleType}
                       onChange={e => setVehicleType(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, vehicleType: true })}
                     >
                       {
                         vehicleType == ''? 
@@ -192,6 +195,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       }
                       {vehicleTypes.map((vehicle,index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
                     </Select>
+                    {validation.vehicleType && !isRequired(vehicleType) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
@@ -205,7 +209,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={vehicleNumber}
                     inputProps={{ maxLength: 30 }}
                     onChange={(e)=>{setVehicleNumber(e.target.value)}}
+                    onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
                   />
+                    {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
