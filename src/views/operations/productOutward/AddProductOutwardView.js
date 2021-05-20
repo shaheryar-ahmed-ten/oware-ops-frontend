@@ -146,7 +146,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                         renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
                         onChange={(event, newValue) => {
                           if(newValue)
-                          selectDispatchOrder(newValue.id,newValue.businessId)
+                            selectDispatchOrder(newValue.id,newValue.businessId)
                         }}
                         inputValue={dispatchOrderBusinessId}
                         onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
