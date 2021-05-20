@@ -113,7 +113,7 @@ export default function DispatchOrderView() {
     format: (value, entity) =>
       [
         <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
