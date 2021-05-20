@@ -145,6 +145,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                         getOptionLabel={(dispatchOrder) => dispatchOrder.businessId}
                         renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
                         onChange={(event, newValue) => {
+                          if(newValue)
                           selectDispatchOrder(newValue.id,newValue.businessId)
                         }}
                         inputValue={dispatchOrderBusinessId}
