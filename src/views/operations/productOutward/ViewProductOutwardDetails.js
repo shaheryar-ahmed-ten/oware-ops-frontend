@@ -24,7 +24,6 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                       </Typography>
                     </DialogTitle>                
                 </Box>
-
                 <Box display="block" displayPrint="none"> 
                 <DialogTitle>
                   View Product Outward
@@ -39,6 +38,16 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                 <DialogContent>
                 {formErrors}
                     <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                          Product Outward Id : 
+                        </Box>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Box display="block" displayPrint="block">
+                            {selectedProductOutward.businessId}
+                        </Box>
+                    </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
                           Dispatch Order Id : 
@@ -186,8 +195,22 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                 <Box display="block" displayPrint="none">
                   <DialogContent>
                     {formErrors}
-                    <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                          id="filled-number"
+                          label="Product Outward Id"
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          disabled
+                          fullWidth
+                          variant="filled"
+                          value={selectedProductOutward.businessId}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
                         <TextField
                           id="filled-number"
                           label="Dispatch Order Id"
