@@ -57,7 +57,6 @@ export default function DispatchOrderView() {
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    // format: (value, entity) => `DO-${entity.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
     format: (value, entity) => entity.businessId
   },
     {
