@@ -202,25 +202,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Product</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="productId"
-                      label="Inventory"
-                      variant="outlined"
-                      value={productId}
-                      disabled={!!selectedDispatchOrder}
-                      onChange={e => setProductId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, productId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a product</MenuItem>
-                      {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                    </Select>
-                    {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={3}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
@@ -232,12 +213,12 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                     disabled
                   />
                 </Grid>
-                <Grid item sm={3}>
+                <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
                     id="availableQuantity"
-                    label="Available Qt"
+                    label="Available Quantity"
                     type="number"
                     variant="filled"
                     value={availableQuantity}
@@ -245,11 +226,28 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                   />
                 </Grid>
               </Grid>
-              <Grid container spacing={2}>
-              </Grid>
             </Grid>
             <Grid container spacing={2}>
-              <Grid item sm={12}>
+              <Grid item sm={6}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <InputLabel>Product</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    id="productId"
+                    label="Inventory"
+                    variant="outlined"
+                    value={productId}
+                    disabled={!!selectedDispatchOrder}
+                    onChange={e => setProductId(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, productId: true })}
+                  >
+                    <MenuItem value="" disabled>Select a product</MenuItem>
+                    {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+                  </Select>
+                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+                </FormControl>
+              </Grid>
+              <Grid item sm={6}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -324,9 +322,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                   value={referenceId}
                   onChange={e => setReferenceId(e.target.value)}
                   inputProps={{ maxLength: 30 }}
-                  onBlur={e => setValidation({ ...validation, referneceId: true })}
                 />
-                {/* {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''} */}
               </Grid>
             </Grid>
             

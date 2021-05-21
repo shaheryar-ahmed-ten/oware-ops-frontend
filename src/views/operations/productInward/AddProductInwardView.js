@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -67,11 +67,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
     }
   }
 
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-
   return (
     <div style={{ display: "inline" }}>
       <form>
@@ -80,7 +75,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
               {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
           </DialogTitle>
           
-          <DialogContent ref={componentRef}>
+          <DialogContent>
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
@@ -182,14 +177,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             <Button onClick={handleSubmit} color="primary" variant="contained">
               {!selectedProductInward ? 'Add Product Inward' : 'Update Product Inward'}
             </Button>
-            {/* {
-              !selectedProductInward ? 
-              ''
-              :
-            <Button onClick={handlePrint} color="primary" variant="contained">
-              Print
-            </Button>
-            } */}
           </DialogActions>
         </Dialog>
       </form>
