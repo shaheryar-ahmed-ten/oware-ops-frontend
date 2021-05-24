@@ -34,7 +34,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
-  const [businessId, setBusinessId] = useState('');
+  const [internalIdForBusiness, setBusinessId] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -73,7 +73,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
           return setWarehouses(warehouses)
         });
     }
-  }, [customerId])
+  }, [customerId]);
 
   useEffect(() => {
     setProducts([]);
@@ -119,7 +119,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       receiverName,
       receiverPhone,
       referenceId,
-      businessId
+      internalIdForBusiness
     }
 
     setValidation({

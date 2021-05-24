@@ -45,7 +45,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.businessId}
+                            {selectedProductOutward.internalIdForBusiness}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -55,7 +55,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.businessId}
+                            {selectedProductOutward.DispatchOrder.internalIdForBusiness}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -207,7 +207,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.businessId}
+                          value={selectedProductOutward.internalIdForBusiness}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -221,7 +221,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.DispatchOrder.businessId}
+                          value={selectedProductOutward.DispatchOrder.internalIdForBusiness}
                         />
                     </Grid>
                     <Grid item xs={6}>
