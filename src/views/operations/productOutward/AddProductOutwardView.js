@@ -22,14 +22,14 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const filterDispatchOrdersForDropdown = () => {
     dispatchOrders.forEach(dispatchOrder => {
       //    loop to get the PO of each DO
-            let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
-        let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
-          if(remainingQuantityOfDispatch != 0){
-            dispatchOrdersForDropdown.push(dispatchOrder)
-          }
-        });
+      let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
+      let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
+      if (remainingQuantityOfDispatch != 0) {
+        dispatchOrdersForDropdown.push(dispatchOrder);
+      }
+    });
   }
-  filterDispatchOrdersForDropdown()
+  filterDispatchOrdersForDropdown();
   const [validation, setValidation] = useState({});
   const [product, setProduct] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -46,11 +46,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [referenceId, setReferenceId] = useState('');
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [vehicleType, setVehicleType] = useState('');
-  const [disabledFlag,setDisabledFlag] = useState(false)
+  const [disabledFlag, setDisabledFlag] = useState(false)
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   // resolved: error occurs on product outward edit.
-  const selectDispatchOrder = (value,internalIdForBusiness) => {
+  const selectDispatchOrder = (value, internalIdForBusiness) => {
     setDispatchOrderId(value);
     setDispatchOrderBusinessId(internalIdForBusiness)
     if (value) {
@@ -59,7 +59,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       setRequestedQuantity(dispatchOrder.quantity || 0);
       setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
-      setUom(dispatchOrder.Inventory.Product.UOM.name); 
+      setUom(dispatchOrder.Inventory.Product.UOM.name);
       setProduct(dispatchOrder.Inventory.Product.name || '');
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
       setCustomer(dispatchOrder.Inventory.Customer.companyName);
@@ -68,10 +68,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverPhone(dispatchOrder.receiverPhone || '');
       setReferenceId(dispatchOrder.referenceId || '')
       setInternalIdForBusiness(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
-      if(selectedProductOutward)
-      {
-      setVehicleType(selectedProductOutward.Vehicle.number || '')
-      setVehicleNumber(selectedProductOutward.Vehicle.type || '')
+      if (selectedProductOutward) {
+        setVehicleType(selectedProductOutward.Vehicle.number || '')
+        setVehicleNumber(selectedProductOutward.Vehicle.type || '')
       }
     }
     else {
@@ -119,7 +118,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     setValidation({
       quantity: true,
       dispatchOrderId: true,
-      vehicleType:true
+      vehicleType: true
     });
     if (isRequired(dispatchOrderId) &&
       isRequired(quantity) && isRequired(vehicleType)) {
@@ -140,20 +139,20 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                      <Autocomplete
-                        id="dispatchOrderId"
-                        value={dispatchOrderBusinessId}
-                        options={dispatchOrdersForDropdown}
-                        getOptionLabel={(dispatchOrder) => dispatchOrder.internalIdForBusiness}
-                        renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
-                        onChange={(event, newValue) => {
-                          if(newValue)
-                            selectDispatchOrder(newValue.id,newValue.internalIdForBusiness)
-                        }}
-                        inputValue={dispatchOrderBusinessId}
-                        onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
-                        disabled={disabledFlag}
-                      />
+                    <Autocomplete
+                      id="dispatchOrderId"
+                      value={dispatchOrderBusinessId}
+                      options={dispatchOrdersForDropdown}
+                      getOptionLabel={(dispatchOrder) => (dispatchOrder.internalIdForBusiness || '')}
+                      renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          selectDispatchOrder(newValue.id, (newValue.internalIdForBusiness || ''))
+                      }}
+                      inputValue={dispatchOrderBusinessId}
+                      onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
+                      disabled={disabledFlag}
+                    />
                     {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -189,12 +188,12 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                       onBlur={e => setValidation({ ...validation, vehicleType: true })}
                     >
                       {
-                        vehicleType == ''? 
-                        <MenuItem value=""></MenuItem>
-                        :
-                        <MenuItem value={vehicleType} disable> {vehicleType} </MenuItem>
+                        vehicleType == '' ?
+                          <MenuItem value=""></MenuItem>
+                          :
+                          <MenuItem value={vehicleType} disable> {vehicleType} </MenuItem>
                       }
-                      {vehicleTypes.map((vehicle,index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
+                      {vehicleTypes.map((vehicle, index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
                     </Select>
                     {validation.vehicleType && !isRequired(vehicleType) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
                   </FormControl>
@@ -209,14 +208,14 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     variant="outlined"
                     value={vehicleNumber}
                     inputProps={{ maxLength: 30 }}
-                    onChange={(e)=>{setVehicleNumber(e.target.value)}}
+                    onChange={(e) => { setVehicleNumber(e.target.value) }}
                     onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
                   />
-                    {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
+                  {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
-              <Grid item sm={12}>
+                <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
@@ -227,10 +226,10 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     value={referenceId}
                     // disabled
                     inputProps={{ maxLength: 30 }}
-                    onChange={(e)=>{setReferenceId(e.target.value)}}
+                    onChange={(e) => { setReferenceId(e.target.value) }}
                   />
                 </Grid>
-              
+
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
