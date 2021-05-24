@@ -47,15 +47,15 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [disabledFlag,setDisabledFlag] = useState(false)
-  const [businessId, setBusinessId] = useState('');
+  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   // resolved: error occurs on product outward edit.
-  const selectDispatchOrder = (value,businessId) => {
+  const selectDispatchOrder = (value,internalIdForBusiness) => {
     setDispatchOrderId(value);
-    setDispatchOrderBusinessId(businessId)
+    setDispatchOrderBusinessId(internalIdForBusiness)
     if (value) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
-      setDispatchOrderBusinessId(dispatchOrder.businessId)
+      setDispatchOrderBusinessId(dispatchOrder.internalIdForBusiness)
       let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       setRequestedQuantity(dispatchOrder.quantity || 0);
       setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
@@ -67,7 +67,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
       setReferenceId(dispatchOrder.referenceId || '')
-      setBusinessId(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
+      setInternalIdForBusiness(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
       if(selectedProductOutward)
       {
       setVehicleType(selectedProductOutward.Vehicle.number || '')
@@ -85,7 +85,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverName('');
       setReceiverPhone('');
       setReferenceId('');
-      setBusinessId('');
+      setInternalIdForBusiness('');
       setVehicleType('');
       setVehicleNumber('');
     }
@@ -114,7 +114,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
         number: vehicleNumber,
         type: vehicleType
       },
-      businessId
+      internalIdForBusiness
     }
     setValidation({
       quantity: true,
@@ -144,11 +144,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                         id="dispatchOrderId"
                         value={dispatchOrderBusinessId}
                         options={dispatchOrdersForDropdown}
-                        getOptionLabel={(dispatchOrder) => dispatchOrder.businessId}
+                        getOptionLabel={(dispatchOrder) => dispatchOrder.internalIdForBusiness}
                         renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
                         onChange={(event, newValue) => {
                           if(newValue)
-                            selectDispatchOrder(newValue.id,newValue.businessId)
+                            selectDispatchOrder(newValue.id,newValue.internalIdForBusiness)
                         }}
                         inputValue={dispatchOrderBusinessId}
                         onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}

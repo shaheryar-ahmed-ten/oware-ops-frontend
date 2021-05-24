@@ -45,7 +45,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.businessId}
+                            {selectedDispatchOrder.internalIdForBusiness}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -167,7 +167,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedDispatchOrder.businessId}
+                          value={selectedDispatchOrder.internalIdForBusiness}
                         />
                     </Grid>
                     <Grid item xs={6}>

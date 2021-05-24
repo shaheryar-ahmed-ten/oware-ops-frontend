@@ -57,7 +57,7 @@ export default function DispatchOrderView() {
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.businessId
+    format: (value, entity) => entity.internalIdForBusiness
   },
     {
     id: 'Inventory.Customer.companyName',
