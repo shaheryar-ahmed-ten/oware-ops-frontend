@@ -34,7 +34,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
-  const [internalIdForBusiness, setBusinessId] = useState('');
+  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -84,7 +84,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
-      setBusinessId(`DO-${warehouse.businessWarehouseCode}-`);
+      setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
       getProducts({ customerId, warehouseId })
         .then(products => setProducts(products));
     }
