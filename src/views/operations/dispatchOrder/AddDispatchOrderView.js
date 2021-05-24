@@ -34,7 +34,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [warehouseId, setWarehouseId] = useState('');
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
-  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const [businessId, setBusinessId] = useState('');
 
   useEffect(() => {
@@ -84,12 +83,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       setProducts([selectedDispatchOrder.Inventory.Product]);
       setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
-      setSelectedWarehouse((prevState)=>{
-        warehouses.forEach(element => {
-          if(customerId == element.id)
-            setBusinessId((prevState)=>  `DO-${element.businessWarehouseCode}-`)
-          });
-      })
+      const warehouse = warehouses.find(element => warehouseId == element.id);
+      setBusinessId(`DO-${warehouse.businessWarehouseCode}-`);
       getProducts({ customerId, warehouseId })
         .then(products => setProducts(products));
     }
@@ -190,7 +185,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                       variant="outlined"
                       value={warehouseId}
                       disabled={!!selectedDispatchOrder}
-                      onChange={e => {setWarehouseId(e.target.value)}}
+                      onChange={e => { setWarehouseId(e.target.value) }}
                       onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     >
                       <MenuItem value="" disabled>Select a warehouse</MenuItem>
@@ -296,7 +291,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
               </Grid>
             </Grid>
             <Grid container spacing={2}>
-            <Grid item sm={6}>
+              <Grid item sm={6}>
                 <TextField
                   fullWidth={true}
                   margin="dense"
@@ -325,7 +320,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                 />
               </Grid>
             </Grid>
-            
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
