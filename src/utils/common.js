@@ -39,7 +39,7 @@ export const getURL = uri => {
 }
 
 export const isSuperAdmin = user => {
-  return user && user.Role && user.Role.PermissionAccesses.find(pa => pa.Permission.type == 'superadmin_privileges');
+  return user && user.Role && ['SUPER_ADMIN', 'superAdmin'].indexOf(user.Role.type) > -1;
 }
 
 export const digitize = (value, places) => {
