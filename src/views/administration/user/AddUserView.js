@@ -17,7 +17,7 @@ import {
 import { getUser, isSuperAdmin, SharedContext } from '../../../utils/common';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
-export default function AddUserView({ addUser, roles, open, handleClose, selectedUser, formErrors }) {
+export default function AddUserView({ addUser, roles, customers, open, handleClose, selectedUser, formErrors }) {
   const [validation, setValidation] = useState({});
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -25,6 +25,8 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
   const [roleId, setRoleId] = useState(0);
+  const [companyId, setCompanyId] = useState(0);
+  const [isCompanyUser, setIsCompanyUser] = useState(false);
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
   const { currentUser } = useContext(SharedContext);
@@ -38,6 +40,8 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
       setRoleId(selectedUser.roleId || '');
+      setCompanyId(selectedUser.companyId || '');
+      setIsCompanyUser(!!selectedUser.companyId || '');
       setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
@@ -47,9 +51,14 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       setPassword('');
       setPhone('');
       setRoleId(0);
+      setCompanyId(0);
+      setIsCompanyUser(false);
       setActive(true);
     }
   }, [selectedUser])
+  useEffect(() => {
+    if (!isCompanyUser && companyId) setCompanyId(null);
+  }, [isCompanyUser]);
   const handleSubmit = e => {
 
     const newUser = {
@@ -58,6 +67,7 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
       username,
       email,
       roleId,
+      companyId,
       phone,
       isActive,
       password
@@ -175,6 +185,38 @@ export default function AddUserView({ addUser, roles, open, handleClose, selecte
                       {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
                     </Select>
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                : ''}
+              {!isCurrentUser() ?
+                <Grid item sm={12}>
+                  <Checkbox
+                    checked={isCompanyUser}
+                    onChange={(e) => setIsCompanyUser(e.target.checked)}
+                    color="primary"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                  Is company user?
+                </Grid>
+                : ''}
+              {(!isCurrentUser() && isCompanyUser) ?
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel htmlFor="outlined-age-native-simple">Customer</InputLabel>
+                    <Select
+                      required
+                      fullWidth={true}
+                      id="companyId"
+                      label="Customer"
+                      variant="outlined"
+                      value={companyId}
+                      onChange={e => setCompanyId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, companyId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a customer</MenuItem>
+                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                    </Select>
+                    {validation.companyId && !isRequired(companyId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 : ''}
