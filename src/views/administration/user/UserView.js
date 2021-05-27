@@ -73,6 +73,12 @@ export default function UserView() {
     className: '',
     format: (value, entity) => entity.Role.name
   }, {
+    id: 'companyId',
+    label: 'Is Customer User?',
+    minWidth: 'auto',
+    className: '',
+    format: value => value ? 'Yes' : 'No'
+  }, {
     id: 'username',
     label: 'Username',
     minWidth: 'auto',
@@ -110,6 +116,7 @@ export default function UserView() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [roles, setRoles] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
   const [deleteUserViewOpen, setDeleteUserViewOpen] = useState(false);
@@ -175,7 +182,10 @@ export default function UserView() {
 
   const getRelations = () => {
     axios.get(getURL('/user/relations'))
-      .then(res => setRoles(res.data.roles));
+      .then(res => {
+        setCustomers(res.data.customers);
+        setRoles(res.data.roles);
+      });
   };
 
   useEffect(() => {
@@ -207,6 +217,7 @@ export default function UserView() {
     key={3}
     formErrors={formErrors}
     roles={roles}
+    customers={customers}
     selectedUser={selectedUser}
     open={addUserViewOpen}
     addUser={addUser}
