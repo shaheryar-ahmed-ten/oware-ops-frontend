@@ -24,8 +24,8 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
-  const [roleId, setRoleId] = useState(0);
-  const [companyId, setCompanyId] = useState(0);
+  const [roleId, setRoleId] = useState(null);
+  const [companyId, setCompanyId] = useState(null);
   const [isCompanyUser, setIsCompanyUser] = useState(false);
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
@@ -50,8 +50,8 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       setUsername('');
       setPassword('');
       setPhone('');
-      setRoleId(0);
-      setCompanyId(0);
+      setRoleId(null);
+      setCompanyId(null);
       setIsCompanyUser(false);
       setActive(true);
     }
