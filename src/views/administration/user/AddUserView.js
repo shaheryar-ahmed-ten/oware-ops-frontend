@@ -14,7 +14,7 @@ import {
   Checkbox,
   Typography
 } from '@material-ui/core'
-import { getUser, isSuperAdmin, SharedContext } from '../../../utils/common';
+import { isSuperAdmin, SharedContext } from '../../../utils/common';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, customers, open, handleClose, selectedUser, formErrors }) {
@@ -78,6 +78,7 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       lastName: true,
       username: true,
       roleId: true,
+      companyId: isCompanyUser,
       phone: true,
       email: true,
       password: !!selectedUser
@@ -87,6 +88,7 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       isUsername(username) &&
       (!!selectedUser || isRequired(password)) &&
       isEmail(email) &&
+      (!isCompanyUser || isRequired(companyId)) &&
       isPhone(phone)) {
       addUser(newUser);
     }
