@@ -65,7 +65,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
+                            {selectedProductOutward.DispatchOrder.Inventory.Company.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -235,7 +235,7 @@ function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, ha
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Customer.companyName}
+                          value={selectedProductOutward.DispatchOrder.Inventory.Company.name}
                         />
                     </Grid>
                     <Grid item xs={6}>

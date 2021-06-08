@@ -55,7 +55,7 @@ export default function InventoryView() {
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Customer.companyName
+    format: (value, entity) => entity.Company.name
   }, {
     id: 'warehouse',
     label: 'WAREHOUSE',

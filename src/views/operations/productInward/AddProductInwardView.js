@@ -93,7 +93,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                       onBlur={e => setValidation({ ...validation, customerId: true })}
                     >
                       <MenuItem value="" disabled>Select a customer</MenuItem>
-                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
                     </Select>
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>

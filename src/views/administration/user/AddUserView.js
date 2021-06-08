@@ -216,7 +216,7 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
                       onBlur={e => setValidation({ ...validation, companyId: true })}
                     >
                       <MenuItem value="" disabled>Select a customer</MenuItem>
-                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.companyName}</MenuItem>)}
+                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
                     </Select>
                     {validation.companyId && !isRequired(companyId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
