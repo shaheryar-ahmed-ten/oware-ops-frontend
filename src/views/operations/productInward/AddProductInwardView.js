@@ -122,7 +122,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Warehouse</InputLabel>
                     <Select
@@ -141,19 +141,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UOM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -185,6 +172,18 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                   inputProps={{ maxLength: 30 }}
                 />
               </Grid>
+            </Grid>
+            <Grid item sm={12}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="uom"
+                label="UOM"
+                type="text"
+                variant="filled"
+                value={uom}
+                disabled
+              />
             </Grid>
           </DialogContent>
           <DialogActions>
