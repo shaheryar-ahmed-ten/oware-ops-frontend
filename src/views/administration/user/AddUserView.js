@@ -17,16 +17,18 @@ import {
 import { isSuperAdmin, SharedContext } from '../../../utils/common';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
-export default function AddUserView({ addUser, roles, customers, open, handleClose, selectedUser, formErrors }) {
+export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
+  const [filteredRoles, setFilteredRoles] = useState([]);
   const [validation, setValidation] = useState({});
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
+  const [portal, setPortal] = useState(null);
   const [roleId, setRoleId] = useState(null);
   const [companyId, setCompanyId] = useState(null);
-  const [isCompanyUser, setIsCompanyUser] = useState(false);
+
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
   const { currentUser } = useContext(SharedContext);
@@ -40,8 +42,8 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
       setRoleId(selectedUser.roleId || '');
+      setPortal((selectedUser.Role && selectedUser.Role.allowedApps) || '');
       setCompanyId(selectedUser.companyId || '');
-      setIsCompanyUser(!!selectedUser.companyId || '');
       setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
@@ -51,14 +53,17 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       setPassword('');
       setPhone('');
       setRoleId(null);
+      setPortal(null);
       setCompanyId(null);
-      setIsCompanyUser(false);
       setActive(true);
     }
   }, [selectedUser])
   useEffect(() => {
-    if (!isCompanyUser && companyId) setCompanyId(null);
-  }, [isCompanyUser]);
+    setRoleId(null);
+    setCompanyId(null);
+    if (!portal) setFilteredRoles([]);
+    setFilteredRoles(roles.filter(role => role.allowedApps === portal));
+  }, [portal]);
   const handleSubmit = e => {
 
     const newUser = {
@@ -77,18 +82,21 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
       firstName: true,
       lastName: true,
       username: true,
+      portal: true,
       roleId: true,
-      companyId: isCompanyUser,
+      companyId: portal === 'CUSTOMER',
       phone: true,
       email: true,
       password: !!selectedUser
     });
     if (isRequired(firstName) &&
       isRequired(lastName) &&
+      isRequired(portal) &&
+      isRequired(roleId) &&
+      (portal != 'CUSTOMER' || isRequired(companyId)) &&
       isUsername(username) &&
       (!!selectedUser || isRequired(password)) &&
       isEmail(email) &&
-      (!isCompanyUser || isRequired(companyId)) &&
       isPhone(phone)) {
       addUser(newUser);
     }
@@ -172,6 +180,27 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
               {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel htmlFor="outlined-age-native-simple">Portal</InputLabel>
+                    <Select
+                      required
+                      fullWidth={true}
+                      id="portal"
+                      label="Portal"
+                      variant="outlined"
+                      value={portal}
+                      onChange={e => setPortal(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, portal: true })}
+                    >
+                      <MenuItem value="" disabled>Select a portal</MenuItem>
+                      {portals.map(portal => <MenuItem key={portal.id} value={portal.id}>{portal.label}</MenuItem>)}
+                    </Select>
+                    {validation.portal && !isRequired(portal) ? <Typography color="error">Please select a portal!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                : ''}
+              {!isCurrentUser() ?
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
                     <Select
                       required
@@ -184,24 +213,13 @@ export default function AddUserView({ addUser, roles, customers, open, handleClo
                       onBlur={e => setValidation({ ...validation, roleId: true })}
                     >
                       <MenuItem value="" disabled>Select a role</MenuItem>
-                      {roles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
+                      {filteredRoles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
                     </Select>
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 : ''}
-              {!isCurrentUser() ?
-                <Grid item sm={12}>
-                  <Checkbox
-                    checked={isCompanyUser}
-                    onChange={(e) => setIsCompanyUser(e.target.checked)}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                  />
-                  Is company user?
-                </Grid>
-                : ''}
-              {(!isCurrentUser() && isCompanyUser) ?
+              {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel htmlFor="outlined-age-native-simple">Customer</InputLabel>
