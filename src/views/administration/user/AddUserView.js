@@ -43,8 +43,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
       setPortal((selectedUser.Role && selectedUser.Role.allowedApps) || '');
-      setRoleId(selectedUser.roleId || '');
-      setCompanyId(selectedUser.companyId || '');
+      setRoleId(selectedUser.roleId || null);
+      setCompanyId(selectedUser.companyId || null);
       setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
