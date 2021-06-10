@@ -45,7 +45,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedProductInward.Customer.companyName}
+                            {selectedProductInward.Company.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -137,7 +137,7 @@ function InwardProductDetailsView({open, handleClose, selectedProductInward, for
                               disabled
                               fullWidth
                               variant="filled"
-                              value={selectedProductInward.Customer.companyName}
+                              value={selectedProductInward.Company.name}
                             />
                         </Grid>
                         <Grid item xs={6}>

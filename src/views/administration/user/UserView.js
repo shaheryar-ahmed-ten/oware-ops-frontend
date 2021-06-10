@@ -115,6 +115,7 @@ export default function UserView() {
   const [users, setUsers] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
+  const [portals, setPortals] = useState([]);
   const [roles, setRoles] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [formErrors, setFormErrors] = useState('');
@@ -185,6 +186,7 @@ export default function UserView() {
       .then(res => {
         setCustomers(res.data.customers);
         setRoles(res.data.roles);
+        setPortals(res.data.portals);
       });
   };
 
@@ -216,6 +218,7 @@ export default function UserView() {
   const addUserModal = <AddUserView
     key={3}
     formErrors={formErrors}
+    portals={portals}
     roles={roles}
     customers={customers}
     selectedUser={selectedUser}

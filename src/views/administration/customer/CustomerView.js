@@ -52,9 +52,9 @@ export default function CustomerView() {
     label: 'ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => `${entity.companyName[0]}${entity.type[0]}-${digitize(value, 3)}`
+    format: (value, entity) => `${entity.name[0]}${entity.type[0]}-${digitize(value, 3)}`
   }, {
-    id: 'companyName',
+    id: 'name',
     label: 'Company',
     minWidth: 'auto',
     className: '',

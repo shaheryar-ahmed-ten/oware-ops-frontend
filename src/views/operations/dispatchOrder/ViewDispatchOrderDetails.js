@@ -55,7 +55,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                     </Grid>
                     <Grid item xs={6}>
                         <Box display="block" displayPrint="block">
-                            {selectedDispatchOrder.Inventory.Customer.companyName}
+                            {selectedDispatchOrder.Inventory.Company.name}
                         </Box>
                     </Grid>
                     <Grid item xs={6}>
@@ -181,7 +181,7 @@ function ViewDispatchOrderDetails({formErrors, open, handleClose, customers, war
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedDispatchOrder.Inventory.Customer.companyName}
+                          value={selectedDispatchOrder.Inventory.Company.name}
                         />
                     </Grid>
                     <Grid item xs={6}>
