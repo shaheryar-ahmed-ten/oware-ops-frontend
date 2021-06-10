@@ -154,6 +154,32 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="uom"
+                    label="UOM"
+                    type="text"
+                    variant="filled"
+                    value={uom}
+                    disabled
+                  />
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="availableQuantity"
+                    label="Available Quantity"
+                    type="number"
+                    variant="filled"
+                    value={availableQuantity}
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
@@ -193,32 +219,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                     </Select>
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UOM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="availableQuantity"
-                    label="Available Quantity"
-                    type="number"
-                    variant="filled"
-                    value={availableQuantity}
-                    disabled
-                  />
                 </Grid>
               </Grid>
             </Grid>

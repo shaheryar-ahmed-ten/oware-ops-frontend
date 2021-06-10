@@ -23,6 +23,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
   const [productId, setProductId] = useState('');
   const [uom, setUom] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
+  const [referenceId, setReferenceId] = useState('');
 
   const selectProduct = value => {
     setProductId(value);
@@ -50,7 +51,8 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       quantity,
       customerId,
       productId,
-      warehouseId
+      warehouseId,
+      referenceId
     }
 
     setValidation({
@@ -72,9 +74,9 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-              {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
+            {!selectedProductInward ? 'Add Product Inward' : 'Edit Product Inward'}
           </DialogTitle>
-          
+
           <DialogContent>
             {formErrors}
             <Grid container>
@@ -120,7 +122,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
               </Grid>
 
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Warehouse</InputLabel>
                     <Select
@@ -139,19 +141,6 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                     {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UOM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-
               </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -170,6 +159,31 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                 />
                 {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
               </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="referenceId"
+                  label="Reference Id"
+                  type="text"
+                  variant="outlined"
+                  value={referenceId}
+                  onChange={e => setReferenceId(e.target.value)}
+                  inputProps={{ maxLength: 30 }}
+                />
+              </Grid>
+            </Grid>
+            <Grid item sm={12}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="uom"
+                label="UOM"
+                type="text"
+                variant="filled"
+                value={uom}
+                disabled
+              />
             </Grid>
           </DialogContent>
           <DialogActions>
