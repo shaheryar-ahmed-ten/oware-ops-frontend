@@ -7,9 +7,10 @@ import {
   Box
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from 'axios';
-import { setUser, setUserToken, getURL, SharedContext } from '../../utils/common';
+import { getURL, SharedContext } from '../../utils/common';
+import { setUser, setUserToken } from '../../utils/auth';
 import Logo from '../../components/Logo';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,53 +57,53 @@ export default function LoginView({ }) {
       .then(() => {
         navigate('/administration')
       })
-    .catch(err => {
-      let errorMsg;
-      errorMsg = err.response.data.message;
-      // if (err.status === 401 || err.status === 400) {
-      // }
-      // else {
-      //   errorMsg = "Something went wrong!";
-      // }
-      setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
-    })
-}
-return (
-  <form onSubmit={handleSubmit}>
-    <Grid>
-      <Paper elevation={0} className={classes.paperStyle}>
-        <Grid align="center">
-          <Logo variant="h1" />
-        </Grid>
-        {formErrors}
-        <Box mt={4}>
-          <TextField
-            label="Username or Email"
-            variant="outlined"
-            placeholder="name@example.com"
-            fullWidth
-            required
-            value={username}
-            onChange={(e => setUsername(e.target.value))}
-          />
-        </Box>
-        <Box mt={3}>
-          <TextField
-            label="Password"
-            variant="outlined"
-            placeholder="*****"
-            fullWidth
-            required
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </Box>
-        <Box mt={2}>
-          <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
-        </Box>
-      </Paper>
-    </Grid>
-  </form >
-)
+      .catch(err => {
+        let errorMsg;
+        errorMsg = err.response.data.message;
+        // if (err.status === 401 || err.status === 400) {
+        // }
+        // else {
+        //   errorMsg = "Something went wrong!";
+        // }
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
+      })
+  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <Grid>
+        <Paper elevation={0} className={classes.paperStyle}>
+          <Grid align="center">
+            <Logo variant="h1" />
+          </Grid>
+          {formErrors}
+          <Box mt={4}>
+            <TextField
+              label="Username or Email"
+              variant="outlined"
+              placeholder="name@example.com"
+              fullWidth
+              required
+              value={username}
+              onChange={(e => setUsername(e.target.value))}
+            />
+          </Box>
+          <Box mt={3}>
+            <TextField
+              label="Password"
+              variant="outlined"
+              placeholder="*****"
+              fullWidth
+              required
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </Box>
+          <Box mt={2}>
+            <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
+          </Box>
+        </Paper>
+      </Grid>
+    </form >
+  )
 }

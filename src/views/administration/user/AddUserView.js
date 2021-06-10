@@ -14,7 +14,8 @@ import {
   Checkbox,
   Typography
 } from '@material-ui/core'
-import { isSuperAdmin, SharedContext } from '../../../utils/common';
+import { SharedContext } from '../../../utils/common';
+import { isSuperAdmin } from '../../../utils/auth';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {

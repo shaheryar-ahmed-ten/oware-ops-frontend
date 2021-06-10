@@ -4,9 +4,9 @@ import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from '../src/components/GlobalStyles';
 import theme from '../src/theme';
 import routes from '../src/routes';
-import { getUser, setUser, getURL, SharedContext, getUserToken } from './utils/common';
+import { SharedContext } from './utils/common';
+import { getUser, getUserToken } from './utils/auth';
 import { setRequestInterceptor, setResponseInterceptor, ejectRequestInterceptor, ejectResponseInterceptor } from './utils/interceptors';
-import axios from 'axios';
 
 const App = () => {
   const navigate = useNavigate();
