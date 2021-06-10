@@ -41,8 +41,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setEmail(selectedUser.email || '');
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
-      setRoleId(selectedUser.roleId || '');
       setPortal((selectedUser.Role && selectedUser.Role.allowedApps) || '');
+      setRoleId(selectedUser.roleId || '');
       setCompanyId(selectedUser.companyId || '');
       setActive(!!selectedUser.isActive);
     } else {
@@ -57,13 +57,19 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setCompanyId(null);
       setActive(true);
     }
-  }, [selectedUser])
+  }, [selectedUser]);
   useEffect(() => {
-    setRoleId(null);
-    setCompanyId(null);
-    if (!portal) setFilteredRoles([]);
+    if (!portal) return setFilteredRoles([]);
     setFilteredRoles(roles.filter(role => role.allowedApps === portal));
   }, [portal]);
+
+
+  const changePortal = portal => {
+    setRoleId(null);
+    setCompanyId(null);
+    setPortal(portal);
+  }
+
   const handleSubmit = e => {
 
     const newUser = {
@@ -188,7 +194,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                       label="Portal"
                       variant="outlined"
                       value={portal}
-                      onChange={e => setPortal(e.target.value)}
+                      onChange={e => changePortal(e.target.value)}
                       onBlur={e => setValidation({ ...validation, portal: true })}
                     >
                       <MenuItem value="" disabled>Select a portal</MenuItem>
