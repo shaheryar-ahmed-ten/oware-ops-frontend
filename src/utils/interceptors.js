@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUserToken } from '../utils/common';
+import { getUserToken } from '../utils/auth';
 const storedToken = getUserToken();
 
 export const setRequestInterceptor = (callback) => {
