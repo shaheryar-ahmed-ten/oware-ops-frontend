@@ -31,9 +31,6 @@ export const removeAuth = () => {
 }
 
 export const checkPermission = (user, permission) => {
-  console.log(user)
-  console.log(user.Role)
-  console.log(user.Role.PermissionAccesses)
   return user &&
     user.Role &&
     user.Role.PermissionAccesses.find((permissionAccess) =>
