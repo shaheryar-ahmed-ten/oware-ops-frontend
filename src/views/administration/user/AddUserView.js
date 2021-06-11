@@ -15,7 +15,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { SharedContext } from '../../../utils/common';
-import { isSuperAdmin } from '../../../utils/auth';
+import { checkPermission } from '../../../utils/auth';
 import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
@@ -277,7 +277,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 />
                 {!selectedUser && validation.password && !isRequired(password) ? <Typography color="error">Password is required!</Typography> : ''}
               </Grid>
-              {(isSuperAdmin(currentUser) && !isCurrentUser()) ?
+              {(checkPermission(currentUser, 'OPS_USER_FULL') && !isCurrentUser()) ?
                 <Grid item sm={12}>
                   <Checkbox
                     checked={isActive}

@@ -30,10 +30,6 @@ export const removeAuth = () => {
   removeUser();
 }
 
-export const isSuperAdmin = user => {
-  return user && user.Role && 'SUPER_ADMIN' === user.Role.type;
-}
-
 export const checkPermission = (user, permission) => {
   console.log(user)
   console.log(user.Role)
