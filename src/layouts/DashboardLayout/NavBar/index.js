@@ -15,7 +15,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import NavItem from './NavItem';
-import { getUser, isSuperAdmin } from '../../../utils/common';
+import { checkPermission } from '../../../utils/auth';
 
 const navTreeData = [
   {
@@ -23,37 +23,37 @@ const navTreeData = [
     nodeId: 'administration',
     children: [
       {
-        canActivate: isSuperAdmin,
+        canActivate: user => checkPermission(user, 'OPS_USER_FULL'),
         href: '/administration/user',
         title: 'Manage User'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
         href: '/administration/customer',
         title: 'Manage Customer'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_WAREHOUSE_FULL'),
         href: '/administration/warehouse',
         title: 'Manage Warehouse'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_BRAND_FULL'),
         href: '/administration/brand',
         title: 'Manage Brand'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_UOM_FULL'),
         href: '/administration/uom',
         title: 'Manage UoM'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_CATEGORY_FULL'),
         href: '/administration/category',
         title: 'Manage Category'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
         href: '/administration/product',
         title: 'Manage Product'
       },
@@ -64,17 +64,17 @@ const navTreeData = [
     nodeId: 'operations',
     children: [
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
         href: '/operations/product-inward',
         title: 'Product Inward'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_DISPATCHORDER_FULL'),
         href: '/operations/dispatch-order',
         title: 'Dispatch Order'
       },
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL'),
         href: '/operations/product-outward',
         title: 'Product Outward'
       }
@@ -85,7 +85,7 @@ const navTreeData = [
     nodeId: 'reporting',
     children: [
       {
-        canActivate: user => !!user,
+        canActivate: user => checkPermission(user, 'OPS_INVENTORY_FULL'),
         href: '/reporting/inventory',
         title: 'Inventory'
       }

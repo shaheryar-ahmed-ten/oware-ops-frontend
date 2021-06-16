@@ -7,7 +7,8 @@ import { AppBar, Box, Hidden, IconButton, Toolbar, makeStyles, Grid, Typography,
 import MenuIcon from '@material-ui/icons/Menu';
 import Alert from '@material-ui/lab/Alert';
 import Logo from '../../components/Logo';
-import { getURL, setUser, SharedContext, removeAuth } from '../../utils/common';
+import { getURL, SharedContext } from '../../utils/common';
+import { setUser, removeAuth } from '../../utils/auth';
 import AddUserView from '../../views/administration/user/AddUserView';
 
 const useStyles = makeStyles(theme => ({

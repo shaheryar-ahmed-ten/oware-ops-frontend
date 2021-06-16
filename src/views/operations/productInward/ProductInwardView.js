@@ -50,11 +50,11 @@ const useStyles = makeStyles(theme => ({
 export default function ProductInwardView() {
   const classes = useStyles();
   const columns = [{
-    id: 'Customer.companyName',
+    id: 'Customer.name',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Customer.companyName,
+    format: (value, entity) => entity.Company.name,
   }, {
     id: 'Product.name',
     label: 'PRODUCT',

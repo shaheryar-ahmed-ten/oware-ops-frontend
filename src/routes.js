@@ -18,7 +18,7 @@ import DispatchOrderView from '../src/views/operations/dispatchOrder/DispatchOrd
 import ProductOutwardView from '../src/views/operations/productOutward/ProductOutwardView';
 import InventoryView from '../src/views/reporting/inventory/InventoryView';
 import ExportView from '../src/views/reporting/exports/ExportView';
-import { isSuperAdmin } from './utils/common';
+import { checkPermission } from './utils/auth';
 
 
 const routes = (user) => [
@@ -28,25 +28,58 @@ const routes = (user) => [
     children: [
       {
         path: 'user',
-        element: isSuperAdmin(user) ? <UserView /> : <Navigate to='404' />,
+        element: checkPermission(user, 'OPS_USER_FULL') ? <UserView /> : <Navigate to='404' />,
       },
-      { path: 'customer', element: <CustomerView /> },
-      { path: 'warehouse', element: <WarehouseView /> },
-      { path: 'brand', element: <BrandView /> },
-      { path: 'uom', element: <UoMView /> },
-      { path: 'category', element: <CategoryView /> },
-      { path: 'product', element: <ProductView /> },
-      { path: '/', element: isSuperAdmin(user) ? <Navigate to='/administration/user' /> : <Navigate to='/administration/customer' /> },
-      { path: '*', element: <Navigate to='/404' /> }
+      {
+        path: 'customer',
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CustomerView /> : <Navigate to="404" />
+      },
+      {
+        path: 'warehouse',
+        element: checkPermission(user, 'OPS_WAREHOUSE_FULL') ? <WarehouseView /> : <Navigate to="404" />
+      },
+      {
+        path: 'brand',
+        element: checkPermission(user, 'OPS_BRAND_FULL') ? <BrandView /> : <Navigate to="404" />
+      },
+      {
+        path: 'uom',
+        element: checkPermission(user, 'OPS_UOM_FULL') ? <UoMView /> : <Navigate to="404" />
+      },
+      {
+        path: 'category',
+        element: checkPermission(user, 'OPS_CATEGORY_FULL') ? <CategoryView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product',
+        element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ProductView /> : <Navigate to="404" />
+      },
+      {
+        path: '/',
+        element: checkPermission(user, 'OPS_USER_FULL') ? <Navigate to='/administration/user' /> : <Navigate to='/administration/customer' />
+      },
+      {
+        path: '*',
+        element: <Navigate to='/404' />
+      }
     ]
   },
   {
     path: 'operations',
     element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
     children: [
-      { path: 'product-inward', element: <ProductInwardView /> },
-      { path: 'dispatch-order', element: <DispatchOrderView /> },
-      { path: 'product-outward', element: <ProductOutwardView /> },
+      {
+        path: 'product-inward',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <ProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <DispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
+      },
       { path: '*', element: <Navigate to='/404' /> }
     ]
   },
@@ -61,11 +94,16 @@ const routes = (user) => [
   },
   {
     path: 'reporting',
-    // element: !!user ? <DashboardLayout /> : <Navigate to="/login" />,
     element: <DashboardLayout />,
     children: [
-      { path: 'inventory', element: <InventoryView /> },
-      { path: 'export', element: <ExportView /> }
+      {
+        path: 'inventory',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <InventoryView /> : <Navigate to="404" />
+      },
+      {
+        path: 'export',
+        element: checkPermission(user, 'OPS_EXPORT_FULL') ? <ExportView /> : <Navigate to="404" />
+      }
     ]
 
   }

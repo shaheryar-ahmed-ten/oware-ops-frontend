@@ -18,7 +18,7 @@ import { isRequired } from '../../../utils/validators';
 
 export default function AddCustomerView({ addCustomer, users, customerTypes, open, handleClose, selectedCustomer, formErrors }) {
   const [validation, setValidation] = useState({});
-  const [companyName, setCompanyName] = useState('');
+  const [name, setName] = useState('');
   const [contactId, setContactId] = useState('');
   const [type, setType] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -29,13 +29,13 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
 
   useEffect(() => {
     if (!!selectedCustomer) {
-      setCompanyName(selectedCustomer.companyName || '');
+      setName(selectedCustomer.name || '');
       setType(selectedCustomer.type || '');
       setContactId(selectedCustomer.contactId || '');
       setNotes(selectedCustomer.notes || '');
       setActive(!!selectedCustomer.isActive);
     } else {
-      setCompanyName('');
+      setName('');
       setType('');
       setContactId('');
       setNotes('');
@@ -45,7 +45,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
 
   const handleSubmit = e => {
     const newCustomer = {
-      companyName,
+      name,
       contactId,
       type,
       contactEmail,
@@ -54,11 +54,11 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
       isActive
     }
     setValidation({
-      companyName: true,
+      name: true,
       contactId: true,
       type: true
     });
-    if (isRequired(companyName) && isRequired(contactId) && isRequired(type)) {
+    if (isRequired(name) && isRequired(contactId) && isRequired(type)) {
       addCustomer(newCustomer);
     }
   }
@@ -77,15 +77,15 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
                 <TextField
                   fullWidth={true}
                   margin="dense"
-                  id="companyName"
+                  id="name"
                   label="Company Name"
                   type="text"
                   variant="outlined"
-                  value={companyName}
-                  onChange={e => setCompanyName(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, companyName: true })}
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  onBlur={e => setValidation({ ...validation, name: true })}
                 />
-                {validation.companyName && !isRequired(companyName) ? <Typography color="error">Company name is required!</Typography> : ''}
+                {validation.name && !isRequired(name) ? <Typography color="error">Company name is required!</Typography> : ''}
               </Grid>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">

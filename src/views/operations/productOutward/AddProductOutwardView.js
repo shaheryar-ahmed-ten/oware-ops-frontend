@@ -62,7 +62,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setUom(dispatchOrder.Inventory.Product.UOM.name);
       setProduct(dispatchOrder.Inventory.Product.name || '');
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
-      setCustomer(dispatchOrder.Inventory.Customer.companyName);
+      setCustomer(dispatchOrder.Inventory.Company.name);
       setShipmentDate(dispatchOrder.shipmentDate || '');
       setReceiverName(dispatchOrder.receiverName || '');
       setReceiverPhone(dispatchOrder.receiverPhone || '');
