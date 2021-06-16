@@ -25,37 +25,44 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_USER_FULL'),
         href: '/administration/user',
-        title: 'Manage User'
+        title: 'Manage User',
+        activeRouteName: 'user'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
         href: '/administration/customer',
-        title: 'Manage Customer'
+        title: 'Manage Customer',
+        activeRouteName: 'customer'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_WAREHOUSE_FULL'),
         href: '/administration/warehouse',
-        title: 'Manage Warehouse'
+        title: 'Manage Warehouse',
+        activeRouteName: 'warehouse'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_BRAND_FULL'),
         href: '/administration/brand',
-        title: 'Manage Brand'
+        title: 'Manage Brand',
+        activeRouteName: 'brand'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_UOM_FULL'),
         href: '/administration/uom',
-        title: 'Manage UoM'
+        title: 'Manage UoM',
+        activeRouteName: 'uom'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CATEGORY_FULL'),
         href: '/administration/category',
-        title: 'Manage Category'
+        title: 'Manage Category',
+        activeRouteName: 'category'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
         href: '/administration/product',
-        title: 'Manage Product'
+        title: 'Manage Product',
+        activeRouteName: 'product'
       },
     ]
   },
@@ -66,17 +73,20 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
         href: '/operations/product-inward',
-        title: 'Product Inward'
+        title: 'Product Inward',
+        activeRouteName: 'product-inward'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_DISPATCHORDER_FULL'),
         href: '/operations/dispatch-order',
-        title: 'Dispatch Order'
+        title: 'Dispatch Order',
+        activeRouteName: 'dispatch-order'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL'),
         href: '/operations/product-outward',
-        title: 'Product Outward'
+        title: 'Product Outward',
+        activeRouteName: 'product-outward'
       }
     ]
   },
@@ -87,7 +97,8 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_INVENTORY_FULL'),
         href: '/reporting/inventory',
-        title: 'Inventory'
+        title: 'Inventory',
+        activeRouteName: 'inventory'
       }
     ]
   }
@@ -122,10 +133,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
-  const [expanded, setExpanded] = React.useState([]);
+  const location = useLocation();
+  const [expanded, setExpanded] = React.useState([`${location.pathname.split('/')[1]}`]);
   const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
-  const location = useLocation();
   const { currentUser } = useContext(SharedContext);
 
   useEffect(() => {
@@ -136,6 +147,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const handleToggle = (event, nodeIds) => {
+    console.log(location.pathname.split('/')[1])
+    console.log(nodeIds)
     setExpanded(nodeIds);
   };
 
@@ -165,13 +178,13 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           expanded={expanded}
           selected={selected}
           onNodeToggle={handleToggle}
-          onNodeSelect={handleSelect}
+          onNodeSelect={handleSelect} 
         >
 
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
               {treeData.children.map((treeItem, j) => (
-                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} /> : ''
+                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} activeRouteName={treeItem.activeRouteName} /> : ''
               ))}
             </TreeItem>
           ))}
