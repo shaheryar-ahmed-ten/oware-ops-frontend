@@ -147,8 +147,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const handleToggle = (event, nodeIds) => {
-    console.log(location.pathname.split('/')[1])
-    console.log(nodeIds)
     setExpanded(nodeIds);
   };
 
