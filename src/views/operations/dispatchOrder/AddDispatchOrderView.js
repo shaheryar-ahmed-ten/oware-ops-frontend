@@ -283,6 +283,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                   type="text"
                   variant="outlined"
                   value={receiverPhone}
+                  placeholder="0346xxxxxx8"
                   onChange={e => setReceiverPhone(e.target.value)}
                   onBlur={e => setValidation({ ...validation, receiverPhone: true })}
                 />
