@@ -25,6 +25,7 @@ import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 
 const useStyles = makeStyles(theme => ({
@@ -199,7 +200,7 @@ export default function DispatchOrderView() {
 
   const getDispatchOrders = useCallback(debounce((page, searchKeyword) => {
     _getDispatchOrders(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
@@ -295,7 +296,7 @@ export default function DispatchOrderView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Dispatch Order" buttons={headerButtons}/>
+        <TableHeader title="Dispatch Order" buttons={headerButtons}/>
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>

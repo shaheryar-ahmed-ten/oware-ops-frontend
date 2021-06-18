@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCategoryView from './AddCategoryView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -135,7 +136,7 @@ export default function CategoryView() {
 
   const getCategories = useCallback(debounce((page, searchKeyword) => {
     _getCategories(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getCategories(page, searchKeyword);
@@ -178,7 +179,7 @@ export default function CategoryView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Category" buttons={headerButtons} />
+        <TableHeader title="Category" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

@@ -23,6 +23,7 @@ import AddProductInwardView from './AddProductInwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import InwardProductDetailsView from './InwardProductDetailsView';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -179,7 +180,7 @@ export default function ProductInwardView() {
 
   const getProductInwards = useCallback(debounce((page, searchKeyword) => {
     _getProductInwards(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/product-inward/relations'))
@@ -248,7 +249,7 @@ export default function ProductInwardView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product Inward" buttons={headerButtons} />
+        <TableHeader title="Product Inward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

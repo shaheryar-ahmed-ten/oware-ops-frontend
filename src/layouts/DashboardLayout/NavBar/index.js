@@ -25,49 +25,49 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_USER_FULL'),
         href: '/administration/user',
-        title: 'Manage User',
+        title: 'User',
         activeRouteName: 'user'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
         href: '/administration/customer',
-        title: 'Manage Customer',
+        title: 'Customer',
         activeRouteName: 'customer'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_WAREHOUSE_FULL'),
         href: '/administration/warehouse',
-        title: 'Manage Warehouse',
+        title: 'Warehouse',
         activeRouteName: 'warehouse'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_BRAND_FULL'),
         href: '/administration/brand',
-        title: 'Manage Brand',
+        title: 'Brand',
         activeRouteName: 'brand'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_UOM_FULL'),
         href: '/administration/uom',
-        title: 'Manage UoM',
+        title: 'UoM',
         activeRouteName: 'uom'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CATEGORY_FULL'),
         href: '/administration/category',
-        title: 'Manage Category',
+        title: 'Category',
         activeRouteName: 'category'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
         href: '/administration/product',
-        title: 'Manage Product',
+        title: 'Product',
         activeRouteName: 'product'
       },
     ]
   },
   {
-    title: 'Operations',
+    title: 'Warehouse Ops',
     nodeId: 'operations',
     children: [
       {

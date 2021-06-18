@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddWarehouseView from './AddWarehouseView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -150,7 +151,7 @@ export default function WarehouseView() {
 
   const getWarehouses = useCallback(debounce((page, searchKeyword) => {
     _getWarehouses(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getWarehouses(page, searchKeyword);
@@ -193,7 +194,7 @@ export default function WarehouseView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Warehouse" buttons={headerButtons} />
+        <TableHeader title="Warehouse" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

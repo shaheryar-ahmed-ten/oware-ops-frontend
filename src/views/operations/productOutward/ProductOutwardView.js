@@ -23,6 +23,7 @@ import AddProductOutwardView from './AddProductOutwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -213,7 +214,7 @@ export default function ProductOutwardView() {
 
   const getProductOutwards = useCallback(debounce((page, searchKeyword) => {
     _getProductOutwards(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/product-outward/relations'))
@@ -279,7 +280,7 @@ export default function ProductOutwardView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product Outward" buttons={headerButtons}/>
+        <TableHeader title="Product Outward" buttons={headerButtons}/>
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>

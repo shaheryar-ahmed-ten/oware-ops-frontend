@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddUoMView from './AddUoMView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -134,7 +135,7 @@ export default function UoMView() {
 
   const getUoMs = useCallback(debounce((page, searchKeyword) => {
     _getUoMs(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getUoMs(page, searchKeyword);
@@ -177,7 +178,7 @@ export default function UoMView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage UoM" buttons={headerButtons} />
+        <TableHeader title="UoM" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
