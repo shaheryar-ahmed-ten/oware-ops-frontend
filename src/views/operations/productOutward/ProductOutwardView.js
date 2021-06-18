@@ -23,6 +23,7 @@ import AddProductOutwardView from './AddProductOutwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -213,7 +214,7 @@ export default function ProductOutwardView() {
 
   const getProductOutwards = useCallback(debounce((page, searchKeyword) => {
     _getProductOutwards(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/product-outward/relations'))

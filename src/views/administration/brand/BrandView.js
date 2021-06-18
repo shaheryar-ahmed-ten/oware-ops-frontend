@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddBrandView from './AddBrandView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -140,7 +141,7 @@ export default function BrandView() {
 
   const getBrands = useCallback(debounce((page, searchKeyword) => {
     _getBrands(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getBrands(page, searchKeyword);

@@ -21,6 +21,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -179,7 +180,7 @@ export default function UserView() {
 
   const getUsers = useCallback(debounce((page, searchKeyword) => {
     _getUsers(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/user/relations'))

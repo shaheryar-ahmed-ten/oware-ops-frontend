@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCustomerView from './AddCustomerView';
 import {debounce} from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -171,7 +172,7 @@ export default function CustomerView() {
 
   const getCustomers = useCallback(debounce((page, searchKeyword) => {
     _getCustomers(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
     axios.get(getURL('/customer/relations'))

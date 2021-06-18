@@ -19,6 +19,7 @@ import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
 import moment from 'moment';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,7 +100,7 @@ export default function InventoryView() {
 
   const getInventories = useCallback(debounce((page, searchKeyword) => {
     _getInventories(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
     axios.get(getURL('/inventory/export'), {
