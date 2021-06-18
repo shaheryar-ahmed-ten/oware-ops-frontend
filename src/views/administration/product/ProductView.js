@@ -239,7 +239,7 @@ export default function ProductView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product" buttons={headerButtons} />
+        <TableHeader title="Product" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

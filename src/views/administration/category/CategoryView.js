@@ -179,7 +179,7 @@ export default function CategoryView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Category" buttons={headerButtons} />
+        <TableHeader title="Category" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

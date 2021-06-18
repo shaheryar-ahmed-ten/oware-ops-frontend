@@ -178,7 +178,7 @@ export default function UoMView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage UoM" buttons={headerButtons} />
+        <TableHeader title="UoM" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

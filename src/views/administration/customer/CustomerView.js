@@ -230,7 +230,7 @@ export default function CustomerView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Customer" buttons={headerButtons} />
+        <TableHeader title="Customer" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

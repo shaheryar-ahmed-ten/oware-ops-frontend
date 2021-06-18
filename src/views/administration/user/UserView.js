@@ -239,7 +239,7 @@ export default function UserView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage User" buttons={headerButtons} />
+        <TableHeader title="User" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

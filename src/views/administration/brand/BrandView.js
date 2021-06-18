@@ -184,7 +184,7 @@ export default function BrandView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Brand" buttons={headerButtons} />
+        <TableHeader title="Brand" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
