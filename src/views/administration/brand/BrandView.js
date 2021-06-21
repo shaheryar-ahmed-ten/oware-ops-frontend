@@ -22,6 +22,7 @@ import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddBrandView from './AddBrandView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -83,6 +84,7 @@ export default function BrandView() {
   const [formErrors, setFormErrors] = useState('');
   const [addBrandViewOpen, setAddBrandViewOpen] = useState(false);
   const [deleteBrandViewOpen, setDeleteBrandViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
 
   const addBrand = data => {
@@ -94,6 +96,9 @@ export default function BrandView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New brand has been added."
+      })
       closeAddBrandView(false);
       getBrands();
     });
@@ -233,6 +238,7 @@ export default function BrandView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }
