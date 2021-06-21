@@ -22,6 +22,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -122,6 +123,7 @@ export default function UserView() {
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
   const [deleteUserViewOpen, setDeleteUserViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const addUser = data => {
     let apiPromise = null;
@@ -133,6 +135,9 @@ export default function UserView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New user has been added."
+      })
       closeAddUserView();
       getUsers();
     });
@@ -288,6 +293,7 @@ export default function UserView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }
