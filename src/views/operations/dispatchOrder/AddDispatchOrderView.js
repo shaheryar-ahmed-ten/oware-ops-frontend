@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
 import { dateToPickerFormat, digitize } from '../../../utils/common';
+import { Autocomplete } from '@material-ui/lab';
 
 export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,
   open, handleClose, selectedDispatchOrder, customers, formErrors }) {
@@ -27,7 +28,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
   const [availableQuantity, setAvailableQuantity] = useState(0);
-  const [inventory, setInventory] = useState(null);
   const [inventoryId, setInventoryId] = useState('');
   const [uom, setUom] = useState('');
   const [customerId, setCustomerId] = useState('');
@@ -35,6 +35,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+
+  const [selectedCustomerName, setSelectedCustomerName] = useState('');
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -143,6 +145,11 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
     }
   }
 
+  const handleCustomerSearch = (customerId, customerName) => {
+    setCustomerId(customerId);
+    setSelectedCustomerName(customerName)
+  }
+
   return (
     <div style={{ display: "inline" }}>
       <form>
@@ -182,20 +189,16 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Customer</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="customerId"
-                      label="Inventory"
-                      variant="outlined"
-                      value={customerId}
-                      disabled={!!selectedDispatchOrder}
-                      onChange={e => setCustomerId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, customerId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a customer</MenuItem>
-                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
-                    </Select>
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={customers}
+                      getOptionLabel={(customer) => customer.name}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          handleCustomerSearch(newValue.id, (newValue.name || ''))
+                      }}
+                      renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+                    />
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
