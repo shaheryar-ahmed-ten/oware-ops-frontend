@@ -106,7 +106,7 @@ export default function WarehouseView() {
         return
       }
       setShowMessage({
-        message: "New Warehouse has been added."
+        message: "New Warehouse has been created."
       })
       closeAddWarehouseView(false);
       getWarehouses();

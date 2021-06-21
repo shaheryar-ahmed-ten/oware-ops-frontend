@@ -97,7 +97,7 @@ export default function BrandView() {
         return
       }
       setShowMessage({
-        message: "New brand has been added."
+        message: "New brand has been created."
       })
       closeAddBrandView(false);
       getBrands();

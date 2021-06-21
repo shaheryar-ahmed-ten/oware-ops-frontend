@@ -92,7 +92,7 @@ export default function CategoryView() {
         return
       }
       setShowMessage({
-        message: "New category has been added."
+        message: "New category has been created."
       })
       closeAddCategoryView();
       getCategories();

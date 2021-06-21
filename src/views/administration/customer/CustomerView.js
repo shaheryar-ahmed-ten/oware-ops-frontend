@@ -127,7 +127,7 @@ export default function CustomerView() {
         return
       }
       setShowMessage({
-        message: "New customer has been added."
+        message: "New customer has been created."
       })
       closeAddCustomerView();
       getCustomers();

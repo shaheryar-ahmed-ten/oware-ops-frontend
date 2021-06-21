@@ -24,6 +24,7 @@ import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -140,6 +141,7 @@ export default function ProductOutwardView() {
   const [formErrors, setFormErrors] = useState('');
   const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [productOutwardsDetailsViewOpen, setproductOutwardsDetailsViewOpen] = useState(false)
 
@@ -153,6 +155,9 @@ export default function ProductOutwardView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New product outward has been created."
+      })
       closeAddProductOutwardView(false);
       getProductOutwards();
     });
@@ -218,9 +223,9 @@ export default function ProductOutwardView() {
 
   const getRelations = () => {
     axios.get(getURL('/product-outward/relations'))
-      .then(res => {  
+      .then(res => {
         // setting dispatchOrder details and vehicleTypes in local State
-        setvehicleTypes((prevState)=>res.data.vehicleTypes)
+        setvehicleTypes((prevState) => res.data.vehicleTypes)
         setDispatchOrders(res.data.dispatchOrders)
       });
   };
@@ -273,14 +278,14 @@ export default function ProductOutwardView() {
     formErrors={formErrors}
     selectedProductOutward={selectedProductOutward}
     open={productOutwardsDetailsViewOpen}
-    handleClose={() => closeViewProductOutwardDetailsView()}/>
+    handleClose={() => closeViewProductOutwardDetailsView()} />
 
   const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Product Outward" buttons={headerButtons}/>
+        <TableHeader title="Product Outward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
@@ -329,6 +334,7 @@ export default function ProductOutwardView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

@@ -136,7 +136,7 @@ export default function ProductView() {
         return
       }
       setShowMessage({
-        message: "New product has been added."
+        message: "New product has been created."
       })
       closeAddProductView(false);
       getProducts();

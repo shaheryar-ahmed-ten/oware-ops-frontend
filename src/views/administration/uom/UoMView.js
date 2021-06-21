@@ -90,7 +90,7 @@ export default function UoMView() {
         return
       }
       setShowMessage({
-        message: "New UOM has been added."
+        message: "New UOM has been created."
       })
       closeAddUoMView();
       getUoMs();
