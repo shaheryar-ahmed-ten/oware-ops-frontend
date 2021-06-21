@@ -20,7 +20,8 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCustomerView from './AddCustomerView';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
@@ -114,7 +115,7 @@ export default function CustomerView() {
   const [formErrors, setFormErrors] = useState('');
   const [addCustomerViewOpen, setAddCustomerViewOpen] = useState(false);
   const [deleteCustomerViewOpen, setDeleteCustomerViewOpen] = useState(false);
-
+  const [showMessage, setShowMessage] = useState(null)
 
   const addCustomer = data => {
     let apiPromise = null;
@@ -125,6 +126,9 @@ export default function CustomerView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New customer has been created."
+      })
       closeAddCustomerView();
       getCustomers();
     });
@@ -279,6 +283,7 @@ export default function CustomerView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

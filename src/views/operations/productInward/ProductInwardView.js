@@ -24,6 +24,7 @@ import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import InwardProductDetailsView from './InwardProductDetailsView';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -111,6 +112,7 @@ export default function ProductInwardView() {
   const [formErrors, setFormErrors] = useState('');
   const [addProductInwardViewOpen, setAddProductInwardViewOpen] = useState(false);
   const [deleteProductInwardViewOpen, setDeleteProductInwardViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [inwardProductDetailsViewOpen, setInwardProductDetailsViewOpen] = useState(false)
 
@@ -123,6 +125,9 @@ export default function ProductInwardView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New product inward has been created."
+      })
       closeAddProductInwardView(false);
       getProductInwards();
     });
@@ -298,6 +303,7 @@ export default function ProductInwardView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

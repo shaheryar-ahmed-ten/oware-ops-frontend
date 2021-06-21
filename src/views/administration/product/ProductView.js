@@ -22,6 +22,7 @@ import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddProductView from './AddProductView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -122,6 +123,7 @@ export default function ProductView() {
   const [formErrors, setFormErrors] = useState('');
   const [addProductViewOpen, setAddProductViewOpen] = useState(false);
   const [deleteProductViewOpen, setDeleteProductViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
 
   const addProduct = data => {
@@ -133,6 +135,9 @@ export default function ProductView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New product has been created."
+      })
       closeAddProductView(false);
       getProducts();
     });
@@ -288,6 +293,7 @@ export default function ProductView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

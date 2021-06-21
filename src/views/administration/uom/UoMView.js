@@ -22,6 +22,7 @@ import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddUoMView from './AddUoMView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,7 +78,7 @@ export default function UoMView() {
   const [formErrors, setFormErrors] = useState('');
   const [addUoMViewOpen, setAddUoMViewOpen] = useState(false);
   const [deleteUoMViewOpen, setDeleteUoMViewOpen] = useState(false);
-
+  const [showMessage, setShowMessage] = useState(null)
 
   const addUoM = data => {
     let apiPromise = null;
@@ -88,6 +89,9 @@ export default function UoMView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New UOM has been created."
+      })
       closeAddUoMView();
       getUoMs();
     });
@@ -227,6 +231,7 @@ export default function UoMView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

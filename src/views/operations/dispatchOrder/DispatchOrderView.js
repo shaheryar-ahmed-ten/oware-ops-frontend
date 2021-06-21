@@ -26,6 +26,7 @@ import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 
 const useStyles = makeStyles(theme => ({
@@ -130,6 +131,7 @@ export default function DispatchOrderView() {
   const [formErrors, setFormErrors] = useState('');
   const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [dispatchOrderDetailsViewOpen, setdispatchOrderDetailsViewOpen] = useState(false)
 
@@ -143,6 +145,9 @@ export default function DispatchOrderView() {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New dispatch order has been created."
+      })
       closeAddDispatchOrderView(false);
       getDispatchOrders();
     });
@@ -345,6 +350,7 @@ export default function DispatchOrderView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }
