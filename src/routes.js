@@ -19,6 +19,10 @@ import ProductOutwardView from '../src/views/operations/productOutward/ProductOu
 import InventoryView from '../src/views/reporting/inventory/InventoryView';
 import ExportView from '../src/views/reporting/exports/ExportView';
 import { checkPermission } from './utils/auth';
+import VendorView from './views/transportOperations/vendor/VendorView';
+import DriverView from './views/transportOperations/driver/DriverView';
+import VehicleView from './views/transportOperations/vehicle/VehicleView';
+import RideView from './views/transportOperations/ride/RideView';
 
 
 const routes = (user) => [
@@ -79,6 +83,22 @@ const routes = (user) => [
       {
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'vendor',
+        element: <VendorView />
+      },
+      {
+        path: 'driver',
+        element: <DriverView />
+      },
+      {
+        path: 'vehicle',
+        element: <VehicleView />
+      },
+      {
+        path: 'ride',
+        element: <RideView />
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
