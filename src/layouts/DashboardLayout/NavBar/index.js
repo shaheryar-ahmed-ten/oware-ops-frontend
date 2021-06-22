@@ -101,7 +101,31 @@ const navTreeData = [
         activeRouteName: 'inventory'
       }
     ]
-  }
+  },
+  {
+    title: 'Transporation Ops',
+    nodeId: 'transporat-operations',
+    children: [
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/operations/driver',
+        title: 'Driver',
+        activeRouteName: 'driver'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/operations/vehicle',
+        title: 'Vehicle',
+        activeRouteName: 'vehicle'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/operations/ride',
+        title: 'Ride',
+        activeRouteName: 'ride'
+      },
+    ]
+  },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -176,7 +200,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           expanded={expanded}
           selected={selected}
           onNodeToggle={handleToggle}
-          onNodeSelect={handleSelect} 
+          onNodeSelect={handleSelect}
         >
 
           {navTreeData.map((treeData, i) => (
