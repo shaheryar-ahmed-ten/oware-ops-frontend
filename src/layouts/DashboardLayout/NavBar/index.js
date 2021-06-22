@@ -103,24 +103,24 @@ const navTreeData = [
     ]
   },
   {
-    title: 'Transporation Ops',
-    nodeId: 'transporat-operations',
+    title: 'Logistics',
+    nodeId: 'Logistics',
     children: [
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/operations/driver',
+        href: '/logistics/driver',
         title: 'Driver',
         activeRouteName: 'driver'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/operations/vehicle',
+        href: '/logistics/vehicle',
         title: 'Vehicle',
         activeRouteName: 'vehicle'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/operations/ride',
+        href: '/logistics/ride',
         title: 'Ride',
         activeRouteName: 'ride'
       },
