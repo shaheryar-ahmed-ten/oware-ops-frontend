@@ -6,7 +6,7 @@ import DashboardLayout from '../src/layouts/DashboardLayout';
 import LoginView from '../src/views/auth/LoginView';
 import NotFoundView from '../src/views/errors/NotFoundView';
 import UserView from '../src/views/administration/user/UserView';
-import CustomerView from '../src/views/administration/customer/CustomerView';
+import CompanyView from '../src/views/administration/customer/CompanyView';
 import BrandView from '../src/views/administration/brand/BrandView';
 import UoMView from '../src/views/administration/uom/UoMView';
 import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
@@ -35,7 +35,7 @@ const routes = (user) => [
       },
       {
         path: 'customer',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CustomerView /> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView /> : <Navigate to="404" />
       },
       {
         path: 'warehouse',

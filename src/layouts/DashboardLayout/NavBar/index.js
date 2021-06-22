@@ -31,7 +31,7 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
         href: '/administration/customer',
-        title: 'Customer',
+        title: 'Company',
         activeRouteName: 'customer'
       },
       {

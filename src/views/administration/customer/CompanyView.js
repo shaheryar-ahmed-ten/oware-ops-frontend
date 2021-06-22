@@ -19,7 +19,7 @@ import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddCustomerView from './AddCustomerView';
+import AddCompanyView from './AddCompanyView';
 import { debounce } from 'lodash';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { DEBOUNCE_CONST } from '../../../Config';
@@ -47,22 +47,28 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function CustomerView() {
+export default function CompanyView() {
   const classes = useStyles();
   const columns = [{
     id: 'id',
     label: 'ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => `${entity.name[0]}${entity.type[0]}-${digitize(value, 3)}`
+    format: (value, entity) => `${entity.name[0]}${(entity.type && entity.type[0]) || ""}${entity.relationType[0]}-${digitize(value, 3)}`
   }, {
     id: 'name',
     label: 'Company',
     minWidth: 'auto',
     className: '',
   }, {
+    id: 'relationType',
+    label: 'Type',
+    minWidth: 'auto',
+    className: '',
+    format: value => relationTypes[value]
+  }, {
     id: 'type',
-    label: 'Customer Type',
+    label: 'Company Type',
     minWidth: 'auto',
     className: ''
   }, {
@@ -107,20 +113,21 @@ export default function CustomerView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCompanys] = useState([]);
   const [users, setUsers] = useState([]);
   const [customerTypes, setCustomerTypes] = useState([]);
+  const [relationTypes, setRelationTypes] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addCustomerViewOpen, setAddCustomerViewOpen] = useState(false);
-  const [deleteCustomerViewOpen, setDeleteCustomerViewOpen] = useState(false);
+  const [addCompanyViewOpen, setAddCompanyViewOpen] = useState(false);
+  const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
-  const addCustomer = data => {
+  const addCompany = data => {
     let apiPromise = null;
-    if (!selectedCustomer) apiPromise = axios.post(getURL('/customer'), data);
-    else apiPromise = axios.put(getURL(`/customer/${selectedCustomer.id}`), data);
+    if (!selectedCompany) apiPromise = axios.post(getURL('/customer'), data);
+    else apiPromise = axios.put(getURL(`/customer/${selectedCompany.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -129,53 +136,53 @@ export default function CustomerView() {
       setShowMessage({
         message: "New customer has been created."
       })
-      closeAddCustomerView();
-      getCustomers();
+      closeAddCompanyView();
+      getCompanys();
     });
   };
 
-  const deleteCustomer = data => {
-    axios.delete(getURL(`/customer/${selectedCustomer.id}`))
+  const deleteCompany = data => {
+    axios.delete(getURL(`/customer/${selectedCompany.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
-        closeDeleteCustomerView();
-        getCustomers();
+        closeDeleteCompanyView();
+        getCompanys();
       });
   };
 
   const openEditView = customer => {
-    setSelectedCustomer(customer);
-    setAddCustomerViewOpen(true);
+    setSelectedCompany(customer);
+    setAddCompanyViewOpen(true);
   }
 
   const openDeleteView = customer => {
-    setSelectedCustomer(customer);
-    setDeleteCustomerViewOpen(true);
+    setSelectedCompany(customer);
+    setDeleteCompanyViewOpen(true);
   }
 
-  const closeAddCustomerView = () => {
-    setSelectedCustomer(null);
-    setAddCustomerViewOpen(false);
+  const closeAddCompanyView = () => {
+    setSelectedCompany(null);
+    setAddCompanyViewOpen(false);
   }
 
-  const closeDeleteCustomerView = () => {
-    setSelectedCustomer(null);
-    setDeleteCustomerViewOpen(false);
+  const closeDeleteCompanyView = () => {
+    setSelectedCompany(null);
+    setDeleteCompanyViewOpen(false);
   }
 
-  const _getCustomers = (page, searchKeyword) => {
+  const _getCompanys = (page, searchKeyword) => {
     axios.get(getURL('/customer'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setCustomers(res.data.data)
+        setCompanys(res.data.data)
       });
   }
 
-  const getCustomers = useCallback(debounce((page, searchKeyword) => {
-    _getCustomers(page, searchKeyword);
+  const getCompanys = useCallback(debounce((page, searchKeyword) => {
+    _getCompanys(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
@@ -183,12 +190,13 @@ export default function CustomerView() {
       .then(res => {
         setUsers(res.data.users);
         setCustomerTypes(res.data.customerTypes);
+        setRelationTypes(res.data.relationTypes);
       });
   };
 
 
   useEffect(() => {
-    getCustomers(page, searchKeyword);
+    getCompanys(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {
@@ -206,35 +214,36 @@ export default function CustomerView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const addCustomerButton = <Button
+  const addCompanyButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCustomerViewOpen(true)}>ADD CUSTOMER</Button>;
-  const addCustomerModal = <AddCustomerView
+    onClick={() => setAddCompanyViewOpen(true)}>ADD CUSTOMER</Button>;
+  const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
     users={users}
     customerTypes={customerTypes}
-    selectedCustomer={selectedCustomer}
-    open={addCustomerViewOpen}
-    addCustomer={addCustomer}
-    handleClose={() => closeAddCustomerView()} />
-  const deleteCustomerModal = <ConfirmDelete
+    relationTypes={relationTypes}
+    selectedCompany={selectedCompany}
+    open={addCompanyViewOpen}
+    addCompany={addCompany}
+    handleClose={() => closeAddCompanyView()} />
+  const deleteCompanyModal = <ConfirmDelete
     key={4}
-    confirmDelete={deleteCustomer}
-    open={deleteCustomerViewOpen}
-    handleClose={closeDeleteCustomerView}
-    selectedEntity={selectedCustomer && selectedCustomer.name}
-    title={"Customer"}
+    confirmDelete={deleteCompany}
+    open={deleteCompanyViewOpen}
+    handleClose={closeDeleteCompanyView}
+    selectedEntity={selectedCompany && selectedCompany.name}
+    title={"Company"}
   />
-  const headerButtons = [searchInput, addCustomerButton, addCustomerModal, deleteCustomerModal];
+  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Customer" buttons={headerButtons} />
+        <TableHeader title="Companies" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
