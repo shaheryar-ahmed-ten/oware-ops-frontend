@@ -16,10 +16,11 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 
-export default function AddCustomerView({ addCustomer, users, customerTypes, open, handleClose, selectedCustomer, formErrors }) {
+export default function AddCompanyView({ addCompany, users, customerTypes, relationTypes, open, handleClose, selectedCompany, formErrors }) {
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [contactId, setContactId] = useState('');
+  const [relationType, setRelationType] = useState('');
   const [type, setType] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -28,25 +29,32 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
 
 
   useEffect(() => {
-    if (!!selectedCustomer) {
-      setName(selectedCustomer.name || '');
-      setType(selectedCustomer.type || '');
-      setContactId(selectedCustomer.contactId || '');
-      setNotes(selectedCustomer.notes || '');
-      setActive(!!selectedCustomer.isActive);
+    if (!!selectedCompany) {
+      setName(selectedCompany.name || '');
+      setType(selectedCompany.type || '');
+      setRelationType(selectedCompany.relationType || '');
+      setContactId(selectedCompany.contactId || '');
+      setNotes(selectedCompany.notes || '');
+      setActive(!!selectedCompany.isActive);
     } else {
       setName('');
       setType('');
+      setRelationType('');
       setContactId('');
       setNotes('');
       setActive(true);
     }
-  }, [selectedCustomer]);
+  }, [selectedCompany]);
+
+  useEffect(() => {
+    if (relationType == 'VENDOR') setType(null);
+  }, [relationType]);
 
   const handleSubmit = e => {
-    const newCustomer = {
+    const newCompany = {
       name,
       contactId,
+      relationType,
       type,
       contactEmail,
       contactPhone,
@@ -56,10 +64,13 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
     setValidation({
       name: true,
       contactId: true,
-      type: true
+      relationType: true,
+      type: relationType == 'CUSTOMER'
     });
-    if (isRequired(name) && isRequired(contactId) && isRequired(type)) {
-      addCustomer(newCustomer);
+    if (isRequired(name) && isRequired(contactId) &&
+      (relationType == 'VENDOR' || isRequired(type)) &&
+      isRequired(relationType)) {
+      addCompany(newCompany);
     }
   }
 
@@ -68,7 +79,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedCustomer ? 'Add Customer' : 'Edit Customer'}
+            {!selectedCompany ? 'Add Company' : 'Edit Company'}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -89,22 +100,42 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
               </Grid>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>Customer Type</InputLabel>
+                  <InputLabel>Relation Type</InputLabel>
                   <Select
                     fullWidth={true}
                     id="type"
-                    label="Customer Type"
+                    label="Relation Type"
                     variant="outlined"
-                    value={type}
-                    onChange={e => setType(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, type: true })}
+                    value={relationType}
+                    onChange={e => setRelationType(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, relationType: true })}
                   >
-                    <MenuItem value="" disabled>Select a customer type</MenuItem>
-                    {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
+                    <MenuItem value="" disabled>Select a relation type</MenuItem>
+                    {Object.keys(relationTypes).map(key => <MenuItem key={key} value={key}>{relationTypes[key]}</MenuItem>)}
                   </Select>
-                  {validation.type && !isRequired(type) ? <Typography color="error">Customer type is required!</Typography> : ''}
+                  {validation.relationType && !isRequired(relationType) ? <Typography color="error">Relation type is required!</Typography> : ''}
                 </FormControl>
               </Grid>
+              {relationType == 'CUSTOMER' ?
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Company Type</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="type"
+                      label="Company Type"
+                      variant="outlined"
+                      value={type}
+                      onChange={e => setType(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, type: true })}
+                    >
+                      <MenuItem value="" disabled>Select a customer type</MenuItem>
+                      {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
+                    </Select>
+                    {validation.type && !isRequired(type) ? <Typography color="error">Company type is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                : ''}
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <InputLabel>Contact</InputLabel>
@@ -149,7 +180,7 @@ export default function AddCustomerView({ addCustomer, users, customerTypes, ope
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedCustomer ? 'Add Customer' : 'Update Customer'}
+              {!selectedCompany ? 'Add Company' : 'Update Company'}
             </Button>
           </DialogActions>
         </Dialog>
