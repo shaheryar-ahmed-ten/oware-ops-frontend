@@ -108,12 +108,6 @@ const navTreeData = [
     children: [
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/operations/vendor',
-        title: 'Vendor',
-        activeRouteName: 'vendor'
-      },
-      {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
         href: '/operations/driver',
         title: 'Driver',
         activeRouteName: 'driver'
