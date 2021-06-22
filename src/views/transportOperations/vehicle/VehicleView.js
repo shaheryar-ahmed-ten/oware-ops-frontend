@@ -16,6 +16,7 @@ import TableHeader from '../../TableHeader';
 import { Pagination } from '@material-ui/lab';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import AddVehicleView from './AddVehicleView';
+import VehicleDetailsView from './VehicleDetailsView';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
 
@@ -85,7 +86,7 @@ function VehicleView() {
         className: '',
         format: (value, entity) =>
             [
-                // <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
+                <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
                 <EditIcon key="edit" onClick={() => openEditView(entity)} />,
                 // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
             ]
@@ -94,18 +95,25 @@ function VehicleView() {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [showMessage, setShowMessage] = useState(null)
     const [addVehicleView, setAddVehicleView] = useState(false)
+    const [vehicleDetailsView, setVehicleDetailsView] = useState(false)
     const [formErrors, setFormErrors] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState(null);
-    // handle view functions
+    // handle view open functions
     const openEditView = (vehicle) => {
         setSelectedVehicle(vehicle)
         setAddVehicleView(true)
     }
-    // functions
+    const openViewDetails = (vehicle) => {
+        setSelectedVehicle(vehicle)
+        setVehicleDetailsView(true)
+    }
+    // close functions
     const closeAddVehicleViewModal = () => {
         setAddVehicleView(false)
     }
-
+    const closeVehicleDetailsView = () => {
+        setVehicleDetailsView(false)
+    }
     // constants views
     const addVehicleButton = <Button
         key={2}
@@ -127,6 +135,11 @@ function VehicleView() {
         open={addVehicleView}
         handleClose={closeAddVehicleViewModal} />;
 
+    const vehicleDetailsViewModal = <VehicleDetailsView
+        selectedVehicle={selectedVehicle}
+        open={vehicleDetailsView}
+        handleClose={closeVehicleDetailsView} />;
+
     const searchInput = <InputBase
         placeholder="Search"
         className={classes.searchInput}
@@ -138,11 +151,11 @@ function VehicleView() {
         key={1}
         onChange={e => setSearchKeyword(e.target.value)}
     />;
-    const headerButtons = [searchInput, addVehicleButton, addVehicleViewModal]
+    const headerButtons = [searchInput, addVehicleButton, addVehicleViewModal, vehicleDetailsViewModal]
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Product Inward" buttons={headerButtons} />
+                <TableHeader title="Vehicles" buttons={headerButtons} />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>

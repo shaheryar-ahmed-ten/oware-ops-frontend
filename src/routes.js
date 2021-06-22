@@ -83,6 +83,13 @@ const routes = (user) => [
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
       },
+      { path: '*', element: <Navigate to='/404' /> }
+    ]
+  },
+  {
+    path: 'logistics',
+    element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
+    children: [
       {
         path: 'driver',
         element: <DriverView />
@@ -95,7 +102,6 @@ const routes = (user) => [
         path: 'ride',
         element: <RideView />
       },
-      { path: '*', element: <Navigate to='/404' /> }
     ]
   },
   {
