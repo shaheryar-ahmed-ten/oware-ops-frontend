@@ -13,13 +13,13 @@ import {
     DialogTitle,
     Typography
 } from '@material-ui/core'
-function DriverDetailsView({ open, handleClose, selectedDriver, }) {
+function RideDetailsView({ selectedRide, open, handleClose }) {
     return (
         <div style={{ display: "inline" }}>
             <form>
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle>
-                        View Driver
+                        View Ride
                     </DialogTitle>
                     <DialogContent>
                         {/* TODO: will add textfields once apis are ready */}
@@ -33,4 +33,4 @@ function DriverDetailsView({ open, handleClose, selectedDriver, }) {
     )
 }
 
-export default DriverDetailsView
+export default RideDetailsView

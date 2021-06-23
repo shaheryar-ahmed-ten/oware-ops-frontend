@@ -23,7 +23,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
     const [registrationNumber, setRegistrationNumber] = useState('')
     const [make, setMake] = useState('')
     const [model, setModel] = useState('')
-    const [year, setYear] = useState('')
     const [runningPaper, setRunningPaper] = useState(null)
     const [routePermit, setRoutePermit] = useState(null)
 
@@ -38,7 +37,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
         setRegistrationNumber('');
         setMake('');
         setModel('');
-        setYear('');
         setRunningPaper(null);
         setRoutePermit(null);
     }
@@ -50,7 +48,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
             registrationNumber,
             make,
             model,
-            year,
             runningPaper,
             routePermit
         }
@@ -60,7 +57,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
             registrationNumber: true,
             make: true,
             model: true,
-            year: true,
             runningPaper: true,
             routePermit: true
         });
@@ -171,27 +167,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
                                             {Models.map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
                                         </Select>
                                         {validation.model && !isRequired(model) ? <Typography color="error">Model is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={12}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Year</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="year"
-                                            label="Year"
-                                            variant="outlined"
-                                            value={year}
-                                            disabled={!!selectedVehicle}
-                                            onChange={e => setYear(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, year: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Year</MenuItem>
-                                            {Years.map(year => <MenuItem key={year.id} value={year.id}>{year.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.year && !isRequired(year) ? <Typography color="error">Year is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>

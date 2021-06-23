@@ -61,27 +61,20 @@ function VehicleView() {
     },
     {
         id: 'Vehicle.make',
-        label: 'Vendor Name',
+        label: 'Make',
         minWidth: 'auto',
         className: '',
         format: (value, entity) => entity.make
     },
     {
         id: 'Vehicle.model',
-        label: 'Vendor Name',
+        label: 'Model',
         minWidth: 'auto',
         className: '',
         format: (value, entity) => entity.model
-    },
-    {
-        id: 'Vehicle.year',
-        label: 'Vendor Name',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => entity.year
     }, {
         id: 'actions',
-        label: '',
+        label: 'Actions',
         minWidth: 'auto',
         className: '',
         format: (value, entity) =>
