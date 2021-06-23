@@ -9,7 +9,11 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    FormControl,
+    Select,
+    MenuItem,
+    InputLabel
 } from '@material-ui/core';
 import React, { useState } from 'react'
 import TableHeader from '../../TableHeader';
@@ -41,6 +45,9 @@ const useStyles = makeStyles(theme => ({
         marginRight: 7,
         height: 30,
     },
+    formControl: {
+        minWidth: 120
+    }
 }))
 function RideView() {
     const classes = useStyles();
@@ -132,7 +139,7 @@ function RideView() {
     const [selectedRide, setSelectedRide] = useState(null);
     const [addRideView, setAddRideView] = useState(false)
     const [rideDetailsView, setRideDetailsView] = useState(false)
-
+    const [status, setStatus] = useState('All')
     // handle view open functions
     const openEditView = (driver) => {
         setSelectedRide(driver)
@@ -189,6 +196,17 @@ function RideView() {
         key={1}
         onChange={e => setSearchKeyword(e.target.value)}
     />;
+
+    const statusFilter = <FormControl className={classes.formControl}>
+        <Select
+            labelId="demo-simple-select-helper-label"
+            id="demo-simple-select-helper"
+            value={status}
+            onChange={(e) => { setStatus(e.target.value) }}
+        >
+            <MenuItem value='All'>Filter</MenuItem>
+        </Select>
+    </FormControl>
     const headerButtons = [searchInput, addDriverButton, addRideViewModal, rideDetailsViewModal]
     return (
         <Paper className={classes.root}>
