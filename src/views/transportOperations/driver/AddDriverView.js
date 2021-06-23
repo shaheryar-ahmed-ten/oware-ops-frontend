@@ -16,7 +16,7 @@ import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 
-function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose }) {
+function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open, handleClose }) {
     const [driverName, setDriverName] = useState('')
     const [driverPhone, setDriverPhone] = useState('')
     const [validation, setValidation] = useState({});
@@ -41,6 +41,38 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
     }
 
     const handleSubmit = () => {
+
+        const newDriver = {
+            driverName,
+            driverPhone,
+            validation,
+            drivingLicenceNumber,
+            vendorId,
+            driverCNIC,
+            drivingLicence,
+            CNIC
+        }
+
+        setValidation({
+            driverName: true,
+            driverPhone: true,
+            validation: true,
+            drivingLicenceNumber: true,
+            vendorId: true,
+            driverCNIC: true,
+            drivingLicence: true,
+            CNIC: true,
+        });
+        if (isRequired(driverName) &&
+            isRequired(driverPhone) &&
+            isRequired(validation) &&
+            isRequired(drivingLicenceNumber) &&
+            isRequired(vendorId) &&
+            isRequired(driverCNIC) &&
+            isRequired(drivingLicence) &&
+            isRequired(CNIC)) {
+            addDriver(newDriver);
+        }
 
     }
     return (
@@ -79,7 +111,7 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         variant="outlined"
                                         value={drivingLicenceNumber}
                                         disabled={!!selectedDriver}
-                                        onChange={e => setDriverCNIC(e.target.value)}
+                                        onChange={e => setDrivingLicenceNumber(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, drivingLicenceNumber: true })}
                                     />
                                     {validation.drivingLicenceNumber && !isRequired(drivingLicenceNumber) ? <Typography color="error">Licence number is required!</Typography> : ''}
@@ -100,7 +132,7 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                             onBlur={e => setValidation({ ...validation, vendorId: true })}
                                         >
                                             <MenuItem value="" disabled>Select Vendor</MenuItem>
-                                            {Vendors.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
+                                            {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
                                         </Select>
                                         {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
                                     </FormControl>
@@ -134,7 +166,7 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         value={driverCNIC}
                                         disabled={!!selectedDriver}
                                         placeholder="99999-9999999-3"
-                                        onChange={e => setDrivingLicenceNumber(e.target.value)}
+                                        onChange={e => setDriverCNIC(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverCNIC: true })}
                                     />
                                     {validation.driverCNIC && !isRequired(driverCNIC) ? <Typography color="error">Driver CNIC number is required!</Typography> : ''}
