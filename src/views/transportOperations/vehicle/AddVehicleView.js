@@ -16,7 +16,7 @@ import {
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendors, Drivers, Makes, Models, Years }) {
+function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendors, Drivers, Makes, Models, Years, addVehicle }) {
     const [validation, setValidation] = useState({});
     const [vendorId, setVendorId] = useState(null)
     const [driverId, setDriverId] = useState(null)
@@ -64,8 +64,16 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
             runningPaper: true,
             routePermit: true
         });
-        // TODO: update/add vehicle i.e call api
-
+        if (isRequired(vendorId) &&
+            isRequired(driverId) &&
+            isRequired(registrationNumber) &&
+            isRequired(make) &&
+            isRequired(model) &&
+            isRequired(year) &&
+            isRequired(runningPaper) &&
+            isRequired(routePermit)) {
+            addVehicle(newVehicle);
+        }
     }
     return (
         <div style={{ display: "inline" }}>
