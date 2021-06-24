@@ -114,9 +114,11 @@ function DriverView() {
   // close functions
   const closeaddDriverViewModal = () => {
     setAddDriverView(false)
+    setSelectedDriver(null)
   }
   const closeDriverDetailsView = () => {
     setDriverDetailsView(false)
+    setSelectedDriver(null)
   }
 
   const closeAddDriverView = () => {

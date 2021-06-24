@@ -20,7 +20,7 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                         <DialogContent>
                             {/* TODO: will add textfields once apis are ready */}
                             <Grid container spacing={2}>
-                                <Grid container spacing={2}>
+                                <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
@@ -46,11 +46,11 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.Company.name}
+                                            value={selectedDriver.Vendor.name}
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={2}>
+                                <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
@@ -81,7 +81,7 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={2}>
+                                <Grid item container spacing={2}>
                                     <Grid item xs={12}>
                                         <TextField
                                             id="filled-number"
@@ -90,7 +90,6 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
-                                            type="number"
                                             disabled
                                             fullWidth
                                             variant="filled"

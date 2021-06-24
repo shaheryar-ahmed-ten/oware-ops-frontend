@@ -21,6 +21,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
     const [driverPhone, setDriverPhone] = useState('')
     const [validation, setValidation] = useState({});
     const [drivingLicenseNumber, setDrivingLicenseNumber] = useState('')
+    const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
     const [driverCNIC, setDriverCNIC] = useState('')
     const [drivingLicense, setDrivingLicense] = useState(null)
@@ -28,12 +29,24 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
     useEffect(() => {
         if (open)
             resetLocalStates()
+        if (selectedDriver) {
+            setDriverName(selectedDriver.name);
+            setDriverPhone(selectedDriver.phone)
+            setDrivingLicenseNumber(selectedDriver.drivingLicenseNumber)
+            setVendorName(selectedDriver.Vendor.name)
+            setVendorId(selectedDriver.Vendor.id)
+            setDriverCNIC(selectedDriver.cnicNumber)
+        }
+        else {
+            resetLocalStates()
+        }
     }, [open])
     const resetLocalStates = () => {
         setDriverName('');
         setDriverPhone('');
         setValidation({});
         setDrivingLicenseNumber('');
+        setVendorName('');
         setVendorId(null);
         setDriverCNIC(null);
         setDrivingLicense(null);
@@ -46,10 +59,10 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
             name: driverName,
             phone: driverPhone,
             drivingLicenseNumber: drivingLicenseNumber,
-            companyId:vendorId,
+            companyId: vendorId,
             cnicNumber: driverCNIC,
-            drivingLicenseId: drivingLicense,
-            cnicId: CNIC
+            // drivingLicenseId: drivingLicense,
+            // cnicId: CNIC
         }
 
         setValidation({
@@ -94,7 +107,6 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         type="text"
                                         variant="outlined"
                                         value={driverName}
-                                        disabled={!!selectedDriver}
                                         onChange={e => setDriverName(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverName: true })}
                                     />
@@ -109,7 +121,6 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         type="text"
                                         variant="outlined"
                                         value={drivingLicenseNumber}
-                                        disabled={!!selectedDriver}
                                         onChange={e => setDrivingLicenseNumber(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, drivingLicenseNumber: true })}
                                     />
@@ -126,11 +137,15 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                             label="Vendor"
                                             variant="outlined"
                                             value={vendorId}
-                                            disabled={!!selectedDriver}
                                             onChange={e => setVendorId(e.target.value)}
                                             onBlur={e => setValidation({ ...validation, vendorId: true })}
                                         >
-                                            <MenuItem value="" disabled>Select Vendor</MenuItem>
+                                            {
+                                                vendorId && vendorId !== "" ?
+                                                    <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
+                                                    :
+                                                    <MenuItem value={""} disabled>Select Vendor</MenuItem>
+                                            }
                                             {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
                                         </Select>
                                         {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
@@ -163,7 +178,6 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         type="text"
                                         variant="outlined"
                                         value={driverCNIC}
-                                        disabled={!!selectedDriver}
                                         placeholder="99999-9999999-3"
                                         onChange={e => setDriverCNIC(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverCNIC: true })}
