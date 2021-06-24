@@ -3,18 +3,12 @@ import {
     Grid,
     Button,
     TextField,
-    Select,
-    FormControl,
-    InputLabel,
-    MenuItem,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography
 } from '@material-ui/core'
-import { isRequired } from '../../../utils/validators';
-function DriverDetailsView({ open, handleClose, selectedDriver, }) {
+function DriverDetailsView({ open, handleClose, selectedDriver }) {
     return (
         <div style={{ display: "inline" }}>
             <form>
@@ -24,6 +18,86 @@ function DriverDetailsView({ open, handleClose, selectedDriver, }) {
                     </DialogTitle>
                     <DialogContent>
                         {/* TODO: will add textfields once apis are ready */}
+                        <Grid container spacing={2}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        id="filled-number"
+                                        label="Driver Name"
+                                        type="text"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        disabled
+                                        fullWidth
+                                        variant="filled"
+                                        value={selectedDriver.name}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        id="filled-number"
+                                        label="Vendor Name"
+                                        type="text"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        disabled
+                                        fullWidth
+                                        variant="filled"
+                                        value={selectedDriver.Company.name}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        id="filled-number"
+                                        label="Phone Number"
+                                        type="text"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        type="number"
+                                        disabled
+                                        fullWidth
+                                        variant="filled"
+                                        value={selectedDriver.phone}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        id="filled-number"
+                                        label="CNIC Number"
+                                        type="text"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        disabled
+                                        fullWidth
+                                        variant="filled"
+                                        value={selectedDriver.cnicNumber}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        id="filled-number"
+                                        label="Driving License Number"
+                                        type="text"
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        type="number"
+                                        disabled
+                                        fullWidth
+                                        variant="filled"
+                                        value={selectedDriver.drivingLicenseNumber}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color="default" variant="contained">Close</Button>
