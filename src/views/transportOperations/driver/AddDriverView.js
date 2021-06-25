@@ -16,31 +16,75 @@ import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 
-function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose }) {
+function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open, handleClose }) {
     const [driverName, setDriverName] = useState('')
     const [driverPhone, setDriverPhone] = useState('')
     const [validation, setValidation] = useState({});
-    const [drivingLicenceNumber, setDrivingLicenceNumber] = useState('')
+    const [drivingLicenseNumber, setDrivingLicenseNumber] = useState('')
+    const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
     const [driverCNIC, setDriverCNIC] = useState('')
-    const [drivingLicence, setDrivingLicence] = useState(null)
+    const [drivingLicense, setDrivingLicense] = useState(null)
     const [CNIC, setCNIC] = useState(null)
     useEffect(() => {
         if (open)
             resetLocalStates()
+        if (selectedDriver) {
+            setDriverName(selectedDriver ? selectedDriver.name : '');
+            setDriverPhone(selectedDriver ? selectedDriver.phone : '');
+            setDrivingLicenseNumber(selectedDriver ? selectedDriver.drivingLicenseNumber : '');
+            setVendorName(selectedDriver.Vendor ? selectedDriver.Vendor.name : '');
+            setVendorId(selectedDriver.Vendor ? selectedDriver.Vendor.id : '');
+            setDriverCNIC(selectedDriver ? selectedDriver.cnicNumber : '');
+        }
+        else {
+            resetLocalStates()
+        }
     }, [open])
     const resetLocalStates = () => {
         setDriverName('');
         setDriverPhone('');
         setValidation({});
-        setDrivingLicenceNumber('');
+        setDrivingLicenseNumber('');
+        setVendorName('');
         setVendorId(null);
         setDriverCNIC(null);
-        setDrivingLicence(null);
+        setDrivingLicense(null);
         setCNIC(null);
     }
 
     const handleSubmit = () => {
+
+        const newDriver = {
+            name: driverName,
+            phone: driverPhone,
+            drivingLicenseNumber: drivingLicenseNumber,
+            companyId: vendorId,
+            cnicNumber: driverCNIC,
+            // drivingLicenseId: drivingLicense,
+            // cnicId: CNIC
+        }
+
+        setValidation({
+            driverName: true,
+            driverPhone: true,
+            validation: true,
+            drivingLicenseNumber: true,
+            vendorId: true,
+            driverCNIC: true,
+            drivingLicense: true,
+            CNIC: true,
+        });
+        if (isRequired(driverName) &&
+            isRequired(driverPhone) &&
+            isRequired(validation) &&
+            isRequired(drivingLicenseNumber) &&
+            isRequired(vendorId) &&
+            isRequired(driverCNIC) &&
+            isRequired(drivingLicense) &&
+            isRequired(CNIC)) {
+            addDriver(newDriver);
+        }
 
     }
     return (
@@ -63,7 +107,6 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         type="text"
                                         variant="outlined"
                                         value={driverName}
-                                        disabled={!!selectedDriver}
                                         onChange={e => setDriverName(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverName: true })}
                                     />
@@ -74,15 +117,14 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         fullWidth={true}
                                         margin="dense"
                                         id="driverliceneNumber"
-                                        label="Driving Licence Number"
+                                        label="Driving License Number"
                                         type="text"
                                         variant="outlined"
-                                        value={drivingLicenceNumber}
-                                        disabled={!!selectedDriver}
-                                        onChange={e => setDriverCNIC(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, drivingLicenceNumber: true })}
+                                        value={drivingLicenseNumber}
+                                        onChange={e => setDrivingLicenseNumber(e.target.value)}
+                                        onBlur={e => setValidation({ ...validation, drivingLicenseNumber: true })}
                                     />
-                                    {validation.drivingLicenceNumber && !isRequired(drivingLicenceNumber) ? <Typography color="error">Licence number is required!</Typography> : ''}
+                                    {validation.drivingLicenseNumber && !isRequired(drivingLicenseNumber) ? <Typography color="error">License number is required!</Typography> : ''}
                                 </Grid>
                             </Grid>
                             <Grid container spacing={2}>
@@ -95,12 +137,16 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                             label="Vendor"
                                             variant="outlined"
                                             value={vendorId}
-                                            disabled={!!selectedDriver}
                                             onChange={e => setVendorId(e.target.value)}
                                             onBlur={e => setValidation({ ...validation, vendorId: true })}
                                         >
-                                            <MenuItem value="" disabled>Select Vendor</MenuItem>
-                                            {Vendors.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
+                                            {
+                                                vendorId && vendorId !== "" ?
+                                                    <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
+                                                    :
+                                                    <MenuItem value={""} disabled>Select Vendor</MenuItem>
+                                            }
+                                            {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
                                         </Select>
                                         {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
                                     </FormControl>
@@ -132,9 +178,8 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         type="text"
                                         variant="outlined"
                                         value={driverCNIC}
-                                        disabled={!!selectedDriver}
                                         placeholder="99999-9999999-3"
-                                        onChange={e => setDrivingLicenceNumber(e.target.value)}
+                                        onChange={e => setDriverCNIC(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverCNIC: true })}
                                     />
                                     {validation.driverCNIC && !isRequired(driverCNIC) ? <Typography color="error">Driver CNIC number is required!</Typography> : ''}
@@ -147,17 +192,17 @@ function AddDriverView({ selectedDriver, Vendors, formErrors, open, handleClose 
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={drivingLicence ? 'primary' : 'default'}
+                                            color={drivingLicense ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Driving Licence {drivingLicence ? 'Uploaded' : ''}
+                                            Driving License {drivingLicense ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
-                                                onChange={(e) => { setDrivingLicence(e.target.files[0]) }}
+                                                onChange={(e) => { setDrivingLicense(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.drivingLicence && !isRequired(drivingLicence) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {validation.drivingLicense && !isRequired(drivingLicense) ? <Typography color="error">Running paper is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>

@@ -134,7 +134,7 @@ export default function ProductOutwardView() {
   const [productOutwards, setProductOutwards] = useState([]);
 
   const [dispatchOrders, setDispatchOrders] = useState([]);
-  const [vehicleTypes, setvehicleTypes] = useState([])
+  const [vehicleTypes, setVehicleTypes] = useState([])
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
@@ -225,7 +225,7 @@ export default function ProductOutwardView() {
     axios.get(getURL('/product-outward/relations'))
       .then(res => {
         // setting dispatchOrder details and vehicleTypes in local State
-        setvehicleTypes((prevState) => res.data.vehicleTypes)
+        setVehicleTypes((prevState) => res.data.vehicleTypes)
         setDispatchOrders(res.data.dispatchOrders)
       });
   };
