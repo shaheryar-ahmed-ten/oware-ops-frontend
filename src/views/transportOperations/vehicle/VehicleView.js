@@ -11,14 +11,19 @@ import {
     TableHead,
     TableRow
 } from '@material-ui/core';
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import TableHeader from '../../TableHeader';
-import { Pagination } from '@material-ui/lab';
+import { Alert, Pagination } from '@material-ui/lab';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import AddVehicleView from './AddVehicleView';
 import VehicleDetailsView from './VehicleDetailsView';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
+import axios from 'axios';
+import { getURL } from '../../../utils/common';
+import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -46,33 +51,26 @@ function VehicleView() {
     const [pageCount, setPageCount] = useState(1);
     const [page, setPage] = useState(1);
     const columns = [{
-        id: 'Vehicle.registerNumber',
+        id: 'registrationNumber',
         label: 'Registration Number',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.registerNumber
     },
     {
         id: 'Vehicle.vendorName',
         label: 'Vendor Name',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.vendorName
+        format: (value, entity) => entity.Vendor ? entity.Vendor.name : ''
     },
     {
-        id: 'Vehicle.make',
-        label: 'Make',
+        id: 'Vehicle.cars',
+        label: 'Car',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.make
+        format: (value, entity) => entity.Car ? entity.Car.CarMake.name + " " + entity.Car.CarModel.name : ''
     },
     {
-        id: 'Vehicle.model',
-        label: 'Model',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => entity.model
-    }, {
         id: 'actions',
         label: 'Actions',
         minWidth: 'auto',
@@ -85,12 +83,37 @@ function VehicleView() {
             ]
     },
     ]
+
+    const [vehicles, setVehicles] = useState([]);
+
     const [searchKeyword, setSearchKeyword] = useState('');
     const [showMessage, setShowMessage] = useState(null)
     const [addVehicleView, setAddVehicleView] = useState(false)
     const [vehicleDetailsView, setVehicleDetailsView] = useState(false)
     const [formErrors, setFormErrors] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+    const [drivers, setDrivers] = useState([])
+    const [vendors, setVendors] = useState([])
+    const [cars, setCars] = useState([])
+
+    const addVehicle = (data) => {
+        let apiPromise = null;
+        if (!selectedVehicle) apiPromise = axios.post(getURL('/vehicle'), data);
+        else apiPromise = axios.put(getURL(`/vehicle/${selectedVehicle.id}`), data);
+        apiPromise.then(res => {
+            if (!res.data.success) {
+                setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+                return
+            }
+            setShowMessage({
+                message: "New vehicle has been updated."
+            })
+            closeAddVehicleViewModal(false);
+            getVehicles();
+        });
+    }
+
     // handle view open functions
     const openEditView = (vehicle) => {
         setSelectedVehicle(vehicle)
@@ -102,10 +125,12 @@ function VehicleView() {
     }
     // close functions
     const closeAddVehicleViewModal = () => {
+        setSelectedVehicle(null)
         setAddVehicleView(false)
     }
     const closeVehicleDetailsView = () => {
         setVehicleDetailsView(false)
+        setSelectedVehicle(null)
     }
     // constants views
     const addVehicleButton = <Button
@@ -119,12 +144,11 @@ function VehicleView() {
     const addVehicleViewModal = <AddVehicleView
         key={3}
         selectedVehicle={selectedVehicle}
-        Vendors={[]}
-        Drivers={[]}
-        Makes={[]}
-        Models={[]}
-        Years={[]}
+        companies={vendors}
+        drivers={drivers}
+        cars={cars}
         formErrors={formErrors}
+        addVehicle={addVehicle}
         open={addVehicleView}
         handleClose={closeAddVehicleViewModal} />;
 
@@ -132,6 +156,36 @@ function VehicleView() {
         selectedVehicle={selectedVehicle}
         open={vehicleDetailsView}
         handleClose={closeVehicleDetailsView} />;
+
+    const _getVehicles = (page, searchKeyword) => {
+        axios.get(getURL('/vehicle'), { params: { page, search: searchKeyword } })
+            .then(res => {
+                setPageCount(res.data.pages)
+                setVehicles(res.data.data)
+            });
+    }
+
+    const getVehicles = useCallback(debounce((page, searchKeyword) => {
+        _getVehicles(page, searchKeyword);
+    }, DEBOUNCE_CONST), []);
+
+    const getRelations = () => {
+        axios.get(getURL('/vehicle/relations'))
+            .then(res => {
+                setVendors(res.data.vendors)
+                setDrivers(res.data.drivers)
+                setCars(res.data.cars)
+            });
+    };
+
+    useEffect(() => {
+        getVehicles(page, searchKeyword);
+    }, [page, searchKeyword]);
+
+    useEffect(() => {
+        getRelations();
+    }, []);
+
 
     const searchInput = <InputBase
         placeholder="Search"
@@ -164,7 +218,21 @@ function VehicleView() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-
+                        {vehicles.map((vehicle) => {
+                            return (
+                                <TableRow hover role="checkbox" tabIndex={-1} key={vehicle.id}>
+                                    {columns.map((column) => {
+                                        const value = vehicle[column.id];
+                                        return (
+                                            <TableCell key={column.id} align={column.align}
+                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                                                {column.format ? column.format(value, vehicle) : value}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>

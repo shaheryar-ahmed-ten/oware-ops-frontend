@@ -16,40 +16,67 @@ import {
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendors, Drivers, Makes, Models, Years }) {
+function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
     const [validation, setValidation] = useState({});
+    const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
+    const [driverName, setDriverName] = useState('')
     const [driverId, setDriverId] = useState(null)
     const [registrationNumber, setRegistrationNumber] = useState('')
-    const [make, setMake] = useState('')
-    const [model, setModel] = useState('')
+    const [carName, setCarName] = useState('')
+    const [carId, setCarId] = useState('')
     const [runningPaper, setRunningPaper] = useState(null)
     const [routePermit, setRoutePermit] = useState(null)
+    const [drivers, setDrivers] = useState([])
 
     useEffect(() => {
         if (open)
             resetLocalStates()
+        if (selectedVehicle) {
+            setVendorName(selectedVehicle.Vendor ? selectedVehicle.Vendor.name : '');
+            setVendorId(selectedVehicle.Vendor ? selectedVehicle.Vendor.id : '');
+            setDriverName(selectedVehicle.Driver ? selectedVehicle.Driver.name : '');
+            setDriverId(selectedVehicle.Driver ? selectedVehicle.Driver.id : '');
+            setRegistrationNumber(selectedVehicle ? selectedVehicle.registrationNumber : '');
+            setCarName(selectedVehicle.Car && selectedVehicle.Car.CarMake && selectedVehicle.Car.CarModel ? selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name : '');
+            setCarId(selectedVehicle.Car ? selectedVehicle.Car.id : '');
+        }
+        else {
+            resetLocalStates()
+        }
     }, [open])
+
+    useEffect(() => {
+        if (vendorId) {
+            companies.forEach(company => {
+                if (company.id === vendorId) {
+                    setDrivers(company.Drivers)
+                }
+            });
+        }
+    }, [vendorId])
     const resetLocalStates = () => {
         setValidation({});
+        setVendorName('');
         setVendorId(null);
+        setDriverName('');
         setDriverId(null);
         setRegistrationNumber('');
-        setMake('');
-        setModel('');
+        setCarName('');
+        setCarId(null);
         setRunningPaper(null);
         setRoutePermit(null);
     }
 
     const handleSubmit = () => {
         const newVehicle = {
-            vendorId,
-            driverId,
-            registrationNumber,
-            make,
-            model,
-            runningPaper,
-            routePermit
+            companyId: vendorId,
+            driverId: driverId,
+            registrationNumber: registrationNumber,
+            carId: carId,
+            type: "light-truck"
+            // runningPaper,
+            // routePermit
         }
         setValidation({
             vendorId: true,
@@ -60,8 +87,12 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
             runningPaper: true,
             routePermit: true
         });
-        // TODO: update/add vehicle i.e call api
-
+        if (isRequired(vendorId) &&
+            isRequired(driverId) &&
+            isRequired(registrationNumber) &&
+            isRequired(carId)) {
+            addVehicle(newVehicle);
+        }
     }
     return (
         <div style={{ display: "inline" }}>
@@ -83,12 +114,16 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
                                             label="Vendor"
                                             variant="outlined"
                                             value={vendorId}
-                                            disabled={!!selectedVehicle}
                                             onChange={e => setVendorId(e.target.value)}
                                             onBlur={e => setValidation({ ...validation, vendorId: true })}
                                         >
-                                            <MenuItem value="" disabled>Select Vendor</MenuItem>
-                                            {Vendors.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
+                                            {
+                                                vendorId && vendorId !== "" ?
+                                                    <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
+                                                    :
+                                                    <MenuItem value={""} disabled>Select Vendor</MenuItem>
+                                            }
+                                            {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
                                         </Select>
                                         {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
                                     </FormControl>
@@ -102,12 +137,16 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
                                             label="Driver"
                                             variant="outlined"
                                             value={driverId}
-                                            disabled={!!selectedVehicle}
                                             onChange={e => setDriverId(e.target.value)}
                                             onBlur={e => setValidation({ ...validation, driverId: true })}
                                         >
-                                            <MenuItem value="" disabled>Select Vendor</MenuItem>
-                                            {Drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                                            {
+                                                driverId && driverId !== "" ?
+                                                    <MenuItem value={driverId} disabled>{driverName}</MenuItem>
+                                                    :
+                                                    <MenuItem value={""} disabled>Select Driver</MenuItem>
+                                            }
+                                            {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
                                         </Select>
                                         {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
                                     </FormControl>
@@ -123,7 +162,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
                                         type="text"
                                         variant="outlined"
                                         value={registrationNumber}
-                                        disabled={!!selectedVehicle}
                                         onChange={e => setRegistrationNumber(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, registrationNumber: true })}
                                     />
@@ -131,45 +169,31 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, Vendor
                                 </Grid>
                             </Grid>
                             <Grid container spacing={2}>
-                                <Grid item sm={6}>
+                                <Grid item sm={12}>
                                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Make</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="make"
-                                            label="Make"
-                                            variant="outlined"
-                                            value={make}
-                                            disabled={!!selectedVehicle}
-                                            onChange={e => setMake(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, make: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Vendor</MenuItem>
-                                            {Makes.map(make => <MenuItem key={make.id} value={make.id}>{make.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.make && !isRequired(make) ? <Typography color="error">Make is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Model</InputLabel>
+                                        <InputLabel>Car</InputLabel>
                                         <Select
                                             fullWidth={true}
                                             id="modelId"
                                             label="Model"
                                             variant="outlined"
-                                            value={model}
-                                            disabled={!!selectedVehicle}
-                                            onChange={e => setModel(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, model: true })}
+                                            value={carId}
+                                            onChange={e => setCarId(e.target.value)}
+                                            onBlur={e => setValidation({ ...validation, modelId: true })}
                                         >
-                                            <MenuItem value="" disabled>Select Model</MenuItem>
-                                            {Models.map(model => <MenuItem key={model.id} value={model.id}>{model.name}</MenuItem>)}
+                                            {
+                                                carId && carId !== "" ?
+                                                    <MenuItem value={carId} disabled>{carName}</MenuItem>
+                                                    :
+                                                    <MenuItem value={""} disabled>Select Car</MenuItem>
+                                            }
+                                            {cars.map(car => <MenuItem key={car.id} value={car.id}> {`${car.CarMake.name} ${car.CarModel.name}`} </MenuItem>)}
                                         </Select>
-                                        {validation.model && !isRequired(model) ? <Typography color="error">Model is required!</Typography> : ''}
+                                        {validation.carId && !isRequired(carId) ? <Typography color="error">Car is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>
+
                             <Grid container spacing={2}>
                                 <Grid item sm={6}>
                                     <FormControl margin="dense" fullWidth={true} variant="outlined">
