@@ -51,40 +51,26 @@ function VehicleView() {
     const [pageCount, setPageCount] = useState(1);
     const [page, setPage] = useState(1);
     const columns = [{
-        id: 'Vehicle.registerNumber',
+        id: 'registrationNumber',
         label: 'Registration Number',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.registerNumber
     },
     {
         id: 'Vehicle.vendorName',
         label: 'Vendor Name',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.vendorName
+        format: (value, entity) => entity.Vendor ? entity.Vendor.name : ''
     },
     {
-        id: 'Vehicle.make',
-        label: 'Vendor Name',
+        id: 'Vehicle.cars',
+        label: 'Model',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.make
+        format: (value, entity) => entity.Car ? entity.Car.CarModel.name + " " + entity.Car.CarMake.name : ''
     },
     {
-        id: 'Vehicle.model',
-        label: 'Vendor Name',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => entity.model
-    },
-    {
-        id: 'Vehicle.year',
-        label: 'Vendor Name',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => entity.year
-    }, {
         id: 'actions',
         label: '',
         minWidth: 'auto',
@@ -107,6 +93,10 @@ function VehicleView() {
     const [formErrors, setFormErrors] = useState('');
     const [selectedVehicle, setSelectedVehicle] = useState(null);
 
+    const [drivers, setDrivers] = useState([])
+    const [vendors, setVendors] = useState([])
+    const [cars, setCars] = useState([])
+
     const addVehicle = (data) => {
         let apiPromise = null;
         if (!selectedVehicle) apiPromise = axios.post(getURL('/vehicle'), data);
@@ -117,7 +107,7 @@ function VehicleView() {
                 return
             }
             setShowMessage({
-                message: "New vehicle has been created."
+                message: "New vehicle has been updated."
             })
             closeAddVehicleViewModal(false);
             getVehicles();
@@ -140,6 +130,7 @@ function VehicleView() {
     }
     const closeVehicleDetailsView = () => {
         setVehicleDetailsView(false)
+        setSelectedVehicle(null)
     }
     // constants views
     const addVehicleButton = <Button
@@ -153,11 +144,9 @@ function VehicleView() {
     const addVehicleViewModal = <AddVehicleView
         key={3}
         selectedVehicle={selectedVehicle}
-        Vendors={[]}
-        Drivers={[]}
-        Makes={[]}
-        Models={[]}
-        Years={[]}
+        companies={vendors}
+        drivers={drivers}
+        cars={cars}
         formErrors={formErrors}
         addVehicle={addVehicle}
         open={addVehicleView}
@@ -183,7 +172,9 @@ function VehicleView() {
     const getRelations = () => {
         axios.get(getURL('/vehicle/relations'))
             .then(res => {
-                // TODO: set realtions to local state
+                setVendors(res.data.vendors)
+                setDrivers(res.data.drivers)
+                setCars(res.data.cars)
             });
     };
 

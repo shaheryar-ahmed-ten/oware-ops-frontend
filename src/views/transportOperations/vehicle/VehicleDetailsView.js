@@ -13,26 +13,76 @@ import {
     DialogTitle,
     Typography
 } from '@material-ui/core'
-import { isRequired } from '../../../utils/validators';
 function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
+    console.log(selectedVehicle)
     return (
-        <div style={{ display: "inline" }}>
-            <form>
-                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle>
-                        View Vehicle
-                    </DialogTitle>
-                    <DialogContent>
-                        {/* TODO: will add textfields once apis are ready */}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="default" variant="contained">Close</Button>
-                    </DialogActions>
+        selectedVehicle ?
+            <div style={{ display: "inline" }}>
+                <form>
+                    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                        <DialogTitle>
+                            View Vehicle
+                        </DialogTitle>
+                        <DialogContent>
+                            <Grid container spacing={2}>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            id="filled-number"
+                                            label="Vendor Name"
+                                            disabled
+                                            fullWidth
+                                            variant="filled"
+                                            value={selectedVehicle.Vendor.name}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            id="filled-number"
+                                            label="Default Driver"
+                                            disabled
+                                            fullWidth
+                                            variant="filled"
+                                            value={selectedVehicle.Driver.name}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            id="filled-number"
+                                            label="Car"
+                                            disabled
+                                            fullWidth
+                                            variant="filled"
+                                            value={selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            id="filled-number"
+                                            label="Registration Number"
+                                            disabled
+                                            fullWidth
+                                            variant="filled"
+                                            value={selectedVehicle.registrationNumber}
+                                        />
+                                    </Grid>
+                                </Grid>
 
-                </Dialog>
-            </form>
-        </div>
+                            </Grid>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} color="default" variant="contained">Close</Button>
+                        </DialogActions>
 
+                    </Dialog>
+                </form>
+            </div>
+            :
+            null
     )
 }
 
