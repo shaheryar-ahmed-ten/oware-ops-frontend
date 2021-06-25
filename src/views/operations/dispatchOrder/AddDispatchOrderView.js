@@ -14,7 +14,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat, digitize } from '../../../utils/common';
+import { dateToPickerFormat } from '../../../utils/common';
 import { Autocomplete } from '@material-ui/lab';
 
 export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,

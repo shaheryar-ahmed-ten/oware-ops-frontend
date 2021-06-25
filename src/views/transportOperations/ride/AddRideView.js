@@ -1,351 +1,374 @@
+import { useState, useEffect } from 'react';
 import {
-    Grid,
-    Button,
-    TextField,
-    Select,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Typography,
-    Divider
+  Grid,
+  Button,
+  TextField,
+  Select,
+  InputLabel,
+  FormControl,
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography
 } from '@material-ui/core'
-import { isPhone, isRequired } from '../../../utils/validators';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import React, { useEffect, useState } from 'react'
+import { isRequired } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 
-function AddRideView({ selectedRide, formErrors, open, handleClose, Vehicles, PickupZones, PickupAreas, PickupCities, DropoffZones, DropoffAreas, DropoffCities, ProductCategories }) {
-    const [validation, setValidation] = useState({});
-    const [customerName, setCustomerName] = useState('')
-    const [driverName, setDriverName] = useState('')
-    const [vehicle, setVehicle] = useState('')
-    const [pickupAddress, setPickupAddress] = useState('')
-    const [pickupZone, setPickupZone] = useState('')
-    const [pickupArea, setPickupArea] = useState('')
-    const [pickupCity, setPickupCity] = useState('')
-    const [dropoffAddress, setDropoffAddress] = useState('')
-    const [dropoffZone, setDropoffZone] = useState('')
-    const [dropoffArea, setDropoffArea] = useState('')
-    const [dropoffCity, setDropoffCity] = useState('')
-    const [pickupDateTime, setPickupDateTime] = useState(dateToPickerFormat(new Date()))
-    const [dropoffDateTime, setDropoffDateTime] = useState(dateToPickerFormat(new Date()))
-    const [productCategory, setProductCategory] = useState('')
-    const [productName, setProductName] = useState('')
-    const [productQuantity, setProductQuantity] = useState('')
-    const handleSubmit = () => {
+export default function AddRideView({ addRide, open, handleClose, selectedRide,
+  vehicles, drivers, statuses, areas, companies, productCategories, formErrors }) {
+  const [validation, setValidation] = useState({});
+  const [pickupAddress, setPickupAddress] = useState('');
+  const [dropoffAddress, setDropoffAddress] = useState('');
+  const [status, setStatus] = useState('');
+  const [customerId, setCustomerId] = useState('');
+  const [vehicleId, setVehicleId] = useState('');
+  const [driverId, setDriverId] = useState('');
+  const [pickupAreaId, setPickupAreaId] = useState('');
+  const [dropoffAreaId, setDropoffAreaId] = useState('');
+  const [productCategoryId, setProductCategoryId] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productQuantity, setProductQuantity] = useState('');
+  const [pickupDate, setPickupDate] = useState('');
+  const [dropoffDate, setDropoffDate] = useState('');
+  const [isActive, setActive] = useState(true);
 
+  useEffect(() => {
+    if (!!selectedRide) {
+      setStatus(selectedRide.status || '');
+      setVehicleId(selectedRide.vehicleId || '');
+      setDriverId(selectedRide.driverId || '');
+      setPickupAddress(selectedRide.pickupAddress || '');
+      setDropoffAddress(selectedRide.dropoffAddress || '');
+      setCustomerId(selectedRide.customerId || '');
+      setPickupAreaId(selectedRide.pickupAreaId || '');
+      setDropoffAreaId(selectedRide.dropoffAreaId || '');
+      setProductCategoryId(selectedRide.productCategoryId || '');
+      setProductName(selectedRide.productName || '');
+      setProductQuantity(selectedRide.productQuantity || '');
+      setPickupDate(selectedRide.pickupDate || '');
+      setDropoffDate(selectedRide.dropoffDate || '');
+      setActive(!!selectedRide.isActive);
+    } else {
+      setStatus('');
+      setVehicleId('');
+      setDriverId('');
+      setPickupAddress('');
+      setDropoffAddress('');
+      setCustomerId('');
+      setPickupAreaId('');
+      setDropoffAreaId('');
+      setProductCategoryId('');
+      setProductName('');
+      setProductQuantity('');
+      setPickupDate('');
+      setDropoffDate('');
+      setActive(true);
     }
-    return (
-        <div style={{ display: "inline" }}>
-            <form>
-                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle>
-                        {!selectedRide ? 'Add Ride' : 'Edit Ride'}
-                    </DialogTitle>
-                    <DialogContent>
-                        {formErrors}
-                        <Grid container>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="customerName"
-                                        label="Customer Name"
-                                        type="text"
-                                        variant="outlined"
-                                        value={customerName}
-                                        disabled={!!selectedRide}
-                                        onChange={e => setCustomerName(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, customerName: true })}
-                                    />
-                                    {validation.customerName && !isRequired(customerName) ? <Typography color="error">Customer name is required!</Typography> : ''}
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="driverName"
-                                        label="Driver Name"
-                                        type="text"
-                                        variant="outlined"
-                                        value={driverName}
-                                        disabled={!!selectedRide}
-                                        onChange={e => setDriverName(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, driverName: true })}
-                                    />
-                                    {validation.driverName && !isRequired(driverName) ? <Typography color="error">Driver is required!</Typography> : ''}
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Vehicle</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="vehicle"
-                                            label="Vehicle"
-                                            variant="outlined"
-                                            value={vehicle}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setVehicle(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, vehicle: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Vehicle</MenuItem>
-                                            {Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.vehicle && !isRequired(vehicle) ? <Typography color="error">Vehicle is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="pickupAddress"
-                                        label="Pickup Address"
-                                        type="text"
-                                        variant="outlined"
-                                        value={pickupAddress}
-                                        disabled={!!selectedRide}
-                                        onChange={e => setPickupAddress(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, pickupAddress: true })}
-                                    />
-                                    {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup Address is required!</Typography> : ''}
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Pickup Zone</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupZone"
-                                            label="Pickup Zone"
-                                            variant="outlined"
-                                            value={pickupZone}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setPickupZone(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, pickupZone: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Pickup Zone</MenuItem>
-                                            {PickupZones.map(pickupZone => <MenuItem key={pickupZone.id} value={pickupZone.id}>{pickupZone.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.pickupZone && !isRequired(pickupZone) ? <Typography color="error">Pickup Zone is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Pickup Area</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupArea"
-                                            label="Pickup Area"
-                                            variant="outlined"
-                                            value={pickupArea}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setPickupArea(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, pickupArea: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Pickup Area</MenuItem>
-                                            {PickupAreas.map(pickupArea => <MenuItem key={pickupArea.id} value={pickupArea.id}>{pickupArea.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.pickupArea && !isRequired(pickupArea) ? <Typography color="error">Pickup Area is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Pickup City</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupCity"
-                                            label="Pickup Zone"
-                                            variant="outlined"
-                                            value={pickupCity}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setPickupCity(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, pickupCity: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Pickup Zone</MenuItem>
-                                            {PickupCities.map(pickupCity => <MenuItem key={pickupCity.id} value={pickupCity.id}>{pickupCity.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.pickupCity && !isRequired(pickupCity) ? <Typography color="error">Pickup Area is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="dropoffAddress"
-                                        label="Dropoff Address"
-                                        type="text"
-                                        variant="outlined"
-                                        value={dropoffAddress}
-                                        disabled={!!selectedRide}
-                                        onChange={e => setDropoffAddress(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, dropoffAddress: true })}
-                                    />
-                                    {validation.dropoffAddress && !isRequired(dropoffAddress) ? <Typography color="error">Dropoff Address is required!</Typography> : ''}
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Dropoff Zone</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupZone"
-                                            label="Pickup Zone"
-                                            variant="outlined"
-                                            value={dropoffZone}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setDropoffZone(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, dropoffZone: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Pickup Zone</MenuItem>
-                                            {DropoffZones.map(dropoffZone => <MenuItem key={dropoffZone.id} value={dropoffZone.id}>{dropoffZone.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.dropoffZone && !isRequired(dropoffZone) ? <Typography color="error">Dropoff Zone is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Dropoff Area</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupArea"
-                                            label="Pickup Area"
-                                            variant="outlined"
-                                            value={dropoffArea}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setDropoffArea(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, dropoffArea: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Pickup Area</MenuItem>
-                                            {DropoffAreas.map(dropoffArea => <MenuItem key={dropoffArea.id} value={dropoffArea.id}>{dropoffArea.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.dropoffArea && !isRequired(dropoffArea) ? <Typography color="error">Dropoff Area is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={12}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Dropoff City</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="pickupCity"
-                                            label="Dropoff City"
-                                            variant="outlined"
-                                            value={dropoffCity}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setDropoffCity(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, dropoffCity: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Dropoff City</MenuItem>
-                                            {DropoffCities.map(dropoffCity => <MenuItem key={dropoffCity.id} value={dropoffCity.id}>{dropoffCity.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.dropoffCity && !isRequired(dropoffCity) ? <Typography color="error">Dropoff City is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="pickupDate&Time"
-                                        label="Pickup Date & Time"
-                                        type="datetime-local"
-                                        variant="outlined"
-                                        value={pickupDateTime}
-                                        onChange={e => setPickupDateTime(dateToPickerFormat(e.target.value))}
-                                        onBlur={e => setValidation({ ...validation, pickupDateTime: true })}
-                                    />
-                                    {validation.pickupDateTime && !isRequired(pickupDateTime) ? <Typography color="error">Pickup date & time is required!</Typography> : ''}
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="dropoffDate&Time"
-                                        label="Dropoff Date & Time"
-                                        type="datetime-local"
-                                        variant="outlined"
-                                        value={dropoffDateTime}
-                                        onChange={e => setDropoffDateTime(dateToPickerFormat(e.target.value))}
-                                        onBlur={e => setValidation({ ...validation, dropoffDateTime: true })}
-                                    />
-                                    {validation.dropoffDateTime && !isRequired(dropoffDateTime) ? <Typography color="error">Dropoff date & time is required!</Typography> : ''}
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={12}>
-                                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Product Category</InputLabel>
-                                        <Select
-                                            fullWidth={true}
-                                            id="productCategory"
-                                            label="Product Category"
-                                            variant="outlined"
-                                            value={productCategory}
-                                            disabled={!!selectedRide}
-                                            onChange={e => setProductCategory(e.target.value)}
-                                            onBlur={e => setValidation({ ...validation, productCategory: true })}
-                                        >
-                                            <MenuItem value="" disabled>Select Product Category</MenuItem>
-                                            {ProductCategories.map(productCategory => <MenuItem key={productCategory.id} value={productCategory.id}>{productCategory.name}</MenuItem>)}
-                                        </Select>
-                                        {validation.productCategory && !isRequired(productCategory) ? <Typography color="error">Product Category is required!</Typography> : ''}
-                                    </FormControl>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2}>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="productName"
-                                        label="Product Name"
-                                        variant="outlined"
-                                        value={productName}
-                                        onChange={e => setProductName((e.target.value))}
-                                        onBlur={e => setValidation({ ...validation, productName: true })}
-                                    />
-                                    {validation.productName && !isRequired(productName) ? <Typography color="error">Product Name is required!</Typography> : ''}
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <TextField
-                                        fullWidth={true}
-                                        margin="dense"
-                                        id="productQuantity"
-                                        label="Product Quantity"
-                                        variant="outlined"
-                                        type="number"
-                                        value={productQuantity}
-                                        onChange={e => setProductQuantity((e.target.value))}
-                                        onBlur={e => setValidation({ ...validation, productQuantity: true })}
-                                    />
-                                    {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-                        <Button onClick={handleSubmit} color="primary" variant="contained">
-                            {!selectedRide ? 'Add Ride' : 'Update Ride'}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </form>
-        </div>
-    )
-}
+  }, [selectedRide]);
+  const handleSubmit = e => {
 
-export default AddRideView
+    const newRide = {
+      status,
+      vehicleId,
+      driverId,
+      pickupAddress,
+      dropoffAddress,
+      customerId,
+      pickupAreaId,
+      dropoffAreaId,
+      productCategoryId,
+      productName,
+      productQuantity,
+      pickupDate,
+      dropoffDate,
+      isActive
+    };
+
+    setValidation({
+      status: true,
+      vehicleId: true,
+      driverId: true,
+      pickupAddress: true,
+      dropoffAddress: true,
+      customerId: true,
+      pickupAreaId: true,
+      dropoffAreaId: true,
+      productCategoryId: true,
+      productName: true,
+      productQuantity: true,
+      pickupDate: true,
+      dropoffDate: true,
+      isActive: true
+    });
+    if (isRequired(status) &&
+      isRequired(vehicleId) &&
+      isRequired(driverId) &&
+      isRequired(pickupAddress) &&
+      isRequired(dropoffAddress) &&
+      isRequired(customerId) &&
+      isRequired(pickupAreaId) &&
+      isRequired(dropoffAreaId) &&
+      isRequired(productCategoryId) &&
+      isRequired(productName) &&
+      isRequired(productQuantity) &&
+      isRequired(pickupDate) &&
+      isRequired(dropoffDate)) {
+      addRide(newRide);
+    }
+  }
+
+  return (
+    <div style={{ display: "inline" }}>
+      <form>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle>
+            {!selectedRide ? 'Add Ride' : 'Edit Ride'}
+          </DialogTitle>
+          <DialogContent>
+            {formErrors}
+            <Grid container>
+              <Grid item sm={12}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <InputLabel>Customer</InputLabel>
+                  <Select
+                    fullWidth={true}
+                    id="customerId"
+                    label="Customer"
+                    variant="outlined"
+                    value={customerId}
+                    onChange={e => setCustomerId(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, customerId: true })}
+                  >
+                    <MenuItem value="" disabled>Select a customer</MenuItem>
+                    {companies.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
+                  </Select>
+                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
+                </FormControl>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Pickup Area</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="pickupAreaId"
+                      label="Pickup Area"
+                      variant="outlined"
+                      value={pickupAreaId}
+                      onChange={e => setPickupAreaId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, pickupAreaId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a PickupArea</MenuItem>
+                      {areas.map(area => <MenuItem key={area.id} value={area.id}>
+                        {area.name}, {area.Zone.name}, {area.Zone.City.name}
+                      </MenuItem>)}
+                    </Select>
+                    {validation.pickupAreaId && !isRequired(pickupAreaId) ? <Typography color="error">Pickup Area is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Dropoff Area</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="dropoffAreaId"
+                      label="Drop-off Area"
+                      variant="outlined"
+                      value={dropoffAreaId}
+                      onChange={e => setDropoffAreaId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, dropoffAreaId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a DropoffArea</MenuItem>
+                      {areas.map(area => <MenuItem key={area.id} value={area.id}>
+                        {area.name}, {area.Zone.name}, {area.Zone.City.name}
+                      </MenuItem>)}
+                    </Select>
+                    {validation.dropoffAreaId && !isRequired(dropoffAreaId) ? <Typography color="error">Dropoff Area is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="pickupAddress"
+                    label="Pickup address"
+                    type="text"
+                    variant="outlined"
+                    value={pickupAddress}
+                    onChange={e => setPickupAddress(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, pickupAddress: true })}
+                  />
+                  {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup address is required!</Typography> : ''}
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="dropoffAddress"
+                    label="Dropoff address"
+                    type="text"
+                    variant="outlined"
+                    value={dropoffAddress}
+                    onChange={e => setDropoffAddress(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, dropoffAddress: true })}
+                  />
+                  {validation.dropoffAddress && !isRequired(dropoffAddress) ? <Typography color="error">Dropoff address is required!</Typography> : ''}
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="pickupDate"
+                    label="Pickup Date"
+                    placeholder="Pickup Date"
+                    type="datetime-local"
+                    variant="outlined"
+                    value={pickupDate}
+                    onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
+                    onBlur={e => setValidation({ ...validation, pickupDate: true })}
+                  />
+                  {validation.pickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="dropoffDate"
+                    label="Dropoff Date"
+                    placeholder="Dropoff Date"
+                    type="datetime-local"
+                    variant="outlined"
+                    value={dropoffDate}
+                    onChange={e => setDropoffDate(dateToPickerFormat(e.target.value))}
+                    onBlur={e => setValidation({ ...validation, dropoffDate: true })}
+                  />
+                  {validation.dropoffDate && !isRequired(dropoffDate) ? <Typography color="error">Dropoff date is required!</Typography> : ''}
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="status"
+                      label="Status"
+                      variant="outlined"
+                      value={status}
+                      onChange={e => setStatus(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, status: true })}
+                    >
+                      <MenuItem value="" disabled>Select a status</MenuItem>
+                      {Object.keys(statuses).map(status => <MenuItem key={status} value={status}>{statuses[status]}</MenuItem>)}
+                    </Select>
+                    {validation.status && !isRequired(status) ? <Typography color="error">Status is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Vehicle</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="vehicleId"
+                      label="Vehicle"
+                      variant="outlined"
+                      value={vehicleId}
+                      onChange={e => setVehicleId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, vehicleId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a vehicle</MenuItem>
+                      {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.type}</MenuItem>)}
+                    </Select>
+                    {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Driver</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="driverId"
+                      label="Driver"
+                      variant="outlined"
+                      value={driverId}
+                      onChange={e => setDriverId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, driverId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a Driver</MenuItem>
+                      {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                    </Select>
+                    {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>ProductCategory</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="productCategoryId"
+                      label="Product Category"
+                      variant="outlined"
+                      value={productCategoryId}
+                      onChange={e => setProductCategoryId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, productCategoryId: true })}
+                    >
+                      <MenuItem value="" disabled>Select a product category</MenuItem>
+                      {productCategories.map(productCategory => <MenuItem key={productCategory.id} value={productCategory.id}>{productCategory.name}</MenuItem>)}
+                    </Select>
+                    {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="productName"
+                    label="Product name"
+                    type="text"
+                    variant="outlined"
+                    value={productName}
+                    onChange={e => setProductName(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, productName: true })}
+                  />
+                  {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
+                </Grid>
+                <Grid item sm={6}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="productQuantity"
+                    label="Product quantity"
+                    type="text"
+                    variant="outlined"
+                    value={productQuantity}
+                    onChange={e => setProductQuantity(e.target.value)}
+                    onBlur={e => setValidation({ ...validation, productQuantity: true })}
+                  />
+                  {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              {!selectedRide ? 'Add Ride' : 'Update Ride'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </form>
+    </div>
+  );
+}
