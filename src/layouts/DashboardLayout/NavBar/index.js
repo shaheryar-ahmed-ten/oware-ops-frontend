@@ -104,7 +104,7 @@ const navTreeData = [
   },
   {
     title: 'Logistics',
-    nodeId: 'Logistics',
+    nodeId: 'logistics',
     children: [
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
