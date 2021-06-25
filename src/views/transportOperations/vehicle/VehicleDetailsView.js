@@ -33,7 +33,7 @@ function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedVehicle.Vendor.name}
+                                            value={selectedVehicle.Vendor ? selectedVehicle.Vendor.name : ''}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
@@ -43,7 +43,7 @@ function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedVehicle.Driver.name}
+                                            value={selectedVehicle.Driver ? selectedVehicle.Driver.name : ''}
                                         />
                                     </Grid>
                                 </Grid>
@@ -55,7 +55,7 @@ function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name}
+                                            value={selectedVehicle.Car && selectedVehicle.Car.CarMake && selectedVehicle.Car.CarModel ? selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name : ''}
                                         />
                                     </Grid>
                                 </Grid>
@@ -67,7 +67,7 @@ function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedVehicle.registrationNumber}
+                                            value={selectedVehicle ? selectedVehicle.registrationNumber : ''}
                                         />
                                     </Grid>
                                 </Grid>

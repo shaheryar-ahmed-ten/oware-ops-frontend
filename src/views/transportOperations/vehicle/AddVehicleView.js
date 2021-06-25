@@ -33,13 +33,13 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
         if (open)
             resetLocalStates()
         if (selectedVehicle) {
-            setVendorName(selectedVehicle.Vendor.name);
-            setVendorId(selectedVehicle.Vendor.id);
-            setDriverName(selectedVehicle.Driver.name);
-            setDriverId(selectedVehicle.Driver.id);
-            setRegistrationNumber(selectedVehicle.registrationNumber);
-            setCarName(selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name);
-            setCarId(selectedVehicle.Car.id);
+            setVendorName(selectedVehicle.Vendor ? selectedVehicle.Vendor.name : '');
+            setVendorId(selectedVehicle.Vendor ? selectedVehicle.Vendor.id : '');
+            setDriverName(selectedVehicle.Driver ? selectedVehicle.Driver.name : '');
+            setDriverId(selectedVehicle.Driver ? selectedVehicle.Driver.id : '');
+            setRegistrationNumber(selectedVehicle ? selectedVehicle.registrationNumber : '');
+            setCarName(selectedVehicle.Car && selectedVehicle.Car.CarMake && selectedVehicle.Car.CarModel ? selectedVehicle.Car.CarMake.name + " " + selectedVehicle.Car.CarModel.name : '');
+            setCarId(selectedVehicle.Car ? selectedVehicle.Car.id : '');
         }
         else {
             resetLocalStates()
