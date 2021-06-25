@@ -18,7 +18,6 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                             View Driver
                         </DialogTitle>
                         <DialogContent>
-                            {/* TODO: will add textfields once apis are ready */}
                             <Grid container spacing={2}>
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
@@ -46,7 +45,7 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.Vendor.name}
+                                            value={selectedDriver.Vendor ? selectedDriver.Vendor.name : ''}
                                         />
                                     </Grid>
                                 </Grid>

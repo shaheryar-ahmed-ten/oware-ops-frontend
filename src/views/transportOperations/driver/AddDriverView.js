@@ -30,12 +30,12 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
         if (open)
             resetLocalStates()
         if (selectedDriver) {
-            setDriverName(selectedDriver.name);
-            setDriverPhone(selectedDriver.phone)
-            setDrivingLicenseNumber(selectedDriver.drivingLicenseNumber)
-            setVendorName(selectedDriver.Vendor.name)
-            setVendorId(selectedDriver.Vendor.id)
-            setDriverCNIC(selectedDriver.cnicNumber)
+            setDriverName(selectedDriver ? selectedDriver.name : '');
+            setDriverPhone(selectedDriver ? selectedDriver.phone : '');
+            setDrivingLicenseNumber(selectedDriver ? selectedDriver.drivingLicenseNumber : '');
+            setVendorName(selectedDriver.Vendor ? selectedDriver.Vendor.name : '');
+            setVendorId(selectedDriver.Vendor ? selectedDriver.Vendor.id : '');
+            setDriverCNIC(selectedDriver ? selectedDriver.cnicNumber : '');
         }
         else {
             resetLocalStates()
