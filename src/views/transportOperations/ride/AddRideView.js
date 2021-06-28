@@ -286,7 +286,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                       onBlur={e => setValidation({ ...validation, vehicleId: true })}
                     >
                       <MenuItem value="" disabled>Select a vehicle</MenuItem>
-                      {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.type}</MenuItem>)}
+                      {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
                     </Select>
                     {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
                   </FormControl>
