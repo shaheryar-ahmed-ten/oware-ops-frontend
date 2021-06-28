@@ -185,7 +185,7 @@ export default function RideView() {
     const [showMessage, setShowMessage] = useState(null)
 
     const [tableStatistics, setTableStatistics] = useState({ totalRides: 0, assigned: 0, unAssigned: 0, inProgress: 0, completed: 0, cancelled: 0 })
-
+    const [currentFilter, setCurrentFilter] = useState('ALL')
 
     const addRide = data => {
         let apiPromise = null;
@@ -248,6 +248,9 @@ export default function RideView() {
         _getRides(page, searchKeyword);
     }, DEBOUNCE_CONST), []);
 
+    const handleFilterChange = (val) => {
+        setCurrentFilter(val.toUpperCase())
+    }
     const getRelations = () => {
         axios.get(getURL('/ride/relations'))
             .then(res => {
@@ -281,19 +284,34 @@ export default function RideView() {
     />;
     const filterDropdown = <FormControl className={classes.formControl}>
         <Select
-            value={'All'}
-            onChange={''}
+            value={currentFilter}
+            onChange={(e) => { handleFilterChange(e.target.value) }}
             variant="outlined"
             displayEmpty
             inputProps={{ 'aria-label': 'Without label' }}
             className={classes.placeholderText}
         >
-            <MenuItem value={"All"} disabled>
-                <ListItemText primary={"All"} classes={{ root: classes.dropdownListItem }} />
+            <MenuItem value={'ALL'}>
+                <ListItemText primary={'ALL'} classes={{ root: classes.dropdownListItem }} />
+            </MenuItem>
+            <MenuItem value={'ASSIGNED'} >
+                <ListItemText primary={'ASSIGNED'} classes={{ root: classes.dropdownListItem }} />
+            </MenuItem>
+            <MenuItem value={'UNASSIGNED'} >
+                <ListItemText primary={'UNASSIGNED'} classes={{ root: classes.dropdownListItem }} />
+            </MenuItem>
+            <MenuItem value={'INPROGRESS'} >
+                <ListItemText primary={'INPROGRESS'} classes={{ root: classes.dropdownListItem }} />
+            </MenuItem>
+            <MenuItem value={'COMPLETED'} >
+                <ListItemText primary={'COMPLETED'} classes={{ root: classes.dropdownListItem }} />
+            </MenuItem>
+            <MenuItem value={'CANCELLED'} >
+                <ListItemText primary={'CANCELLED'} classes={{ root: classes.dropdownListItem }} />
             </MenuItem>
 
         </Select>
-    </FormControl>
+    </FormControl >
     const addRideButton = <Button
         key={2}
         variant="contained"
@@ -327,15 +345,46 @@ export default function RideView() {
     { label: 'InProgress', val: tableStatistics.inProgress },
     { label: 'Completed', val: tableStatistics.completed },
     { label: 'Cancelled', val: tableStatistics.cancelled }]
-
-    const TopheaderButtons = [addRideButton, addRideModal, deleteRideModal];
+    const filterButtons = [
+        (
+            < Button variant="contained" onClick={(e) => { handleFilterChange('all'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'ALL' ? 'primary' : 'defualt'} >
+                All
+            </Button >
+        ),
+        (
+            <Button variant="contained" onClick={(e) => { handleFilterChange('assigned'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'ASSIGNED' ? 'primary' : 'defualt'}>
+                Assigned
+            </Button>
+        ),
+        (
+            <Button variant="contained" onClick={(e) => { handleFilterChange('unassigned'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'UNASSIGNED' ? 'primary' : 'defualt'}>
+                Unassigned
+            </Button >
+        ),
+        (
+            <Button variant="contained" onClick={(e) => { handleFilterChange('inprogress'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'INPROGRESS' ? 'primary' : 'defualt'}>
+                InProgress
+            </Button >
+        ),
+        (
+            <Button variant="contained" onClick={(e) => { handleFilterChange('completed'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'COMPLETED' ? 'primary' : 'defualt'}>
+                Completed
+            </Button>
+        ),
+        (
+            <Button variant="contained" onClick={(e) => { handleFilterChange('cancelled'.toUpperCase()) }} color={currentFilter.toUpperCase() === 'CANCELLED' ? 'primary' : 'defualt'}>
+                Cancelled
+            </Button>
+        )
+    ]
+    const topHeaderButtons = [addRideButton, addRideModal, deleteRideModal];
     const headerButtons = [searchInput];
 
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
-                <TableHeader title="Rides" buttons={TopheaderButtons} />
-                <TableStatsHeader stats={tableStats} />
+                <TableHeader title="Rides" buttons={topHeaderButtons} />
+                <TableStatsHeader stats={tableStats} filterButtons={filterButtons} />
                 <TableHeader title={filterDropdown} buttons={headerButtons} />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
