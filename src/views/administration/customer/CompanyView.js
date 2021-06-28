@@ -20,7 +20,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCompanyView from './AddCompanyView';
-import { debounce } from 'lodash';
+import { capitalize, debounce } from 'lodash';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { DEBOUNCE_CONST } from '../../../Config';
 
@@ -43,11 +43,12 @@ const useStyles = makeStyles(theme => ({
     padding: '0px 8px',
     marginRight: 7,
     height: 30,
-  },
+  }
 }));
 
 
-export default function CompanyView() {
+export default function CompanyView({ relationType }) {
+  const pageHeadTitle = capitalize(`${relationType}s`);
   const classes = useStyles();
   const columns = [{
     id: 'id',
@@ -60,18 +61,12 @@ export default function CompanyView() {
     label: 'Company',
     minWidth: 'auto',
     className: '',
-  }, {
-    id: 'relationType',
-    label: 'Type',
-    minWidth: 'auto',
-    className: '',
-    format: value => relationTypes[value]
-  }, {
+  }, ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
     label: 'Company Type',
     minWidth: 'auto',
     className: ''
-  }, {
+  }] : []), {
     id: 'firstName',
     label: 'Contact Name',
     minWidth: 'auto',
@@ -113,10 +108,9 @@ export default function CompanyView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [customers, setCompanys] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [customerTypes, setCustomerTypes] = useState([]);
-  const [relationTypes, setRelationTypes] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [formErrors, setFormErrors] = useState('');
@@ -126,8 +120,8 @@ export default function CompanyView() {
 
   const addCompany = data => {
     let apiPromise = null;
-    if (!selectedCompany) apiPromise = axios.post(getURL('/customer'), data);
-    else apiPromise = axios.put(getURL(`/customer/${selectedCompany.id}`), data);
+    if (!selectedCompany) apiPromise = axios.post(getURL(`/company/${relationType}`), data);
+    else apiPromise = axios.put(getURL(`/company/${relationType}/${selectedCompany.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -137,19 +131,19 @@ export default function CompanyView() {
         message: "New customer has been created."
       })
       closeAddCompanyView();
-      getCompanys();
+      getCompanies();
     });
   };
 
   const deleteCompany = data => {
-    axios.delete(getURL(`/customer/${selectedCompany.id}`))
+    axios.delete(getURL(`/company/${relationType}/${selectedCompany.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
         closeDeleteCompanyView();
-        getCompanys();
+        getCompanies();
       });
   };
 
@@ -173,30 +167,29 @@ export default function CompanyView() {
     setDeleteCompanyViewOpen(false);
   }
 
-  const _getCompanys = (page, searchKeyword) => {
-    axios.get(getURL('/customer'), { params: { page, search: searchKeyword } })
+  const _getCompanies = (page, searchKeyword) => {
+    axios.get(getURL(`/company/${relationType}`), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setCompanys(res.data.data)
+        setCompanies(res.data.data)
       });
   }
 
-  const getCompanys = useCallback(debounce((page, searchKeyword) => {
-    _getCompanys(page, searchKeyword);
+  const getCompanies = useCallback(debounce((page, searchKeyword) => {
+    _getCompanies(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/customer/relations'))
+    axios.get(getURL(`/company/${relationType}/relations`))
       .then(res => {
         setUsers(res.data.users);
         setCustomerTypes(res.data.customerTypes);
-        setRelationTypes(res.data.relationTypes);
       });
   };
 
 
   useEffect(() => {
-    getCompanys(page, searchKeyword);
+    getCompanies(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {
@@ -224,8 +217,8 @@ export default function CompanyView() {
     key={3}
     formErrors={formErrors}
     users={users}
+    relationType={relationType}
     customerTypes={customerTypes}
-    relationTypes={relationTypes}
     selectedCompany={selectedCompany}
     open={addCompanyViewOpen}
     addCompany={addCompany}
@@ -243,7 +236,7 @@ export default function CompanyView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Companies" buttons={headerButtons} />
+        <TableHeader title={pageHeadTitle} buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -259,7 +252,7 @@ export default function CompanyView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((customer) => {
+            {companies.map((customer) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={customer.id}>
                   {columns.map((column) => {

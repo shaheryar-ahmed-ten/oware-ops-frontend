@@ -107,6 +107,12 @@ const navTreeData = [
     nodeId: 'logistics',
     children: [
       {
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+        href: '/logistics/vendor',
+        title: 'Vendor',
+        activeRouteName: 'vendor'
+      },
+      {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
         href: '/logistics/driver',
         title: 'Driver',

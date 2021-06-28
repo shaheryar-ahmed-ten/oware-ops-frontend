@@ -35,7 +35,7 @@ const routes = (user) => [
       },
       {
         path: 'customer',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView /> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="CUSTOMER"/> : <Navigate to="404" />
       },
       {
         path: 'warehouse',
@@ -90,6 +90,10 @@ const routes = (user) => [
     path: 'logistics',
     element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
     children: [
+      {
+        path: 'vendor',
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="VENDOR"/> : <Navigate to="404" />
+      },
       {
         path: 'driver',
         element: <DriverView />

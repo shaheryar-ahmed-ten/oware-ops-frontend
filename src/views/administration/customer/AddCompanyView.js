@@ -14,13 +14,14 @@ import {
   Checkbox,
   Typography
 } from '@material-ui/core'
+import { capitalize } from 'lodash';
 import { isRequired } from '../../../utils/validators';
 
-export default function AddCompanyView({ addCompany, users, customerTypes, relationTypes, open, handleClose, selectedCompany, formErrors }) {
+export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors }) {
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [contactId, setContactId] = useState('');
-  const [relationType, setRelationType] = useState('');
+  // const [relationType, setRelationType] = useState('');
   const [type, setType] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
@@ -32,14 +33,12 @@ export default function AddCompanyView({ addCompany, users, customerTypes, relat
     if (!!selectedCompany) {
       setName(selectedCompany.name || '');
       setType(selectedCompany.type || '');
-      setRelationType(selectedCompany.relationType || '');
       setContactId(selectedCompany.contactId || '');
       setNotes(selectedCompany.notes || '');
       setActive(!!selectedCompany.isActive);
     } else {
       setName('');
       setType('');
-      setRelationType('');
       setContactId('');
       setNotes('');
       setActive(true);
@@ -79,7 +78,7 @@ export default function AddCompanyView({ addCompany, users, customerTypes, relat
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedCompany ? 'Add Company' : 'Edit Company'}
+            {!selectedCompany ? `Add ${relationType.toLowerCase()}` : `Edit ${relationType.toLowerCase()}`}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -89,41 +88,23 @@ export default function AddCompanyView({ addCompany, users, customerTypes, relat
                   fullWidth={true}
                   margin="dense"
                   id="name"
-                  label="Company Name"
+                  label={capitalize(relationType) + ' Name'}
                   type="text"
                   variant="outlined"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   onBlur={e => setValidation({ ...validation, name: true })}
                 />
-                {validation.name && !isRequired(name) ? <Typography color="error">Company name is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={12}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>Relation Type</InputLabel>
-                  <Select
-                    fullWidth={true}
-                    id="type"
-                    label="Relation Type"
-                    variant="outlined"
-                    value={relationType}
-                    onChange={e => setRelationType(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, relationType: true })}
-                  >
-                    <MenuItem value="" disabled>Select a relation type</MenuItem>
-                    {Object.keys(relationTypes).map(key => <MenuItem key={key} value={key}>{relationTypes[key]}</MenuItem>)}
-                  </Select>
-                  {validation.relationType && !isRequired(relationType) ? <Typography color="error">Relation type is required!</Typography> : ''}
-                </FormControl>
+                {validation.name && !isRequired(name) ? <Typography color="error">{capitalize(relationType)} name is required!</Typography> : ''}
               </Grid>
               {relationType == 'CUSTOMER' ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Company Type</InputLabel>
+                    <InputLabel>{capitalize(relationType)} Type</InputLabel>
                     <Select
                       fullWidth={true}
                       id="type"
-                      label="Company Type"
+                      label={capitalize(relationType) + ' Type'}
                       variant="outlined"
                       value={type}
                       onChange={e => setType(e.target.value)}
@@ -132,7 +113,7 @@ export default function AddCompanyView({ addCompany, users, customerTypes, relat
                       <MenuItem value="" disabled>Select a customer type</MenuItem>
                       {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
                     </Select>
-                    {validation.type && !isRequired(type) ? <Typography color="error">Company type is required!</Typography> : ''}
+                    {validation.type && !isRequired(type) ? <Typography color="error">{capitalize(relationType)} type is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 : ''}
@@ -180,7 +161,7 @@ export default function AddCompanyView({ addCompany, users, customerTypes, relat
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedCompany ? 'Add Company' : 'Update Company'}
+              {!selectedCompany ? `Add ${relationType.toLowerCase()}` : `Update ${relationType.toLowerCase()}`}
             </Button>
           </DialogActions>
         </Dialog>
