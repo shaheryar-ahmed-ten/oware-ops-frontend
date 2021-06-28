@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 export default function AddRideView({ addRide, open, handleClose, selectedRide,
   vehicles, drivers, statuses, areas, companies, productCategories, formErrors }) {
@@ -33,6 +34,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
   const [pickupDate, setPickupDate] = useState('');
   const [dropoffDate, setDropoffDate] = useState('');
   const [isActive, setActive] = useState(true);
+  const [productManifest, setProductManifest] = useState(null)
 
   useEffect(() => {
     if (!!selectedRide) {
@@ -358,6 +360,24 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                   />
                   {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
                 </Grid>
+              </Grid>
+              <Grid item sm={12}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Button
+                    variant="contained"
+                    component="label"
+                    color={productManifest ? 'primary' : 'default'}
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Product Manifest {productManifest ? 'Uploaded' : ''}
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => { setProductManifest(e.target.files[0]) }}
+                    />
+                  </Button>
+                  {validation.productManifest && !isRequired(productManifest) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
+                </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
