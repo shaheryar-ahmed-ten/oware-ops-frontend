@@ -30,9 +30,9 @@ function TableStatsHeader({ stats, filterButtons }) {
                 <div className={classes.pageHeader}>
                     <Grid container justify="flex-start" spacing={8}>
                         {
-                            stats.map((stat) => {
+                            stats.map((stat, i) => {
                                 return (
-                                    <Grid item>
+                                    <Grid item key={i}>
                                         <Typography variant="h4">{stat.label}</Typography>
                                         <Typography variant="h4" className={classes.val}>{stat.val}</Typography>
                                     </Grid>
@@ -45,9 +45,9 @@ function TableStatsHeader({ stats, filterButtons }) {
                 <div className={classes.pageHeader}>
                     <Grid container justify="flex-start" spacing={1}>
                         {
-                            filterButtons.map((button) => {
+                            filterButtons.map((button, i) => {
                                 return (
-                                    <Grid item>
+                                    <Grid item key={i}>
                                         {button}
                                     </Grid>
                                 )
