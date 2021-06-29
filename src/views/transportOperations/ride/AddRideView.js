@@ -39,6 +39,9 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
   const [dropoffAreaId, setDropoffAreaId] = useState('');
   const [products, setProducts] = useState([]);
 
+  const [cancellationReason, setCancellationReason] = useState('');
+  const [cancellationComment, setCancellationComment] = useState('');
+
   const [productCategoryId, setProductCategoryId] = useState('');
   const [productName, setProductName] = useState('');
   const [productQuantity, setProductQuantity] = useState('');
@@ -57,6 +60,8 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       setPickupAddress(selectedRide.pickupAddress || '');
       setDropoffAddress(selectedRide.dropoffAddress || '');
       setCustomerId(selectedRide.customerId || '');
+      setCancellationComment(selectedRide.cancellationComment || '');
+      setCancellationReason(selectedRide.cancellationReason || '');
       setPickupAreaId(selectedRide.pickupAreaId || '');
       setDropoffAreaId(selectedRide.dropoffAreaId || '');
       setProducts(selectedRide.RideProducts || '');
@@ -70,6 +75,8 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       setPickupAddress('');
       setDropoffAddress('');
       setCustomerId('');
+      setCancellationComment('');
+      setCancellationReason('');
       setPickupAreaId('');
       setDropoffAreaId('');
       setProductCategoryId('');
@@ -99,6 +106,8 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       customerId,
       pickupAreaId,
       dropoffAreaId,
+      cancellationReason,
+      cancellationComment,
       products,
       pickupDate,
       dropoffDate,
@@ -114,6 +123,8 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       customerId: true,
       pickupAreaId: true,
       dropoffAreaId: true,
+      cancellationReason: true,
+      cancellationComment: true,
       products: true,
       pickupDate: true,
       dropoffDate: true,
@@ -121,12 +132,14 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
     });
     if (isRequired(status) &&
       isRequired(vehicleId) &&
-      isRequired(driverId) &&
+      (status == 'UNASSIGNED' || isRequired(driverId)) &&
       isRequired(pickupAddress) &&
       isRequired(dropoffAddress) &&
       isRequired(customerId) &&
       isRequired(pickupAreaId) &&
       isRequired(dropoffAreaId) &&
+      (status != 'CANCELLED' || isRequired(cancellationReason)) &&
+      (status != 'CANCELLED' || isRequired(cancellationComment)) &&
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
@@ -270,24 +283,6 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="status"
-                      label="Status"
-                      variant="outlined"
-                      value={status}
-                      onChange={e => setStatus(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, status: true })}
-                    >
-                      <MenuItem value="" disabled>Select a status</MenuItem>
-                      {Object.keys(statuses).map(status => <MenuItem key={status} value={status}>{statuses[status]}</MenuItem>)}
-                    </Select>
-                    {validation.status && !isRequired(status) ? <Typography color="error">Status is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Vehicle</InputLabel>
                     <Select
                       fullWidth={true}
@@ -304,8 +299,57 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                     {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="status"
+                      label="Status"
+                      variant="outlined"
+                      value={status}
+                      onChange={e => setStatus(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, status: true })}
+                    >
+                      <MenuItem value="" disabled>Select a status</MenuItem>
+                      {Object.keys(statuses).map(status => <MenuItem key={status} value={status}>{statuses[status]}</MenuItem>)}
+                    </Select>
+                    {validation.status && !isRequired(status) ? <Typography color="error">Status is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
               </Grid>
-
+              {status == 'CANCELLED' ?
+                <Grid container spacing={2}>
+                  <Grid item sm={6}>
+                    <TextField
+                      fullWidth={true}
+                      margin="dense"
+                      id="cancellationReason"
+                      label="Cancellation reason"
+                      type="text"
+                      variant="outlined"
+                      value={cancellationReason}
+                      onChange={e => setCancellationReason(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, cancellationReason: true })}
+                    />
+                    {validation.cancellationReason && !isRequired(cancellationReason) ? <Typography color="error">Cancellation reason is required!</Typography> : ''}
+                  </Grid>
+                  <Grid item sm={6}>
+                    <TextField
+                      fullWidth={true}
+                      margin="dense"
+                      id="cancellationComment"
+                      label="Cancellation comment"
+                      type="text"
+                      variant="outlined"
+                      value={cancellationComment}
+                      onChange={e => setCancellationComment(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, cancellationComment: true })}
+                    />
+                    {validation.cancellationComment && !isRequired(cancellationComment) ? <Typography color="error">Cancellation comment is required!</Typography> : ''}
+                  </Grid>
+                </Grid>
+                : ''}
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -322,7 +366,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                       <MenuItem value="" disabled>Select a Driver</MenuItem>
                       {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
                     </Select>
-                    {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
+                    {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
