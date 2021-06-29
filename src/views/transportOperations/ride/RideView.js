@@ -140,21 +140,27 @@ export default function RideView() {
         className: '',
         format: dateFormat
     }, {
-        id: 'productCategory',
+        id: 'RideProducts',
         label: 'Product Category',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.ProductCategory.name
-    }, {
-        id: 'productName',
-        label: 'Product Name',
-        minWidth: 'auto',
-        className: ''
-    }, {
-        id: 'productQuantity',
-        label: 'Product Quantity',
-        minWidth: 'auto',
-        className: ''
+        format: (value, entity) => value.length
+    // }, {
+    //     id: 'product.Category',
+    //     label: 'Product Category',
+    //     minWidth: 'auto',
+    //     className: '',
+    //     format: (value, entity) => entity.ProductCategory.name
+    // }, {
+    //     id: 'productName',
+    //     label: 'Product Name',
+    //     minWidth: 'auto',
+    //     className: ''
+    // }, {
+    //     id: 'productQuantity',
+    //     label: 'Product Quantity',
+    //     minWidth: 'auto',
+    //     className: ''
     }, {
         id: 'actions',
         label: '',

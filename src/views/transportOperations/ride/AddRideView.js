@@ -11,14 +11,23 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell
 } from '@material-ui/core'
-import { isRequired } from '../../../utils/validators';
+import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 export default function AddRideView({ addRide, open, handleClose, selectedRide,
   vehicles, drivers, statuses, areas, companies, productCategories, formErrors }) {
+  const productCategoriesMap = productCategories.reduce(
+    (acc, category) => ({ ...acc, [category.id]: category }),
+    {});
   const [validation, setValidation] = useState({});
   const [pickupAddress, setPickupAddress] = useState('');
   const [dropoffAddress, setDropoffAddress] = useState('');
@@ -28,12 +37,16 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
   const [driverId, setDriverId] = useState('');
   const [pickupAreaId, setPickupAreaId] = useState('');
   const [dropoffAreaId, setDropoffAreaId] = useState('');
+  const [products, setProducts] = useState([]);
+
   const [productCategoryId, setProductCategoryId] = useState('');
   const [productName, setProductName] = useState('');
   const [productQuantity, setProductQuantity] = useState('');
+
   const [pickupDate, setPickupDate] = useState('');
   const [dropoffDate, setDropoffDate] = useState('');
   const [isActive, setActive] = useState(true);
+  const [productManifestId, setProductManifestId] = useState(null)
   const [productManifest, setProductManifest] = useState(null)
 
   useEffect(() => {
@@ -46,9 +59,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       setCustomerId(selectedRide.customerId || '');
       setPickupAreaId(selectedRide.pickupAreaId || '');
       setDropoffAreaId(selectedRide.dropoffAreaId || '');
-      setProductCategoryId(selectedRide.productCategoryId || '');
-      setProductName(selectedRide.productName || '');
-      setProductQuantity(selectedRide.productQuantity || '');
+      setProducts(selectedRide.RideProducts || '');
       setPickupDate(selectedRide.pickupDate || '');
       setDropoffDate(selectedRide.dropoffDate || '');
       setActive(!!selectedRide.isActive);
@@ -69,6 +80,14 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       setActive(true);
     }
   }, [selectedRide]);
+
+  useEffect(() => {
+    setProductName('');
+    setProductQuantity('');
+    setProductManifest(null);
+    setProductCategoryId(null);
+  }, [products]);
+
   const handleSubmit = e => {
 
     const newRide = {
@@ -80,9 +99,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       customerId,
       pickupAreaId,
       dropoffAreaId,
-      productCategoryId,
-      productName,
-      productQuantity,
+      products,
       pickupDate,
       dropoffDate,
       isActive
@@ -97,9 +114,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       customerId: true,
       pickupAreaId: true,
       dropoffAreaId: true,
-      productCategoryId: true,
-      productName: true,
-      productQuantity: true,
+      products: true,
       pickupDate: true,
       dropoffDate: true,
       isActive: true
@@ -112,9 +127,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       isRequired(customerId) &&
       isRequired(pickupAreaId) &&
       isRequired(dropoffAreaId) &&
-      isRequired(productCategoryId) &&
-      isRequired(productName) &&
-      isRequired(productQuantity) &&
+      isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
       addRide(newRide);
@@ -380,6 +393,54 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                 </FormControl>
               </Grid>
             </Grid>
+            <Grid item sm={12}>
+              <Button variant="contained" onClick={() => setProducts([...products, {
+                // category: productCategories.find(category => category.id == productCategoryId),
+                categoryId: productCategoryId,
+                manifestId: productManifestId,
+                name: productName,
+                quantity: productQuantity
+              }])} color="primary" variant="contained">Add Product</Button>
+            </Grid>
+            <TableContainer>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Category
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Name
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Quantity
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {products.map(product => {
+                    return (
+                      <TableRow hover role="checkbox">
+                        <TableCell>
+                          {productCategoriesMap[product.categoryId].name}
+                        </TableCell>
+                        <TableCell>
+                          {product.name}
+                        </TableCell>
+                        <TableCell>
+                          {product.quantity}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>

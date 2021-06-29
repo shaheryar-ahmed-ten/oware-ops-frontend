@@ -2,11 +2,12 @@ const emailRE = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(
 const usernameRE = /^\w+$/i;
 const phoneRE = /^\d( ?\d){10}$/;
 
-const isRequired = value => !!value
+const isRequired = value => !!value;
+const isNotEmptyArray = arr => !!arr.length;
 const isEmail = value => !!emailRE.test(value);
 const isUsername = value => !!usernameRE.test(value);
 const isPhone = value => !!phoneRE.test(value);
 const isNumber = value => !isNaN(value);
 export {
-  isRequired, isEmail, isUsername, isPhone, isNumber
+  isRequired, isNotEmptyArray, isEmail, isUsername, isPhone, isNumber
 }
