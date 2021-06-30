@@ -98,42 +98,35 @@ function VehicleView() {
     const [cars, setCars] = useState([])
 
     const addVehicleImages = (runningPaperImage, routePermitImage, vehicleData) => {
-        let apiPromise1 = null, apiPromise2 = null;
+        let runningPaperPromise = null, routePermitPromise = null;
         var formData = new FormData();
         var formData2 = new FormData();
         let data = runningPaperImage;
         formData.append("image", runningPaperImage)
         formData2.append("image", routePermitImage)
-        apiPromise1 = axios.post(getURL(`/upload/vehicle`), formData, {
+        runningPaperPromise = axios.post(getURL(`/upload/vehicle`), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
         data = routePermitImage;
-        apiPromise2 = axios.post(getURL(`/upload/vehicle`), formData2, {
+        routePermitPromise = axios.post(getURL(`/upload/vehicle`), formData2, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
-        apiPromise1.then(res => {
-            console.log(res)
-            if (!res.data.success) {
-                setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-                return
-            }
-            apiPromise2.then(res2 => {
-                if (!res.data.success) {
-                    setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res2.data.message}</Alert>);
-                    return
+        return Promise.all([runningPaperPromise, routePermitPromise])
+            .then(responses => {
+                responses.forEach(res => {
+                    if (!res.data.success) {
+                        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+                    }
+                });
+                return {
+                    runningPaperId: responses[0].data.file.id,
+                    routePermitId: responses[1].data.file.id
                 }
-                const updatedVehicleData = {
-                    ...vehicleData,
-                    runningPaperId: res.file.id,
-                    routePermitId: res2.file.id
-                }
-                addVehicle(updatedVehicleData)
             })
-        })
 
     }
 

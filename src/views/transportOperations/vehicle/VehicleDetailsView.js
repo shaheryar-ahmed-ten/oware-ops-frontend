@@ -14,7 +14,6 @@ import {
     Typography
 } from '@material-ui/core'
 function VehicleDetailsView({ selectedVehicle, open, handleClose }) {
-    console.log(selectedVehicle)
     return (
         selectedVehicle ?
             <div style={{ display: "inline" }}>
