@@ -104,13 +104,13 @@ function VehicleView() {
         let data = runningPaperImage;
         formData.append("image", runningPaperImage)
         formData2.append("image", routePermitImage)
-        apiPromise1 = axios.post(getURL(`/imageUpload/vehicle`), formData, {
+        apiPromise1 = axios.post(getURL(`/upload/vehicle`), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
         data = routePermitImage;
-        apiPromise2 = axios.post(getURL(`/imageUpload/vehicle`), formData2, {
+        apiPromise2 = axios.post(getURL(`/upload/vehicle`), formData2, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
