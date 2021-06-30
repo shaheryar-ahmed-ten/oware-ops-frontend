@@ -75,8 +75,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             registrationNumber: registrationNumber,
             carId: carId,
             type: "light-truck"
-            // runningPaper,
-            // routePermit
         }
         const runningPaperImage = {
             image: runningPaper
@@ -97,8 +95,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             isRequired(driverId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
-            // addVehicle(newVehicle);
-            addVehicleImages(runningPaperImage.image,routePermitImage.image,newVehicle)
+            addVehicleImages(runningPaperImage.image, routePermitImage.image, newVehicle)
         }
     }
     return (
