@@ -25,8 +25,8 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
     const [registrationNumber, setRegistrationNumber] = useState('')
     const [carName, setCarName] = useState('')
     const [carId, setCarId] = useState('')
-    const [runningPaper, setRunningPaper] = useState(null)
-    const [routePermit, setRoutePermit] = useState(null)
+    const [runningPaperImage, setRunningPaperImage] = useState(null)
+    const [routePermitImage, setRoutePermit] = useState(null)
     const [drivers, setDrivers] = useState([])
 
     useEffect(() => {
@@ -64,7 +64,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
         setRegistrationNumber('');
         setCarName('');
         setCarId(null);
-        setRunningPaper(null);
+        setRunningPaperImage(null);
         setRoutePermit(null);
     }
 
@@ -75,26 +75,20 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             registrationNumber: registrationNumber,
             carId: carId
         }
-        const runningPaperImage = {
-            image: runningPaper
-        }
-        const routePermitImage = {
-            image: routePermit
-        }
         setValidation({
             vendorId: true,
             driverId: true,
             registrationNumber: true,
             make: true,
             model: true,
-            runningPaper: true,
-            routePermit: true
+            runningPaperImage: true,
+            routePermitImage: true
         });
         if (isRequired(vendorId) &&
             isRequired(driverId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
-            let fileIds = await addVehicleImages(runningPaperImage.image, routePermitImage.image, newVehicle)
+            let fileIds = await addVehicleImages(runningPaperImage, routePermitImage, newVehicle)
             newVehicle = { ...newVehicle, ...fileIds }
             await addVehicle(newVehicle);
         }
@@ -205,17 +199,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={runningPaper ? 'primary' : 'default'}
+                                            color={runningPaperImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Running Paper {runningPaper ? 'Uploaded' : ''}
+                                            Running Paper {runningPaperImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
-                                                onChange={(e) => { setRunningPaper(e.target.files[0]) }}
+                                                onChange={(e) => { setRunningPaperImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.runningPaper && !isRequired(runningPaper) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {validation.runningPaperImage && !isRequired(runningPaperImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -223,17 +217,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={routePermit ? 'primary' : 'default'}
+                                            color={routePermitImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Route Permit {routePermit ? 'Uploaded' : ''}
+                                            Route Permit {routePermitImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
                                                 onChange={(e) => { setRoutePermit(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.routePermit && !isRequired(routePermit) ? <Typography color="error">Route Permit is required!</Typography> : ''}
+                                        {validation.routePermitImage && !isRequired(routePermitImage) ? <Typography color="error">Route Permit is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>

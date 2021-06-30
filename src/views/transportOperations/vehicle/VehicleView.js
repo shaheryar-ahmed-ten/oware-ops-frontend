@@ -97,7 +97,7 @@ function VehicleView() {
     const [vendors, setVendors] = useState([])
     const [cars, setCars] = useState([])
 
-    const addVehicleImages = (runningPaperImage, routePermitImage, vehicleData) => {
+    const addVehicleImages = (runningPaperImage, routePermitImage) => {
         let runningPaperPromise = null, routePermitPromise = null;
         var formData = new FormData();
         var formData2 = new FormData();

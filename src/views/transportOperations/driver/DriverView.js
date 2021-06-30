@@ -86,40 +86,36 @@ function DriverView() {
   const [addDriverView, setAddDriverView] = useState(false)
   const [driverDetailsView, setDriverDetailsView] = useState(false)
 
-  const addDriverImages = (drivingLiceneseImage, cnicImage, driverData) => {
-    let apiPromise1 = null, apiPromise2 = null;
+  const addDriverImages = (drivingLicenseImage, cnicNumberImage) => {
+    let drivingLicensePromise = null, cnicNumberPromise = null;
     var formData = new FormData();
     var formData2 = new FormData();
-    formData.append("image", drivingLiceneseImage)
-    formData2.append("image", cnicImage)
-    apiPromise1 = axios.post(getURL(`/imageUpload/driver`), formData, {
+    let data = drivingLicenseImage;
+    formData.append("image", drivingLicenseImage)
+    formData2.append("image", cnicNumberImage)
+    drivingLicensePromise = axios.post(getURL(`/upload/driver`), formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
-    apiPromise2 = axios.post(getURL(`/imageUpload/driver`), formData2, {
+    data = cnicNumberImage;
+    cnicNumberPromise = axios.post(getURL(`/upload/driver`), formData2, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
-    apiPromise1.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      apiPromise2.then(res2 => {
-        if (!res.data.success) {
-          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res2.data.message}</Alert>);
-          return
+    return Promise.all([drivingLicensePromise, cnicNumberPromise])
+      .then(responses => {
+        responses.forEach(res => {
+          if (!res.data.success) {
+            setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+          }
+        });
+        return {
+          drivingLicenseId: responses[0].data.file.id,
+          cnicNumberId: responses[1].data.file.id
         }
-        const updatedDriverData = {
-          ...driverData,
-          drivingLiceneseId: res.file.id,
-          cnicId: res2.file.id
-        }
-        addDriver(updatedDriverData)
       })
-    })
 
   }
 
