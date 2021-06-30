@@ -16,7 +16,7 @@ import {
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
+function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicleImages, addVehicle, cars }) {
     const [validation, setValidation] = useState({});
     const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
@@ -68,15 +68,18 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
         setRoutePermit(null);
     }
 
-    const handleSubmit = () => {
-        const newVehicle = {
+    const handleSubmit = async () => {
+        let newVehicle = {
             companyId: vendorId,
             driverId: driverId,
             registrationNumber: registrationNumber,
-            carId: carId,
-            type: "light-truck"
-            // runningPaper,
-            // routePermit
+            carId: carId
+        }
+        const runningPaperImage = {
+            image: runningPaper
+        }
+        const routePermitImage = {
+            image: routePermit
         }
         setValidation({
             vendorId: true,
@@ -91,7 +94,9 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             isRequired(driverId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
-            addVehicle(newVehicle);
+            let fileIds = await addVehicleImages(runningPaperImage.image, routePermitImage.image, newVehicle)
+            newVehicle = { ...newVehicle, ...fileIds }
+            await addVehicle(newVehicle);
         }
     }
     return (
