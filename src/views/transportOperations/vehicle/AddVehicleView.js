@@ -98,7 +98,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             isRequired(registrationNumber) &&
             isRequired(carId)) {
             // addVehicle(newVehicle);
-            addVehicleImages(runningPaper.image,routePermit.image,newVehicle)
+            addVehicleImages(runningPaperImage.image,routePermitImage.image,newVehicle)
         }
     }
     return (
