@@ -22,6 +22,7 @@ import { checkPermission } from './utils/auth';
 import DriverView from './views/transportOperations/driver/DriverView';
 import VehicleView from './views/transportOperations/vehicle/VehicleView';
 import RideView from './views/transportOperations/ride/RideView';
+import CreateRiderView from './views/transportOperations/ride/CreateRiderView';
 
 
 const routes = (user) => [
@@ -35,7 +36,7 @@ const routes = (user) => [
       },
       {
         path: 'customer',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="CUSTOMER"/> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="CUSTOMER" /> : <Navigate to="404" />
       },
       {
         path: 'warehouse',
@@ -92,7 +93,7 @@ const routes = (user) => [
     children: [
       {
         path: 'vendor',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="VENDOR"/> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="VENDOR" /> : <Navigate to="404" />
       },
       {
         path: 'driver',
@@ -106,6 +107,10 @@ const routes = (user) => [
         path: 'ride',
         element: <RideView />
       },
+      {
+        path: 'ride/create',
+        element: <CreateRiderView />
+      }
     ]
   },
   {

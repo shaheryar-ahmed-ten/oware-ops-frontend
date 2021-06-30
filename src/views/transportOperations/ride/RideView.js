@@ -28,6 +28,7 @@ import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { Select } from '@material-ui/core';
 import TableStatsHeader from '../../TableStatsHeader';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -69,6 +70,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function RideView() {
     const classes = useStyles();
+    const navigate = useNavigate();
+
     const columns = [{
         id: 'id',
         label: 'RIDE ID',
@@ -145,22 +148,22 @@ export default function RideView() {
         minWidth: 'auto',
         className: '',
         format: (value, entity) => value.length
-    // }, {
-    //     id: 'product.Category',
-    //     label: 'Product Category',
-    //     minWidth: 'auto',
-    //     className: '',
-    //     format: (value, entity) => entity.ProductCategory.name
-    // }, {
-    //     id: 'productName',
-    //     label: 'Product Name',
-    //     minWidth: 'auto',
-    //     className: ''
-    // }, {
-    //     id: 'productQuantity',
-    //     label: 'Product Quantity',
-    //     minWidth: 'auto',
-    //     className: ''
+        // }, {
+        //     id: 'product.Category',
+        //     label: 'Product Category',
+        //     minWidth: 'auto',
+        //     className: '',
+        //     format: (value, entity) => entity.ProductCategory.name
+        // }, {
+        //     id: 'productName',
+        //     label: 'Product Name',
+        //     minWidth: 'auto',
+        //     className: ''
+        // }, {
+        //     id: 'productQuantity',
+        //     label: 'Product Quantity',
+        //     minWidth: 'auto',
+        //     className: ''
     }, {
         id: 'actions',
         label: '',
@@ -179,6 +182,8 @@ export default function RideView() {
     const [vehicles, setVehicles] = useState([]);
     const [drivers, setDrivers] = useState([]);
     const [statuses, setStatuses] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [zones, setZones] = useState([]);
     const [areas, setAreas] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [productCategories, setProductCategories] = useState([]);
@@ -259,6 +264,9 @@ export default function RideView() {
                 setDrivers(res.data.drivers);
                 setStatuses(res.data.statuses);
                 setAreas(res.data.areas);
+                console.log(res.data.cities)
+                setCities(res.data.cities);
+                setZones(res.data.zones);
                 setCompanies(res.data.companies);
                 setProductCategories(res.data.productCategories);
             });
@@ -305,14 +313,17 @@ export default function RideView() {
         variant="contained"
         color="primary"
         size="small"
-        onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
+        // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
+        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, cities, companies, productCategories, selectedRide } })}>ADD RIDE</Button>;
     const addRideModal = <AddRideView
         formErrors={formErrors}
         key={3}
         vehicles={vehicles}
         drivers={drivers}
         statuses={statuses}
+        cities={cities}
         areas={areas}
+        zones={zones}
         companies={companies}
         productCategories={productCategories}
         selectedRide={selectedRide}
@@ -337,7 +348,7 @@ export default function RideView() {
             {filters[key]}
         </Button >
     );
-    const topHeaderButtons = [addRideButton, addRideModal, deleteRideModal];
+    const topHeaderButtons = [addRideButton, deleteRideModal];
     const headerButtons = [searchInput];
 
     return (
