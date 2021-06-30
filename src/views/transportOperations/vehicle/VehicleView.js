@@ -100,9 +100,17 @@ function VehicleView() {
     const addVehicleImages = (runningPaperImage, routePermitImage, vehicleData) => {
         let apiPromise1 = null, apiPromise2 = null;
         let data = runningPaperImage;
-        apiPromise1 = axios.post(getURL(`/imageUpload/driver`), data);
+        apiPromise1 = axios.post(getURL(`/imageUpload/driver`), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         data = routePermitImage;
-        apiPromise2 = axios.post(getURL(`/imageUpload/driver`), data);
+        apiPromise2 = axios.post(getURL(`/imageUpload/driver`), data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
         apiPromise1.then(res => {
             if (!res.data.success) {
                 setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
