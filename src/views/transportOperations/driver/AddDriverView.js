@@ -88,7 +88,6 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
             isRequired(CNIC)) {
             addDriverImages(drivingLiceneseImage.image, cnicImage.image, newDriver)
         }
-
     }
     return (
         <div style={{ display: "inline" }}>

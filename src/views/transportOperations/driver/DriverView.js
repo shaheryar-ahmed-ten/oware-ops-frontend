@@ -88,10 +88,20 @@ function DriverView() {
 
   const addDriverImages = (drivingLiceneseImage, cnicImage, driverData) => {
     let apiPromise1 = null, apiPromise2 = null;
-    let data = drivingLiceneseImage;
-    apiPromise1 = axios.post(getURL(`/imageUpload/driver`), data);
-    data = cnicImage;
-    apiPromise2 = axios.post(getURL(`/imageUpload/driver`), data);
+    var formData = new FormData();
+    var formData2 = new FormData();
+    formData.append("image", drivingLiceneseImage)
+    formData2.append("image", cnicImage)
+    apiPromise1 = axios.post(getURL(`/imageUpload/driver`), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    apiPromise2 = axios.post(getURL(`/imageUpload/driver`), formData2, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     apiPromise1.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
