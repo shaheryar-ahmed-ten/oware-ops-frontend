@@ -86,6 +86,33 @@ function DriverView() {
   const [addDriverView, setAddDriverView] = useState(false)
   const [driverDetailsView, setDriverDetailsView] = useState(false)
 
+  const addDriverImages = (drivingLiceneseImage, cnicImage, driverData) => {
+    let apiPromise1 = null, apiPromise2 = null;
+    let data = drivingLiceneseImage;
+    apiPromise1 = axios.post(getURL(`/imageUpload/driver`), data);
+    data = cnicImage;
+    apiPromise2 = axios.post(getURL(`/imageUpload/driver`), data);
+    apiPromise1.then(res => {
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      apiPromise2.then(res2 => {
+        if (!res.data.success) {
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res2.data.message}</Alert>);
+          return
+        }
+        const updatedDriverData = {
+          ...driverData,
+          drivingLiceneseId: res.file.id,
+          cnicId: res2.file.id
+        }
+        addDriver(updatedDriverData)
+      })
+    })
+
+  }
+
   const addDriver = data => {
     let apiPromise = null;
     if (!selectedDriver) apiPromise = axios.post(getURL('/driver'), data);
@@ -139,6 +166,7 @@ function DriverView() {
     selectedDriver={selectedDriver}
     companies={companies}
     addDriver={addDriver}
+    addDriverImages={addDriverImages}
     formErrors={formErrors}
     open={addDriverView}
     handleClose={closeaddDriverViewModal} />;
