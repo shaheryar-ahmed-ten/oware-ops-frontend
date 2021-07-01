@@ -15,7 +15,7 @@ import {
     MenuItem,
     ListItemText,
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -27,7 +27,7 @@ import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { Select } from '@material-ui/core';
-import TableStatsHeader from '../../TableStatsHeader';
+import TableStatsHeader from '../../../components/TableStatsHeader';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -145,22 +145,22 @@ export default function RideView() {
         minWidth: 'auto',
         className: '',
         format: (value, entity) => value.length
-    // }, {
-    //     id: 'product.Category',
-    //     label: 'Product Category',
-    //     minWidth: 'auto',
-    //     className: '',
-    //     format: (value, entity) => entity.ProductCategory.name
-    // }, {
-    //     id: 'productName',
-    //     label: 'Product Name',
-    //     minWidth: 'auto',
-    //     className: ''
-    // }, {
-    //     id: 'productQuantity',
-    //     label: 'Product Quantity',
-    //     minWidth: 'auto',
-    //     className: ''
+        // }, {
+        //     id: 'product.Category',
+        //     label: 'Product Category',
+        //     minWidth: 'auto',
+        //     className: '',
+        //     format: (value, entity) => entity.ProductCategory.name
+        // }, {
+        //     id: 'productName',
+        //     label: 'Product Name',
+        //     minWidth: 'auto',
+        //     className: ''
+        // }, {
+        //     id: 'productQuantity',
+        //     label: 'Product Quantity',
+        //     minWidth: 'auto',
+        //     className: ''
     }, {
         id: 'actions',
         label: '',
@@ -188,8 +188,9 @@ export default function RideView() {
     const [formErrors, setFormErrors] = useState('');
     const [addRideViewOpen, setAddRideViewOpen] = useState(false);
     const [deleteRideViewOpen, setDeleteRideViewOpen] = useState(false);
-    const [showMessage, setShowMessage] = useState(null)
-    const [currentFilter, setCurrentFilter] = useState('ALL')
+    const [showMessage, setShowMessage] = useState(null);
+    const [currentFilter, setCurrentFilter] = useState('ALL');
+    const [stats, setStats] = useState([]);
 
     const addRide = data => {
         let apiPromise = null;
@@ -264,12 +265,18 @@ export default function RideView() {
             });
     };
 
+    const getStats = () => {
+        axios.get(getURL('/ride/stats'))
+            .then(res => setStats(res.data.stats));
+    };
+
     useEffect(() => {
         getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
     }, [page, searchKeyword, currentFilter]);
 
     useEffect(() => {
         getRelations();
+        getStats();
     }, []);
 
     const searchInput = <InputBase
@@ -327,9 +334,6 @@ export default function RideView() {
         selectedEntity={selectedRide && selectedRide.name}
         title={"Ride"}
     />
-    const tableStats = Object.keys(filters).map(key => {
-        return { label: filters[key], val: 0 }
-    });
 
     const filterButtons = Object.keys(filters).map(key =>
         <Button key={key} variant="contained" onClick={(e) => { setCurrentFilter(key) }}
@@ -344,7 +348,7 @@ export default function RideView() {
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
                 <TableHeader title="Rides" buttons={topHeaderButtons} />
-                <TableStatsHeader stats={tableStats} filterButtons={filterButtons} />
+                <TableStatsHeader stats={stats} filterButtons={filterButtons} />
                 <TableHeader title={filterDropdown} buttons={headerButtons} />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>

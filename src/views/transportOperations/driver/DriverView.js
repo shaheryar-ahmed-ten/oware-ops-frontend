@@ -12,7 +12,7 @@ import {
   TableRow
 } from '@material-ui/core';
 import React, { useEffect, useState, useCallback } from 'react'
-import TableHeader from '../../TableHeader';
+import TableHeader from '../../../components/TableHeader';
 import { Alert, Pagination } from '@material-ui/lab';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import VisibilityIcon from '@material-ui/icons/Visibility';

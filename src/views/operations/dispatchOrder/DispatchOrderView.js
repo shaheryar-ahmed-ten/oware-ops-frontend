@@ -14,7 +14,7 @@ import {
   Tooltip,
   IconButton
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';

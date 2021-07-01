@@ -34,7 +34,7 @@ function TableStatsHeader({ stats, filterButtons }) {
                                 return (
                                     <Grid item key={i}>
                                         <Typography variant="h4">{stat.label}</Typography>
-                                        <Typography variant="h4" className={classes.val}>{stat.val}</Typography>
+                                        <Typography variant="h4" className={classes.val}>{stat.value}</Typography>
                                     </Grid>
                                 )
                             })

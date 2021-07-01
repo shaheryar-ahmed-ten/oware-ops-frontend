@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader';
+import TableHeader from '../../../components/TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
