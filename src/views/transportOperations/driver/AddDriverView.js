@@ -15,8 +15,9 @@ import {
 import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
+import { upload } from '../../../utils/upload';
 
-function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriverImages, addDriver }) {
+function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
     const [driverName, setDriverName] = useState('')
     const [driverPhone, setDriverPhone] = useState('')
     const [validation, setValidation] = useState({});
@@ -80,8 +81,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
             isRequired(cnicNumber) &&
             isRequired(drivingLicenseImage) &&
             isRequired(CNICImage)) {
-            let fileIds = await addDriverImages(drivingLicenseImage, CNICImage, newDriver);
-            newDriver = { ...newDriver, ...fileIds };
+            const [drivingLicenseId, cnicNumberId] = await upload([runningPaperImage, routePermitImage], 'driver');
+            newDriver = { ...newDriver, drivingLicenseId, cnicNumberId };
             addDriver(newDriver);
         }
     }

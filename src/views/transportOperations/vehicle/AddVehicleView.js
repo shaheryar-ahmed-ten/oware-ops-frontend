@@ -15,8 +15,9 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { upload } from '../../../utils/upload';
 
-function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicleImages, addVehicle, cars }) {
+function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
     const [validation, setValidation] = useState({});
     const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
@@ -88,9 +89,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             isRequired(driverId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
-            let fileIds = await addVehicleImages(runningPaperImage, routePermitImage, newVehicle)
-            newVehicle = { ...newVehicle, ...fileIds }
-            await addVehicle(newVehicle);
+            try {
+                const [runningPaperId, routePermitId] = await upload([runningPaperImage, routePermitImage], 'vehicle');
+                newVehicle = {
+                    ...newVehicle,
+                    runningPaperId,
+                    routePermitId
+                };
+                await addVehicle(newVehicle);
+            } catch (err) {
+                // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+            }
         }
     }
     return (

@@ -97,39 +97,6 @@ function VehicleView() {
     const [vendors, setVendors] = useState([])
     const [cars, setCars] = useState([])
 
-    const addVehicleImages = (runningPaperImage, routePermitImage) => {
-        let runningPaperPromise = null, routePermitPromise = null;
-        var formData = new FormData();
-        var formData2 = new FormData();
-        let data = runningPaperImage;
-        formData.append("image", runningPaperImage)
-        formData2.append("image", routePermitImage)
-        runningPaperPromise = axios.post(getURL(`/upload/vehicle`), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        data = routePermitImage;
-        routePermitPromise = axios.post(getURL(`/upload/vehicle`), formData2, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-        return Promise.all([runningPaperPromise, routePermitPromise])
-            .then(responses => {
-                responses.forEach(res => {
-                    if (!res.data.success) {
-                        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-                    }
-                });
-                return {
-                    runningPaperId: responses[0].data.file.id,
-                    routePermitId: responses[1].data.file.id
-                }
-            })
-
-    }
-
     const addVehicle = (data) => {
         let apiPromise = null;
         if (!selectedVehicle) apiPromise = axios.post(getURL('/vehicle'), data);
@@ -182,7 +149,6 @@ function VehicleView() {
         cars={cars}
         formErrors={formErrors}
         addVehicle={addVehicle}
-        addVehicleImages={addVehicleImages}
         open={addVehicleView}
         handleClose={closeAddVehicleViewModal} />;
 

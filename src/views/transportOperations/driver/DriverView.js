@@ -86,39 +86,6 @@ function DriverView() {
   const [addDriverView, setAddDriverView] = useState(false)
   const [driverDetailsView, setDriverDetailsView] = useState(false)
 
-  const addDriverImages = (drivingLicenseImage, cnicNumberImage) => {
-    let drivingLicensePromise = null, cnicNumberPromise = null;
-    var formData = new FormData();
-    var formData2 = new FormData();
-    let data = drivingLicenseImage;
-    formData.append("image", drivingLicenseImage)
-    formData2.append("image", cnicNumberImage)
-    drivingLicensePromise = axios.post(getURL(`/upload/driver`), formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    data = cnicNumberImage;
-    cnicNumberPromise = axios.post(getURL(`/upload/driver`), formData2, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return Promise.all([drivingLicensePromise, cnicNumberPromise])
-      .then(responses => {
-        responses.forEach(res => {
-          if (!res.data.success) {
-            setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-          }
-        });
-        return {
-          drivingLicenseId: responses[0].data.file.id,
-          cnicNumberId: responses[1].data.file.id
-        }
-      })
-
-  }
-
   const addDriver = data => {
     let apiPromise = null;
     if (!selectedDriver) apiPromise = axios.post(getURL('/driver'), data);
