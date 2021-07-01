@@ -476,6 +476,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Quantity
                     </TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
