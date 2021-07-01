@@ -97,6 +97,11 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
     // setProductManifests({});
   }, [products]);
 
+  useEffect(() => {
+    const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
+    if (vehicle) setDriverId(vehicle.driverId);
+  }, [vehicleId]);
+
   const handleSubmit = async e => {
     let newRide = {
       status,

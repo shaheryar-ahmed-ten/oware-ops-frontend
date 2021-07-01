@@ -242,6 +242,7 @@ export default function RideView() {
     }
 
     const _getRides = (page, searchKeyword, currentFilter) => {
+        getStats();
         axios.get(getURL('/ride'), { params: { page, search: searchKeyword, status: currentFilter } })
             .then(res => {
                 setPageCount(res.data.pages)
@@ -276,7 +277,6 @@ export default function RideView() {
 
     useEffect(() => {
         getRelations();
-        getStats();
     }, []);
 
     const searchInput = <InputBase
