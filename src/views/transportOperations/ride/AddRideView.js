@@ -22,6 +22,8 @@ import {
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import { upload } from '../../../utils/upload';
 
 export default function AddRideView({ addRide, open, handleClose, selectedRide,
   vehicles, drivers, statuses, areas, companies, productCategories, formErrors }) {
@@ -50,7 +52,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
   const [dropoffDate, setDropoffDate] = useState('');
   const [isActive, setActive] = useState(true);
   const [productManifestId, setProductManifestId] = useState(null)
-  const [productManifest, setProductManifest] = useState(null)
+  const [productManifests, setProductManifests] = useState({})
 
   useEffect(() => {
     if (!!selectedRide) {
@@ -91,13 +93,12 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
   useEffect(() => {
     setProductName('');
     setProductQuantity('');
-    setProductManifest(null);
     setProductCategoryId(null);
+    // setProductManifests({});
   }, [products]);
 
-  const handleSubmit = e => {
-
-    const newRide = {
+  const handleSubmit = async e => {
+    let newRide = {
       status,
       vehicleId,
       driverId,
@@ -143,6 +144,12 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
+      console.log(productManifests)
+      const productManifestsIndexes = Object.keys(productManifests);
+      console.log(productManifestsIndexes)
+      let fileIds = await upload(productManifestsIndexes.map(index => productManifests[index]), 'ride')
+      const productManifestFiles = productManifestsIndexes.reduce((acc, index, fileIndex) => ({ ...acc, [index]: fileIds[fileIndex] }), {})
+      newRide.products.forEach((product, index) => Object.assign(product, { manifestId: productManifestFiles[index] }))
       addRide(newRide);
     }
   }
@@ -423,17 +430,24 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                   <Button
                     variant="contained"
                     component="label"
-                    color={productManifest ? 'primary' : 'default'}
+                    color={productManifests ? 'primary' : 'default'}
                     startIcon={<CloudUploadIcon />}
                   >
-                    Product Manifest {productManifest ? 'Uploaded' : ''}
+                    Product Manifest {productManifests ? 'Uploaded' : ''}
                     <input
                       type="file"
                       hidden
-                      onChange={(e) => { setProductManifest(e.target.files[0]) }}
+                      onChange={(e) => {
+                        console.log(products.length, e.target.files[0]);
+                        console.log(productManifests);
+                        setProductManifests({
+                          ...productManifests,
+                          [products.length]: e.target.files[0]
+                        })
+                      }}
                     />
                   </Button>
-                  {validation.productManifest && !isRequired(productManifest) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
+                  {validation.productManifests && !isRequired(productManifests) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
                 </FormControl>
               </Grid>
             </Grid>
@@ -476,6 +490,11 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                         </TableCell>
                         <TableCell>
                           {product.quantity}
+                        </TableCell>
+                        <TableCell>
+                          <DeleteIcon color="error" key="delete" onClick={() =>
+                            setProducts(products.filter(_product => _product.id != product.id))
+                          } />
                         </TableCell>
                       </TableRow>
                     )

@@ -139,7 +139,6 @@ function DriverView() {
     selectedDriver={selectedDriver}
     companies={companies}
     addDriver={addDriver}
-    addDriverImages={addDriverImages}
     formErrors={formErrors}
     open={addDriverView}
     handleClose={closeaddDriverViewModal} />;
