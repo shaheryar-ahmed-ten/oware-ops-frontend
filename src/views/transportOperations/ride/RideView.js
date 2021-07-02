@@ -28,6 +28,7 @@ import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { Select } from '@material-ui/core';
 import TableStatsHeader from '../../../components/TableStatsHeader';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -265,9 +266,7 @@ export default function RideView() {
                 setDrivers(res.data.drivers);
                 setStatuses(res.data.statuses);
                 setAreas(res.data.areas);
-                console.log(res.data.cities)
                 setCities(res.data.cities);
-                setZones(res.data.zones);
                 setCompanies(res.data.companies);
                 setProductCategories(res.data.productCategories);
             });
@@ -320,7 +319,7 @@ export default function RideView() {
         color="primary"
         size="small"
         // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
-        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, cities, companies, productCategories, selectedRide } })}>ADD RIDE</Button>;
+        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, zones, cities, companies, productCategories, selectedRide } })}>ADD RIDE</Button>;
     const addRideModal = <AddRideView
         formErrors={formErrors}
         key={3}

@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 function CreateRiderView() {
     const { state } = useLocation()
     const classes = useStyles()
-    console.log(state)
+    // console.log(state)
     const { selectedRide,
         vehicles, drivers, statuses, areas, companies, productCategories, formErrors, cities } = state ? state : ''
 
@@ -53,9 +53,13 @@ function CreateRiderView() {
     const [customerId, setCustomerId] = useState('');
     const [vehicleId, setVehicleId] = useState('');
     const [driverId, setDriverId] = useState('');
+    const [pickupZones, setPickupZones] = useState([])
     const [pickupCityId, setPickupCityId] = useState('');
-    const [pickupZoneId, setPickupZoneId] = useState('');
+    const [pickupCityZoneId, setPickupCityZoneId] = useState('');
     const [pickupAreaId, setPickupAreaId] = useState('');
+    const [dropoffZones, setDropoffZones] = useState([])
+    const [dropoffCityId, setDropoffCityId] = useState('');
+    const [dropoffCityZoneId, setDropoffCityZoneId] = useState('');
     const [dropoffAreaId, setDropoffAreaId] = useState('');
     const [products, setProducts] = useState([]);
 
@@ -116,6 +120,22 @@ function CreateRiderView() {
         setProductCategoryId(null);
     }, [products]);
 
+    useEffect(() => {
+        if (pickupCityId) {
+            const getCity = cities.find(city => city.id == pickupCityId)
+            setPickupZones(getCity.Zones)
+        }
+
+    }, [pickupCityId])
+
+    useEffect(() => {
+        if (dropoffCityId) {
+            const getCity = cities.find(city => city.id == pickupCityId)
+            setDropoffZones(getCity.Zones)
+        }
+
+    }, [dropoffCityId])
+
     const handleSubmit = e => {
 
         const newRide = {
@@ -169,7 +189,6 @@ function CreateRiderView() {
         }
     }
 
-    console.log(cities)
     return (
         <>
             {formErrors}
@@ -246,9 +265,9 @@ function CreateRiderView() {
                                 variant="outlined"
                                 value={pickupCityId}
                                 onChange={e => setPickupCityId(e.target.value)}
-                                onBlur={e => setValidation({ ...validation, pickupAreaId: true })}
+                                onBlur={e => setValidation({ ...validation, pickupCityId: true })}
                             >
-                                <MenuItem value="" disabled>Select a PickupArea</MenuItem>
+                                <MenuItem value="" disabled>Select a PickupCity</MenuItem>
                                 {cities.map(city => <MenuItem key={city.id} value={city.id}>
                                     {city.name}
                                 </MenuItem>)}
@@ -262,18 +281,18 @@ function CreateRiderView() {
                             <Select
                                 fullWidth={true}
                                 id="pickupAreaId"
-                                label="Pickup Area"
+                                label="Pickup Zone"
                                 variant="outlined"
-                                value={pickupZoneId}
-                                onChange={e => setPickupZoneId(e.target.value)}
-                                onBlur={e => setValidation({ ...validation, pickupAreaId: true })}
+                                value={pickupCityZoneId}
+                                onChange={e => setPickupCityZoneId(e.target.value)}
+                                onBlur={e => setValidation({ ...validation, pickupCityZoneId: true })}
                             >
-                                <MenuItem value="" disabled>Select a PickupArea</MenuItem>
-                                {cities.map(city => <MenuItem key={city.id} value={city.id}>
-                                    {city.name}
+                                <MenuItem value="" disabled>Select a PickupZone</MenuItem>
+                                {pickupZones.map(zone => <MenuItem key={zone.id} value={zone.id}>
+                                    {zone.name}
                                 </MenuItem>)}
                             </Select>
-                            {validation.pickupZoneId && !isRequired(pickupZoneId) ? <Typography color="error">Pickup Zone is required!</Typography> : ''}
+                            {validation.pickupCityZoneId && !isRequired(pickupCityZoneId) ? <Typography color="error">Pickup Zone is required!</Typography> : ''}
                         </FormControl>
                     </Grid>
                     <Grid item sm={4}>
@@ -289,8 +308,8 @@ function CreateRiderView() {
                                 onBlur={e => setValidation({ ...validation, pickupAreaId: true })}
                             >
                                 <MenuItem value="" disabled>Select a PickupArea</MenuItem>
-                                {cities.map(city => <MenuItem key={city.id} value={city.id}>
-                                    {city.name}
+                                {areas.map(area => <MenuItem key={area.id} value={area.id}>
+                                    {area.name}
                                 </MenuItem>)}
                             </Select>
                             {validation.pickupAreaId && !isRequired(pickupAreaId) ? <Typography color="error">Pickup Area is required!</Typography> : ''}
@@ -316,42 +335,42 @@ function CreateRiderView() {
                 <Grid container item xs={12} spacing={3}>
                     <Grid item sm={4}>
                         <FormControl margin="dense" fullWidth={true} variant="outlined">
-                            <InputLabel>Dropoff Area</InputLabel>
+                            <InputLabel>Dropoff City</InputLabel>
                             <Select
                                 fullWidth={true}
-                                id="dropoffAreaId"
-                                label="Drop-off Area"
+                                id="dropoffCityId"
+                                label="Drop-off City"
                                 variant="outlined"
-                                value={dropoffAreaId}
-                                onChange={e => setDropoffAreaId(e.target.value)}
-                                onBlur={e => setValidation({ ...validation, dropoffAreaId: true })}
+                                value={dropoffCityId}
+                                onChange={e => setDropoffCityId(e.target.value)}
+                                onBlur={e => setValidation({ ...validation, dropoffCityId: true })}
                             >
-                                <MenuItem value="" disabled>Select a DropoffArea</MenuItem>
-                                {areas.map(area => <MenuItem key={area.id} value={area.id}>
-                                    {area.name}
+                                <MenuItem value="" disabled>Select a DropoffCity</MenuItem>
+                                {cities.map(city => <MenuItem key={city.id} value={city.id}>
+                                    {city.name}
                                 </MenuItem>)}
                             </Select>
-                            {validation.dropoffAreaId && !isRequired(dropoffAreaId) ? <Typography color="error">Dropoff Area is required!</Typography> : ''}
+                            {validation.dropoffCityId && !isRequired(dropoffCityId) ? <Typography color="error">Dropoff City is required!</Typography> : ''}
                         </FormControl>
                     </Grid>
                     <Grid item sm={4}>
                         <FormControl margin="dense" fullWidth={true} variant="outlined">
-                            <InputLabel>Dropoff Area</InputLabel>
+                            <InputLabel>Dropoff Zone</InputLabel>
                             <Select
                                 fullWidth={true}
                                 id="dropoffAreaId"
                                 label="Drop-off Area"
                                 variant="outlined"
-                                value={dropoffAreaId}
-                                onChange={e => setDropoffAreaId(e.target.value)}
-                                onBlur={e => setValidation({ ...validation, dropoffAreaId: true })}
+                                value={dropoffCityZoneId}
+                                onChange={e => setDropoffCityZoneId(e.target.value)}
+                                onBlur={e => setValidation({ ...validation, dropoffCityZoneId: true })}
                             >
                                 <MenuItem value="" disabled>Select a DropoffArea</MenuItem>
-                                {areas.map(area => <MenuItem key={area.id} value={area.id}>
-                                    {area.name}
+                                {dropoffZones.map(zone => <MenuItem key={zone.id} value={zone.id}>
+                                    {zone.name}
                                 </MenuItem>)}
                             </Select>
-                            {validation.dropoffAreaId && !isRequired(dropoffAreaId) ? <Typography color="error">Dropoff Area is required!</Typography> : ''}
+                            {validation.dropoffCityZoneId && !isRequired(dropoffCityZoneId) ? <Typography color="error">Dropoff Zone is required!</Typography> : ''}
                         </FormControl>
                     </Grid>
                     <Grid item sm={4}>
@@ -380,15 +399,15 @@ function CreateRiderView() {
                         <TextField
                             fullWidth={true}
                             margin="dense"
-                            id="pickupAddress"
-                            label="Pickup address"
+                            id="dropoffAddress"
+                            label="Dropoff address"
                             type="text"
                             variant="outlined"
-                            value={pickupAddress}
-                            onChange={e => setPickupAddress(e.target.value)}
-                            onBlur={e => setValidation({ ...validation, pickupAddress: true })}
+                            value={dropoffAddress}
+                            onChange={e => setDropoffAddress(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, dropoffAddress: true })}
                         />
-                        {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup address is required!</Typography> : ''}
+                        {validation.dropoffAddress && !isRequired(dropoffAddress) ? <Typography color="error">Dropoff address is required!</Typography> : ''}
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} spacing={3}>
