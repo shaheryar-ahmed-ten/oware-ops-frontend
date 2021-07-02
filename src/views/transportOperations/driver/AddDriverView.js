@@ -15,17 +15,18 @@ import {
 import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
+import { upload } from '../../../utils/upload';
 
-function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open, handleClose }) {
+function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
     const [driverName, setDriverName] = useState('')
     const [driverPhone, setDriverPhone] = useState('')
     const [validation, setValidation] = useState({});
-    const [drivingLicenseNumber, setDrivingLicenseNumber] = useState('')
     const [vendorName, setVendorName] = useState('')
     const [vendorId, setVendorId] = useState(null)
-    const [driverCNIC, setDriverCNIC] = useState('')
-    const [drivingLicense, setDrivingLicense] = useState(null)
-    const [CNIC, setCNIC] = useState(null)
+    const [cnicNumber, setCNICNumber] = useState('')
+    const [drivingLicenseNumber, setDrivingLicenseNumber] = useState('')
+    const [drivingLicenseImage, setDrivingLicenseImage] = useState(null)
+    const [CNICImage, setCNICImage] = useState(null)
     useEffect(() => {
         if (open)
             resetLocalStates()
@@ -35,7 +36,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
             setDrivingLicenseNumber(selectedDriver ? selectedDriver.drivingLicenseNumber : '');
             setVendorName(selectedDriver.Vendor ? selectedDriver.Vendor.name : '');
             setVendorId(selectedDriver.Vendor ? selectedDriver.Vendor.id : '');
-            setDriverCNIC(selectedDriver ? selectedDriver.cnicNumber : '');
+            setCNICNumber(selectedDriver ? selectedDriver.cnicNumber : '');
         }
         else {
             resetLocalStates()
@@ -48,44 +49,42 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
         setDrivingLicenseNumber('');
         setVendorName('');
         setVendorId(null);
-        setDriverCNIC(null);
-        setDrivingLicense(null);
-        setCNIC(null);
+        setCNICNumber(null);
+        setDrivingLicenseImage(null);
+        setCNICImage(null);
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
-        const newDriver = {
+        let newDriver = {
             name: driverName,
             phone: driverPhone,
             drivingLicenseNumber: drivingLicenseNumber,
             companyId: vendorId,
-            cnicNumber: driverCNIC,
-            // drivingLicenseId: drivingLicense,
-            // cnicId: CNIC
+            cnicNumber: cnicNumber,
         }
-
         setValidation({
             driverName: true,
             driverPhone: true,
             validation: true,
             drivingLicenseNumber: true,
             vendorId: true,
-            driverCNIC: true,
-            drivingLicense: true,
-            CNIC: true,
+            cnicNumber: true,
+            drivingLicenseImage: true,
+            CNICImage: true,
         });
         if (isRequired(driverName) &&
             isRequired(driverPhone) &&
             isRequired(validation) &&
             isRequired(drivingLicenseNumber) &&
             isRequired(vendorId) &&
-            isRequired(driverCNIC) &&
-            isRequired(drivingLicense) &&
-            isRequired(CNIC)) {
+            isRequired(cnicNumber) &&
+            isRequired(drivingLicenseImage) &&
+            isRequired(CNICImage)) {
+            const [drivingLicenseId, cnicNumberId] = await upload([drivingLicenseImage, CNICImage], 'driver');
+            newDriver = { ...newDriver, drivingLicenseId, cnicNumberId };
             addDriver(newDriver);
         }
-
     }
     return (
         <div style={{ display: "inline" }}>
@@ -174,15 +173,15 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         fullWidth={true}
                                         margin="dense"
                                         id="cnic"
-                                        label="Driver CNIC"
+                                        label="Driver CNICImage"
                                         type="text"
                                         variant="outlined"
-                                        value={driverCNIC}
+                                        value={cnicNumber}
                                         placeholder="99999-9999999-3"
-                                        onChange={e => setDriverCNIC(e.target.value)}
-                                        onBlur={e => setValidation({ ...validation, driverCNIC: true })}
+                                        onChange={e => setCNICNumber(e.target.value)}
+                                        onBlur={e => setValidation({ ...validation, cnicNumber: true })}
                                     />
-                                    {validation.driverCNIC && !isRequired(driverCNIC) ? <Typography color="error">Driver CNIC number is required!</Typography> : ''}
+                                    {validation.cnicNumber && !isRequired(cnicNumber) ? <Typography color="error">Driver CNICImage number is required!</Typography> : ''}
                                 </Grid>
 
                             </Grid>
@@ -192,17 +191,17 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={drivingLicense ? 'primary' : 'default'}
+                                            color={drivingLicenseImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Driving License {drivingLicense ? 'Uploaded' : ''}
+                                            Driving License {drivingLicenseImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
-                                                onChange={(e) => { setDrivingLicense(e.target.files[0]) }}
+                                                onChange={(e) => { setDrivingLicenseImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.drivingLicense && !isRequired(drivingLicense) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {validation.drivingLicenseImage && !isRequired(drivingLicenseImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>
@@ -212,17 +211,17 @@ function AddDriverView({ selectedDriver, companies, formErrors, addDriver, open,
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={CNIC ? 'primary' : 'default'}
+                                            color={CNICImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Driver CNIC {CNIC ? 'Uploaded' : ''}
+                                            Driver CNICImage {CNICImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
-                                                onChange={(e) => { setCNIC(e.target.files[0]) }}
+                                                onChange={(e) => { setCNICImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.CNIC && !isRequired(CNIC) ? <Typography color="error">Route Permit is required!</Typography> : ''}
+                                        {validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">Route Permit is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
 

@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { upload } from '../../../utils/upload';
 
 function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
     const [validation, setValidation] = useState({});
@@ -25,8 +26,8 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
     const [registrationNumber, setRegistrationNumber] = useState('')
     const [carName, setCarName] = useState('')
     const [carId, setCarId] = useState('')
-    const [runningPaper, setRunningPaper] = useState(null)
-    const [routePermit, setRoutePermit] = useState(null)
+    const [runningPaperImage, setRunningPaperImage] = useState(null)
+    const [routePermitImage, setRoutePermit] = useState(null)
     const [drivers, setDrivers] = useState([])
 
     useEffect(() => {
@@ -64,19 +65,16 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
         setRegistrationNumber('');
         setCarName('');
         setCarId(null);
-        setRunningPaper(null);
+        setRunningPaperImage(null);
         setRoutePermit(null);
     }
 
-    const handleSubmit = () => {
-        const newVehicle = {
+    const handleSubmit = async () => {
+        let newVehicle = {
             companyId: vendorId,
             driverId: driverId,
             registrationNumber: registrationNumber,
-            carId: carId,
-            type: "light-truck"
-            // runningPaper,
-            // routePermit
+            carId: carId
         }
         setValidation({
             vendorId: true,
@@ -84,14 +82,24 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             registrationNumber: true,
             make: true,
             model: true,
-            runningPaper: true,
-            routePermit: true
+            runningPaperImage: true,
+            routePermitImage: true
         });
         if (isRequired(vendorId) &&
             isRequired(driverId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
-            addVehicle(newVehicle);
+            try {
+                const [runningPaperId, routePermitId] = await upload([runningPaperImage, routePermitImage], 'vehicle');
+                newVehicle = {
+                    ...newVehicle,
+                    runningPaperId,
+                    routePermitId
+                };
+                await addVehicle(newVehicle);
+            } catch (err) {
+                // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+            }
         }
     }
     return (
@@ -200,17 +208,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={runningPaper ? 'primary' : 'default'}
+                                            color={runningPaperImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Running Paper {runningPaper ? 'Uploaded' : ''}
+                                            Running Paper {runningPaperImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
-                                                onChange={(e) => { setRunningPaper(e.target.files[0]) }}
+                                                onChange={(e) => { setRunningPaperImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.runningPaper && !isRequired(runningPaper) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {validation.runningPaperImage && !isRequired(runningPaperImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -218,17 +226,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={routePermit ? 'primary' : 'default'}
+                                            color={routePermitImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Route Permit {routePermit ? 'Uploaded' : ''}
+                                            Route Permit {routePermitImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
                                                 onChange={(e) => { setRoutePermit(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.routePermit && !isRequired(routePermit) ? <Typography color="error">Route Permit is required!</Typography> : ''}
+                                        {validation.routePermitImage && !isRequired(routePermitImage) ? <Typography color="error">Route Permit is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>

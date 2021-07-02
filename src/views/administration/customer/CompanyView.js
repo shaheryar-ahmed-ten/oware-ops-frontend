@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -78,12 +78,12 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Contact.email
-  }, {
-    id: 'Contact.phone',
-    label: 'Contact Phone',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Contact.phone
+  // }, {
+  //   id: 'Contact.phone',
+  //   label: 'Contact Phone',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Contact.phone
   }, {
     id: 'isActive',
     label: 'Status',

@@ -15,7 +15,7 @@ import {
     MenuItem,
     ListItemText,
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -27,8 +27,7 @@ import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { Select } from '@material-ui/core';
-import TableStatsHeader from '../../TableStatsHeader';
-import { useNavigate } from 'react-router';
+import TableStatsHeader from '../../../components/TableStatsHeader';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -193,8 +192,9 @@ export default function RideView() {
     const [formErrors, setFormErrors] = useState('');
     const [addRideViewOpen, setAddRideViewOpen] = useState(false);
     const [deleteRideViewOpen, setDeleteRideViewOpen] = useState(false);
-    const [showMessage, setShowMessage] = useState(null)
-    const [currentFilter, setCurrentFilter] = useState('ALL')
+    const [showMessage, setShowMessage] = useState(null);
+    const [currentFilter, setCurrentFilter] = useState('ALL');
+    const [stats, setStats] = useState([]);
 
     const addRide = data => {
         let apiPromise = null;
@@ -246,6 +246,7 @@ export default function RideView() {
     }
 
     const _getRides = (page, searchKeyword, currentFilter) => {
+        getStats();
         axios.get(getURL('/ride'), { params: { page, search: searchKeyword, status: currentFilter } })
             .then(res => {
                 setPageCount(res.data.pages)
@@ -270,6 +271,11 @@ export default function RideView() {
                 setCompanies(res.data.companies);
                 setProductCategories(res.data.productCategories);
             });
+    };
+
+    const getStats = () => {
+        axios.get(getURL('/ride/stats'))
+            .then(res => setStats(res.data.stats));
     };
 
     useEffect(() => {
@@ -338,9 +344,6 @@ export default function RideView() {
         selectedEntity={selectedRide && selectedRide.name}
         title={"Ride"}
     />
-    const tableStats = Object.keys(filters).map(key => {
-        return { label: filters[key], val: 0 }
-    });
 
     const filterButtons = Object.keys(filters).map(key =>
         <Button key={key} variant="contained" onClick={(e) => { setCurrentFilter(key) }}
@@ -355,7 +358,7 @@ export default function RideView() {
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
                 <TableHeader title="Rides" buttons={topHeaderButtons} />
-                <TableStatsHeader stats={tableStats} filterButtons={filterButtons} />
+                <TableStatsHeader stats={stats} filterButtons={filterButtons} />
                 <TableHeader title={filterDropdown} buttons={headerButtons} />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
