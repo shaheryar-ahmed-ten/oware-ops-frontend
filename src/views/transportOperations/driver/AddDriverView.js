@@ -78,9 +78,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
             isRequired(validation) &&
             isRequired(drivingLicenseNumber) &&
             isRequired(vendorId) &&
-            isRequired(cnicNumber) &&
-            isRequired(drivingLicenseImage) &&
-            isRequired(CNICImage)) {
+            isRequired(cnicNumber)) {
             const [drivingLicenseId, cnicNumberId] = await upload([drivingLicenseImage, CNICImage], 'driver');
             newDriver = { ...newDriver, drivingLicenseId, cnicNumberId };
             addDriver(newDriver);

@@ -444,6 +444,7 @@ function CreateRiderView() {
                             type="datetime-local"
                             variant="outlined"
                             value={pickupDate}
+                            minutesStep={15}
                             onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
                             onBlur={e => setValidation({ ...validation, setPickupDate: true })}
                         />
@@ -599,9 +600,11 @@ function CreateRiderView() {
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} spacing={3}>
-                    <Button onClick={handleSubmit} color="primary" variant="contained">
-                        {!selectedRide ? 'Add Ride' : 'Update Ride'}
-                    </Button>
+                    <Grid item xs={12}>
+                        <Button onClick={handleSubmit} color="primary" variant="contained">
+                            {!selectedRide ? 'Add Ride' : 'Update Ride'}
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
         </>
