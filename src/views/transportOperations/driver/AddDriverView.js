@@ -201,7 +201,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                                 onChange={(e) => { setDrivingLicenseImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.drivingLicenseImage && !isRequired(drivingLicenseImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {validation.drivingLicenseImage && !isRequired(drivingLicenseImage) ? <Typography color="error">Driving License is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>
@@ -214,14 +214,14 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                             color={CNICImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Driver CNICImage {CNICImage ? 'Uploaded' : ''}
+                                            Driver CNIC Image {CNICImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
                                                 onChange={(e) => { setCNICImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">Route Permit is required!</Typography> : ''}
+                                        {validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">Driver's CNIC image is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
 

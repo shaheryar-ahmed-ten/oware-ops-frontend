@@ -20,11 +20,9 @@ import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { dateToPickerFormat } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { useLocation } from 'react-router';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { upload } from '../../../utils/upload';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+
 
 const useStyles = makeStyles((theme) => ({
     parentContainer: {
@@ -38,9 +36,8 @@ const useStyles = makeStyles((theme) => ({
 function CreateRiderView() {
     const { state } = useLocation()
     const classes = useStyles()
-    // console.log(state)
     const { selectedRide,
-        vehicles, drivers, statuses, areas, companies, productCategories, formErrors, cities } = state ? state : ''
+        vehicles, drivers, statuses, areas, companies, productCategories, formErrors, cities, addRide } = state ? state : ''
 
     const productCategoriesMap = productCategories.reduce(
         (acc, category) => ({ ...acc, [category.id]: category }),
@@ -53,11 +50,13 @@ function CreateRiderView() {
     const [customerId, setCustomerId] = useState('');
     const [vehicleId, setVehicleId] = useState('');
     const [driverId, setDriverId] = useState('');
-    const [pickupZones, setPickupZones] = useState([])
+    const [pickupZones, setPickupZones] = useState([]);
+    const [pickupAreas, setPickupAreas] = useState([]);
     const [pickupCityId, setPickupCityId] = useState('');
     const [pickupCityZoneId, setPickupCityZoneId] = useState('');
     const [pickupAreaId, setPickupAreaId] = useState('');
-    const [dropoffZones, setDropoffZones] = useState([])
+    const [dropoffZones, setDropoffZones] = useState([]);
+    const [dropoffAreas, setDropoffAreas] = useState([]);
     const [dropoffCityId, setDropoffCityId] = useState('');
     const [dropoffCityZoneId, setDropoffCityZoneId] = useState('');
     const [dropoffAreaId, setDropoffAreaId] = useState('');
@@ -70,12 +69,12 @@ function CreateRiderView() {
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState('');
 
-    const [pickupDate, setPickupDate] = useState('');
-    const [pickupTime, setPickupTime] = useState('');
-    const [dropoffDate, setDropoffDate] = useState('');
+    const [pickupDate, setPickupDate] = useState(dateToPickerFormat(new Date()));
+    const [dropoffDate, setDropoffDate] = useState(dateToPickerFormat(new Date()));
+
     const [isActive, setActive] = useState(true);
     const [productManifestId, setProductManifestId] = useState(null)
-    const [productManifest, setProductManifest] = useState(null)
+    const [productManifests, setProductManifests] = useState({})
 
     useEffect(() => {
         if (!!selectedRide) {
@@ -90,7 +89,7 @@ function CreateRiderView() {
             setPickupAreaId(selectedRide.pickupAreaId || '');
             setDropoffAreaId(selectedRide.dropoffAreaId || '');
             setProducts(selectedRide.RideProducts || '');
-            setPickupDate(selectedRide.pickupDate || '');
+            setPickupDate(selectedRide.setPickupDate || '');
             setDropoffDate(selectedRide.dropoffDate || '');
             setActive(!!selectedRide.isActive);
         } else {
@@ -107,8 +106,8 @@ function CreateRiderView() {
             setProductCategoryId('');
             setProductName('');
             setProductQuantity('');
-            setPickupDate('');
-            setDropoffDate('');
+            setPickupDate(dateToPickerFormat(new Date()));
+            setDropoffDate(dateToPickerFormat(new Date()));
             setActive(true);
         }
     }, [selectedRide]);
@@ -116,9 +115,14 @@ function CreateRiderView() {
     useEffect(() => {
         setProductName('');
         setProductQuantity('');
-        setProductManifest(null);
+        // setProductManifests(null);
         setProductCategoryId(null);
     }, [products]);
+
+    useEffect(() => {
+        const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
+        if (vehicle) setDriverId(vehicle.driverId);
+    }, [vehicleId]);
 
     useEffect(() => {
         if (pickupCityId) {
@@ -136,9 +140,25 @@ function CreateRiderView() {
 
     }, [dropoffCityId])
 
-    const handleSubmit = e => {
+    useEffect(() => {
+        if (pickupCityZoneId) {
+            const getZone = pickupZones.find(zone => zone.id == pickupCityZoneId)
+            setPickupAreas(getZone.Areas)
+        }
+    }, [pickupCityZoneId])
 
-        const newRide = {
+    useEffect(() => {
+        if (dropoffCityZoneId) {
+            const getZone = dropoffZones.find(zone => zone.id == dropoffCityZoneId)
+            setDropoffAreas(getZone.Areas)
+        }
+    }, [dropoffCityZoneId])
+
+
+
+
+    const handleSubmit = async e => {
+        let newRide = {
             status,
             vehicleId,
             driverId,
@@ -184,8 +204,11 @@ function CreateRiderView() {
             isNotEmptyArray(products) &&
             isRequired(pickupDate) &&
             isRequired(dropoffDate)) {
-            console.log(newRide)
-            // addRide(newRide);
+            const productManifestsIndexes = Object.keys(productManifests);
+            let fileIds = await upload(productManifestsIndexes.map(index => productManifests[index]), 'ride')
+            const productManifestFiles = productManifestsIndexes.reduce((acc, index, fileIndex) => ({ ...acc, [index]: fileIds[fileIndex] }), {})
+            newRide.products.forEach((product, index) => Object.assign(product, { manifestId: productManifestFiles[index] }))
+            addRide(newRide);
         }
     }
 
@@ -308,7 +331,7 @@ function CreateRiderView() {
                                 onBlur={e => setValidation({ ...validation, pickupAreaId: true })}
                             >
                                 <MenuItem value="" disabled>Select a PickupArea</MenuItem>
-                                {areas.map(area => <MenuItem key={area.id} value={area.id}>
+                                {pickupAreas.map(area => <MenuItem key={area.id} value={area.id}>
                                     {area.name}
                                 </MenuItem>)}
                             </Select>
@@ -386,7 +409,7 @@ function CreateRiderView() {
                                 onBlur={e => setValidation({ ...validation, dropoffAreaId: true })}
                             >
                                 <MenuItem value="" disabled>Select a DropoffArea</MenuItem>
-                                {areas.map(area => <MenuItem key={area.id} value={area.id}>
+                                {dropoffAreas.map(area => <MenuItem key={area.id} value={area.id}>
                                     {area.name}
                                 </MenuItem>)}
                             </Select>
@@ -411,31 +434,43 @@ function CreateRiderView() {
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} spacing={3}>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="setPickupDate"
+                            label="Pickup Date & Time"
+                            placeholder="Pickup Date & Time"
+                            type="datetime-local"
+                            variant="outlined"
+                            value={pickupDate}
+                            onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
+                            onBlur={e => setValidation({ ...validation, setPickupDate: true })}
+                        />
+                        {validation.setPickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
+                    </Grid>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="dropoffDate"
+                            label="Dropoff Date & Time"
+                            placeholder="Dropoff Date & Time"
+                            type="datetime-local"
+                            variant="outlined"
+                            value={dropoffDate}
+                            onChange={e => setDropoffDate(dateToPickerFormat(e.target.value))}
+                            onBlur={e => setValidation({ ...validation, dropoffDate: true })}
+                        />
+                        {validation.dropoffDate && !isRequired(dropoffDate) ? <Typography color="error">Dropoff date is required!</Typography> : ''}
+                    </Grid>
+                </Grid>
+                <Grid container item xs={12} spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h3" className={classes.pageHeading}>Product Details</Typography>
                     </Grid>
-                    <Grid container item xs={12}>
-                        <Grid item sm={12}>
-                            <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                <Button
-                                    variant="contained"
-                                    component="label"
-                                    color={productManifest ? 'primary' : 'default'}
-                                    startIcon={<CloudUploadIcon />}
-                                >
-                                    Product Manifest {productManifest ? 'Uploaded' : ''}
-                                    <input
-                                        type="file"
-                                        hidden
-                                        onChange={(e) => { setProductManifest(e.target.files[0]) }}
-                                    />
-                                </Button>
-                                {validation.productManifest && !isRequired(productManifest) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
-                            </FormControl>
-                        </Grid>
-                    </Grid>
                     <Grid container item xs={12} spacing={3}>
-                        <Grid item sm={3}>
+                        <Grid item xs={3}>
                             <FormControl margin="dense" fullWidth={true} variant="outlined">
                                 <InputLabel>ProductCategory</InputLabel>
                                 <Select
@@ -453,7 +488,7 @@ function CreateRiderView() {
                                 {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''}
                             </FormControl>
                         </Grid>
-                        <Grid item sm={3}>
+                        <Grid item xs={3}>
                             <TextField
                                 fullWidth={true}
                                 margin="dense"
@@ -467,7 +502,7 @@ function CreateRiderView() {
                             />
                             {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
                         </Grid>
-                        <Grid item sm={3}>
+                        <Grid item xs={3}>
                             <TextField
                                 fullWidth={true}
                                 margin="dense"
@@ -481,7 +516,32 @@ function CreateRiderView() {
                             />
                             {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
                         </Grid>
-                        <Grid item sm={3} alignItems="center" justify="center">
+                        <Grid item xs={3}>
+                            <FormControl margin="dense" fullWidth={true} variant="outlined">
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    color={Object.entries(productManifests).length !== 0 ? 'primary' : 'default'}
+                                    startIcon={<CloudUploadIcon />}
+                                >
+                                    Product Manifest {Object.entries(productManifests).length !== 0 ? 'Uploaded' : ''}
+                                    <input
+                                        type="file"
+                                        hidden
+                                        onChange={(e) => {
+                                            setProductManifests({
+                                                ...productManifests,
+                                                [products.length]: e.target.files[0]
+                                            })
+                                        }}
+                                    />
+                                </Button>
+                                {validation.productManifests && !isRequired(productManifests) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                    <Grid container item xs={12} spacing={3} justify="flex-end">
+                        <Grid container item xs={12} justify="flex-end">
                             <Button variant="contained" onClick={() => setProducts([...products, {
                                 // category: productCategories.find(category => category.id == productCategoryId),
                                 categoryId: productCategoryId,
@@ -508,6 +568,7 @@ function CreateRiderView() {
                                             style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                                             Quantity
                                         </TableCell>
+                                        <TableCell></TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -522,6 +583,11 @@ function CreateRiderView() {
                                                 </TableCell>
                                                 <TableCell>
                                                     {product.quantity}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <DeleteIcon color="error" key="delete" onClick={() =>
+                                                        setProducts(products.filter(_product => _product.id != product.id))
+                                                    } />
                                                 </TableCell>
                                             </TableRow>
                                         )
