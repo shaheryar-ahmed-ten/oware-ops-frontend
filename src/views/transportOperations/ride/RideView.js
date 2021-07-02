@@ -319,7 +319,7 @@ export default function RideView() {
         color="primary"
         size="small"
         // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
-        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, zones, cities, companies, productCategories, selectedRide } })}>ADD RIDE</Button>;
+        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, zones, cities, companies, addRide, productCategories, selectedRide } })}>ADD RIDE</Button>;
     const addRideModal = <AddRideView
         formErrors={formErrors}
         key={3}
