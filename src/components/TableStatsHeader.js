@@ -3,6 +3,7 @@ import {
     Paper,
     Typography,
     makeStyles,
+    Button
 } from '@material-ui/core'
 import React from 'react'
 
@@ -22,33 +23,21 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function TableStatsHeader({ stats, filterButtons }) {
+function TableStatsHeader({ stats, setCurrentFilter, currentFilter }) {
     const classes = useStyles();
     return (
         <React.Fragment>
             <Paper elevation={0} square className={classes.root}>
                 <div className={classes.pageHeader}>
-                    <Grid container justify="flex-start" spacing={8}>
+                    <Grid container justify="flex-start" spacing={1}>
                         {
                             stats.map((stat, i) => {
                                 return (
-                                    <Grid item key={i}>
-                                        <Typography variant="h4">{stat.label}</Typography>
-                                        <Typography variant="h4" className={classes.val}>{stat.value}</Typography>
-                                    </Grid>
-                                )
-                            })
-                        }
-
-                    </Grid>
-                </div>
-                <div className={classes.pageHeader}>
-                    <Grid container justify="flex-start" spacing={1}>
-                        {
-                            filterButtons.map((button, i) => {
-                                return (
-                                    <Grid item key={i}>
-                                        {button}
+                                    <Grid item key={stat.key}>
+                                        <Button key={stat.key} variant="contained" onClick={(e) => { setCurrentFilter(stat.key) }}
+                                            color={stat.key === currentFilter ? 'primary' : 'defualt'} >
+                                            {stat.label} ({stat.value})
+                                        </Button >
                                     </Grid>
                                 )
                             })

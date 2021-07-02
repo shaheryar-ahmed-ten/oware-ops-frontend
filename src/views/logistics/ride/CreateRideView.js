@@ -33,12 +33,32 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 600
     }
 }))
-function CreateRiderView() {
+function CreateRideView() {
     const { state } = useLocation()
     const classes = useStyles()
-    const { selectedRide,
-        vehicles, drivers, statuses, areas, companies, productCategories, formErrors, cities, addRide } = state ? state : ''
-
+    const {
+        selectedRide,
+        vehicles,
+        drivers,
+        statuses,
+        areas,
+        companies,
+        productCategories,
+        formErrors,
+        cities,
+        addRide
+    } = state ? state : {
+        selectedRide: null,
+        vehicles: [],
+        drivers: [],
+        statuses: [],
+        areas: [],
+        companies: [],
+        productCategories: [],
+        formErrors: [],
+        cities: [],
+        addRide: null
+    };
     const productCategoriesMap = productCategories.reduce(
         (acc, category) => ({ ...acc, [category.id]: category }),
         {});
@@ -73,7 +93,6 @@ function CreateRiderView() {
     const [dropoffDate, setDropoffDate] = useState(dateToPickerFormat(new Date()));
 
     const [isActive, setActive] = useState(true);
-    const [productManifestId, setProductManifestId] = useState(null)
     const [productManifests, setProductManifests] = useState({})
 
     useEffect(() => {
@@ -115,7 +134,6 @@ function CreateRiderView() {
     useEffect(() => {
         setProductName('');
         setProductQuantity('');
-        // setProductManifests(null);
         setProductCategoryId(null);
     }, [products]);
 
@@ -444,7 +462,8 @@ function CreateRiderView() {
                             type="datetime-local"
                             variant="outlined"
                             value={pickupDate}
-                            minutesStep={15}
+                            minuteStep={15}
+                            inputProps={{ minutesStep: 15 }}
                             onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
                             onBlur={e => setValidation({ ...validation, setPickupDate: true })}
                         />
@@ -546,7 +565,6 @@ function CreateRiderView() {
                             <Button variant="contained" onClick={() => setProducts([...products, {
                                 // category: productCategories.find(category => category.id == productCategoryId),
                                 categoryId: productCategoryId,
-                                manifestId: productManifestId,
                                 name: productName,
                                 quantity: productQuantity
                             }])} color="primary">Add Product</Button>
@@ -611,4 +629,4 @@ function CreateRiderView() {
     )
 }
 
-export default CreateRiderView
+export default CreateRideView

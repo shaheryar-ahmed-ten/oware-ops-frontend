@@ -19,10 +19,10 @@ import ProductOutwardView from '../src/views/operations/productOutward/ProductOu
 import InventoryView from '../src/views/reporting/inventory/InventoryView';
 import ExportView from '../src/views/reporting/exports/ExportView';
 import { checkPermission } from './utils/auth';
-import DriverView from './views/transportOperations/driver/DriverView';
-import VehicleView from './views/transportOperations/vehicle/VehicleView';
-import RideView from './views/transportOperations/ride/RideView';
-import CreateRiderView from './views/transportOperations/ride/CreateRiderView';
+import DriverView from './views/logistics/driver/DriverView';
+import VehicleView from './views/logistics/vehicle/VehicleView';
+import RideView from './views/logistics/ride/RideView';
+import CreateRideView from './views/logistics/ride/CreateRideView';
 
 
 const routes = (user) => [
@@ -109,7 +109,7 @@ const routes = (user) => [
       },
       {
         path: 'ride/create',
-        element: <CreateRiderView />
+        element: <CreateRideView />
       }
     ]
   },

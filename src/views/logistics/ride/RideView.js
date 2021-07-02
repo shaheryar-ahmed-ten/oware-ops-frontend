@@ -171,7 +171,23 @@ export default function RideView() {
         className: '',
         format: (value, entity) =>
             [
-                <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+                <EditIcon key="edit" onClick={() => navigate('create', {
+                    // state: {
+                    //     vehicles,
+                    //     formErrors,
+                    //     vehicles,
+                    //     drivers,
+                    //     statuses,
+                    //     areas,
+                    //     zones,
+                    //     cities,
+                    //     companies,
+                    //     addRide,
+                    //     productCategories,
+                    //     selectedRide
+                    // }
+                })}
+                />,
                 // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
             ]
     }];
@@ -314,12 +330,26 @@ export default function RideView() {
         </Select>
     </FormControl >
     const addRideButton = <Button
-        key={2}
         variant="contained"
         color="primary"
         size="small"
         // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
-        onClick={() => navigate('/logistics/ride/create', { state: { vehicles, formErrors, key: 3, vehicles, drivers, statuses, areas, zones, cities, companies, addRide, productCategories, selectedRide } })}>ADD RIDE</Button>;
+        onClick={() => navigate('create', {
+            state: {
+                // vehicles,
+                // formErrors,
+                // vehicles,
+                // drivers,
+                // statuses,
+                // areas,
+                // zones,
+                // cities,
+                // companies,
+                // addRide,
+                // productCategories,
+                // selectedRide
+            }
+        })}>ADD RIDE</Button>;
     const addRideModal = <AddRideView
         formErrors={formErrors}
         key={3}
@@ -344,12 +374,6 @@ export default function RideView() {
         title={"Ride"}
     />
 
-    const filterButtons = Object.keys(filters).map(key =>
-        <Button key={key} variant="contained" onClick={(e) => { setCurrentFilter(key) }}
-            color={key === currentFilter ? 'primary' : 'defualt'} >
-            {filters[key]}
-        </Button >
-    );
     const topHeaderButtons = [addRideButton, deleteRideModal];
     const headerButtons = [searchInput];
 
@@ -357,7 +381,7 @@ export default function RideView() {
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
                 <TableHeader title="Rides" buttons={topHeaderButtons} />
-                <TableStatsHeader stats={stats} filterButtons={filterButtons} />
+                <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} />
                 <TableHeader title={filterDropdown} buttons={headerButtons} />
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
