@@ -172,20 +172,20 @@ export default function RideView() {
         format: (value, entity) =>
             [
                 <EditIcon key="edit" onClick={() => navigate('create', {
-                    // state: {
-                    //     vehicles,
-                    //     formErrors,
-                    //     vehicles,
-                    //     drivers,
-                    //     statuses,
-                    //     areas,
-                    //     zones,
-                    //     cities,
-                    //     companies,
-                    //     addRide,
-                    //     productCategories,
-                    //     selectedRide
-                    // }
+                    state: {
+                        vehicles,
+                        formErrors,
+                        vehicles,
+                        drivers,
+                        statuses,
+                        areas,
+                        zones,
+                        cities,
+                        companies,
+                        addRide,
+                        productCategories,
+                        selectedRide
+                    }
                 })}
                 />,
                 // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
@@ -336,18 +336,18 @@ export default function RideView() {
         // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
         onClick={() => navigate('create', {
             state: {
-                // vehicles,
-                // formErrors,
-                // vehicles,
-                // drivers,
-                // statuses,
-                // areas,
-                // zones,
-                // cities,
-                // companies,
-                // addRide,
-                // productCategories,
-                // selectedRide
+                vehicles,
+                formErrors,
+                vehicles,
+                drivers,
+                statuses,
+                areas,
+                zones,
+                cities,
+                companies,
+                addRide,
+                productCategories,
+                selectedRide
             }
         })}>ADD RIDE</Button>;
     const addRideModal = <AddRideView

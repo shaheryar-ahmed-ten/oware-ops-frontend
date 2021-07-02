@@ -89,6 +89,11 @@ function CreateRideView() {
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState('');
 
+    const [price, setPrice] = useState();
+    const [cost, setCost] = useState();
+    const [customerDiscount, setCustomerDiscount] = useState();
+    const [driverIncentive, setDriverIncentive] = useState();
+
     const [pickupDate, setPickupDate] = useState(dateToPickerFormat(new Date()));
     const [dropoffDate, setDropoffDate] = useState(dateToPickerFormat(new Date()));
 
@@ -187,6 +192,10 @@ function CreateRideView() {
             dropoffAreaId,
             cancellationReason,
             cancellationComment,
+            price,
+            cost,
+            customerDiscount,
+            driverIncentive,
             products,
             pickupDate,
             dropoffDate,
@@ -204,6 +213,10 @@ function CreateRideView() {
             dropoffAreaId: true,
             cancellationReason: true,
             cancellationComment: true,
+            price: true,
+            cost: true,
+            customerDiscount: true,
+            driverIncentive: true,
             products: true,
             pickupDate: true,
             dropoffDate: true,
@@ -219,6 +232,10 @@ function CreateRideView() {
             isRequired(dropoffAreaId) &&
             (status != 'CANCELLED' || isRequired(cancellationReason)) &&
             (status != 'CANCELLED' || isRequired(cancellationComment)) &&
+            isRequired(price) &&
+            isRequired(cost) &&
+            isRequired(customerDiscount) &&
+            isRequired(driverIncentive) &&
             isNotEmptyArray(products) &&
             isRequired(pickupDate) &&
             isRequired(dropoffDate)) {
@@ -456,18 +473,17 @@ function CreateRideView() {
                         <TextField
                             fullWidth={true}
                             margin="dense"
-                            id="setPickupDate"
+                            id="pickupDate"
                             label="Pickup Date & Time"
                             placeholder="Pickup Date & Time"
                             type="datetime-local"
                             variant="outlined"
                             value={pickupDate}
                             minuteStep={15}
-                            inputProps={{ minutesStep: 15 }}
                             onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
-                            onBlur={e => setValidation({ ...validation, setPickupDate: true })}
+                            onBlur={e => setValidation({ ...validation, pickupDate: true })}
                         />
-                        {validation.setPickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
+                        {validation.pickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
                     </Grid>
                     <Grid item sm={6}>
                         <TextField
@@ -483,6 +499,72 @@ function CreateRideView() {
                             onBlur={e => setValidation({ ...validation, dropoffDate: true })}
                         />
                         {validation.dropoffDate && !isRequired(dropoffDate) ? <Typography color="error">Dropoff date is required!</Typography> : ''}
+                    </Grid>
+                </Grid>
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="price"
+                            label="Price"
+                            placeholder="Price"
+                            type="number"
+                            variant="outlined"
+                            value={price}
+                            minuteStep={15}
+                            onChange={e => setPrice(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, price: true })}
+                        />
+                        {validation.price && !isRequired(price) ? <Typography color="error">Price is required!</Typography> : ''}
+                    </Grid>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="cost"
+                            label="Cost"
+                            placeholder="Cost"
+                            type="number"
+                            variant="outlined"
+                            value={cost}
+                            onChange={e => setCost(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, cost: true })}
+                        />
+                        {validation.cost && !isRequired(cost) ? <Typography color="error">Cost is required!</Typography> : ''}
+                    </Grid>
+                </Grid>
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="customerDiscount"
+                            label="Customer discount"
+                            placeholder="Customer discount"
+                            type="number"
+                            variant="outlined"
+                            value={customerDiscount}
+                            minuteStep={15}
+                            onChange={e => setCustomerDiscount(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, customerDiscount: true })}
+                        />
+                        {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">customerDiscount is required!</Typography> : ''}
+                    </Grid>
+                    <Grid item sm={6}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="driverIncentive"
+                            label="Driver incentive"
+                            placeholder="Driver incentive"
+                            type="number"
+                            variant="outlined"
+                            value={driverIncentive}
+                            onChange={e => setDriverIncentive(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, driverIncentive: true })}
+                        />
+                        {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver incentive is required!</Typography> : ''}
                     </Grid>
                 </Grid>
                 <Grid container item xs={12} spacing={3}>

@@ -36,7 +36,11 @@ function TableStatsHeader({ stats, setCurrentFilter, currentFilter }) {
                                     <Grid item key={stat.key}>
                                         <Button key={stat.key} variant="contained" onClick={(e) => { setCurrentFilter(stat.key) }}
                                             color={stat.key === currentFilter ? 'primary' : 'defualt'} >
-                                            {stat.label} ({stat.value})
+                                            {stat.label}
+                                            &nbsp;
+                                            <strong>
+                                                ({stat.value})
+                                            </strong>
                                         </Button >
                                     </Grid>
                                 )
