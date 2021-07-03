@@ -95,7 +95,7 @@ export default function RideView() {
         label: 'Driver',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.Driver.name
+        format: (value, entity) => entity.Driver ? entity.Driver.name : ''
     }, {
         id: 'vehicleId',
         label: 'Vehicle',
@@ -107,19 +107,21 @@ export default function RideView() {
         label: 'Vendor',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.Driver.Vendor.name
+        format: (value, entity) => entity.Driver ? entity.Driver.Vendor.name : ''
     }, {
         id: 'PickupArea',
         label: 'Pickup Area',
         minWidth: 'auto',
         className: '',
         format: (value, entity) => `${entity.PickupArea.name}, ${entity.PickupArea.Zone.name}, ${entity.PickupArea.Zone.City.name}`
-    }, {
-        id: 'pickupAddress',
-        label: 'Pickup Address',
-        minWidth: 'auto',
-        className: ''
-    }, {
+    },
+    //  {
+    //     id: 'pickupAddress',
+    //     label: 'Pickup Address',
+    //     minWidth: 'auto',
+    //     className: ''
+    // },
+    {
         id: 'pickupDate',
         label: 'Pickup date',
         minWidth: 'auto',
@@ -131,23 +133,25 @@ export default function RideView() {
         minWidth: 'auto',
         className: '',
         format: (value, entity) => `${entity.DropoffArea.name}, ${entity.DropoffArea.Zone.name}, ${entity.DropoffArea.Zone.City.name}`
-    }, {
-        id: 'dropoffAddress',
-        label: 'Dropoff Address',
-        minWidth: 'auto',
-        className: ''
-    }, {
+    },
+    //  {
+    //     id: 'dropoffAddress',
+    //     label: 'Dropoff Address',
+    //     minWidth: 'auto',
+    //     className: ''
+    // },
+    {
         id: 'dropoffDate',
         label: 'Dropoff date',
         minWidth: 'auto',
         className: '',
         format: dateFormat
     }, {
-        id: 'RideProducts',
-        label: 'Product Category',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => value.length
+        // id: 'RideProducts',
+        // label: 'Product Category',
+        // minWidth: 'auto',
+        // className: '',
+        // format: (value, entity) => value.length
         // }, {
         //     id: 'product.Category',
         //     label: 'Product Category',
@@ -173,18 +177,7 @@ export default function RideView() {
             [
                 <EditIcon key="edit" onClick={() => navigate('create', {
                     state: {
-                        vehicles,
-                        formErrors,
-                        vehicles,
-                        drivers,
-                        statuses,
-                        areas,
-                        zones,
-                        cities,
-                        companies,
-                        addRide,
-                        productCategories,
-                        selectedRide
+                        selectedRide: entity
                     }
                 })}
                 />,
@@ -266,6 +259,7 @@ export default function RideView() {
         getStats();
         axios.get(getURL('/ride'), { params: { page, search: searchKeyword, status: currentFilter } })
             .then(res => {
+                console.log(res)
                 setPageCount(res.data.pages)
                 setRides(res.data.data)
             });
@@ -334,22 +328,7 @@ export default function RideView() {
         color="primary"
         size="small"
         // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
-        onClick={() => navigate('create', {
-            state: {
-                vehicles,
-                formErrors,
-                vehicles,
-                drivers,
-                statuses,
-                areas,
-                zones,
-                cities,
-                companies,
-                addRide,
-                productCategories,
-                selectedRide
-            }
-        })}>ADD RIDE</Button>;
+        onClick={() => navigate('/logistics/ride/create')}> ADD RIDE</Button >;
     const addRideModal = <AddRideView
         formErrors={formErrors}
         key={3}

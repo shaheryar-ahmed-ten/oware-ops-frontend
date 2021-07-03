@@ -17,11 +17,13 @@ import {
     TableCell
 } from '@material-ui/core'
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
-import { dateToPickerFormat } from '../../../utils/common';
+import { dateToPickerFormat, getURL } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { useLocation } from 'react-router';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import axios from 'axios';
+import { Alert } from '@material-ui/lab';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,30 +37,46 @@ const useStyles = makeStyles((theme) => ({
 }))
 function CreateRideView() {
     const { state } = useLocation()
+    const navigate = useNavigate()
     const classes = useStyles()
-    const {
-        selectedRide,
-        vehicles,
-        drivers,
-        statuses,
-        areas,
-        companies,
-        productCategories,
-        formErrors,
-        cities,
-        addRide
-    } = state ? state : {
-        selectedRide: null,
-        vehicles: [],
-        drivers: [],
-        statuses: [],
-        areas: [],
-        companies: [],
-        productCategories: [],
-        formErrors: [],
-        cities: [],
-        addRide: null
+    // const {
+    //     selectedRide
+    // } = state ? state : {
+    //     selectedRide: null,
+    // };
+
+    const [selectedRide, setSelectedRide] = useState(state ? state.selectedRide : null)
+    const [vehicles, setVehicles] = useState([])
+    const [drivers, setDrivers] = useState([])
+    const [statuses, setStatuses] = useState([])
+    const [areas, setAreas] = useState([])
+    const [companies, setCompanies] = useState([])
+    const [productCategories, setProductCategories] = useState([])
+    const [formErrors, setFormErrors] = useState([])
+    const [cities, setCities] = useState([])
+
+    useEffect(() => {
+        getRelations()
+    }, [])
+
+    const addRide = data => {
+        let apiPromise = null;
+        if (!selectedRide) apiPromise = axios.post(getURL('/ride'), data);
+        else apiPromise = axios.put(getURL(`/ride/${selectedRide.id}`), data);
+        apiPromise.then(res => {
+            if (!res.data.success) {
+                setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+                return
+            }
+            navigate('/logistics/ride')
+            // setShowMessage({
+            //     message: "New ride has been created."
+            // })
+            // closeAddRideView(false);
+            // getRides();
+        });
     };
+
     const productCategoriesMap = productCategories.reduce(
         (acc, category) => ({ ...acc, [category.id]: category }),
         {});
@@ -100,40 +118,64 @@ function CreateRideView() {
     const [isActive, setActive] = useState(true);
     const [productManifests, setProductManifests] = useState({})
 
+    const getRelations = () => {
+        axios.get(getURL('/ride/relations'))
+            .then(res => {
+                setVehicles(res.data.vehicles);
+                setDrivers(res.data.drivers);
+                setStatuses(res.data.statuses);
+                setAreas(res.data.areas);
+                setCities(res.data.cities);
+                setCompanies(res.data.companies);
+                setProductCategories(res.data.productCategories);
+            });
+    };
+
+
     useEffect(() => {
         if (!!selectedRide) {
             setStatus(selectedRide.status || '');
-            setVehicleId(selectedRide.vehicleId || '');
-            setDriverId(selectedRide.driverId || '');
+            setVehicleId(selectedRide.Vehicle.id || '');
+            setDriverId(selectedRide.Driver.id || '');
             setPickupAddress(selectedRide.pickupAddress || '');
             setDropoffAddress(selectedRide.dropoffAddress || '');
-            setCustomerId(selectedRide.customerId || '');
+            setCustomerId(selectedRide.Customer.id || '');
             setCancellationComment(selectedRide.cancellationComment || '');
             setCancellationReason(selectedRide.cancellationReason || '');
-            setPickupAreaId(selectedRide.pickupAreaId || '');
-            setDropoffAreaId(selectedRide.dropoffAreaId || '');
+            setPickupCityId(selectedRide.PickupArea.Zone.City.id || '');
+            setPickupCityZoneId(selectedRide.PickupArea.Zone.id || '');
+            setPickupAreaId(selectedRide.PickupArea.id || '');
+            setDropoffCityId(selectedRide.DropoffArea.Zone.City.id || '');
+            setDropoffCityZoneId(selectedRide.DropoffArea.Zone.id || '');
+            setDropoffAreaId(selectedRide.DropoffArea.id || '');
             setProducts(selectedRide.RideProducts || '');
-            setPickupDate(selectedRide.setPickupDate || '');
-            setDropoffDate(selectedRide.dropoffDate || '');
+            setPickupDate(dateToPickerFormat(selectedRide.pickupDate) || '');
+            setDropoffDate(dateToPickerFormat(selectedRide.dropoffDate) || '');
             setActive(!!selectedRide.isActive);
-        } else {
-            setStatus('');
-            setVehicleId('');
-            setDriverId('');
-            setPickupAddress('');
-            setDropoffAddress('');
-            setCustomerId('');
-            setCancellationComment('');
-            setCancellationReason('');
-            setPickupAreaId('');
-            setDropoffAreaId('');
-            setProductCategoryId('');
-            setProductName('');
-            setProductQuantity('');
-            setPickupDate(dateToPickerFormat(new Date()));
-            setDropoffDate(dateToPickerFormat(new Date()));
-            setActive(true);
+            setPrice(selectedRide.price || '');
+            setCost(selectedRide.cost || '');
+            setCustomerDiscount(selectedRide.customerDiscount || '');
+            setDriverIncentive(selectedRide.driverIncentive || '');
+
         }
+        //  else {
+        //     setStatus('');
+        //     setVehicleId('');
+        //     setDriverId('');
+        //     setPickupAddress('');
+        //     setDropoffAddress('');
+        //     setCustomerId('');
+        //     setCancellationComment('');
+        //     setCancellationReason('');
+        //     setPickupAreaId('');
+        //     setDropoffAreaId('');
+        //     setProductCategoryId('');
+        //     setProductName('');
+        //     setProductQuantity('');
+        //     setPickupDate(dateToPickerFormat(new Date()));
+        //     setDropoffDate(dateToPickerFormat(new Date()));
+        //     setActive(true);
+        // }
     }, [selectedRide]);
 
     useEffect(() => {
@@ -150,32 +192,36 @@ function CreateRideView() {
     useEffect(() => {
         if (pickupCityId) {
             const getCity = cities.find(city => city.id == pickupCityId)
-            setPickupZones(getCity.Zones)
+            if (getCity)
+                setPickupZones(getCity.Zones)
         }
 
-    }, [pickupCityId])
+    }, [pickupCityId, cities])
 
     useEffect(() => {
         if (dropoffCityId) {
             const getCity = cities.find(city => city.id == pickupCityId)
-            setDropoffZones(getCity.Zones)
+            if (getCity)
+                setDropoffZones(getCity.Zones)
         }
 
-    }, [dropoffCityId])
+    }, [dropoffCityId, cities])
 
     useEffect(() => {
         if (pickupCityZoneId) {
             const getZone = pickupZones.find(zone => zone.id == pickupCityZoneId)
-            setPickupAreas(getZone.Areas)
+            if (getZone)
+                setPickupAreas(getZone.Areas)
         }
-    }, [pickupCityZoneId])
+    }, [pickupCityZoneId, pickupZones])
 
     useEffect(() => {
         if (dropoffCityZoneId) {
             const getZone = dropoffZones.find(zone => zone.id == dropoffCityZoneId)
-            setDropoffAreas(getZone.Areas)
+            if (getZone)
+                setDropoffAreas(getZone.Areas)
         }
-    }, [dropoffCityZoneId])
+    }, [dropoffCityZoneId, dropoffZones])
 
 
 
@@ -222,9 +268,9 @@ function CreateRideView() {
             dropoffDate: true,
             isActive: true
         });
-        if (isRequired(status) &&
-            isRequired(vehicleId) &&
-            (status == 'UNASSIGNED' || isRequired(driverId)) &&
+
+        if (isRequired(vehicleId) &&
+            (status === 'UNASSIGNED' || isRequired(driverId)) &&
             isRequired(pickupAddress) &&
             isRequired(dropoffAddress) &&
             isRequired(customerId) &&
@@ -587,7 +633,7 @@ function CreateRideView() {
                                     <MenuItem value="" disabled>Select a product category</MenuItem>
                                     {productCategories.map(productCategory => <MenuItem key={productCategory.id} value={productCategory.id}>{productCategory.name}</MenuItem>)}
                                 </Select>
-                                {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''}
+                                {/* {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''} */}
                             </FormControl>
                         </Grid>
                         <Grid item xs={3}>
@@ -602,7 +648,7 @@ function CreateRideView() {
                                 onChange={e => setProductName(e.target.value)}
                                 onBlur={e => setValidation({ ...validation, productName: true })}
                             />
-                            {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
+                            {/* {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''} */}
                         </Grid>
                         <Grid item xs={3}>
                             <TextField
@@ -616,7 +662,7 @@ function CreateRideView() {
                                 onChange={e => setProductQuantity(e.target.value)}
                                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
                             />
-                            {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
+                            {/* {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''} */}
                         </Grid>
                         <Grid item xs={3}>
                             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -677,7 +723,7 @@ function CreateRideView() {
                                         return (
                                             <TableRow hover role="checkbox">
                                                 <TableCell>
-                                                    {productCategoriesMap[product.categoryId].name}
+                                                    {productCategoriesMap[product.categoryId] ? productCategoriesMap[product.categoryId].name : ''}
                                                 </TableCell>
                                                 <TableCell>
                                                     {product.name}
