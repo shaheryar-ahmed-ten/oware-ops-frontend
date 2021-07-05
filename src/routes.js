@@ -22,7 +22,7 @@ import { checkPermission } from './utils/auth';
 import DriverView from './views/logistics/driver/DriverView';
 import VehicleView from './views/logistics/vehicle/VehicleView';
 import RideView from './views/logistics/ride/RideView';
-import CreateRideView from './views/logistics/ride/CreateRideView';
+import AddRideView from './views/logistics/ride/AddRideView';
 
 
 const routes = (user) => [
@@ -109,7 +109,7 @@ const routes = (user) => [
       },
       {
         path: 'ride/create',
-        element: <CreateRideView />
+        element: <AddRideView />
       }
     ]
   },
