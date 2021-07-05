@@ -714,6 +714,10 @@ function AddRideView() {
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Quantity
                                         </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Manifest
+                                        </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
@@ -729,6 +733,11 @@ function AddRideView() {
                         </TableCell>
                         <TableCell>
                           {product.quantity}
+                        </TableCell>
+                        <TableCell>
+                          {product.manifestId && product.Manifest ?
+                            <a target="_blank" href={getURL('/preview/' + product.manifestId)}>{product.Manifest.originalName}</a>
+                            : ''}
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() =>
