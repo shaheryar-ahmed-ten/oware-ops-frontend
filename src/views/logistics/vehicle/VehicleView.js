@@ -71,6 +71,24 @@ function VehicleView() {
         format: (value, entity) => entity.Car ? entity.Car.CarMake.name + " " + entity.Car.CarModel.name : ''
     },
     {
+        id: 'RoutePermit',
+        label: 'Route Permit',
+        minWidth: 'auto',
+        className: '',
+        format: (value, entity) => value ?
+            <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
+            : ''
+    },
+    {
+        id: 'RunningPaper',
+        label: 'Running Paper',
+        minWidth: 'auto',
+        className: '',
+        format: (value, entity) => value ?
+            <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
+            : ''
+    },
+    {
         id: 'actions',
         label: 'Actions',
         minWidth: 'auto',

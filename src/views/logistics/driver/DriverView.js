@@ -64,6 +64,24 @@ function DriverView() {
     format: (value, entity) => entity.Vendor.name
   },
   {
+    id: 'DrivingLicense',
+    label: 'Driving License',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => value ?
+      <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
+      : ''
+  },
+  {
+    id: 'Cnic',
+    label: 'CNIC',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => value ?
+      <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
+      : ''
+  },
+  {
     id: 'actions',
     label: '',
     minWidth: 'auto',
