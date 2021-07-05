@@ -149,9 +149,7 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
-      console.log(productManifests)
       const productManifestsIndexes = Object.keys(productManifests);
-      console.log(productManifestsIndexes)
       let fileIds = await upload(productManifestsIndexes.map(index => productManifests[index]), 'ride')
       const productManifestFiles = productManifestsIndexes.reduce((acc, index, fileIndex) => ({ ...acc, [index]: fileIds[fileIndex] }), {})
       newRide.products.forEach((product, index) => Object.assign(product, { manifestId: productManifestFiles[index] }))
@@ -443,8 +441,6 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
                       type="file"
                       hidden
                       onChange={(e) => {
-                        console.log(products.length, e.target.files[0]);
-                        console.log(productManifests);
                         setProductManifests({
                           ...productManifests,
                           [products.length]: e.target.files[0]

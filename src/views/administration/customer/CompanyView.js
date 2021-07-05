@@ -212,7 +212,7 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>ADD CUSTOMER</Button>;
+    onClick={() => setAddCompanyViewOpen(true)}>ADD {relationType}</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
