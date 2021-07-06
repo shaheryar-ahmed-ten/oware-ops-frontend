@@ -89,7 +89,7 @@ export default function BrandView() {
 
   const addBrand = data => {
     let apiPromise = null;
-    if (!selectedBrand) apiPromise = axios.post(getURL('/brand'), data);
+    if (!selectedBrand) apiPromise = axios.post(getURL('brand'), data);
     else apiPromise = axios.put(getURL(`/brand/${selectedBrand.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -137,7 +137,7 @@ export default function BrandView() {
   }
 
   const _getBrands = (page, searchKeyword) => {
-    axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setBrands(res.data.data)

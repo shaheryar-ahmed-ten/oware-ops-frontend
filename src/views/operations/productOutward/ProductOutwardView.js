@@ -148,7 +148,7 @@ export default function ProductOutwardView() {
 
   const addProductOutward = data => {
     let apiPromise = null;
-    if (!selectedProductOutward) apiPromise = axios.post(getURL('/product-outward'), data);
+    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
     else apiPromise = axios.put(getURL(`/product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -210,7 +210,7 @@ export default function ProductOutwardView() {
   }
 
   const _getProductOutwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-outward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-outward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
@@ -222,7 +222,7 @@ export default function ProductOutwardView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-outward/relations'))
+    axios.get(getURL('product-outward/relations'))
       .then(res => {
         // setting dispatchOrder details and vehicleTypes in local State
         setVehicleTypes((prevState) => res.data.vehicleTypes)

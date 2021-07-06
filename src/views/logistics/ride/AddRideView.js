@@ -61,7 +61,7 @@ function AddRideView() {
 
   const addRide = data => {
     let apiPromise = null;
-    if (!selectedRide) apiPromise = axios.post(getURL('/ride'), data);
+    if (!selectedRide) apiPromise = axios.post(getURL('ride'), data);
     else apiPromise = axios.put(getURL(`/ride/${selectedRide.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -119,7 +119,7 @@ function AddRideView() {
   const [productManifests, setProductManifests] = useState({})
 
   const getRelations = () => {
-    axios.get(getURL('/ride/relations'))
+    axios.get(getURL('ride/relations'))
       .then(res => {
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
@@ -129,6 +129,30 @@ function AddRideView() {
         setCompanies(res.data.companies);
         setProductCategories(res.data.productCategories);
       });
+  };
+
+  const addProduct = () => {
+    setValidation({
+      ...validation,
+      productCategoryId: true,
+      productName: true,
+      productQuantity: true
+    });
+    if (productCategoryId && productName && productQuantity) {
+
+      setProducts([...products, {
+        categoryId: productCategoryId,
+        name: productName,
+        quantity: productQuantity
+      }]);
+      setValidation({
+        ...validation,
+        productCategoryId: false,
+        productName: false,
+        productQuantity: false
+      });
+    }
+
   };
 
 
@@ -318,7 +342,40 @@ function AddRideView() {
               </Select>
               {validation.status && !isRequired(status) ? <Typography color="error">Status is required!</Typography> : ''}
             </FormControl>
-          </Grid>        </Grid>
+          </Grid>
+        </Grid>
+        {status == 'CANCELLED' ?
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={6}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="cancellationReason"
+                label="Cancellation reason"
+                type="text"
+                variant="outlined"
+                value={cancellationReason}
+                onChange={e => setCancellationReason(e.target.value)}
+                onBlur={e => setValidation({ ...validation, cancellationReason: true })}
+              />
+              {validation.cancellationReason && !isRequired(cancellationReason) ? <Typography color="error">Cancellation reason is required!</Typography> : ''}
+            </Grid>
+            <Grid item sm={6}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="cancellationComment"
+                label="Cancellation comment"
+                type="text"
+                variant="outlined"
+                value={cancellationComment}
+                onChange={e => setCancellationComment(e.target.value)}
+                onBlur={e => setValidation({ ...validation, cancellationComment: true })}
+              />
+              {validation.cancellationComment && !isRequired(cancellationComment) ? <Typography color="error">Cancellation comment is required!</Typography> : ''}
+            </Grid>
+          </Grid>
+          : ''}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -552,7 +609,7 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="price"
-              label="Price"
+              label="Price (Rs.)"
               placeholder="Price"
               type="number"
               variant="outlined"
@@ -568,7 +625,7 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="cost"
-              label="Cost"
+              label="Cost (Rs.)"
               placeholder="Cost"
               type="number"
               variant="outlined"
@@ -585,7 +642,7 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="customerDiscount"
-              label="Customer discount"
+              label="Customer discount (Rs.)"
               placeholder="Customer discount"
               type="number"
               variant="outlined"
@@ -594,14 +651,14 @@ function AddRideView() {
               onChange={e => setCustomerDiscount(e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
             />
-            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">customerDiscount is required!</Typography> : ''}
+            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer discount is required!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
               margin="dense"
               id="driverIncentive"
-              label="Driver incentive"
+              label="Driver incentive (Rs.)"
               placeholder="Driver incentive"
               type="number"
               variant="outlined"
@@ -619,7 +676,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <InputLabel>ProductCategory</InputLabel>
+                <InputLabel>Product Category</InputLabel>
                 <Select
                   fullWidth={true}
                   id="productCategoryId"
@@ -632,7 +689,7 @@ function AddRideView() {
                   <MenuItem value="" disabled>Select a product category</MenuItem>
                   {productCategories.map(productCategory => <MenuItem key={productCategory.id} value={productCategory.id}>{productCategory.name}</MenuItem>)}
                 </Select>
-                {/* {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''} */}
+                {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
@@ -647,7 +704,7 @@ function AddRideView() {
                 onChange={e => setProductName(e.target.value)}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
-              {/* {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''} */}
+              {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -661,7 +718,7 @@ function AddRideView() {
                 onChange={e => setProductQuantity(e.target.value)}
                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
               />
-              {/* {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''} */}
+              {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -689,12 +746,11 @@ function AddRideView() {
           </Grid>
           <Grid container item xs={12} spacing={3} justify="flex-end">
             <Grid container item xs={12} justify="flex-end">
-              <Button variant="contained" onClick={() => setProducts([...products, {
-                // category: productCategories.find(category => category.id == productCategoryId),
+              <Button variant="contained" onClick={() => addProduct({
                 categoryId: productCategoryId,
                 name: productName,
                 quantity: productQuantity
-              }])} color="primary">Add Product</Button>
+              })} color="primary">Add Product</Button>
             </Grid>
           </Grid>
           <Grid container item xs={12}>
@@ -722,7 +778,7 @@ function AddRideView() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {products.map(product => {
+                  {products.map((product, index) => {
                     return (
                       <TableRow hover role="checkbox">
                         <TableCell>
@@ -736,12 +792,12 @@ function AddRideView() {
                         </TableCell>
                         <TableCell>
                           {product.manifestId && product.Manifest ?
-                            <a target="_blank" href={getURL('/preview/' + product.manifestId)}>{product.Manifest.originalName}</a>
+                            <a target="_blank" href={getURL('preview', product.manifestId)}>{product.Manifest.originalName}</a>
                             : ''}
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() =>
-                            setProducts(products.filter(_product => _product.id != product.id))
+                            setProducts(products.filter((_product, _index) => _index != index))
                           } />
                         </TableCell>
                       </TableRow>

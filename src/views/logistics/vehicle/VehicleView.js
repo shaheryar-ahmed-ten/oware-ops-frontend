@@ -70,24 +70,24 @@ function VehicleView() {
         className: '',
         format: (value, entity) => entity.Car ? entity.Car.CarMake.name + " " + entity.Car.CarModel.name : ''
     },
-    {
-        id: 'RoutePermit',
-        label: 'Route Permit',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => value ?
-            <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
-            : ''
-    },
-    {
-        id: 'RunningPaper',
-        label: 'Running Paper',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => value ?
-            <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
-            : ''
-    },
+    // {
+    //     id: 'RoutePermit',
+    //     label: 'Route Permit',
+    //     minWidth: 'auto',
+    //     className: '',
+    //     format: (value, entity) => value ?
+    //         <a target="_blank" href={getURL('preview/' + `${value.id}`)}>{value.originalName}</a>
+    //         : ''
+    // },
+    // {
+    //     id: 'RunningPaper',
+    //     label: 'Running Paper',
+    //     minWidth: 'auto',
+    //     className: '',
+    //     format: (value, entity) => value ?
+    //         <a target="_blank" href={getURL('preview/' + `${value.id}`)}>{value.originalName}</a>
+    //         : ''
+    // },
     {
         id: 'actions',
         label: 'Actions',
@@ -117,7 +117,7 @@ function VehicleView() {
 
     const addVehicle = (data) => {
         let apiPromise = null;
-        if (!selectedVehicle) apiPromise = axios.post(getURL('/vehicle'), data);
+        if (!selectedVehicle) apiPromise = axios.post(getURL('vehicle'), data);
         else apiPromise = axios.put(getURL(`/vehicle/${selectedVehicle.id}`), data);
         apiPromise.then(res => {
             if (!res.data.success) {
@@ -176,7 +176,7 @@ function VehicleView() {
         handleClose={closeVehicleDetailsView} />;
 
     const _getVehicles = (page, searchKeyword) => {
-        axios.get(getURL('/vehicle'), { params: { page, search: searchKeyword } })
+        axios.get(getURL('vehicle'), { params: { page, search: searchKeyword } })
             .then(res => {
                 setPageCount(res.data.pages)
                 setVehicles(res.data.data)
@@ -188,7 +188,7 @@ function VehicleView() {
     }, DEBOUNCE_CONST), []);
 
     const getRelations = () => {
-        axios.get(getURL('/vehicle/relations'))
+        axios.get(getURL('vehicle/relations'))
             .then(res => {
                 setVendors(res.data.vendors)
                 setDrivers(res.data.drivers)

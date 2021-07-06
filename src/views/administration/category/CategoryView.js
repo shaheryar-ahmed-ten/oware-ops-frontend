@@ -84,7 +84,7 @@ export default function CategoryView() {
 
   const addCategory = data => {
     let apiPromise = null;
-    if (!selectedCategory) apiPromise = axios.post(getURL('/category'), data);
+    if (!selectedCategory) apiPromise = axios.post(getURL('category'), data);
     else apiPromise = axios.put(getURL(`/category/${selectedCategory.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -132,7 +132,7 @@ export default function CategoryView() {
   }
 
   const _getCategories = (page, searchKeyword) => {
-    axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages);
         setCategories(res.data.data);

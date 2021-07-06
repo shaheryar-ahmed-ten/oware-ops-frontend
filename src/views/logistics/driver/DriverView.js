@@ -44,7 +44,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: 7,
     height: 30,
   },
-}))
+}));
+
 function DriverView() {
   const classes = useStyles();
   const [pageCount, setPageCount] = useState(1);
@@ -63,24 +64,24 @@ function DriverView() {
     className: '',
     format: (value, entity) => entity.Vendor.name
   },
-  {
-    id: 'DrivingLicense',
-    label: 'Driving License',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => value ?
-      <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
-      : ''
-  },
-  {
-    id: 'Cnic',
-    label: 'CNIC',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => value ?
-      <a target="_blank" href={getURL('/preview/' + `${value.id}`)}>{value.originalName}</a>
-      : ''
-  },
+  // {
+  //   id: 'DrivingLicense',
+  //   label: 'Driving License',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => value ?
+  //     <a target="_blank" href={getURL('preview/' + `${value.id}`)}>{value.originalName}</a>
+  //     : ''
+  // },
+  // {
+  //   id: 'Cnic',
+  //   label: 'CNIC',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => value ?
+  //     <a target="_blank" href={getURL('preview/' + `${value.id}`)}>{value.originalName}</a>
+  //     : ''
+  // },
   {
     id: 'actions',
     label: '',
@@ -106,7 +107,7 @@ function DriverView() {
 
   const addDriver = data => {
     let apiPromise = null;
-    if (!selectedDriver) apiPromise = axios.post(getURL('/driver'), data);
+    if (!selectedDriver) apiPromise = axios.post(getURL('driver'), data);
     else apiPromise = axios.put(getURL(`/driver/${selectedDriver.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -115,7 +116,7 @@ function DriverView() {
       }
       setShowMessage({
         message: "New driver has been created."
-      })
+      });
       closeAddDriverView(false);
       getDrivers();
     });
@@ -167,7 +168,7 @@ function DriverView() {
     handleClose={closeDriverDetailsView} />;
 
   const _getDrivers = (page, searchKeyword) => {
-    axios.get(getURL('/driver'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('driver'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setDrivers(res.data.data)
@@ -179,7 +180,7 @@ function DriverView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/driver/relations'))
+    axios.get(getURL('driver/relations'))
       .then(res => {
         setCompanies((prevState) => res.data.companies)
       });

@@ -118,7 +118,7 @@ export default function ProductInwardView() {
 
   const addProductInward = data => {
     let apiPromise = null;
-    if (!selectedProductInward) apiPromise = axios.post(getURL('/product-inward'), data);
+    if (!selectedProductInward) apiPromise = axios.post(getURL('product-inward'), data);
     else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -176,7 +176,7 @@ export default function ProductInwardView() {
   }
 
   const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
@@ -188,7 +188,7 @@ export default function ProductInwardView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-inward/relations'))
+    axios.get(getURL('product-inward/relations'))
       .then(res => {
         setProducts(res.data.products)
         setWarehouses(res.data.warehouses)

@@ -82,7 +82,7 @@ export default function UoMView() {
 
   const addUoM = data => {
     let apiPromise = null;
-    if (!selectedUoM) apiPromise = axios.post(getURL('/uom'), data);
+    if (!selectedUoM) apiPromise = axios.post(getURL('uom'), data);
     else apiPromise = axios.put(getURL(`/uom/${selectedUoM.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -130,7 +130,7 @@ export default function UoMView() {
   }
 
   const _getUoMs = (page, searchKeyword) => {
-    axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('uom'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setUoMs(res.data.data)

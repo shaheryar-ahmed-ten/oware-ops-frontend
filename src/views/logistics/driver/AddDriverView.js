@@ -16,6 +16,7 @@ import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
+import { getURL } from '../../../utils/common';
 
 function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
     const [driverName, setDriverName] = useState('')
@@ -153,7 +154,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                         fullWidth={true}
                                         margin="dense"
                                         id="driverPhone"
-                                        label="Driver Phone"
+                                        label="Phone"
                                         type="text"
                                         variant="outlined"
                                         value={driverPhone}
@@ -161,8 +162,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                         onChange={e => setDriverPhone(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, driverPhone: true })}
                                     />
-                                    {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
-                                    {validation.driverPhone && !isPhone(driverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                                    {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Phone number is required!</Typography> : ''}
+                                    {validation.driverPhone && !isPhone(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
                                 </Grid>
                             </Grid>
                             <Grid container spacing={2}>
@@ -171,7 +172,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                         fullWidth={true}
                                         margin="dense"
                                         id="cnic"
-                                        label="Driver CNICImage"
+                                        label="CNIC"
                                         type="text"
                                         variant="outlined"
                                         value={cnicNumber}
@@ -179,9 +180,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                         onChange={e => setCNICNumber(e.target.value)}
                                         onBlur={e => setValidation({ ...validation, cnicNumber: true })}
                                     />
-                                    {validation.cnicNumber && !isRequired(cnicNumber) ? <Typography color="error">Driver CNICImage number is required!</Typography> : ''}
+                                    {validation.cnicNumber && !isRequired(cnicNumber) ? <Typography color="error">CNIC number is required!</Typography> : ''}
                                 </Grid>
-
                             </Grid>
                             <Grid container spacing={2}>
                                 <Grid item sm={12}>
@@ -212,14 +212,14 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                                             color={CNICImage ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Driver CNIC Image {CNICImage ? 'Uploaded' : ''}
+                                            CNIC Image {CNICImage ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
                                                 onChange={(e) => { setCNICImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">Driver's CNIC image is required!</Typography> : ''}
+                                        {validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">CNIC image is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
 

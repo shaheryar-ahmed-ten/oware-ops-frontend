@@ -128,7 +128,7 @@ export default function UserView() {
   const addUser = data => {
     let apiPromise = null;
     setFormErrors('');
-    if (!selectedUser) apiPromise = axios.post(getURL('/user'), data);
+    if (!selectedUser) apiPromise = axios.post(getURL('user'), data);
     else apiPromise = axios.put(getURL(`/user/${selectedUser.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -176,7 +176,7 @@ export default function UserView() {
   }
 
   const _getUsers = (page, searchKeyword) => {
-    axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('user'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setUsers(res.data.data)
@@ -188,7 +188,7 @@ export default function UserView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/user/relations'))
+    axios.get(getURL('user/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         setRoles(res.data.roles);

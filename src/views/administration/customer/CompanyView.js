@@ -78,12 +78,12 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Contact.email
-  // }, {
-  //   id: 'Contact.phone',
-  //   label: 'Contact Phone',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.Contact.phone
+    // }, {
+    //   id: 'Contact.phone',
+    //   label: 'Contact Phone',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Contact.phone
   }, {
     id: 'isActive',
     label: 'Status',
@@ -128,8 +128,8 @@ export default function CompanyView({ relationType }) {
         return
       }
       setShowMessage({
-        message: "New customer has been created."
-      })
+        message: `${relationType.toLowerCase()} has been ${!!selectedCompany ? 'updated' : 'created'}.`
+      });
       closeAddCompanyView();
       getCompanies();
     });

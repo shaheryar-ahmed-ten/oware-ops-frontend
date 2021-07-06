@@ -128,7 +128,7 @@ export default function ProductView() {
 
   const addProduct = data => {
     let apiPromise = null;
-    if (!selectedProduct) apiPromise = axios.post(getURL('/product'), data);
+    if (!selectedProduct) apiPromise = axios.post(getURL('product'), data);
     else apiPromise = axios.put(getURL(`/product/${selectedProduct.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -176,7 +176,7 @@ export default function ProductView() {
   }
 
   const _getProducts = (page, searchKeyword) => {
-    axios.get(getURL('/product'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProducts(res.data.data)
@@ -188,7 +188,7 @@ export default function ProductView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product/relations'))
+    axios.get(getURL('product/relations'))
       .then(res => {
         setBrands(res.data.brands)
         setUoms(res.data.uoms)
