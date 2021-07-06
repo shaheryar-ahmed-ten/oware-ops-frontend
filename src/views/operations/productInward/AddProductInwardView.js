@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import { useReactToPrint } from 'react-to-print';
+import { Autocomplete } from '@material-ui/lab';
 
 export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -81,7 +82,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
                     <Select
@@ -100,27 +101,24 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-                <Grid item sm={6}>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Product</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="productId"
-                      label="Product"
-                      variant="outlined"
-                      value={productId}
-                      disabled={!!selectedProductInward}
-                      onChange={e => selectProduct(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, productId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a product</MenuItem>
-                      {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                    </Select>
+                    <Autocomplete
+                      id="Product"
+                      options={products}
+                      getOptionLabel={(product) => product.name}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          selectProduct(newValue.id)
+                      }}
+                      renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+                    />
                     {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
               </Grid>
-
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
