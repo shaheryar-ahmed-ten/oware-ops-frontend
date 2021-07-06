@@ -179,11 +179,11 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                             <Grid container spacing={2}>
                                 <Grid item sm={12}>
                                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                                        <InputLabel>Car</InputLabel>
+                                        <InputLabel>Vehicle Type</InputLabel>
                                         <Select
                                             fullWidth={true}
                                             id="modelId"
-                                            label="Model"
+                                            label="Vehicle type"
                                             variant="outlined"
                                             value={carId}
                                             onChange={e => setCarId(e.target.value)}
@@ -193,11 +193,11 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                                 carId && carId !== "" ?
                                                     <MenuItem value={carId} disabled>{carName}</MenuItem>
                                                     :
-                                                    <MenuItem value={""} disabled>Select Car</MenuItem>
+                                                    <MenuItem value={""} disabled>Select vehicle type</MenuItem>
                                             }
                                             {cars.map(car => <MenuItem key={car.id} value={car.id}> {`${car.CarMake.name} ${car.CarModel.name}`} </MenuItem>)}
                                         </Select>
-                                        {validation.carId && !isRequired(carId) ? <Typography color="error">Car is required!</Typography> : ''}
+                                        {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                             </Grid>

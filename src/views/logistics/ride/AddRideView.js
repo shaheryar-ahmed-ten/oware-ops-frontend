@@ -17,7 +17,7 @@ import {
   TableCell
 } from '@material-ui/core'
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
-import { dateToPickerFormat, getURL } from '../../../utils/common';
+import { dateToPickerFormat, getURL, digitize } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
@@ -304,7 +304,14 @@ function AddRideView() {
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h3" className={classes.pageHeading}>Create a Ride</Typography>
+          <Typography variant="h3" className={classes.pageHeading}>
+            {!selectedRide ? 'Create' : 'Edit'} Ride
+          </Typography>
+          {selectedRide &&
+            <Typography variant="p">
+              Ride ID: {digitize(selectedRide.id, 6)}
+            </Typography>
+          }
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
@@ -610,7 +617,7 @@ function AddRideView() {
               margin="dense"
               id="price"
               label="Price (Rs.)"
-              placeholder="Price"
+              placeholder="Price (Rs.)"
               type="number"
               variant="outlined"
               value={price}
@@ -626,7 +633,7 @@ function AddRideView() {
               margin="dense"
               id="cost"
               label="Cost (Rs.)"
-              placeholder="Cost"
+              placeholder="Cost (Rs.)"
               type="number"
               variant="outlined"
               value={cost}
@@ -642,8 +649,8 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="customerDiscount"
-              label="Customer discount (Rs.)"
-              placeholder="Customer discount"
+              label="Customer Discount (Rs.)"
+              placeholder="Customer Discount (Rs.)"
               type="number"
               variant="outlined"
               value={customerDiscount}
@@ -651,22 +658,22 @@ function AddRideView() {
               onChange={e => setCustomerDiscount(e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
             />
-            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer discount is required!</Typography> : ''}
+            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer Discount is required!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
               margin="dense"
               id="driverIncentive"
-              label="Driver incentive (Rs.)"
-              placeholder="Driver incentive"
+              label="Driver Incentive (Rs.)"
+              placeholder="Driver Incentive (Rs.)"
               type="number"
               variant="outlined"
               value={driverIncentive}
               onChange={e => setDriverIncentive(e.target.value)}
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
-            {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver incentive is required!</Typography> : ''}
+            {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
