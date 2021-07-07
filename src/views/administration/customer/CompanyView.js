@@ -248,7 +248,7 @@ export default function CompanyView({ relationType }) {
     selectedCompany={selectedCompany}
     open={companyDetailsView}
     handleClose={closeCompanyDetailsView} />;
-  const   headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
+  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
 
   return (
     <Paper className={classes.root}>
