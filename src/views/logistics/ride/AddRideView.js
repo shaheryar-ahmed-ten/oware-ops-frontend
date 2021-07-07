@@ -54,6 +54,7 @@ function AddRideView() {
   const [productCategories, setProductCategories] = useState([]);
   const [formErrors, setFormErrors] = useState([]);
   const [cities, setCities] = useState([]);
+  const [manifestImage, setManifestImage] = useState(null)
 
   useEffect(() => {
     getRelations();
@@ -116,7 +117,6 @@ function AddRideView() {
   const [dropoffDate, setDropoffDate] = useState(dateToPickerFormat(new Date()));
 
   const [isActive, setActive] = useState(true);
-  const [productManifests, setProductManifests] = useState({})
 
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
@@ -291,10 +291,8 @@ function AddRideView() {
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
-      const productManifestsIndexes = Object.keys(productManifests);
-      let fileIds = await upload(productManifestsIndexes.map(index => productManifests[index]), 'ride')
-      const productManifestFiles = productManifestsIndexes.reduce((acc, index, fileIndex) => ({ ...acc, [index]: fileIds[fileIndex] }), {})
-      newRide.products.forEach((product, index) => Object.assign(product, { manifestId: productManifestFiles[index] }))
+      const [manifestId] = await upload([manifestImage], 'ride');
+      newRide.manifestId = manifestId;
       addRide(newRide);
     }
   }
@@ -677,6 +675,26 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
+          <Grid item sm={12}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Button
+                variant="contained"
+                component="label"
+                color={manifestImage ? 'primary' : 'default'}
+                startIcon={<CloudUploadIcon />}
+              >
+                Product Manifest {manifestImage ? 'Uploaded' : ''}
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => { setManifestImage(e.target.files[0]) }}
+                />
+              </Button>
+            </FormControl>
+          </Grid>
+
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h3" className={classes.pageHeading}>Product Details</Typography>
           </Grid>
@@ -729,35 +747,12 @@ function AddRideView() {
             </Grid>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button
-                  variant="contained"
-                  component="label"
-                  color={Object.entries(productManifests).length !== 0 ? 'primary' : 'default'}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Product Manifest {Object.entries(productManifests).length !== 0 ? 'Uploaded' : ''}
-                  <input
-                    type="file"
-                    hidden
-                    onChange={(e) => {
-                      setProductManifests({
-                        ...productManifests,
-                        [products.length]: e.target.files[0]
-                      })
-                    }}
-                  />
-                </Button>
-                {validation.productManifests && !isRequired(productManifests) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
+                <Button variant="contained" onClick={() => addProduct({
+                  categoryId: productCategoryId,
+                  name: productName,
+                  quantity: productQuantity
+                })} color="primary">Add Product</Button>
               </FormControl>
-            </Grid>
-          </Grid>
-          <Grid container item xs={12} spacing={3} justify="flex-end">
-            <Grid container item xs={12} justify="flex-end">
-              <Button variant="contained" onClick={() => addProduct({
-                categoryId: productCategoryId,
-                name: productName,
-                quantity: productQuantity
-              })} color="primary">Add Product</Button>
             </Grid>
           </Grid>
           <Grid container item xs={12}>

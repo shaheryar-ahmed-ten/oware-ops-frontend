@@ -125,7 +125,7 @@ function VehicleView() {
                 return
             }
             setShowMessage({
-                message: "New vehicle has been updated."
+                message: `Vehicle has been ${!selectedVehicle ? 'created' : 'updated'}.`
             })
             closeAddVehicleViewModal(false);
             getVehicles();
