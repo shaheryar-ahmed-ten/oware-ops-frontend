@@ -16,7 +16,6 @@ import { isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
-import { getURL } from '../../../utils/common';
 
 function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
   const [driverName, setDriverName] = useState('')

@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   },
   pageHeading: {
     fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
   }
 }));
 function AddRideView() {
@@ -312,6 +315,11 @@ function AddRideView() {
           }
         </Grid>
         <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Customer & Vehicle</Typography>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <InputLabel>Customer</InputLabel>
@@ -417,6 +425,11 @@ function AddRideView() {
               </Select>
               {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
             </FormControl>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Pickup & Drop-off</Typography>
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -609,6 +622,11 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Cost & Price</Typography>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
@@ -675,28 +693,8 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <Button
-                variant="contained"
-                component="label"
-                color={manifestImage ? 'primary' : 'default'}
-                startIcon={<CloudUploadIcon />}
-              >
-                Product Manifest {manifestImage ? 'Uploaded' : ''}
-                <input
-                  type="file"
-                  hidden
-                  onChange={(e) => { setManifestImage(e.target.files[0]) }}
-                />
-              </Button>
-            </FormControl>
-          </Grid>
-
-        </Grid>
-        <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
-            <Typography variant="h3" className={classes.pageHeading}>Product Details</Typography>
+            <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
           </Grid>
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
@@ -746,7 +744,7 @@ function AddRideView() {
               {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <FormControl margin="dense" variant="outlined">
                 <Button variant="contained" onClick={() => addProduct({
                   categoryId: productCategoryId,
                   name: productName,
@@ -810,12 +808,34 @@ function AddRideView() {
             </TableContainer>
 
           </Grid>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={12}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button
+                  variant="contained"
+                  component="label"
+                  color={manifestImage ? 'primary' : 'default'}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Product Manifest {manifestImage ? 'Uploaded' : ''}
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => { setManifestImage(e.target.files[0]) }}
+                  />
+                </Button>
+              </FormControl>
+            </Grid>
+
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item xs={12}>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedRide ? 'Add Ride' : 'Update Ride'}
-            </Button>
+          <Grid item xs={3}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Button onClick={handleSubmit} color="primary" variant="contained">
+                {!selectedRide ? 'Add Ride' : 'Update Ride'}
+              </Button>
+            </FormControl>
           </Grid>
         </Grid>
       </Grid>
