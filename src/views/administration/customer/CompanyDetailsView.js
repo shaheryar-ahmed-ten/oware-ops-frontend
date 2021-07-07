@@ -8,16 +8,16 @@ import {
     DialogContent,
     DialogTitle,
 } from '@material-ui/core';
-import { getURL } from '../../../utils/common';
+import { getURL, digitize } from '../../../utils/common';
 
-function DriverDetailsView({ open, handleClose, selectedDriver }) {
+function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }) {
     return (
-        selectedDriver ?
+        selectedCompany ?
             <div style={{ display: "inline" }}>
                 <form>
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle>
-                            View Driver
+                            View {relationType.toTitleCase()}
                         </DialogTitle>
                         <DialogContent>
                             <Grid container spacing={2}>
@@ -25,7 +25,7 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="Driver Name"
+                                            label={relationType.toTitleCase() + ' ID'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -33,13 +33,13 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.name}
+                                            value={selectedCompany.internalIdForBusiness}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="Vendor Name"
+                                            label={relationType.toTitleCase() + ' Name'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -47,7 +47,7 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.Vendor ? selectedDriver.Vendor.name : ''}
+                                            value={selectedCompany.name}
                                         />
                                     </Grid>
                                 </Grid>
@@ -55,22 +55,21 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="Phone Number"
+                                            label="Contact Name"
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
-                                            type="number"
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.phone}
+                                            value={selectedCompany.Contact.firstName + ' ' + selectedCompany.Contact.lastName}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="CNIC Number"
+                                            label="Contact Email"
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -78,15 +77,15 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.cnicNumber}
+                                            value={selectedCompany.Contact.email}
                                         />
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="Driving License Number"
+                                            label="Notes"
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -94,15 +93,13 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.drivingLicenseNumber}
+                                            value={selectedCompany.notes}
                                         />
                                     </Grid>
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={6}>
                                         <TextField
                                             id="filled-number"
-                                            label="CNIC Number"
+                                            label="Status"
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -110,21 +107,8 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
                                             disabled
                                             fullWidth
                                             variant="filled"
-                                            value={selectedDriver.cnicNumber}
+                                            value={selectedCompany.isActive ? 'Active' : 'In-Active'}
                                         />
-                                    </Grid>
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12}>
-                                        {(selectedDriver && selectedDriver.DrivingLicense) ?
-                                            <a target="_blank" href={getURL('preview', selectedDriver.DrivingLicense.id)}>Driving License Image</a>
-                                            : ''}
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        {(selectedDriver && selectedDriver.Cnic) ?
-                                            <a target="_blank" href={getURL('preview', selectedDriver.Cnic.id)}>CNIC Image</a>
-                                            : ''}
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -141,4 +125,4 @@ function DriverDetailsView({ open, handleClose, selectedDriver }) {
     )
 }
 
-export default DriverDetailsView
+export default CompanyDetailsView
