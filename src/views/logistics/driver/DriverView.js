@@ -108,7 +108,7 @@ function DriverView() {
   const addDriver = data => {
     let apiPromise = null;
     if (!selectedDriver) apiPromise = axios.post(getURL('driver'), data);
-    else apiPromise = axios.put(getURL(`/driver/${selectedDriver.id}`), data);
+    else apiPromise = axios.put(getURL(`driver/${selectedDriver.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

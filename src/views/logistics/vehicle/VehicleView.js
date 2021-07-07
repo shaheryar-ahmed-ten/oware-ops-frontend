@@ -118,7 +118,7 @@ function VehicleView() {
     const addVehicle = (data) => {
         let apiPromise = null;
         if (!selectedVehicle) apiPromise = axios.post(getURL('vehicle'), data);
-        else apiPromise = axios.put(getURL(`/vehicle/${selectedVehicle.id}`), data);
+        else apiPromise = axios.put(getURL(`vehicle/${selectedVehicle.id}`), data);
         apiPromise.then(res => {
             if (!res.data.success) {
                 setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

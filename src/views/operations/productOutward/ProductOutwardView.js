@@ -149,7 +149,7 @@ export default function ProductOutwardView() {
   const addProductOutward = data => {
     let apiPromise = null;
     if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
-    else apiPromise = axios.put(getURL(`/product-outward/${selectedProductOutward.id}`), data);
+    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -164,7 +164,7 @@ export default function ProductOutwardView() {
   };
 
   const deleteProductOutward = data => {
-    axios.delete(getURL(`/product-outward/${selectedProductOutward.id}`))
+    axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

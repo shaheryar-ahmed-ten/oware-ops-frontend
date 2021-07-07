@@ -119,7 +119,7 @@ export default function ProductInwardView() {
   const addProductInward = data => {
     let apiPromise = null;
     if (!selectedProductInward) apiPromise = axios.post(getURL('product-inward'), data);
-    else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
+    else apiPromise = axios.put(getURL(`product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -134,7 +134,7 @@ export default function ProductInwardView() {
   };
 
   const deleteProductInward = data => {
-    axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
+    axios.delete(getURL(`product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

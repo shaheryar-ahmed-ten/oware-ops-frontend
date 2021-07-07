@@ -99,7 +99,7 @@ export default function WarehouseView() {
   const addWarehouse = data => {
     let apiPromise = null;
     if (!selectedWarehouse) apiPromise = axios.post(getURL('warehouse'), data);
-    else apiPromise = axios.put(getURL(`/warehouse/${selectedWarehouse.id}`), data);
+    else apiPromise = axios.put(getURL(`warehouse/${selectedWarehouse.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -114,7 +114,7 @@ export default function WarehouseView() {
   };
 
   const deleteWarehouse = data => {
-    axios.delete(getURL(`/warehouse/${selectedWarehouse.id}`))
+    axios.delete(getURL(`warehouse/${selectedWarehouse.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

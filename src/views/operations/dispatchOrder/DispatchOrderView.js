@@ -139,7 +139,7 @@ export default function DispatchOrderView() {
   const addDispatchOrder = data => {
     let apiPromise = null;
     if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
+    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -154,7 +154,7 @@ export default function DispatchOrderView() {
   };
 
   const deleteDispatchOrder = data => {
-    axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
+    axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

@@ -129,7 +129,7 @@ export default function UserView() {
     let apiPromise = null;
     setFormErrors('');
     if (!selectedUser) apiPromise = axios.post(getURL('user'), data);
-    else apiPromise = axios.put(getURL(`/user/${selectedUser.id}`), data);
+    else apiPromise = axios.put(getURL(`user/${selectedUser.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -144,7 +144,7 @@ export default function UserView() {
   };
 
   const deleteUser = data => {
-    axios.delete(getURL(`/user/${selectedUser.id}`))
+    axios.delete(getURL(`user/${selectedUser.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

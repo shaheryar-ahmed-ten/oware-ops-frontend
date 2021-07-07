@@ -63,7 +63,7 @@ function AddRideView() {
   const addRide = data => {
     let apiPromise = null;
     if (!selectedRide) apiPromise = axios.post(getURL('ride'), data);
-    else apiPromise = axios.put(getURL(`/ride/${selectedRide.id}`), data);
+    else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

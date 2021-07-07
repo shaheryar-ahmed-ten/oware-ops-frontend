@@ -123,8 +123,8 @@ export default function CompanyView({ relationType }) {
 
   const addCompany = data => {
     let apiPromise = null;
-    if (!selectedCompany) apiPromise = axios.post(getURL(`/company/${relationType}`), data);
-    else apiPromise = axios.put(getURL(`/company/${relationType}/${selectedCompany.id}`), data);
+    if (!selectedCompany) apiPromise = axios.post(getURL(`company/${relationType}`), data);
+    else apiPromise = axios.put(getURL(`company/${relationType}/${selectedCompany.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -139,7 +139,7 @@ export default function CompanyView({ relationType }) {
   };
 
   const deleteCompany = data => {
-    axios.delete(getURL(`/company/${relationType}/${selectedCompany.id}`))
+    axios.delete(getURL(`company/${relationType}/${selectedCompany.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -180,7 +180,7 @@ export default function CompanyView({ relationType }) {
   }
 
   const _getCompanies = (page, searchKeyword) => {
-    axios.get(getURL(`/company/${relationType}`), { params: { page, search: searchKeyword } })
+    axios.get(getURL(`company/${relationType}`), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setCompanies(res.data.data)
@@ -192,7 +192,7 @@ export default function CompanyView({ relationType }) {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL(`/company/${relationType}/relations`))
+    axios.get(getURL(`company/${relationType}/relations`))
       .then(res => {
         setUsers(res.data.users);
         setCustomerTypes(res.data.customerTypes);

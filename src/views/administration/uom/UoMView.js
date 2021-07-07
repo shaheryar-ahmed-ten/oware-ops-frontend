@@ -83,7 +83,7 @@ export default function UoMView() {
   const addUoM = data => {
     let apiPromise = null;
     if (!selectedUoM) apiPromise = axios.post(getURL('uom'), data);
-    else apiPromise = axios.put(getURL(`/uom/${selectedUoM.id}`), data);
+    else apiPromise = axios.put(getURL(`uom/${selectedUoM.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -98,7 +98,7 @@ export default function UoMView() {
   };
 
   const deleteUoM = data => {
-    axios.delete(getURL(`/uom/${selectedUoM.id}`))
+    axios.delete(getURL(`uom/${selectedUoM.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

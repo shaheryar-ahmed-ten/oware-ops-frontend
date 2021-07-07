@@ -85,17 +85,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             runningPaperImage: true,
             routePermitImage: true
         });
+
+        if (runningPaperImage) [newVehicle.runningPaperId] = await upload([runningPaperImage], 'vehicle');
+        if (routePermitImage) [newVehicle.routePermitId] = await upload([routePermitImage], 'vehicle');
+
         if (isRequired(vendorId) &&
             isRequired(driverId) &&
+            isRequired(newVehicle.runningPaperId) &&
+            isRequired(newVehicle.routePermitId) &&
             isRequired(registrationNumber) &&
             isRequired(carId)) {
             try {
-                const [runningPaperId, routePermitId] = await upload([runningPaperImage, routePermitImage], 'vehicle');
-                newVehicle = {
-                    ...newVehicle,
-                    runningPaperId,
-                    routePermitId
-                };
                 await addVehicle(newVehicle);
             } catch (err) {
                 // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -208,17 +208,17 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={runningPaperImage ? 'primary' : 'default'}
+                                            color={((selectedVehicle && selectedVehicle.runningPaperId) || runningPaperImage) ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Running Paper {runningPaperImage ? 'Uploaded' : ''}
+                                            Running Paper {((selectedVehicle && selectedVehicle.runningPaperId) || runningPaperImage) ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
                                                 onChange={(e) => { setRunningPaperImage(e.target.files[0]) }}
                                             />
                                         </Button>
-                                        {validation.runningPaperImage && !isRequired(runningPaperImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
+                                        {!(selectedVehicle && selectedVehicle.runningPaperId) && validation.runningPaperImage && !isRequired(runningPaperImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
                                     </FormControl>
                                 </Grid>
                                 <Grid item sm={6}>
@@ -226,10 +226,10 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                                         <Button
                                             variant="contained"
                                             component="label"
-                                            color={routePermitImage ? 'primary' : 'default'}
+                                            color={((selectedVehicle && selectedVehicle.routePermitId) || routePermitImage) ? 'primary' : 'default'}
                                             startIcon={<CloudUploadIcon />}
                                         >
-                                            Route Permit {routePermitImage ? 'Uploaded' : ''}
+                                            Route Permit {((selectedVehicle && selectedVehicle.routePermitId) || routePermitImage) ? 'Uploaded' : ''}
                                             <input
                                                 type="file"
                                                 hidden
@@ -251,7 +251,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
 
                 </Dialog>
             </form>
-        </div>
+        </div >
     )
 }
 
