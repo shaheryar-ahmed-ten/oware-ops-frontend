@@ -74,7 +74,9 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
             companyId: vendorId,
             driverId: driverId,
             registrationNumber: registrationNumber,
-            carId: carId
+            carId: carId,
+            runningPaperId: selectedVehicle && selectedVehicle.runningPaperId,
+            routePermitId: selectedVehicle && selectedVehicle.routePermitId,
         }
         setValidation({
             vendorId: true,

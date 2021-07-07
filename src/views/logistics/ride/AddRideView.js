@@ -809,15 +809,22 @@ function AddRideView() {
 
           </Grid>
           <Grid container item xs={12} spacing={3}>
+            <Grid item xs={12}>
+              {(selectedRide && selectedRide.Manifest) ?
+                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Driving License Image</a>
+                : ''}
+            </Grid>
+          </Grid>
+          <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button
                   variant="contained"
                   component="label"
-                  color={manifestImage ? 'primary' : 'default'}
+                  color={((selectedRide && selectedRide.manifestId) || manifestImage) ? 'primary' : 'default'}
                   startIcon={<CloudUploadIcon />}
                 >
-                  Product Manifest {manifestImage ? 'Uploaded' : ''}
+                  Product Manifest {((selectedRide && selectedRide.manifestId) || manifestImage) ? 'Uploaded' : ''}
                   <input
                     type="file"
                     hidden

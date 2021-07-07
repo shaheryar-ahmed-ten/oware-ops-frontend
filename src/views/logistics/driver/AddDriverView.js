@@ -62,8 +62,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
       drivingLicenseNumber: drivingLicenseNumber,
       companyId: vendorId,
       cnicNumber: cnicNumber,
-      drivingLicenseId: selectedDriver.drivingLicenseId,
-      cnicId: selectedDriver.cnicId,
+      drivingLicenseId: selectedDriver && selectedDriver.drivingLicenseId,
+      cnicId: selectedDriver && selectedDriver.cnicId,
     }
     setValidation({
       driverName: true,
