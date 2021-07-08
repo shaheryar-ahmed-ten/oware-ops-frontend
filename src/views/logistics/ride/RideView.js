@@ -73,11 +73,10 @@ export default function RideView() {
   const navigate = useNavigate();
 
   const columns = [{
-    id: 'id',
+    id: 'internalIdForBusiness',
     label: 'RIDE ID',
     minWidth: 'auto',
-    className: '',
-    format: value => digitize(value, 6)
+    className: ''
   }, {
     id: 'status',
     label: 'STATUS',

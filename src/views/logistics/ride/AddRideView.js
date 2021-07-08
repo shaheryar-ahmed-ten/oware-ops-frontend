@@ -294,8 +294,10 @@ function AddRideView() {
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
-      const [manifestId] = await upload([manifestImage], 'ride');
-      newRide.manifestId = manifestId;
+      if (manifestImage) {
+        const [manifestId] = await upload([manifestImage], 'ride');
+        newRide.manifestId = manifestId;
+      }
       addRide(newRide);
     }
   }

@@ -75,18 +75,21 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
       drivingLicenseImage: true,
       CNICImage: true,
     });
-    if (drivingLicenseImage) [newDriver.drivingLicenseId] = await upload([drivingLicenseImage], 'driver');
-    if (CNICImage) [newDriver.cnicId] = await upload([CNICImage], 'driver');
 
     if (isRequired(driverName) &&
       isRequired(driverPhone) &&
       isRequired(validation) &&
-      isRequired(newDriver.drivingLicenseId) &&
-      isRequired(newDriver.cnicId) &&
       isRequired(drivingLicenseNumber) &&
       isRequired(vendorId) &&
       isRequired(cnicNumber)) {
+
+      if (drivingLicenseImage) [newDriver.drivingLicenseId] = await upload([drivingLicenseImage], 'driver');
+      if (CNICImage) [newDriver.cnicId] = await upload([CNICImage], 'driver');
+
+      if (!isRequired(newDriver.drivingLicenseId) || !isRequired(newDriver.cnicId)) return
+
       addDriver(newDriver);
+
     }
   }
   return (
