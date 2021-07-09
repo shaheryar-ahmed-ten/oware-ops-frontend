@@ -91,8 +91,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
 
     if (isRequired(vendorId) &&
       isRequired(driverId) &&
-      isRequired(newVehicle.runningPaperId) &&
-      isRequired(newVehicle.routePermitId) &&
       isRequired(registrationNumber) &&
       isRequired(carId)) {
 
