@@ -43,7 +43,7 @@ const TopBar = ({
 
   const updateUser = data => {
     setFormErrors('');
-    axios.put(getURL(`/user/me`), data)
+    axios.put(getURL(`user/me`), data)
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);

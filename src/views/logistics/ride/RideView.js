@@ -73,11 +73,10 @@ export default function RideView() {
   const navigate = useNavigate();
 
   const columns = [{
-    id: 'id',
+    id: 'internalIdForBusiness',
     label: 'RIDE ID',
     minWidth: 'auto',
-    className: '',
-    format: value => digitize(value, 6)
+    className: ''
   }, {
     id: 'status',
     label: 'STATUS',
@@ -208,8 +207,8 @@ export default function RideView() {
 
   const addRide = data => {
     let apiPromise = null;
-    if (!selectedRide) apiPromise = axios.post(getURL('/ride'), data);
-    else apiPromise = axios.put(getURL(`/ride/${selectedRide.id}`), data);
+    if (!selectedRide) apiPromise = axios.post(getURL('ride'), data);
+    else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -224,7 +223,7 @@ export default function RideView() {
   };
 
   const deleteRide = data => {
-    axios.delete(getURL(`/ride/${selectedRide.id}`))
+    axios.delete(getURL(`ride/${selectedRide.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -257,7 +256,7 @@ export default function RideView() {
 
   const _getRides = (page, searchKeyword, currentFilter) => {
     getStats();
-    axios.get(getURL('/ride'), { params: { page, search: searchKeyword, status: currentFilter } })
+    axios.get(getURL('ride'), { params: { page, search: searchKeyword, status: currentFilter } })
       .then(res => {
         setPageCount(res.data.pages)
         setRides(res.data.data)
@@ -269,7 +268,7 @@ export default function RideView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/ride/relations'))
+    axios.get(getURL('ride/relations'))
       .then(res => {
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
@@ -282,7 +281,7 @@ export default function RideView() {
   };
 
   const getStats = () => {
-    axios.get(getURL('/ride/stats'))
+    axios.get(getURL('ride/stats'))
       .then(res => setStats(res.data.stats));
   };
 

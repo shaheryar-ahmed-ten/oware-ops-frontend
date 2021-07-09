@@ -138,8 +138,8 @@ export default function DispatchOrderView() {
 
   const addDispatchOrder = data => {
     let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
+    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -154,7 +154,7 @@ export default function DispatchOrderView() {
   };
 
   const deleteDispatchOrder = data => {
-    axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
+    axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -196,7 +196,7 @@ export default function DispatchOrderView() {
   }
 
   const _getDispatchOrders = (page, searchKeyword) => {
-    axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setDispatchOrders(res.data.data)
@@ -208,7 +208,7 @@ export default function DispatchOrderView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
+    axios.get(getURL('dispatch-order/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         setWarehouses(res.data.warehouses);
@@ -217,19 +217,19 @@ export default function DispatchOrderView() {
   };
 
   const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
+    return axios.get(getURL('dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
   };
 
   const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
       .then(res => {
         return res.data.warehouses
       });
   };
 
   const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
+    return axios.get(getURL('dispatch-order/products'), { params })
       .then(res => res.data.products);
   };
 

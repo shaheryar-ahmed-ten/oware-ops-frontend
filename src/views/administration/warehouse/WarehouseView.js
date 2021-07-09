@@ -98,8 +98,8 @@ export default function WarehouseView() {
 
   const addWarehouse = data => {
     let apiPromise = null;
-    if (!selectedWarehouse) apiPromise = axios.post(getURL('/warehouse'), data);
-    else apiPromise = axios.put(getURL(`/warehouse/${selectedWarehouse.id}`), data);
+    if (!selectedWarehouse) apiPromise = axios.post(getURL('warehouse'), data);
+    else apiPromise = axios.put(getURL(`warehouse/${selectedWarehouse.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -114,7 +114,7 @@ export default function WarehouseView() {
   };
 
   const deleteWarehouse = data => {
-    axios.delete(getURL(`/warehouse/${selectedWarehouse.id}`))
+    axios.delete(getURL(`warehouse/${selectedWarehouse.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -146,7 +146,7 @@ export default function WarehouseView() {
   }
 
   const _getWarehouses = (page, searchKeyword) => {
-    axios.get(getURL('/warehouse'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('warehouse'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setWarehouses(res.data.data)

@@ -118,8 +118,8 @@ export default function ProductInwardView() {
 
   const addProductInward = data => {
     let apiPromise = null;
-    if (!selectedProductInward) apiPromise = axios.post(getURL('/product-inward'), data);
-    else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
+    if (!selectedProductInward) apiPromise = axios.post(getURL('product-inward'), data);
+    else apiPromise = axios.put(getURL(`product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -134,7 +134,7 @@ export default function ProductInwardView() {
   };
 
   const deleteProductInward = data => {
-    axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
+    axios.delete(getURL(`product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -176,7 +176,7 @@ export default function ProductInwardView() {
   }
 
   const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
@@ -188,7 +188,7 @@ export default function ProductInwardView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-inward/relations'))
+    axios.get(getURL('product-inward/relations'))
       .then(res => {
         setProducts(res.data.products)
         setWarehouses(res.data.warehouses)

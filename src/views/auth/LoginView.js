@@ -44,12 +44,12 @@ export default function LoginView({ }) {
   const handleSubmit = e => {
     e.preventDefault();
     setFormErrors(null);
-    axios.post(getURL('/user/auth/login'), {
+    axios.post(getURL('user/auth/login'), {
       username,
       password
     })
       .then(res => setToken(res.data.token))
-      .then(() => axios.get(getURL('/user/me')))
+      .then(() => axios.get(getURL('user/me')))
       .then(res => {
         setUser(res.data.data);
         return setCurrentUser(res.data.data);
