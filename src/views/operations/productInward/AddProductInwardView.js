@@ -11,20 +11,31 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+
 import { isRequired } from '../../../utils/validators';
 import { useReactToPrint } from 'react-to-print';
 import { Autocomplete } from '@material-ui/lab';
 
 export default function AddProductInwardView({ addProductInward, open, handleClose, selectedProductInward, products, warehouses, customers, formErrors }) {
   const [validation, setValidation] = useState({});
-  const [quantity, setQuantity] = useState(0);
   const [customerId, setCustomerId] = useState('');
-  const [productId, setProductId] = useState('');
   const [uom, setUom] = useState('');
   const [warehouseId, setWarehouseId] = useState('');
   const [referenceId, setReferenceId] = useState('');
+
+  const [productId, setProductId] = useState('');
+  const [quantity, setQuantity] = useState(0);
+
+  const [productGroups, setProductGroups] = useState([]);
 
   const selectProduct = value => {
     setProductId(value);
@@ -45,15 +56,24 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
       setUom('');
       setWarehouseId('');
     }
-  }, [selectedProductInward, products, warehouses, customers])
+  }, [selectedProductInward, products, warehouses, customers]);
+
+  useEffect(() => {
+    // setProductId('');
+    // setQuantity('');
+  }, [productGroups]);
+
+
+
   const handleSubmit = e => {
 
     const newProductInward = {
-      quantity,
       customerId,
       productId,
+      quantity,
       warehouseId,
-      referenceId
+      referenceId,
+      products: productGroups
     }
 
     setValidation({
@@ -82,7 +102,7 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Customer</InputLabel>
                     <Select
@@ -101,26 +121,8 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <Autocomplete
-                      id="Product"
-                      options={products}
-                      getOptionLabel={(product) => product.name}
-                      onChange={(event, newValue) => {
-                        if (newValue)
-                          selectProduct(newValue.id)
-                      }}
-                      renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                    />
-                    {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
+
+                <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <InputLabel>Warehouse</InputLabel>
                     <Select
@@ -146,6 +148,50 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                 <TextField
                   fullWidth={true}
                   margin="dense"
+                  id="referenceId"
+                  label="Reference Id"
+                  type="text"
+                  variant="outlined"
+                  value={referenceId}
+                  onChange={e => setReferenceId(e.target.value)}
+                  inputProps={{ maxLength: 30 }}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item sm={6}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Autocomplete
+                    id="Product"
+                    options={products}
+                    getOptionLabel={(product) => product.name}
+                    onChange={(event, newValue) => {
+                      if (newValue)
+                        selectProduct(newValue.id)
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+                  />
+                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+                </FormControl>
+              </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
+                  id="uom"
+                  label="UOM"
+                  type="text"
+                  variant="filled"
+                  value={uom}
+                  disabled
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="dense"
                   id="quantity"
                   label="Quantity"
                   type="number"
@@ -158,31 +204,58 @@ export default function AddProductInwardView({ addProductInward, open, handleClo
                 {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
               </Grid>
               <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="referenceId"
-                  label="Reference Id"
-                  type="text"
-                  variant="outlined"
-                  value={referenceId}
-                  onChange={e => setReferenceId(e.target.value)}
-                  inputProps={{ maxLength: 30 }}
-                />
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Button variant="contained" onClick={() => setProductGroups([...productGroups, {
+                    product: products.find(_product => _product.id == productId),
+                    id: productId,
+                    quantity
+                  }])} color="primary" variant="contained">Add Product</Button>
+                </FormControl>
               </Grid>
             </Grid>
-            <Grid item sm={12}>
-              <TextField
-                fullWidth={true}
-                margin="dense"
-                id="uom"
-                label="UOM"
-                type="text"
-                variant="filled"
-                value={uom}
-                disabled
-              />
-            </Grid>
+            <TableContainer>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Name
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      UoM
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Quantity
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {productGroups.map((productGroup, idx) => {
+                    return (
+                      <TableRow hover role="checkbox">
+                        <TableCell>
+                          {productGroup.product.name}
+                        </TableCell>
+                        <TableCell>
+                          {productGroup.product.UOM.name}
+                        </TableCell>
+                        <TableCell>
+                          {productGroup.quantity}
+                        </TableCell>
+                        <TableCell>
+                          <DeleteIcon color="error" key="delete" onClick={() =>
+                            setProductGroups(productGroups.filter((_productGroup, _idx) => _idx != idx))
+                          } />
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>

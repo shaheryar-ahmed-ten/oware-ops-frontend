@@ -58,29 +58,29 @@ export default function ProductInwardView() {
     className: '',
     format: (value, entity) => entity.Company.name,
   }, {
-    id: 'Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Product.name,
-  }, {
+  //   id: 'Product.name',
+  //   label: 'PRODUCT',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Product.name,
+  // }, {
     id: 'Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Warehouse.name,
   }, {
-    id: 'Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Product.UOM.name,
-  }, {
-    id: 'quantity',
-    label: 'QUANTITY RECEIVED',
-    minWidth: 'auto',
-    className: '',
-  }, {
+  //   id: 'Product.UOM.name',
+  //   label: 'UOM',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Product.UOM.name,
+  // }, {
+  //   id: 'quantity',
+  //   label: 'QUANTITY RECEIVED',
+  //   minWidth: 'auto',
+  //   className: '',
+  // }, {
     id: 'createdAt',
     label: 'INWARD DATE',
     minWidth: 'auto',
