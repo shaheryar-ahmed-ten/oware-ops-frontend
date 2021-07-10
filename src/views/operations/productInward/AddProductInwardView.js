@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddProductInwardView() {
   const classes = useStyles();
   const { state } = useLocation();
-  const { viewOnly } = state;
+  const { viewOnly } = state || '';
   const [selectedProductInward, setSelectedProductInward] = useState(state ? state.selectedProductInward : null);
 
   const [validation, setValidation] = useState({});
