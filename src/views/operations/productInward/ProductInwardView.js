@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, digitize, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -23,6 +23,8 @@ import AddProductInwardView from './AddProductInwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import InwardProductDetailsView from './InwardProductDetailsView';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -110,25 +112,29 @@ export default function ProductInwardView() {
   const [formErrors, setFormErrors] = useState('');
   const [addProductInwardViewOpen, setAddProductInwardViewOpen] = useState(false);
   const [deleteProductInwardViewOpen, setDeleteProductInwardViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [inwardProductDetailsViewOpen, setInwardProductDetailsViewOpen] = useState(false)
 
   const addProductInward = data => {
     let apiPromise = null;
-    if (!selectedProductInward) apiPromise = axios.post(getURL('/product-inward'), data);
-    else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
+    if (!selectedProductInward) apiPromise = axios.post(getURL('product-inward'), data);
+    else apiPromise = axios.put(getURL(`product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New product inward has been created."
+      })
       closeAddProductInwardView(false);
       getProductInwards();
     });
   };
 
   const deleteProductInward = data => {
-    axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
+    axios.delete(getURL(`product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -170,7 +176,7 @@ export default function ProductInwardView() {
   }
 
   const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
@@ -179,10 +185,10 @@ export default function ProductInwardView() {
 
   const getProductInwards = useCallback(debounce((page, searchKeyword) => {
     _getProductInwards(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-inward/relations'))
+    axios.get(getURL('product-inward/relations'))
       .then(res => {
         setProducts(res.data.products)
         setWarehouses(res.data.warehouses)
@@ -248,7 +254,7 @@ export default function ProductInwardView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product Inward" buttons={headerButtons} />
+        <TableHeader title="Product Inward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -297,6 +303,7 @@ export default function ProductInwardView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

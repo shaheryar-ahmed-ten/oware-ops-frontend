@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddWarehouseView from './AddWarehouseView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -92,24 +94,27 @@ export default function WarehouseView() {
   const [formErrors, setFormErrors] = useState('');
   const [addWarehouseViewOpen, setAddWarehouseViewOpen] = useState(false);
   const [deleteWarehouseViewOpen, setDeleteWarehouseViewOpen] = useState(false);
-
+  const [showMessage, setShowMessage] = useState(null)
 
   const addWarehouse = data => {
     let apiPromise = null;
-    if (!selectedWarehouse) apiPromise = axios.post(getURL('/warehouse'), data);
-    else apiPromise = axios.put(getURL(`/warehouse/${selectedWarehouse.id}`), data);
+    if (!selectedWarehouse) apiPromise = axios.post(getURL('warehouse'), data);
+    else apiPromise = axios.put(getURL(`warehouse/${selectedWarehouse.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New Warehouse has been created."
+      })
       closeAddWarehouseView(false);
       getWarehouses();
     });
   };
 
   const deleteWarehouse = data => {
-    axios.delete(getURL(`/warehouse/${selectedWarehouse.id}`))
+    axios.delete(getURL(`warehouse/${selectedWarehouse.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -141,7 +146,7 @@ export default function WarehouseView() {
   }
 
   const _getWarehouses = (page, searchKeyword) => {
-    axios.get(getURL('/warehouse'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('warehouse'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setWarehouses(res.data.data)
@@ -150,7 +155,7 @@ export default function WarehouseView() {
 
   const getWarehouses = useCallback(debounce((page, searchKeyword) => {
     _getWarehouses(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getWarehouses(page, searchKeyword);
@@ -193,7 +198,7 @@ export default function WarehouseView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Warehouse" buttons={headerButtons} />
+        <TableHeader title="Warehouse" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -242,6 +247,8 @@ export default function WarehouseView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
+
     </Paper>
   );
 }

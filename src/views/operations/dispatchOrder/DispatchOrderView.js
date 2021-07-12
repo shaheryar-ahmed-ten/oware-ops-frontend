@@ -14,7 +14,7 @@ import {
   Tooltip,
   IconButton
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -25,6 +25,8 @@ import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 
 const useStyles = makeStyles(theme => ({
@@ -129,26 +131,30 @@ export default function DispatchOrderView() {
   const [formErrors, setFormErrors] = useState('');
   const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [dispatchOrderDetailsViewOpen, setdispatchOrderDetailsViewOpen] = useState(false)
 
 
   const addDispatchOrder = data => {
     let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
+    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New dispatch order has been created."
+      })
       closeAddDispatchOrderView(false);
       getDispatchOrders();
     });
   };
 
   const deleteDispatchOrder = data => {
-    axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
+    axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -190,7 +196,7 @@ export default function DispatchOrderView() {
   }
 
   const _getDispatchOrders = (page, searchKeyword) => {
-    axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setDispatchOrders(res.data.data)
@@ -199,10 +205,10 @@ export default function DispatchOrderView() {
 
   const getDispatchOrders = useCallback(debounce((page, searchKeyword) => {
     _getDispatchOrders(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
+    axios.get(getURL('dispatch-order/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         setWarehouses(res.data.warehouses);
@@ -211,19 +217,19 @@ export default function DispatchOrderView() {
   };
 
   const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
+    return axios.get(getURL('dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
   };
 
   const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
       .then(res => {
         return res.data.warehouses
       });
   };
 
   const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
+    return axios.get(getURL('dispatch-order/products'), { params })
       .then(res => res.data.products);
   };
 
@@ -295,7 +301,7 @@ export default function DispatchOrderView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Dispatch Order" buttons={headerButtons}/>
+        <TableHeader title="Dispatch Order" buttons={headerButtons}/>
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
@@ -344,6 +350,7 @@ export default function DispatchOrderView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

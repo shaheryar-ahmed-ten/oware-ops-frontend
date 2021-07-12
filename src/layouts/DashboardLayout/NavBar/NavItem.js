@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -38,6 +38,11 @@ const useStyles = makeStyles((theme) => ({
     '& $icon': {
       color: theme.palette.primary.main
     }
+  },
+  titleActive: {
+    color: theme.palette.primary.light,
+    fontWeight: theme.typography.fontWeightMedium,
+    textTransform: 'none'
   }
 }));
 
@@ -46,10 +51,12 @@ const NavItem = ({
   href,
   icon: Icon,
   title,
+  activeRouteName,
   ...rest
 }) => {
   const classes = useStyles();
-
+  const location = useLocation();
+  const currentPathName = location.pathname.split('/')[2]
   return (
     <ListItem
       className={clsx(classes.item, className)}
@@ -58,11 +65,11 @@ const NavItem = ({
     >
       <Button
         activeClassName={classes.active}
-        className={classes.button}
+        className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.active : classes.button}
         component={RouterLink}
         to={href}
       >
-        <span className={classes.title}>
+        <span className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.titleActive : classes.title}>
           {title}
         </span>
       </Button>

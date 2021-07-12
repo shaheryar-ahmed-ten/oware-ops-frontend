@@ -2,8 +2,7 @@ import {
   Grid,
   Paper,
   Typography,
-  makeStyles,
-  InputBase
+  makeStyles
 } from '@material-ui/core'
 import React from 'react'
 
@@ -17,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 
   },
   heading: {
-    fontWeight: 'bolder',
+    fontWeight: 'bolder'
   },
 }))
 

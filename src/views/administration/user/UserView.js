@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader';
+import TableHeader from '../../../components/TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import AddUserView from './AddUserView';
@@ -21,6 +21,8 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -121,24 +123,28 @@ export default function UserView() {
   const [formErrors, setFormErrors] = useState('');
   const [addUserViewOpen, setAddUserViewOpen] = useState(false);
   const [deleteUserViewOpen, setDeleteUserViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const addUser = data => {
     let apiPromise = null;
     setFormErrors('');
-    if (!selectedUser) apiPromise = axios.post(getURL('/user'), data);
-    else apiPromise = axios.put(getURL(`/user/${selectedUser.id}`), data);
+    if (!selectedUser) apiPromise = axios.post(getURL('user'), data);
+    else apiPromise = axios.put(getURL(`user/${selectedUser.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New user has been created."
+      })
       closeAddUserView();
       getUsers();
     });
   };
 
   const deleteUser = data => {
-    axios.delete(getURL(`/user/${selectedUser.id}`))
+    axios.delete(getURL(`user/${selectedUser.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -170,7 +176,7 @@ export default function UserView() {
   }
 
   const _getUsers = (page, searchKeyword) => {
-    axios.get(getURL('/user'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('user'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setUsers(res.data.data)
@@ -179,10 +185,10 @@ export default function UserView() {
 
   const getUsers = useCallback(debounce((page, searchKeyword) => {
     _getUsers(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/user/relations'))
+    axios.get(getURL('user/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         setRoles(res.data.roles);
@@ -238,7 +244,7 @@ export default function UserView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage User" buttons={headerButtons} />
+        <TableHeader title="User" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -287,6 +293,7 @@ export default function UserView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

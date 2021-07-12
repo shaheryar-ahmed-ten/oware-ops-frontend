@@ -6,7 +6,7 @@ import DashboardLayout from '../src/layouts/DashboardLayout';
 import LoginView from '../src/views/auth/LoginView';
 import NotFoundView from '../src/views/errors/NotFoundView';
 import UserView from '../src/views/administration/user/UserView';
-import CustomerView from '../src/views/administration/customer/CustomerView';
+import CompanyView from '../src/views/administration/customer/CompanyView';
 import BrandView from '../src/views/administration/brand/BrandView';
 import UoMView from '../src/views/administration/uom/UoMView';
 import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
@@ -19,6 +19,10 @@ import ProductOutwardView from '../src/views/operations/productOutward/ProductOu
 import InventoryView from '../src/views/reporting/inventory/InventoryView';
 import ExportView from '../src/views/reporting/exports/ExportView';
 import { checkPermission } from './utils/auth';
+import DriverView from './views/logistics/driver/DriverView';
+import VehicleView from './views/logistics/vehicle/VehicleView';
+import RideView from './views/logistics/ride/RideView';
+import AddRideView from './views/logistics/ride/AddRideView';
 
 
 const routes = (user) => [
@@ -32,7 +36,7 @@ const routes = (user) => [
       },
       {
         path: 'customer',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CustomerView /> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="CUSTOMER" /> : <Navigate to="404" />
       },
       {
         path: 'warehouse',
@@ -81,6 +85,32 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
       },
       { path: '*', element: <Navigate to='/404' /> }
+    ]
+  },
+  {
+    path: 'logistics',
+    element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
+    children: [
+      {
+        path: 'vendor',
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="VENDOR" /> : <Navigate to="404" />
+      },
+      {
+        path: 'driver',
+        element: <DriverView />
+      },
+      {
+        path: 'vehicle',
+        element: <VehicleView />
+      },
+      {
+        path: 'ride',
+        element: <RideView />
+      },
+      {
+        path: 'ride/create',
+        element: <AddRideView />
+      }
     ]
   },
   {

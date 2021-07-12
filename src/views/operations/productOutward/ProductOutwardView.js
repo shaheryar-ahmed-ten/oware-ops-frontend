@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, digitize, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -23,6 +23,8 @@ import AddProductOutwardView from './AddProductOutwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -132,33 +134,37 @@ export default function ProductOutwardView() {
   const [productOutwards, setProductOutwards] = useState([]);
 
   const [dispatchOrders, setDispatchOrders] = useState([]);
-  const [vehicleTypes, setvehicleTypes] = useState([])
+  const [vehicles, setVehicles] = useState([])
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
   const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
   const [productOutwardsDetailsViewOpen, setproductOutwardsDetailsViewOpen] = useState(false)
 
 
   const addProductOutward = data => {
     let apiPromise = null;
-    if (!selectedProductOutward) apiPromise = axios.post(getURL('/product-outward'), data);
-    else apiPromise = axios.put(getURL(`/product-outward/${selectedProductOutward.id}`), data);
+    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
+    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New product outward has been created."
+      })
       closeAddProductOutwardView(false);
       getProductOutwards();
     });
   };
 
   const deleteProductOutward = data => {
-    axios.delete(getURL(`/product-outward/${selectedProductOutward.id}`))
+    axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -204,7 +210,7 @@ export default function ProductOutwardView() {
   }
 
   const _getProductOutwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-outward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-outward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
@@ -213,13 +219,13 @@ export default function ProductOutwardView() {
 
   const getProductOutwards = useCallback(debounce((page, searchKeyword) => {
     _getProductOutwards(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-outward/relations'))
-      .then(res => {  
-        // setting dispatchOrder details and vehicleTypes in local State
-        setvehicleTypes((prevState)=>res.data.vehicleTypes)
+    axios.get(getURL('product-outward/relations'))
+      .then(res => {
+        // setting dispatchOrder details and vehicles in local State
+        setVehicles((prevState) => res.data.vehicles)
         setDispatchOrders(res.data.dispatchOrders)
       });
   };
@@ -257,7 +263,7 @@ export default function ProductOutwardView() {
     open={addProductOutwardViewOpen}
     addProductOutward={addProductOutward}
     handleClose={() => closeAddProductOutwardView()}
-    vehicleTypes={vehicleTypes} />
+    vehicles={vehicles} />
   const deleteProductOutwardModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProductOutward}
@@ -272,14 +278,14 @@ export default function ProductOutwardView() {
     formErrors={formErrors}
     selectedProductOutward={selectedProductOutward}
     open={productOutwardsDetailsViewOpen}
-    handleClose={() => closeViewProductOutwardDetailsView()}/>
+    handleClose={() => closeViewProductOutwardDetailsView()} />
 
   const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Product Outward" buttons={headerButtons}/>
+        <TableHeader title="Product Outward" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
@@ -328,6 +334,7 @@ export default function ProductOutwardView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

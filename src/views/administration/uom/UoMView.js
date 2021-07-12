@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddUoMView from './AddUoMView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -76,24 +78,27 @@ export default function UoMView() {
   const [formErrors, setFormErrors] = useState('');
   const [addUoMViewOpen, setAddUoMViewOpen] = useState(false);
   const [deleteUoMViewOpen, setDeleteUoMViewOpen] = useState(false);
-
+  const [showMessage, setShowMessage] = useState(null)
 
   const addUoM = data => {
     let apiPromise = null;
-    if (!selectedUoM) apiPromise = axios.post(getURL('/uom'), data);
-    else apiPromise = axios.put(getURL(`/uom/${selectedUoM.id}`), data);
+    if (!selectedUoM) apiPromise = axios.post(getURL('uom'), data);
+    else apiPromise = axios.put(getURL(`uom/${selectedUoM.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New UOM has been created."
+      })
       closeAddUoMView();
       getUoMs();
     });
   };
 
   const deleteUoM = data => {
-    axios.delete(getURL(`/uom/${selectedUoM.id}`))
+    axios.delete(getURL(`uom/${selectedUoM.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -125,7 +130,7 @@ export default function UoMView() {
   }
 
   const _getUoMs = (page, searchKeyword) => {
-    axios.get(getURL('/uom'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('uom'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setUoMs(res.data.data)
@@ -134,7 +139,7 @@ export default function UoMView() {
 
   const getUoMs = useCallback(debounce((page, searchKeyword) => {
     _getUoMs(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getUoMs(page, searchKeyword);
@@ -177,7 +182,7 @@ export default function UoMView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage UoM" buttons={headerButtons} />
+        <TableHeader title="UoM" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -226,6 +231,7 @@ export default function UoMView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }
