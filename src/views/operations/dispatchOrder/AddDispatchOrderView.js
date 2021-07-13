@@ -197,7 +197,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
                         if (newValue)
                           handleCustomerSearch(newValue.id, (newValue.name || ''))
                       }}
-                      renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
+                      renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
                     />
                     {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
