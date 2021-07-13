@@ -23,6 +23,8 @@ import DriverView from './views/logistics/driver/DriverView';
 import VehicleView from './views/logistics/vehicle/VehicleView';
 import RideView from './views/logistics/ride/RideView';
 import AddRideView from './views/logistics/ride/AddRideView';
+import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
+import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
 
 
 const routes = (user) => [
@@ -79,6 +81,10 @@ const routes = (user) => [
       {
         path: 'dispatch-order',
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <DispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/create',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
       },
       {
         path: 'product-outward',

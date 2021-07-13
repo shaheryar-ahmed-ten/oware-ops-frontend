@@ -11,14 +11,33 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  makeStyles
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat } from '../../../utils/common';
-import { Autocomplete } from '@material-ui/lab';
+import { dateToPickerFormat, getURL } from '../../../utils/common';
+import { Alert, Autocomplete } from '@material-ui/lab';
+import axios from 'axios';
 
-export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,
-  open, handleClose, selectedDispatchOrder, customers, formErrors }) {
+const useStyles = makeStyles((theme) => ({
+  parentContainer: {
+    boxSizing: 'border-box',
+    padding: "30px 30px",
+  },
+  pageHeading: {
+    fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
+  },
+  heading: {
+    fontWeight: 'bolder'
+  },
+}));
+
+export default function AddDispatchOrderView({ dispatchedOrdersLength,
+  open, handleClose, selectedDispatchOrder }) {
+  const classes = useStyles();
 
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -37,6 +56,21 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   const [selectedCustomerName, setSelectedCustomerName] = useState('');
+
+  const [formErrors, setFormErrors] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    getRelations();
+  }, []);
+  const getRelations = () => {
+    axios.get(getURL('dispatch-order/relations'))
+      .then(res => {
+        setCustomers(res.data.customers);
+        // setWarehouses(res.data.warehouses);
+        // setProducts(res.data.products);
+      });
+  };
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
@@ -109,6 +143,40 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
     }
 
   }, [productId]);
+
+  const getInventory = (params) => {
+    return axios.get(getURL('dispatch-order/inventory'), { params })
+      .then(res => res.data.inventory);
+  };
+
+  const getWarehouses = (params) => {
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
+      .then(res => {
+        return res.data.warehouses
+      });
+  };
+
+  const getProducts = (params) => {
+    return axios.get(getURL('dispatch-order/products'), { params })
+      .then(res => res.data.products);
+  };
+
+
+  const addDispatchOrder = data => {
+    let apiPromise = null;
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
+    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
+    apiPromise.then(res => {
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      // setShowMessage({
+      //   message: "New dispatch order has been created."
+      // })
+    });
+  };
+
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
     const newDispatchOrder = {
@@ -151,7 +219,178 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   }
 
   return (
-    <div style={{ display: "inline" }}>
+    <>
+      {formErrors}
+      <Grid container className={classes.parentContainer} spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h3" className={classes.heading}>Add Dispatch Order</Typography>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="combo-box-demo"
+              options={customers}
+              getOptionLabel={(customer) => customer.name}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  handleCustomerSearch(newValue.id, (newValue.name || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
+            />
+            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
+          </FormControl>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <InputLabel>Warehouse</InputLabel>
+            <Select
+              fullWidth={true}
+              id="warehouseId"
+              label="Inventory"
+              variant="outlined"
+              value={warehouseId}
+              disabled={!!selectedDispatchOrder}
+              onChange={e => { setWarehouseId(e.target.value) }}
+              onBlur={e => setValidation({ ...validation, warehouseId: true })}
+            >
+              <MenuItem value="" disabled>Select a warehouse</MenuItem>
+              {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id} name="name">{warehouse.name}</MenuItem>)}
+            </Select>
+            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+          </FormControl>
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="receiverName"
+            label="Receiver Name"
+            type="text"
+            variant="outlined"
+            value={receiverName}
+            onChange={e => setReceiverName(e.target.value)}
+            onBlur={e => setValidation({ ...validation, receiverName: true })}
+          />
+          {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="receiverPhone"
+            label="Receiver Phone"
+            type="text"
+            variant="outlined"
+            value={receiverPhone}
+            placeholder="0346xxxxxx8"
+            onChange={e => setReceiverPhone(e.target.value)}
+            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+          />
+          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
+          {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="shipmentDate"
+            label="Shipment Date"
+            placeholder="Shipment Date"
+            type="datetime-local"
+            variant="outlined"
+            value={shipmentDate}
+            onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
+            onBlur={e => setValidation({ ...validation, shipmentDate: true })}
+          />
+          {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="referenceId"
+            label="Reference Id"
+            type="text"
+            variant="outlined"
+            value={referenceId}
+            onChange={e => setReferenceId(e.target.value)}
+            inputProps={{ maxLength: 30 }}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h4" className={classes.heading}>Product Details</Typography>
+        </Grid>
+        <Grid container item xs={12} alignItems="center" spacing={1}>
+          <Grid item sm={4}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel>Product</InputLabel>
+              <Select
+                fullWidth={true}
+                id="productId"
+                label="Inventory"
+                variant="outlined"
+                value={productId}
+                disabled={!!selectedDispatchOrder}
+                onChange={e => setProductId(e.target.value)}
+                onBlur={e => setValidation({ ...validation, productId: true })}
+              >
+                <MenuItem value="" disabled>Select a product</MenuItem>
+                {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
+              </Select>
+              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+            </FormControl>
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+              id="quantity"
+              label="Quantity"
+              type="number"
+              variant="outlined"
+              value={quantity}
+              disabled={!!selectedDispatchOrder}
+              onChange={e => setQuantity(e.target.value)}
+              onBlur={e => setValidation({ ...validation, quantity: true })}
+            />
+            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="uom"
+              label="UOM"
+              type="text"
+              variant="filled"
+              value={uom}
+              disabled
+            />
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="availableQuantity"
+              label="Available Quantity"
+              type="number"
+              variant="filled"
+              value={availableQuantity}
+              disabled
+            />
+          </Grid>
+          <Grid item sm={2}>
+            <Button variant="contained" color="primary" fullWidth>Add Dispatch</Button>
+          </Grid>
+        </Grid>
+      </Grid>
+    </>
+  );
+}
+
+{/* <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
@@ -334,6 +573,4 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
           </DialogActions>
         </Dialog>
       </form>
-    </div >
-  );
-}
+    </div > */}

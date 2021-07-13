@@ -296,7 +296,7 @@ export default function DispatchOrderView() {
     dispatchedOrdersLength={dispatchOrders.length}
   />
 
-  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal, dispatchOrderDetailsModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal, dispatchOrderDetailsModal];
 
   return (
     <Paper className={classes.root}>
