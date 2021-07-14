@@ -103,12 +103,12 @@ export default function ProductInwardView() {
             viewOnly: true
           }
         })} />,
-        // <EditIcon key="edit" onClick={() => navigate('create', {
-        //   state: {
-        //     selectedProductInward: entity
-        //     viewOnly: false
-        //   }
-        // })} />,
+        <EditIcon key="edit" onClick={() => navigate('edit', {
+          state: {
+            selectedProductInward: entity,
+            viewOnly: false
+          }
+        })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   },

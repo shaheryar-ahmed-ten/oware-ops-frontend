@@ -24,6 +24,7 @@ import VehicleView from './views/logistics/vehicle/VehicleView';
 import RideView from './views/logistics/ride/RideView';
 import AddRideView from './views/logistics/ride/AddRideView';
 import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
+import EditProductInwardView from './views/operations/productInward/EditProductInwardView';
 
 
 const routes = (user) => [
@@ -79,6 +80,14 @@ const routes = (user) => [
       },
       {
         path: 'product-inward/create',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <EditProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/view/:uid',
         element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
       },
       {
