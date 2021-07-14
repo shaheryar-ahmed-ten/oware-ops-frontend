@@ -27,6 +27,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
 
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +55,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function DispatchOrderView() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const columns = [{
     id: 'id',
     label: 'OUTWARD ID',
@@ -61,7 +63,7 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
   },
-    {
+  {
     id: 'Inventory.Company.name',
     label: 'CUSTOMER',
     minWidth: 'auto',
@@ -114,7 +116,11 @@ export default function DispatchOrderView() {
     format: (value, entity) =>
       [
         <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <EditIcon key="edit" onClick={() => navigate('edit', {
+          state: {
+            selectedDispatchOrder: entity
+          }
+        })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -257,7 +263,9 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
+    // onClick={() => setAddDispatchOrderViewOpen(true)}
+    onClick={() => navigate('create')}
+  >ADD DISPATCH ORDER</Button>;
   const addDispatchOrderModal = <AddDispatchOrderView
     key={3}
     formErrors={formErrors}
@@ -282,9 +290,9 @@ export default function DispatchOrderView() {
   />
 
   const dispatchOrderDetailsModal = <ViewDispatchOrderDetails
-  key={5}
-  formErrors={formErrors}
-  customers={customers}
+    key={5}
+    formErrors={formErrors}
+    customers={customers}
     warehouses={warehouses}
     products={products}
     selectedDispatchOrder={selectedDispatchOrder}
@@ -301,7 +309,7 @@ export default function DispatchOrderView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Dispatch Order" buttons={headerButtons}/>
+        <TableHeader title="Dispatch Order" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>

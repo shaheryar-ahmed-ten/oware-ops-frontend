@@ -12,12 +12,21 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-  makeStyles
+  makeStyles,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
 import { dateToPickerFormat, getURL } from '../../../utils/common';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
+import { TableContainer } from '@material-ui/core';
+import { TableBody } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useLocation } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -36,8 +45,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AddDispatchOrderView({ dispatchedOrdersLength,
-  open, handleClose, selectedDispatchOrder }) {
+  open, handleClose }) {
   const classes = useStyles();
+  const { state } = useLocation();
+  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
 
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -60,6 +71,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
   const [formErrors, setFormErrors] = useState([]);
   const [customers, setCustomers] = useState([]);
 
+  const [dispatchGroups, setDispatchGroups] = useState([]);
+
+  const [showMessage, setShowMessage] = useState(null);
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -69,18 +84,33 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
         setCustomers(res.data.customers);
         // setWarehouses(res.data.warehouses);
         // setProducts(res.data.products);
+      })
+      .catch((err) => {
+        console.log(err)
       });
   };
 
   useEffect(() => {
     if (!!selectedDispatchOrder) {
-      setQuantity(selectedDispatchOrder.quantity || '');
+      setQuantity(0);
       setShipmentDate(dateToPickerFormat(selectedDispatchOrder.shipmentDate) || '');
       setReceiverName(selectedDispatchOrder.receiverName || '');
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
       setReferenceId(selectedDispatchOrder.referenceId || '');
+      if (products.length > 0 && dispatchGroups.length == 0) {
+        selectedDispatchOrder.Inventories.forEach(inventory => {
+          setDispatchGroups((prevState) => ([
+            ...prevState,
+            {
+              product: products.find(_product => _product.id == inventory.Product.id),
+              id: inventory.id,
+              quantity: inventory.OrderGroup.quantity
+            }
+          ]))
+        });
+      }
     } else {
       setInventoryId('');
       setQuantity('');
@@ -92,7 +122,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setReceiverPhone('');
       setReferenceId('');
     }
-  }, [selectedDispatchOrder, customers])
+  }, [selectedDispatchOrder, products, customers])
 
   useEffect(() => {
     setWarehouses([]);
@@ -117,7 +147,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
     if (!customerId && !warehouseId) return;
     if (!!selectedDispatchOrder) {
       setProducts([selectedDispatchOrder.Inventory.Product]);
-      setProductId(selectedDispatchOrder.Inventory.productId);
+      // setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
       setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
@@ -171,11 +201,36 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
-      // setShowMessage({
-      //   message: "New dispatch order has been created."
-      // })
+      setShowMessage({
+        message: "New dispatch order has been created."
+      })
     });
   };
+
+  const updateDispatchOrdersTable = () => {
+    if (isRequired(customerId) &&
+      isRequired(warehouseId) &&
+      isRequired(receiverName) &&
+      isRequired(receiverPhone) &&
+      isRequired(productId) &&
+      isRequired(quantity)) {
+      setDispatchGroups([...dispatchGroups, {
+        product: products.find(_product => _product.id == productId),
+        id: productId,
+        quantity
+      }])
+    }
+    else {
+      setValidation({
+        customerId: true,
+        warehouseId: true,
+        receiverName: true,
+        receiverPhone: true,
+        productId: true,
+        quantity: true
+      });
+    }
+  }
 
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
@@ -202,10 +257,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       receiverName: true,
       receiverPhone: true
     });
-    if (isRequired(quantity) &&
-      isRequired(inventoryId) &&
+    if (
       isRequired(customerId) &&
-      isRequired(productId) &&
       isRequired(shipmentDate) &&
       isRequired(receiverName) &&
       isRequired(receiverPhone)) {
@@ -361,18 +414,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             <TextField
               fullWidth={true}
               margin="dense"
-              id="uom"
-              label="UOM"
-              type="text"
-              variant="filled"
-              value={uom}
-              disabled
-            />
-          </Grid>
-          <Grid item sm={2}>
-            <TextField
-              fullWidth={true}
-              margin="dense"
               id="availableQuantity"
               label="Available Quantity"
               type="number"
@@ -382,10 +423,86 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             />
           </Grid>
           <Grid item sm={2}>
-            <Button variant="contained" color="primary" fullWidth>Add Dispatch</Button>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="uom"
+              label="UOM"
+              type="text"
+              variant="filled"
+              value={uom}
+              disabled
+            />
+          </Grid>
+          <Grid item sm={2}>
+            <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth>Add Dispatch</Button>
           </Grid>
         </Grid>
       </Grid>
+
+      <TableContainer className={classes.parentContainer}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Name
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Quantity
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Available Quantity
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                UoM
+              </TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {dispatchGroups.map((dispatchGroup, idx) => {
+              return (
+                <TableRow hover role="checkbox">
+                  <TableCell>
+                    {dispatchGroup.product.name}
+                  </TableCell>
+                  <TableCell>
+                    {dispatchGroup.product.UOM.name}
+                  </TableCell>
+                  <TableCell>
+                    {dispatchGroup.quantity}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteIcon color="error" key="delete" onClick={() =>
+                      setDispatchGroups(dispatchGroups.filter((_dispatchGroup, _idx) => _idx != idx))
+                    } />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {
+        dispatchGroups.length > 0 ?
+          <Grid container className={classes.parentContainer} xs={12} spacing={3}>
+            <Grid item xs={3}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button onClick={handleSubmit} color="primary" variant="contained">
+                  {!selectedDispatchOrder ? 'Add Products' : 'Update Product'}
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+          :
+          ''}
+
+      <MessageSnackbar showMessage={showMessage} />
     </>
   );
 }

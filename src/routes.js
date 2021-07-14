@@ -87,6 +87,10 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
       },
       {
+        path: 'dispatch-order/edit',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
+      },
+      {
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
       },
