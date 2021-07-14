@@ -88,11 +88,24 @@ export default function AddProductInwardView() {
 
   useEffect(() => {
     if (!!selectedProductInward) {
-      setQuantity(selectedProductInward.quantity || '');
+      setQuantity(0);
       setCustomerId(selectedProductInward.customerId || '');
       selectProduct('');
       setWarehouseId(selectedProductInward.Warehouse.id || '');
       setReferenceId(selectedProductInward.referenceId || '');
+      if (products.length > 0 && productGroups.length == 0) {
+        selectedProductInward.Products.forEach(product => {
+          //correct way of updating states.
+          setProductGroups((prevState) => ([
+            ...prevState,
+            {
+              product: products.find(_product => _product.id == product.id),
+              id: product.id,
+              quantity: product.InwardGroup.quantity
+            }
+          ]))
+        });
+      }
     } else {
       setQuantity('');
       setCustomerId('');
@@ -291,53 +304,49 @@ export default function AddProductInwardView() {
 
       </Grid>
 
-      <>
-
-
-        <TableContainer className={classes.parentContainer}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Name
-                </TableCell>
-                <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  UoM
-                </TableCell>
-                <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Quantity
-                </TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productGroups.map((productGroup, idx) => {
-                return (
-                  <TableRow hover role="checkbox">
-                    <TableCell>
-                      {productGroup.product.name}
-                    </TableCell>
-                    <TableCell>
-                      {productGroup.product.UOM.name}
-                    </TableCell>
-                    <TableCell>
-                      {productGroup.quantity}
-                    </TableCell>
-                    <TableCell>
-                      <DeleteIcon color="error" key="delete" onClick={() =>
-                        setProductGroups(productGroups.filter((_productGroup, _idx) => _idx != idx))
-                      } />
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </>
+      <TableContainer className={classes.parentContainer}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Name
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                UoM
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Quantity
+              </TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productGroups.map((productGroup, idx) => {
+              return (
+                <TableRow hover role="checkbox">
+                  <TableCell>
+                    {productGroup.product.name}
+                  </TableCell>
+                  <TableCell>
+                    {productGroup.product.UOM.name}
+                  </TableCell>
+                  <TableCell>
+                    {productGroup.quantity}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteIcon color="error" key="delete" onClick={() =>
+                      setProductGroups(productGroups.filter((_productGroup, _idx) => _idx != idx))
+                    } />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {
         productGroups.length > 0 ?
