@@ -174,15 +174,12 @@ function EditProductInwardView() {
         }
 
         setValidation({
-            quantity: true,
+            // quantity: true,
             customerId: true,
-            productId: true,
+            // productId: true,
             warehouseId: true
         });
-        if (isRequired(quantity) &&
-            isRequired(customerId) &&
-            isRequired(productId) &&
-            isRequired(warehouseId)) {
+        if (isRequired(customerId) && isRequired(warehouseId)) {
             addProductInward(newProductInward);
         }
     }
@@ -193,7 +190,7 @@ function EditProductInwardView() {
             {formErrors}
             <Grid container className={classes.parentContainer} spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="h4" className={classes.heading}>Add Product Inward</Typography>
+                    <Typography variant="h4" className={classes.heading}>Edit Product Inward</Typography>
                 </Grid>
                 <Grid item sm={6}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -249,56 +246,62 @@ function EditProductInwardView() {
                     />
                     {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : ''}
                 </Grid>
-                <Grid item sm={12}>
-                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                        <Autocomplete
-                            id="Product"
-                            options={products}
-                            getOptionLabel={(product) => product.name}
-                            onChange={(event, newValue) => {
-                                if (newValue)
-                                    selectProduct(newValue.id)
-                            }}
-                            renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                            onBlur={e => setValidation({ ...validation, productId: true })}
+
+                <Grid item xs={12}>
+                    <Typography variant="h4" className={classes.heading}>Product Details</Typography>
+                </Grid>
+                <Grid container alignItems="center" spacing={2}>
+                    <Grid item sm={6}>
+                        <FormControl margin="dense" fullWidth={true} variant="outlined">
+                            <Autocomplete
+                                id="Product"
+                                options={products}
+                                getOptionLabel={(product) => product.name}
+                                onChange={(event, newValue) => {
+                                    if (newValue)
+                                        selectProduct(newValue.id)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+                                onBlur={e => setValidation({ ...validation, productId: true })}
+                            />
+                            {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+                        </FormControl>
+                    </Grid>
+                    <Grid item sm={2}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="uom"
+                            label="UOM"
+                            type="text"
+                            variant="filled"
+                            value={uom}
+                            disabled
                         />
-                        {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-                    </FormControl>
-                </Grid>
-                <Grid item sm={12}>
-                    <TextField
-                        fullWidth={true}
-                        margin="dense"
-                        id="uom"
-                        label="UOM"
-                        type="text"
-                        variant="filled"
-                        value={uom}
-                        disabled
-                    />
-                </Grid>
-                <Grid item sm={12}>
-                    <TextField
-                        fullWidth={true}
-                        margin="dense"
-                        id="quantity"
-                        label="Quantity"
-                        type="number"
-                        variant="outlined"
-                        value={quantity}
-                        // disabled={viewOnly}
-                        onChange={e => setQuantity(e.target.value)}
-                        onBlur={e => setValidation({ ...validation, quantity: true })}
-                    />
-                    {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+                    </Grid>
+                    <Grid item sm={2}>
+                        <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            id="quantity"
+                            label="Quantity"
+                            type="number"
+                            variant="outlined"
+                            value={quantity}
+                            // disabled={viewOnly}
+                            onChange={e => setQuantity(e.target.value)}
+                            onBlur={e => setValidation({ ...validation, quantity: true })}
+                        />
+                        {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+                    </Grid>
+                    <Grid item sm={2} className={classes.parentContainer}>
+                        <FormControl margin="dense" fullWidth={true} variant="outlined">
+                            <Button variant="contained" onClick={updateProductsTable} color="primary" variant="contained">Add Product</Button>
+                        </FormControl>
+                    </Grid>
                 </Grid>
 
 
-                <Grid item sm={12} className={classes.parentContainer}>
-                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                        <Button variant="contained" onClick={updateProductsTable} color="primary" variant="contained">Add Product</Button>
-                    </FormControl>
-                </Grid>
                 <TableContainer className={classes.parentContainer}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>

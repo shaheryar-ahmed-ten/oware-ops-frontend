@@ -178,7 +178,7 @@ export default function AddProductInwardView() {
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h4" className={classes.heading}>Add Product Inward</Typography>
+          <Typography variant="h3" className={classes.heading}>Add Product Inward</Typography>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -234,148 +234,110 @@ export default function AddProductInwardView() {
           />
           {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : ''}
         </Grid>
-        {
-          !viewOnly ?
-            <Grid item sm={12}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Autocomplete
-                  id="Product"
-                  options={products}
-                  getOptionLabel={(product) => product.name}
-                  onChange={(event, newValue) => {
-                    if (newValue)
-                      selectProduct(newValue.id)
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                  onBlur={e => setValidation({ ...validation, productId: true })}
-                />
-                {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-              </FormControl>
-            </Grid>
-            :
-            ''
-        }
-        <Grid item sm={12}>
-          <TextField
-            fullWidth={true}
-            margin="dense"
-            id="uom"
-            label="UOM"
-            type="text"
-            variant="filled"
-            value={uom}
-            disabled
-          />
+
+        <Grid item xs={12}>
+          <Typography variant="h4" className={classes.heading}>Product Details</Typography>
         </Grid>
-        <Grid item sm={12}>
-          <TextField
-            fullWidth={true}
-            margin="dense"
-            id="quantity"
-            label="Quantity"
-            type="number"
-            variant="outlined"
-            value={quantity}
-            disabled={viewOnly}
-            onChange={e => setQuantity(e.target.value)}
-            onBlur={e => setValidation({ ...validation, quantity: true })}
-          />
-          {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item xs={6}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Autocomplete
+                id="Product"
+                options={products}
+                getOptionLabel={(product) => product.name}
+                onChange={(event, newValue) => {
+                  if (newValue)
+                    selectProduct(newValue.id)
+                }}
+                renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+                onBlur={e => setValidation({ ...validation, productId: true })}
+              />
+              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="quantity"
+              label="Quantity"
+              type="number"
+              variant="outlined"
+              value={quantity}
+              disabled={viewOnly}
+              onChange={e => setQuantity(e.target.value)}
+              onBlur={e => setValidation({ ...validation, quantity: true })}
+            />
+            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="uom"
+              label="UOM"
+              type="text"
+              variant="filled"
+              value={uom}
+              disabled
+            />
+          </Grid>
+          <Grid item xs={2} className={classes.parentContainer}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Button variant="contained" onClick={updateProductsTable} color="primary" variant="contained">Add Product</Button>
+            </FormControl>
+          </Grid>
         </Grid>
 
       </Grid>
-      {
-        viewOnly ?
-          <TableContainer className={classes.parentContainer}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Name
-                  </TableCell>
-                  <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    UoM
-                  </TableCell>
-                  <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Quantity
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedProductInward.Products.map((product, idx) => {
-                  return (
-                    <TableRow hover role="checkbox">
-                      <TableCell>
-                        {product.name}
-                      </TableCell>
-                      <TableCell>
-                        {product.UOM.name}
-                      </TableCell>
-                      <TableCell>
-                        {product.InwardGroup.quantity}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          :
-          <>
-            <Grid item sm={12} className={classes.parentContainer}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button variant="contained" onClick={updateProductsTable} color="primary" variant="contained">Add Product</Button>
-              </FormControl>
-            </Grid>
-            <TableContainer className={classes.parentContainer}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Name
+
+      <>
+
+
+        <TableContainer className={classes.parentContainer}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  Name
+                </TableCell>
+                <TableCell
+                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  UoM
+                </TableCell>
+                <TableCell
+                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  Quantity
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {productGroups.map((productGroup, idx) => {
+                return (
+                  <TableRow hover role="checkbox">
+                    <TableCell>
+                      {productGroup.product.name}
                     </TableCell>
-                    <TableCell
-                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      UoM
+                    <TableCell>
+                      {productGroup.product.UOM.name}
                     </TableCell>
-                    <TableCell
-                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Quantity
+                    <TableCell>
+                      {productGroup.quantity}
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <DeleteIcon color="error" key="delete" onClick={() =>
+                        setProductGroups(productGroups.filter((_productGroup, _idx) => _idx != idx))
+                      } />
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {productGroups.map((productGroup, idx) => {
-                    return (
-                      <TableRow hover role="checkbox">
-                        <TableCell>
-                          {productGroup.product.name}
-                        </TableCell>
-                        <TableCell>
-                          {productGroup.product.UOM.name}
-                        </TableCell>
-                        <TableCell>
-                          {productGroup.quantity}
-                        </TableCell>
-                        <TableCell>
-                          <DeleteIcon color="error" key="delete" onClick={() =>
-                            setProductGroups(productGroups.filter((_productGroup, _idx) => _idx != idx))
-                          } />
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </>
-      }
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>
 
       {
         productGroups.length > 0 ?
