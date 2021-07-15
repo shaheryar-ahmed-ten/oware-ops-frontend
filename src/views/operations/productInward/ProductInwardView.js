@@ -97,7 +97,7 @@ export default function ProductInwardView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => navigate('create', {
+        <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
           state: {
             selectedProductInward: entity,
             viewOnly: true
