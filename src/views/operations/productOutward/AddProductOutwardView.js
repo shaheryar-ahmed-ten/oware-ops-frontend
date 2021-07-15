@@ -11,25 +11,43 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  makeStyles,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
 import { Autocomplete } from '@material-ui/lab';
 import { ControlPointSharp } from '@material-ui/icons';
+import axios from 'axios';
+import { getURL } from '../../../utils/common';
+import { TableBody } from '@material-ui/core';
+import { useLocation } from 'react-router';
 
-export default function AddProductOutwardView({ addProductOutward, open, handleClose, selectedProductOutward, dispatchOrders, formErrors, vehicleTypes }) {
-  const dispatchOrdersForDropdown = []
-  const filterDispatchOrdersForDropdown = () => {
-    dispatchOrders.forEach(dispatchOrder => {
-      //    loop to get the PO of each DO
-      let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
-      let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
-      if (remainingQuantityOfDispatch != 0) {
-        dispatchOrdersForDropdown.push(dispatchOrder);
-      }
-    });
-  }
-  filterDispatchOrdersForDropdown();
+const useStyles = makeStyles((theme) => ({
+  parentContainer: {
+    boxSizing: 'border-box',
+    padding: "30px 30px",
+  },
+  pageHeading: {
+    fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
+  },
+  heading: {
+    fontWeight: 'bolder'
+  },
+}));
+
+export default function AddProductOutwardView({ addProductOutward, open, handleClose }) {
+  const classes = useStyles();
+  const { state } = useLocation();
+  const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null);
+
   const [validation, setValidation] = useState({});
   const [product, setProduct] = useState(0);
   const [quantity, setQuantity] = useState(0);
@@ -44,18 +62,69 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [dispatchOrderId, setDispatchOrderId] = useState('');
   const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
   const [referenceId, setReferenceId] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [disabledFlag, setDisabledFlag] = useState(false)
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+
+  const [formErrors, setFormErrors] = useState([]);
+  const [vehicleTypes, setVehicleTypes] = useState([])
+  const [dispatchOrders, setDispatchOrders] = useState([]);
+  const [vehicles, setVehicles] = useState([]); // will be used instead vehicle types, numbers etc
+  const [vehicleNumber, setVehicleNumber] = useState('');
+  const [chosenDispatchOrder, setChosenDispatchOrder] = useState(null); // used in details table, selected from dropdown
+  useEffect(() => {
+    getRelations();
+  }, []);
+
+  useEffect(() => {
+    if (!!selectedProductOutward) {
+      setDisabledFlag(true)
+      selectDispatchOrder(selectedProductOutward.dispatchOrderId || '', selectedProductOutward.internalIdForBusiness || '');
+      setQuantity(selectedProductOutward.quantity || '');
+    } else {
+      setValidation({})
+      setDisabledFlag(false)
+      selectDispatchOrder('');
+      setQuantity('');
+    }
+  }, [selectedProductOutward, dispatchOrders])
+
+  const dispatchOrdersForDropdown = []
+  const filterDispatchOrdersForDropdown = () => {
+    dispatchOrders.forEach(dispatchOrder => {
+      //    loop to get the PO of each DO
+      let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
+      let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
+      if (remainingQuantityOfDispatch != 0) {
+        dispatchOrdersForDropdown.push(dispatchOrder);
+      }
+    });
+  }
+  filterDispatchOrdersForDropdown();
+
+
+  const getRelations = () => {
+    axios.get(getURL('/product-outward/relations'))
+      .then(res => {
+        // console.log(res.data.vehicles)
+        // setting dispatchOrder details and vehicleTypes in local State
+        // setVehicleTypes((prevState) => res.data.vehicleTypes)
+        setVehicles((prevState) => res.data.vehicles);
+        setDispatchOrders(res.data.dispatchOrders);
+      });
+  };
 
   // resolved: error occurs on product outward edit.
   const selectDispatchOrder = (value, internalIdForBusiness) => {
     setDispatchOrderId(value);
     setDispatchOrderBusinessId(internalIdForBusiness)
-    if (value) {
+    if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
+      setChosenDispatchOrder(dispatchOrder)
+      console.log(selectedProductOutward)
       setDispatchOrderBusinessId(dispatchOrder.internalIdForBusiness)
+
+
       let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       setRequestedQuantity(dispatchOrder.quantity || 0);
       setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
@@ -69,8 +138,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReferenceId(dispatchOrder.referenceId || '')
       setInternalIdForBusiness(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
       if (selectedProductOutward) {
-        setVehicleType(selectedProductOutward.Vehicle.number || '')
-        setVehicleNumber(selectedProductOutward.Vehicle.type || '')
+        // setVehicleType(selectedProductOutward.Vehicle.type || '')
+        setVehicleNumber(selectedProductOutward.Vehicle.registrationNumber || '')
       }
     }
     else {
@@ -90,18 +159,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     }
   }
 
-  useEffect(() => {
-    if (!!selectedProductOutward) {
-      setDisabledFlag(true)
-      selectDispatchOrder(selectedProductOutward.dispatchOrderId || '');
-      setQuantity(selectedProductOutward.quantity || '');
-    } else {
-      setValidation({})
-      setDisabledFlag(false)
-      selectDispatchOrder('');
-      setQuantity('');
-    }
-  }, [selectedProductOutward, dispatchOrders])
+
   // Done: add reference id in sending obj
   // Done: add vehicleNumber and vehicleType
   const handleSubmit = e => {
@@ -127,7 +185,202 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   }
 
   return (
-    <div style={{ display: "inline" }}>
+    <>
+      {formErrors}
+      <Grid container className={classes.parentContainer} spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h3" className={classes.heading}>Add Product Outward</Typography>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="combo-box-demo"
+              defaultValue={selectedProductOutward ? { internalIdForBusiness: selectedProductOutward.internalIdForBusiness } : ''}
+              options={dispatchOrdersForDropdown}
+              getOptionLabel={(dispatchOrder) => dispatchOrder.internalIdForBusiness || ''}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  selectDispatchOrder(newValue.id, (newValue.internalIdForBusiness || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" />}
+            />
+            {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order Id is required!</Typography> : ''}
+          </FormControl>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <InputLabel>Vehicle</InputLabel>
+            <Select
+              fullWidth={true}
+              displayEmpty
+              id="vehicle"
+              label="Vehicle Number"
+              variant="outlined"
+              value={vehicleNumber}
+              onChange={e => setVehicleNumber(e.target.value)}
+              onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
+            >
+              {
+                vehicleNumber == '' ?
+                  <MenuItem value=""></MenuItem>
+                  :
+                  <MenuItem value={vehicleNumber} disable> {vehicleNumber} </MenuItem>
+              }
+              {vehicles.map((vehicle, index) => <MenuItem key={index} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
+            </Select>
+            {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
+          </FormControl>
+        </Grid>
+        <Grid item sm={12}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="referenceId"
+            label="Reference Id"
+            type="text"
+            variant="outlined"
+            value={referenceId}
+            // disabled
+            inputProps={{ maxLength: 30 }}
+            onChange={(e) => { setReferenceId(e.target.value) }}
+          />
+        </Grid>
+      </Grid>
+
+      {
+        chosenDispatchOrder ?
+          <TableContainer className={classes.parentContainer}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Customer
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Warehouse
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Products
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Shipment Date
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Receiver Name
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Receiver Phone
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow hover role="checkbox">
+                  <TableCell>
+                    {customer}
+                  </TableCell>
+                  <TableCell>
+                    {warehouse}
+                  </TableCell>
+                  <TableCell>
+                    {chosenDispatchOrder.ProductOutwards.length}
+                  </TableCell>
+                  <TableCell>
+                    {shipmentDate}
+                  </TableCell>
+                  <TableCell>
+                    {receiverName}
+                  </TableCell>
+                  <TableCell>
+                    {receiverPhone}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          :
+          ''
+      }
+      {
+        chosenDispatchOrder && chosenDispatchOrder.ProductOutwards.length > 0 ?
+          <>
+            <Grid container className={classes.parentContainer} spacing={3}>
+              <Grid item xs={12}>
+                <Typography variant="h3" className={classes.heading}>Product Details</Typography>
+              </Grid>
+            </Grid>
+            <TableContainer className={classes.parentContainer}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Product
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      UOM
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Dispatch Quantity
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Remaining Quantity
+                    </TableCell>
+                    <TableCell
+                      style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                      Actual Quantity To Dispatch
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableRow hover role="checkbox">
+                  <TableCell>
+                    dummy
+                  </TableCell>
+                  <TableCell>
+                    dummy
+                  </TableCell>
+                  <TableCell>
+                    dummy
+                  </TableCell>
+                  <TableCell>
+                    dummy
+                  </TableCell>
+                  <TableCell>
+                    dummy
+                  </TableCell>
+                </TableRow>
+              </Table>
+            </TableContainer>
+            <Grid container className={classes.parentContainer} spacing={3}>
+              <Grid item xs={3}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Button onClick={handleSubmit} color="primary" variant="contained">
+                    {!selectedProductOutward ? 'Add Product Outward' : 'Update Product Outward'}
+                  </Button>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </>
+          :
+          ''
+      }
+
+
+
+    </>
+  );
+}
+
+
+{/* <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
@@ -359,6 +612,4 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
           </DialogActions>
         </Dialog>
       </form>
-    </div >
-  );
-}
+    </div > */}

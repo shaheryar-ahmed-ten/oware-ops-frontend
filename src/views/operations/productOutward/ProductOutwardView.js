@@ -25,6 +25,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,6 +52,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProductOutwardView() {
   const classes = useStyles();
+  const navigate = useNavigate()
   const columns = [{
     id: 'id',
     label: 'OUTWARD ID',
@@ -125,7 +127,11 @@ export default function ProductOutwardView() {
     format: (value, entity) =>
       [
         <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <EditIcon key="edit" onClick={() => navigate('edit',{
+          state:{
+            selectedProductOutward: entity
+          }
+        })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -254,7 +260,9 @@ export default function ProductOutwardView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductOutwardViewOpen(true)}>ADD PRODUCT OUTWARD</Button>;
+    // onClick={() => setAddProductOutwardViewOpen(true)}
+    onClick={() => { navigate('create') }}
+  >ADD PRODUCT OUTWARD</Button>;
   const addProductOutwardModal = <AddProductOutwardView
     key={3}
     formErrors={formErrors}
@@ -280,7 +288,7 @@ export default function ProductOutwardView() {
     open={productOutwardsDetailsViewOpen}
     handleClose={() => closeViewProductOutwardDetailsView()} />
 
-  const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
+  const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
 
   return (
     <Paper className={classes.root}>

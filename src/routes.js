@@ -23,6 +23,7 @@ import DriverView from './views/logistics/driver/DriverView';
 import VehicleView from './views/logistics/vehicle/VehicleView';
 import RideView from './views/logistics/ride/RideView';
 import AddRideView from './views/logistics/ride/AddRideView';
+import AddProductOutwardView from './views/operations/productOutward/AddProductOutwardView';
 
 
 const routes = (user) => [
@@ -83,6 +84,14 @@ const routes = (user) => [
       {
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward/create',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <AddProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <AddProductOutwardView /> : <Navigate to="404" />
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
