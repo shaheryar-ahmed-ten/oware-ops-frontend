@@ -174,6 +174,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   }, [productId]);
 
+
   const getInventory = (params) => {
     return axios.get(getURL('/dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
@@ -283,6 +284,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             <Autocomplete
               id="combo-box-demo"
               options={customers}
+              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
               getOptionLabel={(customer) => customer.name}
               onChange={(event, newValue) => {
                 if (newValue)
@@ -302,7 +304,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
               label="Inventory"
               variant="outlined"
               value={warehouseId}
-              disabled={!!selectedDispatchOrder}
               onChange={e => { setWarehouseId(e.target.value) }}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
             >
