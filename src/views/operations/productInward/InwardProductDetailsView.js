@@ -17,11 +17,12 @@ import {
   TableBody,
   makeStyles
 } from '@material-ui/core'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
-import { dateFormat } from '../../../utils/common';
+import { dateFormat, getURL } from '../../../utils/common';
 import PrintIcon from '@material-ui/icons/Print';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -48,14 +49,33 @@ const useStyles = makeStyles((theme) => ({
 function InwardProductDetailsView() {
   const classes = useStyles();
   const { state } = useLocation();
+  const { uid } = useParams();
   const [selectedProductInward, setSelectedProductInward] = useState(state ? state.selectedProductInward : null);
+
+  useEffect(() => {
+    if (!selectedProductInward) {
+      fetchInwardOrders();
+    }
+  }, [uid])
+
+  const fetchInwardOrders = () => {
+    _getProductInwards()
+  }
+
+  const _getProductInwards = () => {
+    axios.get(getURL('product-inward'))
+      .then(res => {
+        setSelectedProductInward(res.data.data.find((product) => product.id == uid))
+      });
+  }
+
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
   return (
-    <>
+    selectedProductInward ? <>
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h3" className={classes.heading}>Product Inward Details</Typography>
@@ -148,6 +168,8 @@ function InwardProductDetailsView() {
         </TableContainer>
       </Grid>
     </>
+      :
+      null
   )
 }
 
