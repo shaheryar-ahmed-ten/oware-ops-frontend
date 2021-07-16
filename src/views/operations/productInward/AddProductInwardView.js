@@ -44,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     fontWeight: 'bolder'
   },
+  shadedTableHeader: {
+    backgroundColor: 'rgba(202,201,201,0.3)'
+  },
+  tableHeadText: {
+    background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
+  }
 }));
 export default function AddProductInwardView() {
   const classes = useStyles();
@@ -307,17 +313,17 @@ export default function AddProductInwardView() {
       <TableContainer className={classes.parentContainer}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
-            <TableRow>
+            <TableRow className={classes.shadedTableHeader}>
               <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                className={classes.tableHeadText}>
                 Name
               </TableCell>
               <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                className={classes.tableHeadText}>
                 UoM
               </TableCell>
               <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                className={classes.tableHeadText}>
                 Quantity
               </TableCell>
               <TableCell></TableCell>

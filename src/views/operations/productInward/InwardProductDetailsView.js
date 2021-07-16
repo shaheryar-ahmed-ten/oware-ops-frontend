@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
   shadedTableHeader: {
     backgroundColor: 'rgba(202,201,201,0.3)'
+  },
+  tableHeadText: {
+    background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
   }
 }));
 
@@ -51,7 +54,6 @@ function InwardProductDetailsView() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-  console.log(selectedProductInward)
   return (
     <>
       <Grid container className={classes.parentContainer} spacing={3}>
@@ -63,28 +65,22 @@ function InwardProductDetailsView() {
             <TableHead>
               <TableRow>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Inward Id
+                  className={classes.tableHeadText}>Inward Id
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Customer
+                  className={classes.tableHeadText}>Customer
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Warehouse
+                  className={classes.tableHeadText}>Warehouse
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Products
+                  className={classes.tableHeadText}>Products
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Reference Id
+                  className={classes.tableHeadText}>Reference Id
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                  Inward Date
+                  className={classes.tableHeadText}>Inward Date
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -118,15 +114,15 @@ function InwardProductDetailsView() {
             <TableHead>
               <TableRow className={classes.shadedTableHeader}>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  className={classes.tableHeadText}>
                   PRODUCT
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  className={classes.tableHeadText}>
                   QUANTITY
                 </TableCell>
                 <TableCell
-                  style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                  className={classes.tableHeadText}>
                   UOM
                 </TableCell>
               </TableRow>
