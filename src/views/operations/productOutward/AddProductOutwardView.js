@@ -71,7 +71,8 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [dispatchOrders, setDispatchOrders] = useState([]);
   const [vehicles, setVehicles] = useState([]); // will be used instead vehicle types, numbers etc
   const [vehicleNumber, setVehicleNumber] = useState('');
-  const [chosenDispatchOrder, setChosenDispatchOrder] = useState(null); // used in details table, selected from dropdown
+  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null); // used in details table, selected from dropdown
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -120,7 +121,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     setDispatchOrderBusinessId(internalIdForBusiness)
     if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
-      setChosenDispatchOrder(dispatchOrder)
+      setSelectedDispatchOrder(dispatchOrder)
       console.log(selectedProductOutward)
       setDispatchOrderBusinessId(dispatchOrder.internalIdForBusiness)
 
@@ -248,7 +249,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       </Grid>
 
       {
-        chosenDispatchOrder ?
+        selectedDispatchOrder ?
           <TableContainer className={classes.parentContainer}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -263,7 +264,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Products
+                    Outwards
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
@@ -288,7 +289,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     {warehouse}
                   </TableCell>
                   <TableCell>
-                    {chosenDispatchOrder.ProductOutwards.length}
+                    {selectedDispatchOrder.ProductOutwards.length}
                   </TableCell>
                   <TableCell>
                     {shipmentDate}
@@ -307,7 +308,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
           ''
       }
       {
-        chosenDispatchOrder && chosenDispatchOrder.ProductOutwards.length > 0 ?
+        selectedDispatchOrder ?
           <>
             <Grid container className={classes.parentContainer} spacing={3}>
               <Grid item xs={12}>
@@ -328,11 +329,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Dispatch Quantity
+                      Ordered Quantity
                     </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Remaining Quantity
+                      Available Quantity
                     </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
@@ -340,23 +341,41 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableRow hover role="checkbox">
-                  <TableCell>
-                    dummy
-                  </TableCell>
-                  <TableCell>
-                    dummy
-                  </TableCell>
-                  <TableCell>
-                    dummy
-                  </TableCell>
-                  <TableCell>
-                    dummy
-                  </TableCell>
-                  <TableCell>
-                    dummy
-                  </TableCell>
-                </TableRow>
+                {selectedDispatchOrder.Inventories.map(inventory => {
+                  return <>
+                    <TableRow hover role="checkbox">
+                      <TableCell>
+                        {inventory.Product.name}
+                      </TableCell>
+                      <TableCell>
+                        {inventory.Product.UOM.name}
+                      </TableCell>
+                      <TableCell>
+                        {inventory.OrderGroup.quantity}
+                      </TableCell>
+                      <TableCell>
+                        {inventory.availableQuantity}
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          fullWidth={true}
+                          margin="dense"
+                          InputProps={{ inputProps: { min: 0, max: inventory.availableQuantity } }}
+                          id="quantity"
+                          label="Quantity"
+                          type="number"
+                          variant="outlined"
+                          value={quantity}
+                          disabled={!!selectedDispatchOrder}
+                          // onChange={e => setQuantity(e.target.value)} // TODO: Fix multi inputs
+                          onBlur={e => setValidation({ ...validation, quantity: true })}
+                        />
+                        {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+
+                      </TableCell>
+                    </TableRow>
+                  </>
+                })}
               </Table>
             </TableContainer>
             <Grid container className={classes.parentContainer} spacing={3}>
