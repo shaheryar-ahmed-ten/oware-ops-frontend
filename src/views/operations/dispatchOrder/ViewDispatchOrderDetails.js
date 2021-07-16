@@ -54,7 +54,6 @@ function ViewDispatchOrderDetails() {
     content: () => componentRef.current,
   });
 
-
   return (
     selectedDispatchOrder ? <>
       <Grid container className={classes.parentContainer} spacing={3}>
@@ -109,7 +108,7 @@ function ViewDispatchOrderDetails() {
                   {selectedDispatchOrder.Inventory.Warehouse.city}
                 </TableCell>
                 <TableCell>
-                  (not rec 4rm backend)
+                  {selectedDispatchOrder.Inventories.length}
                 </TableCell>
                 <TableCell>
                   {selectedDispatchOrder.referenceId}
@@ -169,7 +168,7 @@ function ViewDispatchOrderDetails() {
                         {order.Product.UOM.name} KG
                       </TableCell>
                       <TableCell>
-                        needs to be confirmed
+                        {order.OrderGroup.quantity}
                       </TableCell>
                       <TableCell>
                         {order.availableQuantity}
