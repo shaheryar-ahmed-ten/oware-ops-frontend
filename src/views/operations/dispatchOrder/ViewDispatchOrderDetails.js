@@ -54,7 +54,6 @@ function ViewDispatchOrderDetails() {
     content: () => componentRef.current,
   });
 
-  // console.log(selectedDispatchOrder)
 
   return (
     selectedDispatchOrder ? <>
