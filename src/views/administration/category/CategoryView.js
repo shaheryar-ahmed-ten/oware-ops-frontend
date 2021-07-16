@@ -84,8 +84,8 @@ export default function CategoryView() {
 
   const addCategory = data => {
     let apiPromise = null;
-    if (!selectedCategory) apiPromise = axios.post(getURL('/category'), data);
-    else apiPromise = axios.put(getURL(`/category/${selectedCategory.id}`), data);
+    if (!selectedCategory) apiPromise = axios.post(getURL('category'), data);
+    else apiPromise = axios.put(getURL(`category/${selectedCategory.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -100,7 +100,7 @@ export default function CategoryView() {
   };
 
   const deleteCategory = data => {
-    axios.delete(getURL(`/category/${selectedCategory.id}`))
+    axios.delete(getURL(`category/${selectedCategory.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -132,7 +132,7 @@ export default function CategoryView() {
   }
 
   const _getCategories = (page, searchKeyword) => {
-    axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages);
         setCategories(res.data.data);
