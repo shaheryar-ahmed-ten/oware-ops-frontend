@@ -126,9 +126,13 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        <EditIcon key="edit" onClick={() => navigate('edit',{
-          state:{
+        <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
+          state: {
+            selectedProductOutward: entity
+          }
+        })} />,
+        <EditIcon key="edit" onClick={() => navigate('edit', {
+          state: {
             selectedProductOutward: entity
           }
         })} />,
