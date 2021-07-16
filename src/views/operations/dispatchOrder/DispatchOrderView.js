@@ -115,7 +115,13 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
+        <VisibilityIcon key="view"
+          onClick={() => navigate(`view/${entity.id}`, {
+            state: {
+              selectedDispatchOrder: entity,
+              viewOnly: true
+            }
+          })} />,
         <EditIcon key="edit" onClick={() => navigate('edit', {
           state: {
             selectedDispatchOrder: entity
@@ -304,7 +310,7 @@ export default function DispatchOrderView() {
     dispatchedOrdersLength={dispatchOrders.length}
   />
 
-  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal, dispatchOrderDetailsModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>

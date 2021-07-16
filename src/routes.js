@@ -25,6 +25,8 @@ import RideView from './views/logistics/ride/RideView';
 import AddRideView from './views/logistics/ride/AddRideView';
 import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
 import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
+import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
+import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
 
 
 const routes = (user) => [
@@ -91,8 +93,16 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
       },
       {
+        path: 'dispatch-order/view/:uid',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <ViewDispatchOrderDetails /> : <Navigate to="404" />
+      },
+      {
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward/view/:uid',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ViewProductOutwardDetails /> : <Navigate to="404" />
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
