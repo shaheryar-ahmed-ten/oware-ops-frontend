@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
   titleActive: {
     color: theme.palette.primary.light,
-    fontWeight: theme.typography.fontWeightMedium
+    fontWeight: theme.typography.fontWeightMedium,
+    textTransform: 'none'
   }
 }));
 

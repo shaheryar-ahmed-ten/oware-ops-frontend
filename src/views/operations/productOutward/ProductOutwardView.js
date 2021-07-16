@@ -134,7 +134,7 @@ export default function ProductOutwardView() {
   const [productOutwards, setProductOutwards] = useState([]);
 
   const [dispatchOrders, setDispatchOrders] = useState([]);
-  const [vehicleTypes, setVehicleTypes] = useState([])
+  const [vehicles, setVehicles] = useState([])
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
@@ -148,8 +148,8 @@ export default function ProductOutwardView() {
 
   const addProductOutward = data => {
     let apiPromise = null;
-    if (!selectedProductOutward) apiPromise = axios.post(getURL('/product-outward'), data);
-    else apiPromise = axios.put(getURL(`/product-outward/${selectedProductOutward.id}`), data);
+    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
+    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -164,7 +164,7 @@ export default function ProductOutwardView() {
   };
 
   const deleteProductOutward = data => {
-    axios.delete(getURL(`/product-outward/${selectedProductOutward.id}`))
+    axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -210,7 +210,7 @@ export default function ProductOutwardView() {
   }
 
   const _getProductOutwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-outward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-outward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
@@ -222,10 +222,10 @@ export default function ProductOutwardView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-outward/relations'))
+    axios.get(getURL('product-outward/relations'))
       .then(res => {
-        // setting dispatchOrder details and vehicleTypes in local State
-        setVehicleTypes((prevState) => res.data.vehicleTypes)
+        // setting dispatchOrder details and vehicles in local State
+        setVehicles((prevState) => res.data.vehicles)
         setDispatchOrders(res.data.dispatchOrders)
       });
   };
@@ -263,7 +263,7 @@ export default function ProductOutwardView() {
     open={addProductOutwardViewOpen}
     addProductOutward={addProductOutward}
     handleClose={() => closeAddProductOutwardView()}
-    vehicleTypes={vehicleTypes} />
+    vehicles={vehicles} />
   const deleteProductOutwardModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProductOutward}

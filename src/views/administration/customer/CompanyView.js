@@ -16,10 +16,12 @@ import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCompanyView from './AddCompanyView';
+import CompanyDetailsView from './CompanyDetailsView';
 import { capitalize, debounce } from 'lodash';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { DEBOUNCE_CONST } from '../../../Config';
@@ -51,11 +53,10 @@ export default function CompanyView({ relationType }) {
   const pageHeadTitle = capitalize(`${relationType}s`);
   const classes = useStyles();
   const columns = [{
-    id: 'id',
+    id: 'internalIdForBusiness',
     label: 'ID',
     minWidth: 'auto',
-    className: '',
-    format: (value, entity) => `${entity.name[0]}${(entity.type && entity.type[0]) || ""}${entity.relationType[0]}-${digitize(value, 3)}`
+    className: ''
   }, {
     id: 'name',
     label: 'Company',
@@ -78,12 +79,12 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Contact.email
-  // }, {
-  //   id: 'Contact.phone',
-  //   label: 'Contact Phone',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.Contact.phone
+    // }, {
+    //   id: 'Contact.phone',
+    //   label: 'Contact Phone',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Contact.phone
   }, {
     id: 'isActive',
     label: 'Status',
@@ -102,6 +103,7 @@ export default function CompanyView({ relationType }) {
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
@@ -117,26 +119,27 @@ export default function CompanyView({ relationType }) {
   const [addCompanyViewOpen, setAddCompanyViewOpen] = useState(false);
   const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+  const [companyDetailsView, setCompanyDetailsView] = useState(false)
 
   const addCompany = data => {
     let apiPromise = null;
-    if (!selectedCompany) apiPromise = axios.post(getURL(`/company/${relationType}`), data);
-    else apiPromise = axios.put(getURL(`/company/${relationType}/${selectedCompany.id}`), data);
+    if (!selectedCompany) apiPromise = axios.post(getURL(`company/${relationType}`), data);
+    else apiPromise = axios.put(getURL(`company/${relationType}/${selectedCompany.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       setShowMessage({
-        message: "New customer has been created."
-      })
+        message: `${relationType.toLowerCase()} has been ${!!selectedCompany ? 'updated' : 'created'}.`
+      });
       closeAddCompanyView();
       getCompanies();
     });
   };
 
   const deleteCompany = data => {
-    axios.delete(getURL(`/company/${relationType}/${selectedCompany.id}`))
+    axios.delete(getURL(`company/${relationType}/${selectedCompany.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -146,6 +149,15 @@ export default function CompanyView({ relationType }) {
         getCompanies();
       });
   };
+  const openViewDetails = (driver) => {
+    setSelectedCompany(driver)
+    setCompanyDetailsView(true)
+  }
+
+  const closeCompanyDetailsView = () => {
+    setCompanyDetailsView(false)
+    setSelectedCompany(null)
+  }
 
   const openEditView = customer => {
     setSelectedCompany(customer);
@@ -168,7 +180,7 @@ export default function CompanyView({ relationType }) {
   }
 
   const _getCompanies = (page, searchKeyword) => {
-    axios.get(getURL(`/company/${relationType}`), { params: { page, search: searchKeyword } })
+    axios.get(getURL(`company/${relationType}`), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setCompanies(res.data.data)
@@ -180,7 +192,7 @@ export default function CompanyView({ relationType }) {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL(`/company/${relationType}/relations`))
+    axios.get(getURL(`company/${relationType}/relations`))
       .then(res => {
         setUsers(res.data.users);
         setCustomerTypes(res.data.customerTypes);
@@ -231,7 +243,12 @@ export default function CompanyView({ relationType }) {
     selectedEntity={selectedCompany && selectedCompany.name}
     title={"Company"}
   />
-  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal];
+  const companyDetailsViewModal = <CompanyDetailsView
+    relationType={relationType}
+    selectedCompany={selectedCompany}
+    open={companyDetailsView}
+    handleClose={closeCompanyDetailsView} />;
+  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
 
   return (
     <Paper className={classes.root}>

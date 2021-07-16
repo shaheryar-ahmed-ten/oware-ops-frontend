@@ -177,7 +177,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const handleToggle = (event, nodeIds) => {
-    setExpanded(nodeIds);
+    setExpanded([nodeIds[0]]);
   };
 
   const handleSelect = (event, nodeIds) => {

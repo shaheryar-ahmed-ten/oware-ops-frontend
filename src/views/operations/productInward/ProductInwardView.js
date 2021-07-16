@@ -25,6 +25,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import InwardProductDetailsView from './InwardProductDetailsView';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,6 +52,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProductInwardView() {
   const classes = useStyles();
+  const navigate = useNavigate();
+
+
   const columns = [{
     id: 'Customer.name',
     label: 'CUSTOMER',
@@ -58,29 +62,29 @@ export default function ProductInwardView() {
     className: '',
     format: (value, entity) => entity.Company.name,
   }, {
-    id: 'Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Product.name,
-  }, {
+    //   id: 'Product.name',
+    //   label: 'PRODUCT',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Product.name,
+    // }, {
     id: 'Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Warehouse.name,
   }, {
-    id: 'Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Product.UOM.name,
-  }, {
-    id: 'quantity',
-    label: 'QUANTITY RECEIVED',
-    minWidth: 'auto',
-    className: '',
-  }, {
+    //   id: 'Product.UOM.name',
+    //   label: 'UOM',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Product.UOM.name,
+    // }, {
+    //   id: 'quantity',
+    //   label: 'QUANTITY RECEIVED',
+    //   minWidth: 'auto',
+    //   className: '',
+    // }, {
     id: 'createdAt',
     label: 'INWARD DATE',
     minWidth: 'auto',
@@ -93,12 +97,22 @@ export default function ProductInwardView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
+          state: {
+            selectedProductInward: entity,
+            viewOnly: true
+          }
+        })} />,
+        <EditIcon key="edit" onClick={() => navigate('edit', {
+          state: {
+            selectedProductInward: entity,
+            viewOnly: false
+          }
+        })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   },
-];
+  ];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [productInwards, setProductInwards] = useState([]);
@@ -118,8 +132,8 @@ export default function ProductInwardView() {
 
   const addProductInward = data => {
     let apiPromise = null;
-    if (!selectedProductInward) apiPromise = axios.post(getURL('/product-inward'), data);
-    else apiPromise = axios.put(getURL(`/product-inward/${selectedProductInward.id}`), data);
+    if (!selectedProductInward) apiPromise = axios.post(getURL('product-inward'), data);
+    else apiPromise = axios.put(getURL(`product-inward/${selectedProductInward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -134,7 +148,7 @@ export default function ProductInwardView() {
   };
 
   const deleteProductInward = data => {
-    axios.delete(getURL(`/product-inward/${selectedProductInward.id}`))
+    axios.delete(getURL(`product-inward/${selectedProductInward.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -176,7 +190,7 @@ export default function ProductInwardView() {
   }
 
   const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('/product-inward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
@@ -188,7 +202,7 @@ export default function ProductInwardView() {
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/product-inward/relations'))
+    axios.get(getURL('product-inward/relations'))
       .then(res => {
         setProducts(res.data.products)
         setWarehouses(res.data.warehouses)
@@ -220,7 +234,12 @@ export default function ProductInwardView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductInwardViewOpen(true)}>ADD PRODUCT INWARD</Button>;
+    // onClick={() => setAddProductInwardViewOpen(true)}
+    onClick={() => navigate('/operations/product-inward/create', {
+      state: {
+        viewOnly: false
+      }
+    })}>ADD PRODUCT INWARD</Button>;
   const addProductInwardModal = <AddProductInwardView
     key={3}
     formErrors={formErrors}
@@ -241,15 +260,15 @@ export default function ProductInwardView() {
   />
 
   const inwardProductDetailsModal = <InwardProductDetailsView
-  key={5}
-  formErrors={formErrors}
-  selectedProductInward={selectedProductInward}
-  open={inwardProductDetailsViewOpen}
-  handleClose={() => closeInwardProductDetailsView()}
+    key={5}
+    formErrors={formErrors}
+    selectedProductInward={selectedProductInward}
+    open={inwardProductDetailsViewOpen}
+    handleClose={() => closeInwardProductDetailsView()}
   />
 
 
-  const headerButtons = [searchInput, addProductInwardButton, addProductInwardModal, deleteProductInwardModal, inwardProductDetailsModal];
+  const headerButtons = [searchInput, addProductInwardButton, deleteProductInwardModal];
 
   return (
     <Paper className={classes.root}>

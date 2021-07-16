@@ -89,8 +89,8 @@ export default function BrandView() {
 
   const addBrand = data => {
     let apiPromise = null;
-    if (!selectedBrand) apiPromise = axios.post(getURL('/brand'), data);
-    else apiPromise = axios.put(getURL(`/brand/${selectedBrand.id}`), data);
+    if (!selectedBrand) apiPromise = axios.post(getURL('brand'), data);
+    else apiPromise = axios.put(getURL(`brand/${selectedBrand.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -105,7 +105,7 @@ export default function BrandView() {
   };
 
   const deleteBrand = data => {
-    axios.delete(getURL(`/brand/${selectedBrand.id}`))
+    axios.delete(getURL(`brand/${selectedBrand.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -137,7 +137,7 @@ export default function BrandView() {
   }
 
   const _getBrands = (page, searchKeyword) => {
-    axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setBrands(res.data.data)
