@@ -27,6 +27,7 @@ import AddProductInwardView from './views/operations/productInward/AddProductInw
 import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
 import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
 import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
+import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
 
 
 const routes = (user) => [
@@ -79,6 +80,18 @@ const routes = (user) => [
       {
         path: 'product-inward',
         element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <ProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/create',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/view/:uid',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <InwardProductDetailsView /> : <Navigate to="404" />
       },
       {
         path: 'dispatch-order',

@@ -162,7 +162,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                     margin="dense"
                     id="driverPhone"
                     label="Phone"
-                    type="text"
+                    type="tel"
                     variant="outlined"
                     value={driverPhone}
                     placeholder="0346xxxxxx8"
@@ -170,7 +170,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                     onBlur={e => setValidation({ ...validation, driverPhone: true })}
                   />
                   {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Phone number is required!</Typography> : ''}
-                  {validation.driverPhone && !isPhone(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
+                  {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
+                  {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Format: 0343XXXXX79</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
