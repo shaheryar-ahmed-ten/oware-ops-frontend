@@ -122,11 +122,11 @@ export default function DispatchOrderView() {
               viewOnly: true
             }
           })} />,
-        <EditIcon key="edit" onClick={() => navigate('edit', {
-          state: {
-            selectedDispatchOrder: entity
-          }
-        })} />,
+        // <EditIcon key="edit" onClick={() => navigate('edit', {
+        //   state: {
+        //     selectedDispatchOrder: entity
+        //   }
+        // })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
