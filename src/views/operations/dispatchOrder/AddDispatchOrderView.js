@@ -291,25 +291,25 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
                   handleCustomerSearch(newValue.id, (newValue.name || ''))
               }}
               renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
+              onBlur={e => setValidation({ ...validation, customerId: true })}
             />
             {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
           </FormControl>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <InputLabel>Warehouse</InputLabel>
-            <Select
-              fullWidth={true}
-              id="warehouseId"
-              label="Inventory"
-              variant="outlined"
-              value={warehouseId}
-              onChange={e => { setWarehouseId(e.target.value) }}
+            <Autocomplete
+              id="combo-box-demo"
+              options={warehouses}
+              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
+              getOptionLabel={(warehouse) => warehouse.name}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  setWarehouseId(newValue.id)
+              }}
+              renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
-            >
-              <MenuItem value="" disabled>Select a warehouse</MenuItem>
-              {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id} name="name">{warehouse.name}</MenuItem>)}
-            </Select>
+            />
             {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
           </FormControl>
         </Grid>
@@ -378,20 +378,17 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
         <Grid container item xs={12} alignItems="center" spacing={1}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Product</InputLabel>
-              <Select
-                fullWidth={true}
-                id="productId"
-                label="Inventory"
-                variant="outlined"
-                value={productId}
-                disabled={!!selectedDispatchOrder}
-                onChange={e => setProductId(e.target.value)}
+              <Autocomplete
+                id="combo-box-demo"
+                options={products}
+                getOptionLabel={(product) => product.name}
+                onChange={(event, newValue) => {
+                  if (newValue)
+                    setProductId(newValue.id)
+                }}
+                renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, productId: true })}
-              >
-                <MenuItem value="" disabled>Select a product</MenuItem>
-                {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-              </Select>
+              />
               {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
             </FormControl>
           </Grid>
