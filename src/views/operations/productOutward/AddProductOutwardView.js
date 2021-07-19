@@ -107,10 +107,9 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const getRelations = () => {
     axios.get(getURL('/product-outward/relations'))
       .then(res => {
-        // console.log(res.data.vehicles)
         // setting dispatchOrder details and vehicleTypes in local State
         // setVehicleTypes((prevState) => res.data.vehicleTypes)
-        setVehicles((prevState) => res.data.vehicles);
+        setVehicles((prevState) => res.data.vehicle);
         setDispatchOrders(res.data.dispatchOrders);
       });
   };
@@ -122,7 +121,6 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
     if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       setSelectedDispatchOrder(dispatchOrder)
-      console.log(selectedProductOutward)
       setDispatchOrderBusinessId(dispatchOrder.internalIdForBusiness)
 
 
