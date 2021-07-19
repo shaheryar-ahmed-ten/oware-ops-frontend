@@ -62,7 +62,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [dispatchOrderId, setDispatchOrderId] = useState('');
   const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
   const [referenceId, setReferenceId] = useState('');
-  const [vehicleType, setVehicleType] = useState('');
+  const [vehicleId, setVehicleId] = useState('');
   const [disabledFlag, setDisabledFlag] = useState(false)
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
@@ -139,8 +139,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReferenceId(dispatchOrder.referenceId || '')
       setInternalIdForBusiness(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`)
       if (selectedProductOutward) {
-        // setVehicleType(selectedProductOutward.Vehicle.type || '')
-        setVehicleNumber(selectedProductOutward.Vehicle.registrationNumber || '')
+        setVehicleId(selectedProductOutward.vehicleId || '')
       }
     }
     else {
@@ -155,32 +154,29 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       setReceiverPhone('');
       setReferenceId('');
       setInternalIdForBusiness('');
-      setVehicleType('');
-      setVehicleNumber('');
+      setVehicleId('');
     }
   }
 
 
   // Done: add reference id in sending obj
-  // Done: add vehicleNumber and vehicleType
+  // Done: add vehicleNumber and vehicle
   const handleSubmit = e => {
     const newProductOutward = {
       dispatchOrderId,
       quantity,
       referenceId,
-      vehicle: {
-        number: vehicleNumber,
-        type: vehicleType
-      },
+      vehicleId,
       internalIdForBusiness
     }
     setValidation({
       quantity: true,
       dispatchOrderId: true,
-      vehicleType: true
+      vehicleId: true
     });
-    if (isRequired(dispatchOrderId) &&
-      isRequired(quantity) && isRequired(vehicleType)) {
+    if (isRequired(dispatchOrderId)
+      && isRequired(vehicleId)
+      && isRequired(quantity)) {
       addProductOutward(newProductOutward);
     }
   }
@@ -448,42 +444,21 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Vehicle Type</InputLabel>
+                    <InputLabel>Vehicle</InputLabel>
                     <Select
                       fullWidth={true}
                       displayEmpty
-                      id="vehicle"
-                      label="Vehicle Type"
+                      id="vehicleId"
+                      label="Vehicle"
                       variant="outlined"
-                      value={vehicleType}
-                      onChange={e => setVehicleType(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, vehicleType: true })}
+                      value={vehicleId}
+                      onChange={e => setVehicleId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, vehicleId: true })}
                     >
-                      {
-                        vehicleType == '' ?
-                          <MenuItem value=""></MenuItem>
-                          :
-                          <MenuItem value={vehicleType} disable> {vehicleType} </MenuItem>
-                      }
-                      {vehicleTypes.map((vehicle, index) => <MenuItem key={index} value={vehicle}>{vehicle}</MenuItem>)}
+                      {vehicles.map((vehicle, index) => <MenuItem key={index} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
                     </Select>
-                    {validation.vehicleType && !isRequired(vehicleType) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
+                    {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
                   </FormControl>
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="vehicleNumber"
-                    label="Vehicle Number"
-                    type="text"
-                    variant="outlined"
-                    value={vehicleNumber}
-                    inputProps={{ maxLength: 30 }}
-                    onChange={(e) => { setVehicleNumber(e.target.value) }}
-                    onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
-                  />
-                  {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>

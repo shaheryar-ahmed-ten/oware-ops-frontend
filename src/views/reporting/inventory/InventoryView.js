@@ -91,7 +91,7 @@ export default function InventoryView() {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const _getInventories = (page, searchKeyword) => {
-    axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setInventories(res.data.data)
@@ -103,7 +103,7 @@ export default function InventoryView() {
   }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
-    axios.get(getURL('/inventory/export'), {
+    axios.get(getURL('inventory/export'), {
       responseType: 'blob',
       params: { page, search: searchKeyword },
     }).then(response => {

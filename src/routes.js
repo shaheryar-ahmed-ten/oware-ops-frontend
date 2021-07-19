@@ -25,6 +25,11 @@ import RideView from './views/logistics/ride/RideView';
 import AddRideView from './views/logistics/ride/AddRideView';
 import AddProductOutwardView from './views/operations/productOutward/AddProductOutwardView';
 import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
+import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
+import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
+import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
+import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
+import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
 
 
 const routes = (user) => [
@@ -79,8 +84,32 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <ProductInwardView /> : <Navigate to="404" />
       },
       {
+        path: 'product-inward/create',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/view/:uid',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <InwardProductDetailsView /> : <Navigate to="404" />
+      },
+      {
         path: 'dispatch-order',
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <DispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/create',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/edit',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/view/:uid',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <ViewDispatchOrderDetails /> : <Navigate to="404" />
       },
       {
         path: 'product-outward',

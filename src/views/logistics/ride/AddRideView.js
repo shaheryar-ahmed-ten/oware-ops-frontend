@@ -17,7 +17,7 @@ import {
   TableCell
 } from '@material-ui/core'
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
-import { dateToPickerFormat, getURL } from '../../../utils/common';
+import { dateToPickerFormat, getURL, digitize } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   },
   pageHeading: {
     fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
   }
 }));
 function AddRideView() {
@@ -54,6 +57,7 @@ function AddRideView() {
   const [productCategories, setProductCategories] = useState([]);
   const [formErrors, setFormErrors] = useState([]);
   const [cities, setCities] = useState([]);
+  const [manifestImage, setManifestImage] = useState(null)
 
   useEffect(() => {
     getRelations();
@@ -61,8 +65,8 @@ function AddRideView() {
 
   const addRide = data => {
     let apiPromise = null;
-    if (!selectedRide) apiPromise = axios.post(getURL('/ride'), data);
-    else apiPromise = axios.put(getURL(`/ride/${selectedRide.id}`), data);
+    if (!selectedRide) apiPromise = axios.post(getURL('ride'), data);
+    else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -116,10 +120,9 @@ function AddRideView() {
   const [dropoffDate, setDropoffDate] = useState(dateToPickerFormat(new Date()));
 
   const [isActive, setActive] = useState(true);
-  const [productManifests, setProductManifests] = useState({})
 
   const getRelations = () => {
-    axios.get(getURL('/ride/relations'))
+    axios.get(getURL('ride/relations'))
       .then(res => {
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
@@ -129,6 +132,30 @@ function AddRideView() {
         setCompanies(res.data.companies);
         setProductCategories(res.data.productCategories);
       });
+  };
+
+  const addProduct = () => {
+    setValidation({
+      ...validation,
+      productCategoryId: true,
+      productName: true,
+      productQuantity: true
+    });
+    if (productCategoryId && productName && productQuantity) {
+
+      setProducts([...products, {
+        categoryId: productCategoryId,
+        name: productName,
+        quantity: productQuantity
+      }]);
+      setValidation({
+        ...validation,
+        productCategoryId: false,
+        productName: false,
+        productQuantity: false
+      });
+    }
+
   };
 
 
@@ -267,10 +294,10 @@ function AddRideView() {
       isNotEmptyArray(products) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
-      const productManifestsIndexes = Object.keys(productManifests);
-      let fileIds = await upload(productManifestsIndexes.map(index => productManifests[index]), 'ride')
-      const productManifestFiles = productManifestsIndexes.reduce((acc, index, fileIndex) => ({ ...acc, [index]: fileIds[fileIndex] }), {})
-      newRide.products.forEach((product, index) => Object.assign(product, { manifestId: productManifestFiles[index] }))
+      if (manifestImage) {
+        const [manifestId] = await upload([manifestImage], 'ride');
+        newRide.manifestId = manifestId;
+      }
       addRide(newRide);
     }
   }
@@ -280,7 +307,19 @@ function AddRideView() {
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h3" className={classes.pageHeading}>Create a Ride</Typography>
+          <Typography variant="h3" className={classes.pageHeading}>
+            {!selectedRide ? 'Create' : 'Edit'} Ride
+          </Typography>
+          {selectedRide &&
+            <Typography variant="p">
+              Ride ID: {digitize(selectedRide.id, 6)}
+            </Typography>
+          }
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Customer & Vehicle</Typography>
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
@@ -318,7 +357,40 @@ function AddRideView() {
               </Select>
               {validation.status && !isRequired(status) ? <Typography color="error">Status is required!</Typography> : ''}
             </FormControl>
-          </Grid>        </Grid>
+          </Grid>
+        </Grid>
+        {status == 'CANCELLED' ?
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={6}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="cancellationReason"
+                label="Cancellation reason"
+                type="text"
+                variant="outlined"
+                value={cancellationReason}
+                onChange={e => setCancellationReason(e.target.value)}
+                onBlur={e => setValidation({ ...validation, cancellationReason: true })}
+              />
+              {validation.cancellationReason && !isRequired(cancellationReason) ? <Typography color="error">Cancellation reason is required!</Typography> : ''}
+            </Grid>
+            <Grid item sm={6}>
+              <TextField
+                fullWidth={true}
+                margin="dense"
+                id="cancellationComment"
+                label="Cancellation comment"
+                type="text"
+                variant="outlined"
+                value={cancellationComment}
+                onChange={e => setCancellationComment(e.target.value)}
+                onBlur={e => setValidation({ ...validation, cancellationComment: true })}
+              />
+              {validation.cancellationComment && !isRequired(cancellationComment) ? <Typography color="error">Cancellation comment is required!</Typography> : ''}
+            </Grid>
+          </Grid>
+          : ''}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -355,6 +427,11 @@ function AddRideView() {
               </Select>
               {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
             </FormControl>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Pickup & Drop-off</Typography>
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -547,13 +624,18 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Cost & Price</Typography>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
               margin="dense"
               id="price"
-              label="Price"
-              placeholder="Price"
+              label="Price (Rs.)"
+              placeholder="Price (Rs.)"
               type="number"
               variant="outlined"
               value={price}
@@ -568,8 +650,8 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="cost"
-              label="Cost"
-              placeholder="Cost"
+              label="Cost (Rs.)"
+              placeholder="Cost (Rs.)"
               type="number"
               variant="outlined"
               value={cost}
@@ -585,8 +667,8 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="customerDiscount"
-              label="Customer discount"
-              placeholder="Customer discount"
+              label="Customer Discount (Rs.)"
+              placeholder="Customer Discount (Rs.)"
               type="number"
               variant="outlined"
               value={customerDiscount}
@@ -594,32 +676,32 @@ function AddRideView() {
               onChange={e => setCustomerDiscount(e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
             />
-            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">customerDiscount is required!</Typography> : ''}
+            {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer Discount is required!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
               margin="dense"
               id="driverIncentive"
-              label="Driver incentive"
-              placeholder="Driver incentive"
+              label="Driver Incentive (Rs.)"
+              placeholder="Driver Incentive (Rs.)"
               type="number"
               variant="outlined"
               value={driverIncentive}
               onChange={e => setDriverIncentive(e.target.value)}
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
-            {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver incentive is required!</Typography> : ''}
+            {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
-            <Typography variant="h3" className={classes.pageHeading}>Product Details</Typography>
+            <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
           </Grid>
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <InputLabel>ProductCategory</InputLabel>
+                <InputLabel>Product Category</InputLabel>
                 <Select
                   fullWidth={true}
                   id="productCategoryId"
@@ -632,7 +714,7 @@ function AddRideView() {
                   <MenuItem value="" disabled>Select a product category</MenuItem>
                   {productCategories.map(productCategory => <MenuItem key={productCategory.id} value={productCategory.id}>{productCategory.name}</MenuItem>)}
                 </Select>
-                {/* {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''} */}
+                {validation.productCategoryId && !isRequired(productCategoryId) ? <Typography color="error">Product Category is required!</Typography> : ''}
               </FormControl>
             </Grid>
             <Grid item xs={3}>
@@ -647,7 +729,7 @@ function AddRideView() {
                 onChange={e => setProductName(e.target.value)}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
-              {/* {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''} */}
+              {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -661,40 +743,16 @@ function AddRideView() {
                 onChange={e => setProductQuantity(e.target.value)}
                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
               />
-              {/* {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''} */}
+              {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button
-                  variant="contained"
-                  component="label"
-                  color={Object.entries(productManifests).length !== 0 ? 'primary' : 'default'}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Product Manifest {Object.entries(productManifests).length !== 0 ? 'Uploaded' : ''}
-                  <input
-                    type="file"
-                    hidden
-                    onChange={(e) => {
-                      setProductManifests({
-                        ...productManifests,
-                        [products.length]: e.target.files[0]
-                      })
-                    }}
-                  />
-                </Button>
-                {validation.productManifests && !isRequired(productManifests) ? <Typography color="error">Product Manifest is required!</Typography> : ''}
+              <FormControl margin="dense" variant="outlined">
+                <Button variant="contained" onClick={() => addProduct({
+                  categoryId: productCategoryId,
+                  name: productName,
+                  quantity: productQuantity
+                })} color="primary">Add Product</Button>
               </FormControl>
-            </Grid>
-          </Grid>
-          <Grid container item xs={12} spacing={3} justify="flex-end">
-            <Grid container item xs={12} justify="flex-end">
-              <Button variant="contained" onClick={() => setProducts([...products, {
-                // category: productCategories.find(category => category.id == productCategoryId),
-                categoryId: productCategoryId,
-                name: productName,
-                quantity: productQuantity
-              }])} color="primary">Add Product</Button>
             </Grid>
           </Grid>
           <Grid container item xs={12}>
@@ -722,7 +780,7 @@ function AddRideView() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {products.map(product => {
+                  {products.map((product, index) => {
                     return (
                       <TableRow hover role="checkbox">
                         <TableCell>
@@ -736,12 +794,12 @@ function AddRideView() {
                         </TableCell>
                         <TableCell>
                           {product.manifestId && product.Manifest ?
-                            <a target="_blank" href={getURL('/preview/' + product.manifestId)}>{product.Manifest.originalName}</a>
+                            <a target="_blank" href={getURL('preview', product.manifestId)}>{product.Manifest.originalName}</a>
                             : ''}
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() =>
-                            setProducts(products.filter(_product => _product.id != product.id))
+                            setProducts(products.filter((_product, _index) => _index != index))
                           } />
                         </TableCell>
                       </TableRow>
@@ -752,12 +810,41 @@ function AddRideView() {
             </TableContainer>
 
           </Grid>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item xs={12}>
+              {(selectedRide && selectedRide.Manifest) ?
+                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Driving License Image</a>
+                : ''}
+            </Grid>
+          </Grid>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={12}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button
+                  variant="contained"
+                  component="label"
+                  color={((selectedRide && selectedRide.manifestId) || manifestImage) ? 'primary' : 'default'}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Product Manifest {((selectedRide && selectedRide.manifestId) || manifestImage) ? 'Uploaded' : ''}
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => { setManifestImage(e.target.files[0]) }}
+                  />
+                </Button>
+              </FormControl>
+            </Grid>
+
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item xs={12}>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedRide ? 'Add Ride' : 'Update Ride'}
-            </Button>
+          <Grid item xs={3}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Button onClick={handleSubmit} color="primary" variant="contained">
+                {!selectedRide ? 'Add Ride' : 'Update Ride'}
+              </Button>
+            </FormControl>
           </Grid>
         </Grid>
       </Grid>
