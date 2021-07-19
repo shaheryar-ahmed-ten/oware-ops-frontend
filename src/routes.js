@@ -27,7 +27,6 @@ import AddProductOutwardView from './views/operations/productOutward/AddProductO
 import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
 import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
 import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
-import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
 import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
 import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
 

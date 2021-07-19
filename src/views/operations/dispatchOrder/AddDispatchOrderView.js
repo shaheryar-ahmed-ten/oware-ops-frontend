@@ -71,7 +71,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
   const [formErrors, setFormErrors] = useState([]);
   const [customers, setCustomers] = useState([]);
 
-  const [dispatchGroups, setDispatchGroups] = useState([]);
+  const [inventories, setInventories] = useState([]);
 
   const [showMessage, setShowMessage] = useState(null);
 
@@ -99,9 +99,9 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
       setReferenceId(selectedDispatchOrder.referenceId || '');
-      if (products.length > 0 && dispatchGroups.length == 0) {
+      if (products.length > 0 && inventories.length == 0) {
         selectedDispatchOrder.Inventories.forEach(inventory => {
-          setDispatchGroups((prevState) => ([
+          setInventories((prevState) => ([
             ...prevState,
             {
               product: products.find(_product => _product.id == inventory.Product.id),
@@ -215,7 +215,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       isRequired(receiverPhone) &&
       isRequired(productId) &&
       isRequired(quantity)) {
-      setDispatchGroups([...dispatchGroups, {
+      setInventories([...inventories, {
         product: products.find(_product => _product.id == productId),
         id: productId,
         quantity
@@ -237,6 +237,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
   const handleSubmit = e => {
     const newDispatchOrder = {
       quantity,
+      inventories,
       inventoryId,
       customerId,
       warehouseId,
@@ -465,7 +466,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             </TableRow>
           </TableHead>
           <TableBody>
-            {dispatchGroups.map((dispatchGroup, idx) => {
+            {inventories.map((dispatchGroup, idx) => {
               return (
                 <TableRow hover role="checkbox">
                   <TableCell>
@@ -479,7 +480,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
                   </TableCell>
                   <TableCell>
                     <DeleteIcon color="error" key="delete" onClick={() =>
-                      setDispatchGroups(dispatchGroups.filter((_dispatchGroup, _idx) => _idx != idx))
+                      setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
                     } />
                   </TableCell>
                 </TableRow>
@@ -490,7 +491,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       </TableContainer>
 
       {
-        dispatchGroups.length > 0 ?
+        inventories.length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">

@@ -19,8 +19,8 @@ import {
   TableRow,
   TableCell
 } from '@material-ui/core'
-import { isRequired, isPhone } from '../../../utils/validators';
-import { Autocomplete } from '@material-ui/lab';
+import { isRequired, isNotEmptyArray } from '../../../utils/validators';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { ControlPointSharp } from '@material-ui/icons';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddProductOutwardView({ addProductOutward, open, handleClose }) {
+export default function AddProductOutwardView({ }) {
   const classes = useStyles();
   const { state } = useLocation();
   const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null);
@@ -63,15 +63,17 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
   const [referenceId, setReferenceId] = useState('');
   const [vehicleId, setVehicleId] = useState('');
-  const [disabledFlag, setDisabledFlag] = useState(false)
+  const [disabledFlag, setDisabledFlag] = useState(false);
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   const [formErrors, setFormErrors] = useState([]);
   const [vehicleTypes, setVehicleTypes] = useState([])
   const [dispatchOrders, setDispatchOrders] = useState([]);
+  const [inventoryQuantities, setInventoryQuantities] = useState([]);
   const [vehicles, setVehicles] = useState([]); // will be used instead vehicle types, numbers etc
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null); // used in details table, selected from dropdown
+  const [showMessage, setShowMessage] = useState(null);
 
   useEffect(() => {
     getRelations();
@@ -109,7 +111,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
       .then(res => {
         // setting dispatchOrder details and vehicleTypes in local State
         // setVehicleTypes((prevState) => res.data.vehicleTypes)
-        setVehicles((prevState) => res.data.vehicle);
+        setVehicles(res.data.vehicles);
         setDispatchOrders(res.data.dispatchOrders);
       });
   };
@@ -157,24 +159,44 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
   }
 
 
+  const addProductOutward = data => {
+    let apiPromise = null;
+    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
+    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
+    apiPromise.then(res => {
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      setShowMessage({
+        message: "New product outward has been created."
+      })
+    });
+  };
+
+
   // Done: add reference id in sending obj
-  // Done: add vehicleNumber and vehicle
+  // Done: add vehicleNumber and vehicle0
   const handleSubmit = e => {
     const newProductOutward = {
       dispatchOrderId,
-      quantity,
+      // quantity,
       referenceId,
       vehicleId,
+      inventories: Object.values(inventoryQuantities),
       internalIdForBusiness
     }
+    console.log(Object.values(inventoryQuantities));
+    console.log(isNotEmptyArray(Object.values(inventoryQuantities)));
+    console.log(isRequired(dispatchOrderId), isRequired(vehicleId));
     setValidation({
-      quantity: true,
+      // quantity: true,
       dispatchOrderId: true,
       vehicleId: true
     });
     if (isRequired(dispatchOrderId)
       && isRequired(vehicleId)
-      && isRequired(quantity)) {
+      && isNotEmptyArray(Object.values(inventoryQuantities))) {
       addProductOutward(newProductOutward);
     }
   }
@@ -211,19 +233,19 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
               id="vehicle"
               label="Vehicle Number"
               variant="outlined"
-              value={vehicleNumber}
-              onChange={e => setVehicleNumber(e.target.value)}
-              onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
+              value={vehicleId}
+              onChange={e => setVehicleId(e.target.value)}
+              onBlur={e => setValidation({ ...validation, vehicleId: true })}
             >
               {
-                vehicleNumber == '' ?
+                vehicleId == '' ?
                   <MenuItem value=""></MenuItem>
                   :
-                  <MenuItem value={vehicleNumber} disable> {vehicleNumber} </MenuItem>
+                  <MenuItem value={vehicleId} disable> {vehicleId} </MenuItem>
               }
               {vehicles.map((vehicle, index) => <MenuItem key={index} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
             </Select>
-            {validation.vehicleNumber && !isRequired(vehicleNumber) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
+            {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
           </FormControl>
         </Grid>
         <Grid item sm={12}>
@@ -335,7 +357,7 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                {selectedDispatchOrder.Inventories.map(inventory => {
+                {selectedDispatchOrder.Inventories.map((inventory, idx) => {
                   return <>
                     <TableRow hover role="checkbox">
                       <TableCell>
@@ -359,13 +381,11 @@ export default function AddProductOutwardView({ addProductOutward, open, handleC
                           label="Quantity"
                           type="number"
                           variant="outlined"
-                          value={quantity}
-                          disabled={!!selectedDispatchOrder}
-                          // onChange={e => setQuantity(e.target.value)} // TODO: Fix multi inputs
+                          value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
+                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value, id: inventory.id } })} // TODO: Fix multi inputs
                           onBlur={e => setValidation({ ...validation, quantity: true })}
                         />
-                        {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
-
+                        {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
                       </TableCell>
                     </TableRow>
                   </>
