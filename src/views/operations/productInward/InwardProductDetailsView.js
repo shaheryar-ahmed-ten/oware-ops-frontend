@@ -69,16 +69,138 @@ function InwardProductDetailsView() {
       });
   }
 
-
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+  
   return (
     selectedProductInward ? <>
+      <Box display="none" displayPrint="block" ref={componentRef}>
+        <Box display="none" displayPrint="block" style={{ margin: "25mm 25mm 0mm 25mm" }}>
+          <Typography variant="h3">
+            Inward Products
+          </Typography>
+        </Box>
+        <Box display="none" displayPrint="block" style={{ margin: "10mm 25mm 0mm 25mm" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Inward Id :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductInward.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Customer Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductInward.Company.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Warehouse :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductInward.Warehouse.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                City :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductInward.Warehouse.city}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Processed By :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductInward.User.firstName + ` ` + selectedProductInward.User.lastName}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Created at :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {dateFormat(selectedProductInward.createdAt)}
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableCell
+                      className={classes.tableHeadText}>
+                      PRODUCT
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableHeadText}>
+                      PRODUCT WEIGHT
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableHeadText}>
+                      UOM
+                    </TableCell>
+                    <TableCell
+                      className={classes.tableHeadText}>
+                      QUANTITY
+                    </TableCell>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      selectedProductInward.Products.map((product) => {
+                        return (
+                          <TableRow>
+                            <TableCell>
+                              {product.name}
+                            </TableCell>
+                            <TableCell>
+                              {product.weight} KG/UNIT
+                            </TableCell>
+                            <TableCell>
+                              {product.UOM.name}
+                            </TableCell>
+                            <TableCell>
+                              {product.InwardGroup.quantity}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                    }
+                  </TableBody>
+
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Product Inward Details</Typography>
+          <Typography variant="h3" className={classes.heading}>Product Inward Details
+            <IconButton aria-label="print" onClick={handlePrint}>
+              <PrintIcon />
+            </IconButton>
+          </Typography>
         </Grid>
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">
