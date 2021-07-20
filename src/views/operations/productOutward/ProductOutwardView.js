@@ -131,11 +131,11 @@ export default function ProductOutwardView() {
             selectedProductOutward: entity
           }
         })} />,
-        <EditIcon key="edit" onClick={() => navigate('edit', {
-          state: {
-            selectedProductOutward: entity
-          }
-        })} />,
+        // <EditIcon key="edit" onClick={() => navigate('edit', {
+        //   state: {
+        //     selectedProductOutward: entity
+        //   }
+        // })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
