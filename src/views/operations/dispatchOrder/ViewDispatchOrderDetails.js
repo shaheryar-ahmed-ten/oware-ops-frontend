@@ -56,9 +56,156 @@ function ViewDispatchOrderDetails() {
 
   return (
     selectedDispatchOrder ? <>
+      <Box display="none" displayPrint="block" ref={componentRef}>
+        <Box display="none" displayPrint="block" style={{ margin: "25mm 25mm 0mm 25mm" }}>
+          <Typography variant="h3">
+            Dispatch Order
+          </Typography>
+        </Box>
+        <Box display="none" displayPrint="block" style={{ margin: "10mm 25mm 0mm 25mm" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Dispatch Order Id :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Customer Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.Inventory.Company.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Warehouse :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.Inventory.Warehouse.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                City :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.Inventory.Warehouse.city}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.receiverName}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Phone :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.receiverPhone}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Requested Shipment Date&Time :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {dateFormat(selectedDispatchOrder.shipmentDate)}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="none" displayPrint="block" style={{ margin: "10mm 0mm 0mm 0mm" }}>
+                <Typography variant="h3">
+                  Products
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow className={classes.shadedTableHeader}>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        PRODUCT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        PRODUCT WEIGHT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        UOM
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        QUANTITY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        AVAILABLE QUANTITY
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      selectedDispatchOrder.Inventories.map((order) => {
+                        return (
+                          <TableRow>
+                            <TableCell>
+                              {order.Product.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.weight} KG/UNIT
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.UOM.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.OrderGroup.quantity}
+                            </TableCell>
+                            <TableCell>
+                              {order.availableQuantity}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Dispatch Order Details</Typography>
+          <Typography variant="h3" className={classes.heading}>Dispatch Order Details
+            <IconButton aria-label="print" onClick={handlePrint}>
+              <PrintIcon />
+            </IconButton>
+          </Typography>
         </Grid>
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">
