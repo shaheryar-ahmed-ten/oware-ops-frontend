@@ -118,8 +118,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setWarehouseId('');
       setProductId('');
       setShipmentDate(dateToPickerFormat(new Date()));
-      setReceiverName('');
-      setReceiverPhone('');
+      setReceiverName('some');
+      setReceiverPhone(12345678945);
       setReferenceId('');
     }
   }, [selectedDispatchOrder])
@@ -160,6 +160,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   useEffect(() => {
     setUom('');
+    setQuantity('');
     setAvailableQuantity(0);
     setInventoryId('');
     if (customerId && warehouseId && productId) {
@@ -217,11 +218,19 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       isRequired(receiverPhone) &&
       isRequired(productId) &&
       isRequired(quantity)) {
-      setInventories([...inventories, {
-        product: products.find(_product => _product.id == productId),
-        id: productId,
-        quantity
-      }])
+      // checking if particular product is already added once
+      // if yes
+      if (!!inventories.find(_product => _product.id == productId)) {
+        alert("Already added")
+      }
+      // if no
+      else {
+        setInventories([...inventories, {
+          product: products.find(_product => _product.id == productId),
+          id: productId,
+          quantity
+        }])
+      }
     }
     else {
       setValidation({
