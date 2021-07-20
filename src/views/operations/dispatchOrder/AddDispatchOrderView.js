@@ -152,7 +152,9 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       const warehouse = warehouses.find(element => warehouseId == element.id);
       setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
       getProducts({ customerId, warehouseId })
-        .then(products => setProducts(products));
+        .then(products => {
+          return setProducts(products)
+        }); // TODO: products with 0 available qty are also comming.
     }
   }, [warehouseId])
 
