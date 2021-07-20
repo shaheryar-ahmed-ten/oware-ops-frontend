@@ -201,39 +201,35 @@ export default function AddProductInwardView() {
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <InputLabel>Customer</InputLabel>
-            <Select
-              fullWidth={true}
-              id="customerId"
-              label="Customer"
-              variant="outlined"
-              value={customerId}
-              disabled={viewOnly}
-              onChange={e => setCustomerId(e.target.value)}
+            <Autocomplete
+              id="customer"
+              defaultValue={selectedProductInward ? { name: selectedProductInward.Company.name, id: selectedProductInward.Company.id } : ''}
+              options={customers}
+              getOptionLabel={(customer) => customer.name}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  setCustomerId(newValue.id)
+              }}
+              renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, customerId: true })}
-            >
-              <MenuItem value="" disabled>Select a customer</MenuItem>
-              {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
-            </Select>
+            />
             {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
           </FormControl>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <InputLabel>Warehouse</InputLabel>
-            <Select
-              fullWidth={true}
-              id="warehouseId"
-              label="Warehouse"
-              variant="outlined"
-              value={warehouseId}
-              disabled={viewOnly}
-              onChange={e => setWarehouseId(e.target.value)}
+            <Autocomplete
+              id="warehouse"
+              defaultValue={selectedProductInward ? { name: selectedProductInward.Warehouse.name, id: selectedProductInward.Warehouse.id } : ''}
+              options={warehouses}
+              getOptionLabel={(warehouse) => warehouse.name}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  setWarehouseId(newValue.id)
+              }}
+              renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
-            >
-              <MenuItem value="" disabled>Select a warehouse</MenuItem>
-              {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id}>{warehouse.name}</MenuItem>)}
-            </Select>
+            />
             {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
           </FormControl>
         </Grid>
