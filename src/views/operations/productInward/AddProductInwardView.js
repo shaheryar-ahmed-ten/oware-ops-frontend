@@ -73,6 +73,8 @@ export default function AddProductInwardView() {
   const [warehouses, setWarehouses] = useState([]);
   const [formErrors, setFormErrors] = useState([]);
 
+  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+
   const [showMessage, setShowMessage] = useState(null);
   useEffect(() => {
     getRelations();
@@ -175,7 +177,8 @@ export default function AddProductInwardView() {
       quantity,
       warehouseId,
       referenceId,
-      products: productGroups
+      products: productGroups,
+      internalIdForBusiness
     }
 
     setValidation({
@@ -224,8 +227,10 @@ export default function AddProductInwardView() {
               options={warehouses}
               getOptionLabel={(warehouse) => warehouse.name}
               onChange={(event, newValue) => {
-                if (newValue)
-                  setWarehouseId(newValue.id)
+                if (newValue) {
+                  setWarehouseId(newValue.id);
+                  setInternalIdForBusiness(`PI-${newValue.businessWarehouseCode}-`);
+                }
               }}
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
