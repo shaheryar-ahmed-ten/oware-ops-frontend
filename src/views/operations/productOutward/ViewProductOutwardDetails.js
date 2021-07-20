@@ -55,12 +55,178 @@ function ViewProductOutwardDetails() {
     content: () => componentRef.current,
   });
 
-
   return (
     selectedProductOutward ? <>
+      <Box display="none" displayPrint="block" ref={componentRef}>
+        <Box display="none" displayPrint="block" style={{ margin: "25mm 25mm 0mm 25mm" }}>
+          <Typography variant="h3">
+            Product Outwards
+          </Typography>
+        </Box>
+        <Box display="none" displayPrint="block" style={{ margin: "10mm 25mm 0mm 25mm" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Outward Id :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Dispatch Order Id :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Customer Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Company.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Warehouse :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                City :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.receiverName}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Phone :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.receiverPhone}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Vehicle Number :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.Vehicle.registrationNumber}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Shipment Date&Time :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {dateFormat(selectedProductOutward.createdAt)}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="none" displayPrint="block" style={{ margin: "10mm 0mm 0mm 0mm" }}>
+                <Typography variant="h3">
+                  Products
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow className={classes.shadedTableHeader}>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        PRODUCT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        WEIGHT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        UOM
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        REQUESTED QTY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        AVAILABLE QTY
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
+                        return (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              {order.Product.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.weight} KG
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.UOM.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.OrderGroup.quantity}
+                            </TableCell>
+                            <TableCell>
+                              {order.availableQuantity}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Product Ouward Details</Typography>
+          <Typography variant="h3" className={classes.heading}>Product Ouward Details
+            <IconButton aria-label="print" onClick={handlePrint}>
+              <PrintIcon />
+            </IconButton>
+          </Typography>
         </Grid>
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">
@@ -110,7 +276,7 @@ function ViewProductOutwardDetails() {
                   {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
                 </TableCell>
                 <TableCell>
-                  {selectedProductOutward.Inventories.length}
+                  {selectedProductOutward.DispatchOrder.Inventories.length}
                 </TableCell>
                 <TableCell>
                   {selectedProductOutward.Vehicle.registrationNumber}
@@ -147,17 +313,17 @@ function ViewProductOutwardDetails() {
             </TableHead>
             <TableBody>
               {
-                selectedProductOutward.Inventories.map((order) => {
+                selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
                   return (
-                    <TableRow>
+                    <TableRow key={idx}>
                       <TableCell>
                         {order.Product.name}
                       </TableCell>
                       <TableCell>
-                        {order.Product.UOM.name} KG
+                        {order.Product.UOM.name}
                       </TableCell>
                       <TableCell>
-                        {order.OutwardGroup.quantity}
+                        {order.OrderGroup.quantity}
                       </TableCell>
                       <TableCell>
                         {order.availableQuantity}
