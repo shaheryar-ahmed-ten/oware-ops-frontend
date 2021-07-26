@@ -118,8 +118,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setWarehouseId('');
       setProductId('');
       setShipmentDate(dateToPickerFormat(new Date()));
-      setReceiverName('some');
-      setReceiverPhone(12345678945);
+      setReceiverName('');
+      setReceiverPhone();
       setReferenceId('');
     }
   }, [selectedDispatchOrder])
@@ -221,7 +221,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       // checking if particular product is already added once
       // if yes
       if (!!inventories.find(_product => _product.id == productId)) {
-        alert("Already added")
+        alert("This product is already added, please choose a different one.")
       }
       // if no
       else {
