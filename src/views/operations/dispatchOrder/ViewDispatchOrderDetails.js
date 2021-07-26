@@ -312,7 +312,7 @@ function ViewDispatchOrderDetails() {
                         {order.Product.weight} KG
                       </TableCell>
                       <TableCell>
-                        {order.Product.UOM.name} KG
+                        {order.Product.UOM.name}
                       </TableCell>
                       <TableCell>
                         {order.OrderGroup.quantity}

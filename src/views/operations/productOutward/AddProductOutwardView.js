@@ -186,9 +186,9 @@ export default function AddProductOutwardView({ }) {
       inventories: Object.values(inventoryQuantities),
       internalIdForBusiness
     }
-    console.log(Object.values(inventoryQuantities));
-    console.log(isNotEmptyArray(Object.values(inventoryQuantities)));
-    console.log(isRequired(dispatchOrderId), isRequired(vehicleId));
+    // console.log(Object.values(inventoryQuantities));
+    // console.log(isNotEmptyArray(Object.values(inventoryQuantities)));
+    // console.log(isRequired(dispatchOrderId), isRequired(vehicleId));
     setValidation({
       // quantity: true,
       dispatchOrderId: true,
@@ -359,7 +359,7 @@ export default function AddProductOutwardView({ }) {
                 </TableHead>
                 {selectedDispatchOrder.Inventories.map((inventory, idx) => {
                   return <>
-                    <TableRow hover role="checkbox">
+                    <TableRow hover role="checkbox" key={idx}>
                       <TableCell>
                         {inventory.Product.name}
                       </TableCell>
@@ -382,7 +382,7 @@ export default function AddProductOutwardView({ }) {
                           type="number"
                           variant="outlined"
                           value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
-                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value, id: inventory.id } })} // TODO: Fix multi inputs
+                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < inventory.OrderGroup.quantity ? e.target.value : inventory.OrderGroup.quantity, id: inventory.id } })} // TODO: Fix multi inputs
                           onBlur={e => setValidation({ ...validation, quantity: true })}
                         />
                         {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
