@@ -73,16 +73,16 @@ function InwardProductDetailsView() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-  
+
   return (
     selectedProductInward ? <>
       <Box display="none" displayPrint="block" ref={componentRef}>
-        <Box display="none" displayPrint="block" style={{ margin: "25mm 25mm 0mm 25mm" }}>
+        <Box display="none" displayPrint="block" style={{ padding: "25mm 25mm 0mm 25mm" }}>
           <Typography variant="h3">
             Inward Products
           </Typography>
         </Box>
-        <Box display="none" displayPrint="block" style={{ margin: "10mm 25mm 0mm 25mm" }}>
+        <Box display="none" displayPrint="block" style={{ padding: "10mm 25mm 0mm 25mm" }}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
