@@ -69,25 +69,29 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Company.name
-  }, {
-    id: 'Inventory.Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Product.name
-  }, {
+  },
+  //  {
+  //   id: 'Inventory.Product.name',
+  //   label: 'PRODUCT',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Product.name
+  // },
+  {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
-  }, {
-    id: 'Inventory.Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Product.UOM.name
-  }, {
+  },
+  //  {
+  //   id: 'Inventory.Product.UOM.name',
+  //   label: 'UOM',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Product.UOM.name
+  // },
+  {
     id: 'receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',

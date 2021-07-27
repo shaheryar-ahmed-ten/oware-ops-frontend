@@ -66,28 +66,32 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Company.name
     // format: (value, entity, inventory) => inventory.Company.name
-  }, {
-    id: 'Inventory.Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
-    // format: (value, entity, inventory) => inventory.Product.name
-  }, {
+  },
+    //  {
+    //   id: 'Inventory.Product.name',
+    //   label: 'PRODUCT',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
+    //   // format: (value, entity, inventory) => inventory.Product.name
+    // }
+    , {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name
     // format: (value, entity, inventory) => inventory.Warehouse.name
-  }, {
-    id: 'Inventory.Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
-    // format: (value, entity, inventory) => inventory.Product.UOM.name
-  }, {
+  },
+  //  {
+  //   id: 'Inventory.Product.UOM.name',
+  //   label: 'UOM',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
+  //   // format: (value, entity, inventory) => inventory.Product.UOM.name
+  // },
+  {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
