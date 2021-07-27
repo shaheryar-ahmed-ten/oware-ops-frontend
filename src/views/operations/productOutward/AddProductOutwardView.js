@@ -26,6 +26,7 @@ import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
 import { useLocation } from 'react-router';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -164,6 +165,7 @@ export default function AddProductOutwardView({ }) {
     if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
     else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
+      console.log(res)
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
@@ -171,7 +173,10 @@ export default function AddProductOutwardView({ }) {
       setShowMessage({
         message: "New product outward has been created."
       })
-    });
+    })
+      .catch((err) => {
+        console.log(err)
+      });
   };
 
 
@@ -406,8 +411,7 @@ export default function AddProductOutwardView({ }) {
           ''
       }
 
-
-
+      <MessageSnackbar showMessage={showMessage} />
     </>
   );
 }
