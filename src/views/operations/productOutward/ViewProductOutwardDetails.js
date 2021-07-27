@@ -51,7 +51,7 @@ function ViewProductOutwardDetails() {
   const classes = useStyles();
   const { state } = useLocation();
   const { uid } = useParams();
-  const [selectedProductOutward, setselectedProductOutward] = useState(state ? state.selectedOutwardorder : null)
+  const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null)
 
   useEffect(() => {
     if (!selectedProductOutward) {
@@ -64,7 +64,7 @@ function ViewProductOutwardDetails() {
   const _getProductOutwards = () => {
     axios.get(getURL('/product-outward'))
       .then(res => {
-        setselectedProductOutward(res.data.data.find((outwardOrder) => outwardOrder.id == uid));
+        setSelectedProductOutward(res.data.data.find((outwardOrder) => outwardOrder.id == uid));
       });
   }
 
