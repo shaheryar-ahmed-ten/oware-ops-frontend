@@ -105,7 +105,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             ...prevState,
             {
               product: products.find(_product => _product.id == inventory.Product.id),
-              id: inventory.id,
+              // id: inventory.id,
+              id: inventoryId,
               quantity: inventory.OrderGroup.quantity
             }
           ]))
@@ -227,7 +228,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       else {
         setInventories([...inventories, {
           product: products.find(_product => _product.id == productId),
-          id: productId,
+          // id: productId,
+          id: inventoryId,
           quantity
         }])
       }

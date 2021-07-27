@@ -58,32 +58,35 @@ export default function ProductOutwardView() {
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    // format: (value, entity) => `PD-${entity.DispatchOrder.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
     format: (value, entity) => entity.internalIdForBusiness
   }, {
     id: 'Inventory.Company.name',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.Company.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Company.name
+    // format: (value, entity, inventory) => inventory.Company.name
   }, {
     id: 'Inventory.Product.name',
     label: 'PRODUCT',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.Product.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
+    // format: (value, entity, inventory) => inventory.Product.name
   }, {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.Warehouse.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name
+    // format: (value, entity, inventory) => inventory.Warehouse.name
   }, {
     id: 'Inventory.Product.UOM.name',
     label: 'UOM',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.Product.UOM.name
+    format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
+    // format: (value, entity, inventory) => inventory.Product.UOM.name
   }, {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',
@@ -101,13 +104,14 @@ export default function ProductOutwardView() {
     label: 'Requested Quantity to Dispatch',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.OrderGroup.quantity
+    format: (value, entity) => entity.DispatchOrder.quantity
+    // format: (value, entity, inventory) => inventory.OrderGroup.quantity
   }, {
     id: 'quantity',
     label: 'Actual Quantity Dispatched',
     minWidth: 'auto',
     className: '',
-    format: (value, entity, inventory) => inventory.dispatchedQuantity
+    // format: (value, entity, inventory) => inventory.dispatchedQuantity
   }, {
     id: 'DispatchOrder.shipmentDate',
     label: 'EXPECTED SHIPMENT DATE',
@@ -315,23 +319,33 @@ export default function ProductOutwardView() {
           </TableHead>
           <TableBody>
             {productOutwards.map((productOutward) => {
-              console.log(productOutward) // TODO: random values are comming.
               return (
-                productOutward.DispatchOrder.Inventories.map((inventory, idx) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
-                      {columns.map((column) => {
-                        const value = productOutward[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}
-                            className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                            {column.format ? column.format(value, productOutward, inventory) : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  )
-                })
+                <TableRow hover role="checkbox" tabIndex={-1} key={productOutward.id}>
+                  {columns.map((column) => {
+                    const value = productOutward[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}
+                        className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                        {column.format ? column.format(value, productOutward) : value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+                // productOutward.DispatchOrder.Inventories.map((inventory, idx) => {
+                //   return (
+                //     <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
+                //       {columns.map((column) => {
+                //         const value = productOutward[column.id];
+                //         return (
+                //           <TableCell key={column.id} align={column.align}
+                //             className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                //             {column.format ? column.format(value, productOutward, inventory) : value}
+                //           </TableCell>
+                //         );
+                //       })}
+                //     </TableRow>
+                //   )
+                // })
               );
             })}
           </TableBody>
