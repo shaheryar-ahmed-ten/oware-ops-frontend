@@ -152,35 +152,14 @@ export default function ProductOutwardView() {
   const [page, setPage] = useState(1);
   const [productOutwards, setProductOutwards] = useState([]);
 
-  const [dispatchOrders, setDispatchOrders] = useState([]);
-  const [vehicles, setVehicles] = useState([])
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
-  const [productOutwardsDetailsViewOpen, setproductOutwardsDetailsViewOpen] = useState(false)
 
 
-  const addProductOutward = data => {
-    let apiPromise = null;
-    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
-    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
-    apiPromise.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      setShowMessage({
-        message: "New product outward has been created."
-      })
-      closeAddProductOutwardView(false);
-      getProductOutwards();
-    });
-  };
 
   const deleteProductOutward = data => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
@@ -194,34 +173,12 @@ export default function ProductOutwardView() {
       });
   };
 
-  const openEditView = productOutward => {
-    getRelations();
-    setSelectedProductOutward(productOutward);
-    setAddProductOutwardViewOpen(true);
-  }
-
-  const openViewDetails = productOutward => {
-    getRelations();
-    setSelectedProductOutward(productOutward);
-    setproductOutwardsDetailsViewOpen(true);
-  }
 
   const openDeleteView = productOutward => {
     setSelectedProductOutward(productOutward);
     setDeleteProductOutwardViewOpen(true);
   }
 
-  const closeAddProductOutwardView = () => {
-    setSelectedProductOutward(null);
-    setAddProductOutwardViewOpen(false);
-    getRelations();
-  }
-
-  const closeViewProductOutwardDetailsView = () => {
-    setSelectedProductOutward(null);
-    setproductOutwardsDetailsViewOpen(false);
-    getRelations();
-  }
 
   const closeDeleteProductOutwardView = () => {
     setSelectedProductOutward(null);
@@ -240,22 +197,10 @@ export default function ProductOutwardView() {
     _getProductOutwards(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
-  const getRelations = () => {
-    axios.get(getURL('product-outward/relations'))
-      .then(res => {
-        // setting dispatchOrder details and vehicles in local State
-        setVehicles((prevState) => res.data.vehicles)
-        setDispatchOrders(res.data.dispatchOrders)
-      });
-  };
-
   useEffect(() => {
     getProductOutwards(page, searchKeyword);
   }, [page, searchKeyword]);
 
-  useEffect(() => {
-    getRelations();
-  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -276,15 +221,7 @@ export default function ProductOutwardView() {
     // onClick={() => setAddProductOutwardViewOpen(true)}
     onClick={() => { navigate('create') }}
   >ADD PRODUCT OUTWARD</Button>;
-  const addProductOutwardModal = <AddProductOutwardView
-    key={3}
-    formErrors={formErrors}
-    dispatchOrders={dispatchOrders}
-    selectedProductOutward={selectedProductOutward}
-    open={addProductOutwardViewOpen}
-    addProductOutward={addProductOutward}
-    handleClose={() => closeAddProductOutwardView()}
-    vehicles={vehicles} />
+
   const deleteProductOutwardModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProductOutward}
@@ -294,14 +231,8 @@ export default function ProductOutwardView() {
     title={"ProductOutward"}
   />
 
-  const viewProductOutwardsDetailsModal = <ViewProductOutwardDetails
-    key={5}
-    formErrors={formErrors}
-    selectedProductOutward={selectedProductOutward}
-    open={productOutwardsDetailsViewOpen}
-    handleClose={() => closeViewProductOutwardDetailsView()} />
 
-  const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
+  const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
