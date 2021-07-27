@@ -25,7 +25,7 @@ import { ControlPointSharp } from '@material-ui/icons';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
 export default function AddProductOutwardView({ }) {
   const classes = useStyles();
   const { state } = useLocation();
+  const navigate = useNavigate();
+
   const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null);
 
   const [validation, setValidation] = useState({});
@@ -165,14 +167,16 @@ export default function AddProductOutwardView({ }) {
     if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
     else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
-      console.log(res)
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
       setShowMessage({
         message: "New product outward has been created."
-      })
+      });
+      setTimeout(() => {
+        navigate('/operations/product-outward')
+      }, 3000);
     })
       .catch((err) => {
         console.log(err)

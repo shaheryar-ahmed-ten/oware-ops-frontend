@@ -26,7 +26,7 @@ import { TableContainer } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -44,9 +44,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddDispatchOrderView({ dispatchedOrdersLength,
-  open, handleClose }) {
+export default function AddDispatchOrderView() {
   const classes = useStyles();
+  const navigate = useNavigate();
+
   const { state } = useLocation();
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
 
@@ -178,7 +179,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   }, [productId]);
 
-
   const getInventory = (params) => {
     return axios.get(getURL('/dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
@@ -208,7 +208,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       }
       setShowMessage({
         message: "New dispatch order has been created."
-      })
+      });
+      setTimeout(() => {
+        navigate('/operations/dispatch-order')
+      }, 3000);
     });
   };
 
@@ -222,7 +225,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       // checking if particular product is already added once
       // if yes
       if (!!inventories.find(_product => _product.id == productId)) {
-        alert("This product is already added, please choose a different one.")
+        setShowMessage({ message: "This product is already added, please choose a different one." })
       }
       // if no
       else {

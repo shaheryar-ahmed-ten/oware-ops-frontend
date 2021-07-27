@@ -28,7 +28,7 @@ import { Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 export default function AddProductInwardView() {
   const classes = useStyles();
   const { state } = useLocation();
+  const navigate = useNavigate();
+
   const { viewOnly } = state || '';
   const [selectedProductInward, setSelectedProductInward] = useState(state ? state.selectedProductInward : null);
 
@@ -162,7 +164,10 @@ export default function AddProductInwardView() {
       }
       setShowMessage({
         message: "New products inward have been created."
-      })
+      });
+      setTimeout(() => {
+        navigate('/operations/product-inward')
+      }, 3000);
     })
       .catch((err) => {
         console.log(err)
