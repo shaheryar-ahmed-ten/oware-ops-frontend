@@ -72,7 +72,6 @@ function ViewProductOutwardDetails() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-
   return (
     selectedProductOutward ? <>
       <Box display="none" displayPrint="block" ref={componentRef}>
@@ -199,17 +198,25 @@ function ViewProductOutwardDetails() {
                       </TableCell>
                       <TableCell
                         className={classes.tableHeadText}>
-                        REQUESTED QTY
+                        REQUESTED QUANTITY
                       </TableCell>
                       <TableCell
                         className={classes.tableHeadText}>
-                        AVAILABLE QTY
+                        SENT QUANTITY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        REMAINING QUANTITY
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {
                       selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
+                        let remainingQt = 0, sentQt = 0;
+                        const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
+                        sentQt += targetedPoInv.OutwardGroup.quantity
+                        remainingQt = order.OrderGroup.quantity - sentQt
                         return (
                           <TableRow key={idx}>
                             <TableCell>
@@ -225,7 +232,10 @@ function ViewProductOutwardDetails() {
                               {order.OrderGroup.quantity}
                             </TableCell>
                             <TableCell>
-                              {order.availableQuantity}
+                              {sentQt}
+                            </TableCell>
+                            <TableCell>
+                              {remainingQt}
                             </TableCell>
                           </TableRow>
                         )
@@ -321,17 +331,25 @@ function ViewProductOutwardDetails() {
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>
-                  QUANTITY
+                  REQUESTED QUANTITY
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>
-                  AVAILABLE QUANTITY
+                  SENT QUANTITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  REMAINING QUANTITY
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {
                 selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
+                  let remainingQt = 0, sentQt = 0;
+                  const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
+                  sentQt += targetedPoInv.OutwardGroup.quantity
+                  remainingQt = order.OrderGroup.quantity - sentQt
                   return (
                     <TableRow key={idx}>
                       <TableCell>
@@ -344,7 +362,10 @@ function ViewProductOutwardDetails() {
                         {order.OrderGroup.quantity}
                       </TableCell>
                       <TableCell>
-                        {order.availableQuantity}
+                        {sentQt}
+                      </TableCell>
+                      <TableCell>
+                        {remainingQt}
                       </TableCell>
                     </TableRow>
                   )
