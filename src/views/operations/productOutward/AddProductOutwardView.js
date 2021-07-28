@@ -52,29 +52,20 @@ export default function AddProductOutwardView({ }) {
   const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null);
 
   const [validation, setValidation] = useState({});
-  const [product, setProduct] = useState(0);
-  const [quantity, setQuantity] = useState(0);
   const [shipmentDate, setShipmentDate] = useState(0);
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
-  const [requestedQuantity, setRequestedQuantity] = useState(0);
-  const [remainingQuantity, setRemainingQuantity] = useState(0);
-  const [uom, setUom] = useState('');
   const [warehouse, setWarehouse] = useState('');
   const [customer, setCustomer] = useState('');
   const [dispatchOrderId, setDispatchOrderId] = useState('');
-  const [dispatchOrderBusinessId, setDispatchOrderBusinessId] = useState('');
   const [referenceId, setReferenceId] = useState('');
   const [vehicleId, setVehicleId] = useState('');
-  const [disabledFlag, setDisabledFlag] = useState(false);
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   const [formErrors, setFormErrors] = useState([]);
-  const [vehicleTypes, setVehicleTypes] = useState([])
   const [dispatchOrders, setDispatchOrders] = useState([]);
   const [inventoryQuantities, setInventoryQuantities] = useState([]);
   const [vehicles, setVehicles] = useState([]); // will be used instead vehicle types, numbers etc
-  const [vehicleNumber, setVehicleNumber] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null); // used in details table, selected from dropdown
   const [showMessage, setShowMessage] = useState(null);
 
@@ -84,14 +75,10 @@ export default function AddProductOutwardView({ }) {
 
   useEffect(() => {
     if (!!selectedProductOutward) {
-      setDisabledFlag(true)
       selectDispatchOrder(selectedProductOutward.dispatchOrderId || '', selectedProductOutward.internalIdForBusiness || '');
-      setQuantity(selectedProductOutward.quantity || '');
     } else {
       setValidation({})
-      setDisabledFlag(false)
       selectDispatchOrder('');
-      setQuantity('');
     }
   }, [selectedProductOutward, dispatchOrders])
 
@@ -99,8 +86,13 @@ export default function AddProductOutwardView({ }) {
   const filterDispatchOrdersForDropdown = () => {
     dispatchOrders.forEach(dispatchOrder => {
       //    loop to get the PO of each DO
-      let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
-      let remainingQuantityOfDispatch = dispatchOrder.quantity - totalQuantityDispatched // 1 DO's remaining quantity
+      // let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
+      let totalRequestedQuantity = dispatchOrder.Inventories.reduce((acc, inv) => acc + inv.OrderGroup.quantity, 0); // 1 DO
+      let totalDispatchedQuantity = 0;
+      dispatchOrder.ProductOutwards.forEach(po => {
+        totalDispatchedQuantity = po.Inventories.reduce((acc, inv) => acc + inv.OutwardGroup.quantity, 0)
+      });
+      let remainingQuantityOfDispatch = totalRequestedQuantity - totalDispatchedQuantity // 1 DO's remaining quantity
       if (remainingQuantityOfDispatch != 0) {
         dispatchOrdersForDropdown.push(dispatchOrder);
       }
@@ -122,18 +114,15 @@ export default function AddProductOutwardView({ }) {
   // resolved: error occurs on product outward edit.
   const selectDispatchOrder = (value, internalIdForBusiness) => {
     setDispatchOrderId(value);
-    setDispatchOrderBusinessId(internalIdForBusiness)
     if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       setSelectedDispatchOrder(dispatchOrder)
-      setDispatchOrderBusinessId(dispatchOrder.internalIdForBusiness)
-
-
-      let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
-      setRequestedQuantity(dispatchOrder.quantity || 0);
-      setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
-      setUom(dispatchOrder.Inventory.Product.UOM.name);
-      setProduct(dispatchOrder.Inventory.Product.name || '');
+      console.log(dispatchOrder)
+      // let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
+      // let totalQuantityDispatched = dispatchOrder.Inventories.reduce((acc, po) => acc + po.committedQuantity, 0);
+      // console.log(totalQuantityDispatched)
+      // setRequestedQuantity(dispatchOrder.quantity || 0);
+      // setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
       setCustomer(dispatchOrder.Inventory.Company.name);
       setShipmentDate(dispatchOrder.shipmentDate || '');
@@ -146,10 +135,6 @@ export default function AddProductOutwardView({ }) {
       }
     }
     else {
-      setRequestedQuantity(0);
-      setRemainingQuantity(0);
-      setProduct('');
-      setUom('');
       setWarehouse('');
       setCustomer('');
       setShipmentDate('');
@@ -367,6 +352,12 @@ export default function AddProductOutwardView({ }) {
                   </TableRow>
                 </TableHead>
                 {selectedDispatchOrder.Inventories.map((inventory, idx) => {
+                  let remainingQt = 0
+                  selectedDispatchOrder.ProductOutwards.forEach((po) => {
+                    const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
+                    remainingQt += targetedPoInv.OutwardGroup.quantity
+                  })
+                  remainingQt = inventory.OrderGroup.quantity - remainingQt
                   return <>
                     <TableRow hover role="checkbox" key={idx}>
                       <TableCell>
@@ -379,7 +370,8 @@ export default function AddProductOutwardView({ }) {
                         {inventory.OrderGroup.quantity}
                       </TableCell>
                       <TableCell>
-                        {inventory.availableQuantity}
+                        {remainingQt}
+                        {/* {inventory.OrderGroup.quantity - inventory.committedQuantity} */}
                       </TableCell>
                       <TableCell>
                         <TextField
@@ -391,7 +383,7 @@ export default function AddProductOutwardView({ }) {
                           type="number"
                           variant="outlined"
                           value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
-                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < inventory.OrderGroup.quantity ? e.target.value : inventory.OrderGroup.quantity, id: inventory.id } })} // TODO: Fix multi inputs
+                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id } })} // TODO: Fix multi inputs
                           onBlur={e => setValidation({ ...validation, quantity: true })}
                         />
                         {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
