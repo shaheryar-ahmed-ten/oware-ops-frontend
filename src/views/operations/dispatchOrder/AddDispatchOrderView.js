@@ -19,7 +19,7 @@ import {
   TableCell
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat, getURL } from '../../../utils/common';
+import { checkForMatchInArray, dateToPickerFormat, getURL } from '../../../utils/common';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
 import { TableContainer } from '@material-ui/core';
@@ -226,7 +226,7 @@ export default function AddDispatchOrderView() {
       isRequired(quantity)) {
       // checking if particular product is already added once
       // if yes
-      if (!!inventories.find(_product => _product.id == productId)) {
+      if (checkForMatchInArray(inventories, "id", inventoryId)) {
         setShowMessage({ message: "This product is already added, please choose a different one." })
       }
       // if no
