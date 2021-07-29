@@ -7,10 +7,6 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Typography,
   makeStyles,
   TableContainer,
@@ -21,7 +17,6 @@ import {
 } from '@material-ui/core'
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { Alert, Autocomplete } from '@material-ui/lab';
-import { ControlPointSharp } from '@material-ui/icons';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
