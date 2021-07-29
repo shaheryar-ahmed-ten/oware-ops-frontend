@@ -26,9 +26,9 @@ import { isRequired } from '../../../utils/validators';
 import { useReactToPrint } from 'react-to-print';
 import { Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { checkForMatchInArray, getURL } from '../../../utils/common';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 export default function AddProductInwardView() {
   const classes = useStyles();
   const { state } = useLocation();
+  const navigate = useNavigate();
+
   const { viewOnly } = state || '';
   const [selectedProductInward, setSelectedProductInward] = useState(state ? state.selectedProductInward : null);
 
@@ -73,7 +75,11 @@ export default function AddProductInwardView() {
   const [warehouses, setWarehouses] = useState([]);
   const [formErrors, setFormErrors] = useState([]);
 
+  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+
   const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -132,11 +138,20 @@ export default function AddProductInwardView() {
       isRequired(customerId) &&
       isRequired(productId) &&
       isRequired(warehouseId)) {
-      setProductGroups([...productGroups, {
-        product: products.find(_product => _product.id == productId),
-        id: productId,
-        quantity
-      }])
+      // checking if particular product is already added once
+      // if yes
+      if (checkForMatchInArray(productGroups, "id", productId)) {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "This product is already added, please choose a different one." })
+      }
+      // if no
+      else {
+        setProductGroups([...productGroups, {
+          product: products.find(_product => _product.id == productId),
+          id: productId,
+          quantity
+        }])
+      }
     }
     else {
       setValidation({
@@ -160,7 +175,10 @@ export default function AddProductInwardView() {
       }
       setShowMessage({
         message: "New products inward have been created."
-      })
+      });
+      setTimeout(() => {
+        navigate('/operations/product-inward')
+      }, 2000);
     })
       .catch((err) => {
         console.log(err)
@@ -168,14 +186,15 @@ export default function AddProductInwardView() {
   };
 
   const handleSubmit = e => {
-
+    setMessageType('green')
     const newProductInward = {
       customerId,
       productId,
       quantity,
       warehouseId,
       referenceId,
-      products: productGroups
+      products: productGroups,
+      internalIdForBusiness
     }
 
     setValidation({
@@ -224,8 +243,10 @@ export default function AddProductInwardView() {
               options={warehouses}
               getOptionLabel={(warehouse) => warehouse.name}
               onChange={(event, newValue) => {
-                if (newValue)
-                  setWarehouseId(newValue.id)
+                if (newValue) {
+                  setWarehouseId(newValue.id);
+                  setInternalIdForBusiness(`PI-${newValue.businessWarehouseCode}-`);
+                }
               }}
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
@@ -364,7 +385,7 @@ export default function AddProductInwardView() {
           :
           ''}
 
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </>
   );
 }

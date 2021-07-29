@@ -3,14 +3,7 @@ import {
   Grid,
   Button,
   TextField,
-  Select,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Typography,
   makeStyles,
   Table,
@@ -19,14 +12,14 @@ import {
   TableCell
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat, getURL } from '../../../utils/common';
+import { checkForMatchInArray, dateToPickerFormat, getURL } from '../../../utils/common';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
 import { TableContainer } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -44,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddDispatchOrderView({ dispatchedOrdersLength,
-  open, handleClose }) {
+export default function AddDispatchOrderView() {
   const classes = useStyles();
+  const navigate = useNavigate();
+
   const { state } = useLocation();
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
 
@@ -71,9 +65,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
   const [formErrors, setFormErrors] = useState([]);
   const [customers, setCustomers] = useState([]);
 
-  const [dispatchGroups, setDispatchGroups] = useState([]);
+  const [inventories, setInventories] = useState([]);
 
   const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
     getRelations();
@@ -99,13 +94,14 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
       setReferenceId(selectedDispatchOrder.referenceId || '');
-      if (products.length > 0 && dispatchGroups.length == 0) {
+      if (products.length > 0 && inventories.length == 0) {
         selectedDispatchOrder.Inventories.forEach(inventory => {
-          setDispatchGroups((prevState) => ([
+          setInventories((prevState) => ([
             ...prevState,
             {
               product: products.find(_product => _product.id == inventory.Product.id),
-              id: inventory.id,
+              // id: inventory.id,
+              id: inventoryId,
               quantity: inventory.OrderGroup.quantity
             }
           ]))
@@ -119,7 +115,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       setProductId('');
       setShipmentDate(dateToPickerFormat(new Date()));
       setReceiverName('');
-      setReceiverPhone('');
+      setReceiverPhone();
       setReferenceId('');
     }
   }, [selectedDispatchOrder])
@@ -152,12 +148,15 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       const warehouse = warehouses.find(element => warehouseId == element.id);
       setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
       getProducts({ customerId, warehouseId })
-        .then(products => setProducts(products));
+        .then(products => {
+          return setProducts(products)
+        }); // INPROGRESS: products with 0 available qty are also comming.
     }
   }, [warehouseId])
 
   useEffect(() => {
     setUom('');
+    setQuantity('');
     setAvailableQuantity(0);
     setInventoryId('');
     if (customerId && warehouseId && productId) {
@@ -174,7 +173,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   }, [productId]);
 
-
   const getInventory = (params) => {
     return axios.get(getURL('/dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
@@ -189,7 +187,9 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   const getProducts = (params) => {
     return axios.get(getURL('/dispatch-order/products'), { params })
-      .then(res => res.data.products);
+      .then((res) => {
+        return res.data.products
+      })
   };
 
 
@@ -204,7 +204,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       }
       setShowMessage({
         message: "New dispatch order has been created."
-      })
+      });
+      setTimeout(() => {
+        navigate('/operations/dispatch-order')
+      }, 2000);
     });
   };
 
@@ -215,11 +218,22 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       isRequired(receiverPhone) &&
       isRequired(productId) &&
       isRequired(quantity)) {
-      setDispatchGroups([...dispatchGroups, {
-        product: products.find(_product => _product.id == productId),
-        id: productId,
-        quantity
-      }])
+      // checking if particular product is already added once
+      // if yes
+      if (checkForMatchInArray(inventories, "id", inventoryId)) {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "This product is already added, please choose a different one." })
+      }
+      // if no
+      else {
+        setMessageType('green')
+        setInventories([...inventories, {
+          product: products.find(_product => _product.id == productId),
+          // id: productId,
+          id: inventoryId,
+          quantity
+        }])
+      }
     }
     else {
       setValidation({
@@ -235,8 +249,10 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
 
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
+    setMessageType('green')
     const newDispatchOrder = {
       quantity,
+      inventories,
       inventoryId,
       customerId,
       warehouseId,
@@ -403,7 +419,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
               variant="outlined"
               value={quantity}
               disabled={!!selectedDispatchOrder}
-              onChange={e => setQuantity(e.target.value)}
+              onChange={e => e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
@@ -462,7 +478,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
             </TableRow>
           </TableHead>
           <TableBody>
-            {dispatchGroups.map((dispatchGroup, idx) => {
+            {inventories.map((dispatchGroup, idx) => {
               return (
                 <TableRow hover role="checkbox">
                   <TableCell>
@@ -476,7 +492,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
                   </TableCell>
                   <TableCell>
                     <DeleteIcon color="error" key="delete" onClick={() =>
-                      setDispatchGroups(dispatchGroups.filter((_dispatchGroup, _idx) => _idx != idx))
+                      setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
                     } />
                   </TableCell>
                 </TableRow>
@@ -487,7 +503,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
       </TableContainer>
 
       {
-        dispatchGroups.length > 0 ?
+        inventories.length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -500,7 +516,7 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength,
           :
           ''}
 
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </>
   );
 }

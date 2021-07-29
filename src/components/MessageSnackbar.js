@@ -6,14 +6,14 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   snackbarStyleViaNestedContent: {
-    backgroundColor: 'green'
+    backgroundColor: props => props.type ? props.type : 'green'
   }
-}))
+})
 
-export default function MessageSnackbar({ showMessage }) {
-  const classes = useStyles()
+export default function MessageSnackbar({ showMessage, ...props }) {
+  const classes = useStyles(props)
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
