@@ -249,6 +249,7 @@ export default function AddDispatchOrderView() {
 
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
+    setMessageType('green')
     const newDispatchOrder = {
       quantity,
       inventories,

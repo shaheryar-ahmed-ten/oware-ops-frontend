@@ -146,7 +146,6 @@ export default function AddProductInwardView() {
       }
       // if no
       else {
-        setMessageType('green')
         setProductGroups([...productGroups, {
           product: products.find(_product => _product.id == productId),
           id: productId,
@@ -187,7 +186,7 @@ export default function AddProductInwardView() {
   };
 
   const handleSubmit = e => {
-
+    setMessageType('green')
     const newProductInward = {
       customerId,
       productId,
