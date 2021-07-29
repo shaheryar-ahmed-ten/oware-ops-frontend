@@ -519,7 +519,7 @@ export default function AddDispatchOrderView() {
           :
           ''}
 
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type="#FFCC00" />
     </>
   );
 }
