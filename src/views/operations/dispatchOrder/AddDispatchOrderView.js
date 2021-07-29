@@ -68,6 +68,7 @@ export default function AddDispatchOrderView() {
   const [inventories, setInventories] = useState([]);
 
   const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
     getRelations();
@@ -220,10 +221,12 @@ export default function AddDispatchOrderView() {
       // checking if particular product is already added once
       // if yes
       if (checkForMatchInArray(inventories, "id", inventoryId)) {
+        setMessageType('#FFCC00')
         setShowMessage({ message: "This product is already added, please choose a different one." })
       }
       // if no
       else {
+        setMessageType('green')
         setInventories([...inventories, {
           product: products.find(_product => _product.id == productId),
           // id: productId,
@@ -512,7 +515,7 @@ export default function AddDispatchOrderView() {
           :
           ''}
 
-      <MessageSnackbar showMessage={showMessage} type="#FFCC00" />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </>
   );
 }

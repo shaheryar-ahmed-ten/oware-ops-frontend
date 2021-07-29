@@ -26,7 +26,7 @@ import { isRequired } from '../../../utils/validators';
 import { useReactToPrint } from 'react-to-print';
 import { Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { checkForMatchInArray, getURL } from '../../../utils/common';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -78,6 +78,8 @@ export default function AddProductInwardView() {
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
   const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -136,11 +138,21 @@ export default function AddProductInwardView() {
       isRequired(customerId) &&
       isRequired(productId) &&
       isRequired(warehouseId)) {
-      setProductGroups([...productGroups, {
-        product: products.find(_product => _product.id == productId),
-        id: productId,
-        quantity
-      }])
+      // checking if particular product is already added once
+      // if yes
+      if (checkForMatchInArray(productGroups, "id", productId)) {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "This product is already added, please choose a different one." })
+      }
+      // if no
+      else {
+        setMessageType('green')
+        setProductGroups([...productGroups, {
+          product: products.find(_product => _product.id == productId),
+          id: productId,
+          quantity
+        }])
+      }
     }
     else {
       setValidation({
@@ -374,7 +386,7 @@ export default function AddProductInwardView() {
           :
           ''}
 
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </>
   );
 }
