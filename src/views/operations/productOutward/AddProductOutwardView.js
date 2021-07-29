@@ -161,7 +161,7 @@ export default function AddProductOutwardView({ }) {
       });
       setTimeout(() => {
         navigate('/operations/product-outward')
-      }, 3000);
+      }, 2000);
     })
       .catch((err) => {
         console.log(err)

@@ -156,7 +156,7 @@ export default function AddDispatchOrderView() {
       getProducts({ customerId, warehouseId })
         .then(products => {
           return setProducts(products)
-        }); // TODO: products with 0 available qty are also comming.
+        }); // INPROGRESS: products with 0 available qty are also comming.
     }
   }, [warehouseId])
 
@@ -193,7 +193,9 @@ export default function AddDispatchOrderView() {
 
   const getProducts = (params) => {
     return axios.get(getURL('/dispatch-order/products'), { params })
-      .then(res => res.data.products);
+      .then((res) => {
+        return res.data.products
+      })
   };
 
 
@@ -211,7 +213,7 @@ export default function AddDispatchOrderView() {
       });
       setTimeout(() => {
         navigate('/operations/dispatch-order')
-      }, 3000);
+      }, 2000);
     });
   };
 

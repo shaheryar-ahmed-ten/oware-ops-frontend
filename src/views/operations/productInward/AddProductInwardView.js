@@ -167,7 +167,7 @@ export default function AddProductInwardView() {
       });
       setTimeout(() => {
         navigate('/operations/product-inward')
-      }, 3000);
+      }, 2000);
     })
       .catch((err) => {
         console.log(err)
