@@ -90,9 +90,10 @@ export default function AddProductOutwardView({ }) {
       let totalRequestedQuantity = dispatchOrder.Inventories.reduce((acc, inv) => acc + inv.OrderGroup.quantity, 0); // 1 DO
       let totalDispatchedQuantity = 0;
       dispatchOrder.ProductOutwards.forEach(po => {
-        totalDispatchedQuantity = po.Inventories.reduce((acc, inv) => acc + inv.OutwardGroup.quantity, 0)
+        totalDispatchedQuantity += po.Inventories.reduce((acc, inv) => acc + inv.OutwardGroup.quantity, 0)
       });
       let remainingQuantityOfDispatch = totalRequestedQuantity - totalDispatchedQuantity // 1 DO's remaining quantity
+
       if (remainingQuantityOfDispatch != 0) {
         dispatchOrdersForDropdown.push(dispatchOrder);
       }
