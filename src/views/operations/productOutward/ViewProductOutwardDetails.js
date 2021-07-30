@@ -337,10 +337,10 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>
                   SENT QUANTITY
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   className={classes.tableHeadText}>
                   REMAINING QUANTITY
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -364,9 +364,9 @@ function ViewProductOutwardDetails() {
                       <TableCell>
                         {sentQt}
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         {remainingQt}
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   )
                 })
