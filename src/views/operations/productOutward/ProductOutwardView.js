@@ -25,6 +25,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewProductOutwardDetails from './ViewProductOutwardDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,12 +52,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function ProductOutwardView() {
   const classes = useStyles();
+  const navigate = useNavigate()
   const columns = [{
     id: 'id',
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    // format: (value, entity) => `PD-${entity.DispatchOrder.Inventory.Warehouse.businessWarehouseCode}-${digitize(value, 6)}`
     format: (value, entity) => entity.internalIdForBusiness
   }, {
     id: 'Inventory.Company.name',
@@ -64,25 +65,33 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Company.name
-  }, {
-    id: 'Inventory.Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
-  }, {
+    // format: (value, entity, inventory) => inventory.Company.name
+  },
+    //  {
+    //   id: 'Inventory.Product.name',
+    //   label: 'PRODUCT',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
+    //   // format: (value, entity, inventory) => inventory.Product.name
+    // }
+    , {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name
-  }, {
-    id: 'Inventory.Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
-  }, {
+    // format: (value, entity, inventory) => inventory.Warehouse.name
+  },
+  //  {
+  //   id: 'Inventory.Product.UOM.name',
+  //   label: 'UOM',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
+  //   // format: (value, entity, inventory) => inventory.Product.UOM.name
+  // },
+  {
     id: 'DispatchOrder.receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
@@ -100,11 +109,13 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.quantity
+    // format: (value, entity, inventory) => inventory.OrderGroup.quantity
   }, {
     id: 'quantity',
     label: 'Actual Quantity Dispatched',
     minWidth: 'auto',
     className: '',
+    // format: (value, entity, inventory) => inventory.dispatchedQuantity
   }, {
     id: 'DispatchOrder.shipmentDate',
     label: 'EXPECTED SHIPMENT DATE',
@@ -124,8 +135,16 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
+          state: {
+            selectedProductOutward: entity
+          }
+        })} />,
+        // <EditIcon key="edit" onClick={() => navigate('edit', {
+        //   state: {
+        //     selectedProductOutward: entity
+        //   }
+        // })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -133,35 +152,14 @@ export default function ProductOutwardView() {
   const [page, setPage] = useState(1);
   const [productOutwards, setProductOutwards] = useState([]);
 
-  const [dispatchOrders, setDispatchOrders] = useState([]);
-  const [vehicles, setVehicles] = useState([])
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductOutward, setSelectedProductOutward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addProductOutwardViewOpen, setAddProductOutwardViewOpen] = useState(false);
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
-  const [productOutwardsDetailsViewOpen, setproductOutwardsDetailsViewOpen] = useState(false)
 
 
-  const addProductOutward = data => {
-    let apiPromise = null;
-    if (!selectedProductOutward) apiPromise = axios.post(getURL('product-outward'), data);
-    else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
-    apiPromise.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      setShowMessage({
-        message: "New product outward has been created."
-      })
-      closeAddProductOutwardView(false);
-      getProductOutwards();
-    });
-  };
 
   const deleteProductOutward = data => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
@@ -175,34 +173,12 @@ export default function ProductOutwardView() {
       });
   };
 
-  const openEditView = productOutward => {
-    getRelations();
-    setSelectedProductOutward(productOutward);
-    setAddProductOutwardViewOpen(true);
-  }
-
-  const openViewDetails = productOutward => {
-    getRelations();
-    setSelectedProductOutward(productOutward);
-    setproductOutwardsDetailsViewOpen(true);
-  }
 
   const openDeleteView = productOutward => {
     setSelectedProductOutward(productOutward);
     setDeleteProductOutwardViewOpen(true);
   }
 
-  const closeAddProductOutwardView = () => {
-    setSelectedProductOutward(null);
-    setAddProductOutwardViewOpen(false);
-    getRelations();
-  }
-
-  const closeViewProductOutwardDetailsView = () => {
-    setSelectedProductOutward(null);
-    setproductOutwardsDetailsViewOpen(false);
-    getRelations();
-  }
 
   const closeDeleteProductOutwardView = () => {
     setSelectedProductOutward(null);
@@ -221,22 +197,10 @@ export default function ProductOutwardView() {
     _getProductOutwards(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
-  const getRelations = () => {
-    axios.get(getURL('product-outward/relations'))
-      .then(res => {
-        // setting dispatchOrder details and vehicles in local State
-        setVehicles((prevState) => res.data.vehicles)
-        setDispatchOrders(res.data.dispatchOrders)
-      });
-  };
-
   useEffect(() => {
     getProductOutwards(page, searchKeyword);
   }, [page, searchKeyword]);
 
-  useEffect(() => {
-    getRelations();
-  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -254,16 +218,10 @@ export default function ProductOutwardView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddProductOutwardViewOpen(true)}>ADD PRODUCT OUTWARD</Button>;
-  const addProductOutwardModal = <AddProductOutwardView
-    key={3}
-    formErrors={formErrors}
-    dispatchOrders={dispatchOrders}
-    selectedProductOutward={selectedProductOutward}
-    open={addProductOutwardViewOpen}
-    addProductOutward={addProductOutward}
-    handleClose={() => closeAddProductOutwardView()}
-    vehicles={vehicles} />
+    // onClick={() => setAddProductOutwardViewOpen(true)}
+    onClick={() => { navigate('create') }}
+  >ADD PRODUCT OUTWARD</Button>;
+
   const deleteProductOutwardModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProductOutward}
@@ -273,14 +231,8 @@ export default function ProductOutwardView() {
     title={"ProductOutward"}
   />
 
-  const viewProductOutwardsDetailsModal = <ViewProductOutwardDetails
-    key={5}
-    formErrors={formErrors}
-    selectedProductOutward={selectedProductOutward}
-    open={productOutwardsDetailsViewOpen}
-    handleClose={() => closeViewProductOutwardDetailsView()} />
 
-  const headerButtons = [searchInput, addProductOutwardButton, addProductOutwardModal, deleteProductOutwardModal, viewProductOutwardsDetailsModal];
+  const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
@@ -314,6 +266,21 @@ export default function ProductOutwardView() {
                     );
                   })}
                 </TableRow>
+                // productOutward.DispatchOrder.Inventories.map((inventory, idx) => {
+                //   return (
+                //     <TableRow hover role="checkbox" tabIndex={-1} key={idx}>
+                //       {columns.map((column) => {
+                //         const value = productOutward[column.id];
+                //         return (
+                //           <TableCell key={column.id} align={column.align}
+                //             className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                //             {column.format ? column.format(value, productOutward, inventory) : value}
+                //           </TableCell>
+                //         );
+                //       })}
+                //     </TableRow>
+                //   )
+                // })
               );
             })}
           </TableBody>

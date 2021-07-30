@@ -73,28 +73,35 @@ export default function RideView() {
   const navigate = useNavigate();
 
   const columns = [{
-    id: 'internalIdForBusiness',
+    id: 'id',
     label: 'RIDE ID',
     minWidth: 'auto',
     className: ''
   }, {
     id: 'status',
     label: 'STATUS',
-    minWidth: 'auto',
+    minWidth: 100,
     className: '',
     format: value => statuses[value]
   }, {
     id: 'customerId',
     label: 'Customer',
-    minWidth: 'auto',
+    minWidth: 100,
     className: '',
     format: (value, entity) => entity.Customer.name
   }, {
     id: 'driverId',
     label: 'Driver',
-    minWidth: 'auto',
+    minWidth: 100,
     className: '',
     format: (value, entity) => entity.Driver ? entity.Driver.name : ''
+  },
+  {
+    id: 'driverPhone',
+    label: 'Driver Phone',
+    minWidth: 150,
+    className: '',
+    format: (value, entity) => entity.Driver ? entity.Driver.phone : ''
   }, {
     id: 'vehicleId',
     label: 'Vehicle',
@@ -104,13 +111,13 @@ export default function RideView() {
   }, {
     id: 'vendorName',
     label: 'Vendor',
-    minWidth: 'auto',
+    minWidth: 100,
     className: '',
     format: (value, entity) => entity.Driver ? entity.Driver.Vendor.name : ''
   }, {
     id: 'PickupArea',
     label: 'Pickup Area',
-    minWidth: 'auto',
+    minWidth: 200,
     className: '',
     format: (value, entity) => `${entity.PickupArea.name}, ${entity.PickupArea.Zone.name}, ${entity.PickupArea.Zone.City.name}`
   },
@@ -123,13 +130,13 @@ export default function RideView() {
   {
     id: 'pickupDate',
     label: 'Pickup date',
-    minWidth: 'auto',
+    minWidth: 150,
     className: '',
     format: dateFormat
   }, {
     id: 'DropoffArea',
     label: 'Dropoff Area',
-    minWidth: 'auto',
+    minWidth: 200,
     className: '',
     format: (value, entity) => `${entity.DropoffArea.name}, ${entity.DropoffArea.Zone.name}, ${entity.DropoffArea.Zone.City.name}`
   },
@@ -140,12 +147,6 @@ export default function RideView() {
   //     className: ''
   // },
   {
-    id: 'dropoffDate',
-    label: 'Dropoff date',
-    minWidth: 'auto',
-    className: '',
-    format: dateFormat
-  }, {
     // id: 'RideProducts',
     // label: 'Product Category',
     // minWidth: 'auto',

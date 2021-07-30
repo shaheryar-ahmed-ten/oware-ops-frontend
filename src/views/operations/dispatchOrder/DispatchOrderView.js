@@ -27,6 +27,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
 
 
 const useStyles = makeStyles(theme => ({
@@ -54,6 +55,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function DispatchOrderView() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const columns = [{
     id: 'id',
     label: 'OUTWARD ID',
@@ -61,31 +63,35 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
   },
-    {
+  {
     id: 'Inventory.Company.name',
     label: 'CUSTOMER',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Company.name
-  }, {
-    id: 'Inventory.Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Product.name
-  }, {
+  },
+  //  {
+  //   id: 'Inventory.Product.name',
+  //   label: 'PRODUCT',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Product.name
+  // },
+  {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
-  }, {
-    id: 'Inventory.Product.UOM.name',
-    label: 'UOM',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Product.UOM.name
-  }, {
+  },
+  //  {
+  //   id: 'Inventory.Product.UOM.name',
+  //   label: 'UOM',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Product.UOM.name
+  // },
+  {
     id: 'receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
@@ -113,8 +119,18 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <VisibilityIcon key="view"
+          onClick={() => navigate(`view/${entity.id}`, {
+            state: {
+              selectedDispatchOrder: entity,
+              viewOnly: true
+            }
+          })} />,
+        // <EditIcon key="edit" onClick={() => navigate('edit', {
+        //   state: {
+        //     selectedDispatchOrder: entity
+        //   }
+        // })} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -122,36 +138,12 @@ export default function DispatchOrderView() {
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
 
-  const [customers, setCustomers] = useState([]);
-  const [warehouses, setWarehouses] = useState([]);
-  const [products, setProducts] = useState([]);
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
-  const [dispatchOrderDetailsViewOpen, setdispatchOrderDetailsViewOpen] = useState(false)
-
-
-  const addDispatchOrder = data => {
-    let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
-    apiPromise.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      setShowMessage({
-        message: "New dispatch order has been created."
-      })
-      closeAddDispatchOrderView(false);
-      getDispatchOrders();
-    });
-  };
 
   const deleteDispatchOrder = data => {
     axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
@@ -165,29 +157,9 @@ export default function DispatchOrderView() {
       });
   };
 
-  const openEditView = dispatchOrder => {
-    setSelectedDispatchOrder(dispatchOrder);
-    setAddDispatchOrderViewOpen(true);
-  }
-
-  const openViewDetails = dispatchOrder => {
-    setSelectedDispatchOrder(dispatchOrder);
-    setdispatchOrderDetailsViewOpen(true);
-  }
-
   const openDeleteView = dispatchOrder => {
     setSelectedDispatchOrder(dispatchOrder);
     setDeleteDispatchOrderViewOpen(true);
-  }
-
-  const closeAddDispatchOrderView = () => {
-    setSelectedDispatchOrder(null);
-    setAddDispatchOrderViewOpen(false);
-  }
-
-  const closeDispatchOrderDetailsView = () => {
-    setSelectedDispatchOrder(null);
-    setdispatchOrderDetailsViewOpen(false)
   }
 
   const closeDeleteDispatchOrderView = () => {
@@ -207,39 +179,11 @@ export default function DispatchOrderView() {
     _getDispatchOrders(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
-  const getRelations = () => {
-    axios.get(getURL('dispatch-order/relations'))
-      .then(res => {
-        setCustomers(res.data.customers);
-        setWarehouses(res.data.warehouses);
-        setProducts(res.data.products);
-      });
-  };
-
-  const getInventory = (params) => {
-    return axios.get(getURL('dispatch-order/inventory'), { params })
-      .then(res => res.data.inventory);
-  };
-
-  const getWarehouses = (params) => {
-    return axios.get(getURL('dispatch-order/warehouses'), { params })
-      .then(res => {
-        return res.data.warehouses
-      });
-  };
-
-  const getProducts = (params) => {
-    return axios.get(getURL('dispatch-order/products'), { params })
-      .then(res => res.data.products);
-  };
 
   useEffect(() => {
     getDispatchOrders(page, searchKeyword);
   }, [page, searchKeyword]);
 
-  useEffect(() => {
-    getRelations();
-  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -257,21 +201,10 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
-  const addDispatchOrderModal = <AddDispatchOrderView
-    key={3}
-    formErrors={formErrors}
-    customers={customers}
-    warehouses={warehouses}
-    products={products}
-    selectedDispatchOrder={selectedDispatchOrder}
-    open={addDispatchOrderViewOpen}
-    addDispatchOrder={addDispatchOrder}
-    getInventory={getInventory}
-    getWarehouses={getWarehouses}
-    getProducts={getProducts}
-    handleClose={() => closeAddDispatchOrderView()}
-    dispatchedOrdersLength={dispatchOrders.length} />
+    // onClick={() => setAddDispatchOrderViewOpen(true)}
+    onClick={() => navigate('create')}
+  >ADD DISPATCH ORDER</Button>;
+
   const deleteDispatchOrderModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteDispatchOrder}
@@ -281,27 +214,13 @@ export default function DispatchOrderView() {
     title={"DispatchOrder"}
   />
 
-  const dispatchOrderDetailsModal = <ViewDispatchOrderDetails
-  key={5}
-  formErrors={formErrors}
-  customers={customers}
-    warehouses={warehouses}
-    products={products}
-    selectedDispatchOrder={selectedDispatchOrder}
-    open={dispatchOrderDetailsViewOpen}
-    getInventory={getInventory}
-    getWarehouses={getWarehouses}
-    getProducts={getProducts}
-    handleClose={() => closeDispatchOrderDetailsView()}
-    dispatchedOrdersLength={dispatchOrders.length}
-  />
 
-  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal, dispatchOrderDetailsModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Dispatch Order" buttons={headerButtons}/>
+        <TableHeader title="Dispatch Order" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
