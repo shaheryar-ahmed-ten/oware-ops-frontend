@@ -113,10 +113,8 @@ export default function AddProductOutwardView({ }) {
     if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find(dispatchOrder => dispatchOrder.id == value);
       setSelectedDispatchOrder(dispatchOrder)
-      console.log(dispatchOrder)
       // let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
       // let totalQuantityDispatched = dispatchOrder.Inventories.reduce((acc, po) => acc + po.committedQuantity, 0);
-      // console.log(totalQuantityDispatched)
       // setRequestedQuantity(dispatchOrder.quantity || 0);
       // setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
