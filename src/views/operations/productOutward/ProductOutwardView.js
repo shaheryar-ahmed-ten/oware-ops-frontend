@@ -186,7 +186,7 @@ export default function ProductOutwardView() {
   }
 
   const _getProductOutwards = (page, searchKeyword) => {
-    axios.get(getURL('product-outward'), { params: { page, [`Comapny.name`]: searchKeyword } })
+    axios.get(getURL('product-outward'), { params: { page, [`Company.name`]: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
