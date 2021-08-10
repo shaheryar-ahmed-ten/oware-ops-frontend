@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => ({
 
 const TableHeader = ({ title, buttons }) => {
   const classes = useStyles();
-
   return (
     <React.Fragment>
       <Paper elevation={0} square className={classes.root}>
@@ -32,7 +31,16 @@ const TableHeader = ({ title, buttons }) => {
               <Typography component="div" variant="h4" className={classes.heading}>{title}</Typography>
             </Grid>
             <Grid item>
-              {buttons}
+              {/* {buttons} */}
+              {
+                buttons.map((button, idx) => {
+                  return (
+                    <span key={idx}>
+                      {button}
+                    </span>
+                  )
+                })
+              }
             </Grid>
           </Grid>
         </div>

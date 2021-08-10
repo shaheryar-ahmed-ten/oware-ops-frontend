@@ -24,7 +24,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="cId"
                                             label={relationType.toTitleCase() + ' ID'}
                                             type="text"
                                             InputLabelProps={{
@@ -38,7 +38,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="company"
                                             label={relationType.toTitleCase() + ' Name'}
                                             type="text"
                                             InputLabelProps={{
@@ -54,7 +54,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="contact"
                                             label="Contact Name"
                                             type="text"
                                             InputLabelProps={{
@@ -68,7 +68,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="email"
                                             label="Contact Email"
                                             type="text"
                                             InputLabelProps={{
@@ -84,7 +84,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="notes"
                                             label="Notes"
                                             type="text"
                                             InputLabelProps={{
@@ -98,7 +98,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
-                                            id="filled-number"
+                                            id="status"
                                             label="Status"
                                             type="text"
                                             InputLabelProps={{
