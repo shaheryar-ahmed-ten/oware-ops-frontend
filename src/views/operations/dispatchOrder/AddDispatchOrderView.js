@@ -411,7 +411,7 @@ export default function AddDispatchOrderView() {
           <Grid item sm={2}>
             <TextField
               fullWidth={true}
-              margin="dense"
+              margin="normal"
               InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
               id="quantity"
               label="Quantity"
@@ -427,7 +427,7 @@ export default function AddDispatchOrderView() {
           <Grid item sm={2}>
             <TextField
               fullWidth={true}
-              margin="dense"
+              margin="normal"
               id="availableQuantity"
               label="Available Quantity"
               type="number"
@@ -439,7 +439,7 @@ export default function AddDispatchOrderView() {
           <Grid item sm={2}>
             <TextField
               fullWidth={true}
-              margin="dense"
+              margin="normal"
               id="uom"
               label="UOM"
               type="text"
@@ -449,7 +449,7 @@ export default function AddDispatchOrderView() {
             />
           </Grid>
           <Grid item sm={2}>
-            <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth>Add Dispatch</Button>
+            <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth >Add Dispatch</Button>
           </Grid>
         </Grid>
       </Grid>

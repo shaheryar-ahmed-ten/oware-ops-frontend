@@ -197,7 +197,7 @@ export default function AddProductOutwardView({ }) {
           <Typography variant="h3" className={classes.heading}>Add Product Outward</Typography>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
+          <FormControl fullWidth={true} variant="outlined">
             <Autocomplete
               id="combo-box-demo"
               defaultValue={selectedProductOutward ? { internalIdForBusiness: selectedProductOutward.internalIdForBusiness } : ''}
@@ -213,7 +213,7 @@ export default function AddProductOutwardView({ }) {
           </FormControl>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
+          <FormControl fullWidth={true} variant="outlined">
             <InputLabel>Vehicle</InputLabel>
             <Select
               fullWidth={true}
@@ -224,6 +224,7 @@ export default function AddProductOutwardView({ }) {
               value={vehicleId}
               onChange={e => setVehicleId(e.target.value)}
               onBlur={e => setValidation({ ...validation, vehicleId: true })}
+              margin="normal"
             >
               {
                 vehicleId == '' ?
@@ -239,7 +240,7 @@ export default function AddProductOutwardView({ }) {
         <Grid item sm={12}>
           <TextField
             fullWidth={true}
-            margin="dense"
+            margin="normal"
             id="referenceId"
             label="Reference Id"
             type="text"
