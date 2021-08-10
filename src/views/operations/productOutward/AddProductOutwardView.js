@@ -18,7 +18,7 @@ import {
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { dateFormat, getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
 import { useLocation, useNavigate } from 'react-router';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -296,7 +296,7 @@ export default function AddProductOutwardView({ }) {
                     {selectedDispatchOrder.ProductOutwards.length}
                   </TableCell>
                   <TableCell>
-                    {shipmentDate}
+                    {dateFormat(shipmentDate)}
                   </TableCell>
                   <TableCell>
                     {receiverName}
