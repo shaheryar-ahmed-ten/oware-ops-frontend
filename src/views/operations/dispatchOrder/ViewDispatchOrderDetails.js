@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TextField, Typography } from '@material-ui/core';
+import { Box, Grid, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, Typography } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat, getURL } from '../../../utils/common';
@@ -170,9 +170,9 @@ function ViewDispatchOrderDetails() {
                   </TableHead>
                   <TableBody>
                     {
-                      selectedDispatchOrder.Inventories.map((order) => {
+                      selectedDispatchOrder.Inventories.map((order, idx) => {
                         return (
-                          <TableRow>
+                          <TableRow key={idx}>
                             <TableCell>
                               {order.Product.name}
                             </TableCell>
@@ -302,9 +302,9 @@ function ViewDispatchOrderDetails() {
             </TableHead>
             <TableBody>
               {
-                selectedDispatchOrder.Inventories.map((order) => {
+                selectedDispatchOrder.Inventories.map((order, idx) => {
                   return (
-                    <TableRow>
+                    <TableRow key={idx}>
                       <TableCell>
                         {order.Product.name}
                       </TableCell>
