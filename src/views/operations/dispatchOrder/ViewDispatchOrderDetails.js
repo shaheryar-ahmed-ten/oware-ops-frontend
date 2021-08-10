@@ -170,9 +170,9 @@ function ViewDispatchOrderDetails() {
                   </TableHead>
                   <TableBody>
                     {
-                      selectedDispatchOrder.Inventories.map((order) => {
+                      selectedDispatchOrder.Inventories.map((order, idx) => {
                         return (
-                          <TableRow>
+                          <TableRow key={idx}>
                             <TableCell>
                               {order.Product.name}
                             </TableCell>
@@ -302,9 +302,9 @@ function ViewDispatchOrderDetails() {
             </TableHead>
             <TableBody>
               {
-                selectedDispatchOrder.Inventories.map((order) => {
+                selectedDispatchOrder.Inventories.map((order, idx) => {
                   return (
-                    <TableRow>
+                    <TableRow key={idx}>
                       <TableCell>
                         {order.Product.name}
                       </TableCell>

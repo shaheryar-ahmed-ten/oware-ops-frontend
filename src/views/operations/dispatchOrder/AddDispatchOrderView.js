@@ -298,10 +298,10 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
             <Autocomplete
-              id="combo-box-demo"
+              id="customer"
               options={customers}
               defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
-              getOptionLabel={(customer) => customer.name}
+              getOptionLabel={(customer) => customer.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
                   handleCustomerSearch(newValue.id, (newValue.name || ''))
@@ -315,10 +315,10 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
             <Autocomplete
-              id="combo-box-demo"
+              id="warehouse"
               options={warehouses}
               defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
-              getOptionLabel={(warehouse) => warehouse.name}
+              getOptionLabel={(warehouse) => warehouse.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
                   setWarehouseId(newValue.id)
@@ -395,9 +395,9 @@ export default function AddDispatchOrderView() {
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
-                id="combo-box-demo"
+                id="product"
                 options={products}
-                getOptionLabel={(product) => product.name}
+                getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
                   if (newValue)
                     setProductId(newValue.id)
@@ -520,188 +520,3 @@ export default function AddDispatchOrderView() {
     </>
   );
 }
-
-{/* <div style={{ display: "inline" }}>
-      <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle>
-            {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
-          </DialogTitle>
-          <DialogContent>
-            {formErrors}
-            <Grid container>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UOM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="availableQuantity"
-                    label="Available Quantity"
-                    type="number"
-                    variant="filled"
-                    value={availableQuantity}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={customers}
-                      getOptionLabel={(customer) => customer.name}
-                      onChange={(event, newValue) => {
-                        if (newValue)
-                          handleCustomerSearch(newValue.id, (newValue.name || ''))
-                      }}
-                      renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
-                    />
-                    {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Warehouse</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="warehouseId"
-                      label="Inventory"
-                      variant="outlined"
-                      value={warehouseId}
-                      disabled={!!selectedDispatchOrder}
-                      onChange={e => { setWarehouseId(e.target.value) }}
-                      onBlur={e => setValidation({ ...validation, warehouseId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a warehouse</MenuItem>
-                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id} name="name">{warehouse.name}</MenuItem>)}
-                    </Select>
-                    {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>Product</InputLabel>
-                  <Select
-                    fullWidth={true}
-                    id="productId"
-                    label="Inventory"
-                    variant="outlined"
-                    value={productId}
-                    disabled={!!selectedDispatchOrder}
-                    onChange={e => setProductId(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, productId: true })}
-                  >
-                    <MenuItem value="" disabled>Select a product</MenuItem>
-                    {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                  </Select>
-                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-                </FormControl>
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
-                  id="quantity"
-                  label="Quantity"
-                  type="number"
-                  variant="outlined"
-                  value={quantity}
-                  disabled={!!selectedDispatchOrder}
-                  onChange={e => setQuantity(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, quantity: true })}
-                />
-                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="receiverName"
-                  label="Receiver Name"
-                  type="text"
-                  variant="outlined"
-                  value={receiverName}
-                  onChange={e => setReceiverName(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, receiverName: true })}
-                />
-                {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="receiverPhone"
-                  label="Receiver Phone"
-                  type="text"
-                  variant="outlined"
-                  value={receiverPhone}
-                  placeholder="0346xxxxxx8"
-                  onChange={e => setReceiverPhone(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-                />
-                {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
-                {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="shipmentDate"
-                  label="Shipment Date"
-                  placeholder="Shipment Date"
-                  type="datetime-local"
-                  variant="outlined"
-                  value={shipmentDate}
-                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
-                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
-                />
-                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="referenceId"
-                  label="Reference Id"
-                  type="text"
-                  variant="outlined"
-                  value={referenceId}
-                  onChange={e => setReferenceId(e.target.value)}
-                  inputProps={{ maxLength: 30 }}
-                />
-              </Grid>
-            </Grid>
-
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Update Dispatch Order'}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </form>
-    </div > */}
