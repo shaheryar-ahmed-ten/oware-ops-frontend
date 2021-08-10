@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadText: {
     background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
+  },
+  subContainer: {
+    boxSizing: 'border-box',
+    padding: "14px 14px",
   }
 }));
 export default function AddProductInwardView() {
@@ -224,7 +228,7 @@ export default function AddProductInwardView() {
               id="customer"
               defaultValue={selectedProductInward ? { name: selectedProductInward.Company.name, id: selectedProductInward.Company.id } : ''}
               options={customers}
-              getOptionLabel={(customer) => customer.name}
+              getOptionLabel={(customer) => customer.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
                   setCustomerId(newValue.id)
@@ -241,7 +245,7 @@ export default function AddProductInwardView() {
               id="warehouse"
               defaultValue={selectedProductInward ? { name: selectedProductInward.Warehouse.name, id: selectedProductInward.Warehouse.id } : ''}
               options={warehouses}
-              getOptionLabel={(warehouse) => warehouse.name}
+              getOptionLabel={(warehouse) => warehouse.name || ""}
               onChange={(event, newValue) => {
                 if (newValue) {
                   setWarehouseId(newValue.id);
@@ -274,13 +278,13 @@ export default function AddProductInwardView() {
         <Grid item xs={12}>
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
         </Grid>
-        <Grid container alignItems="center" spacing={2}>
+        <Grid container alignItems="center" spacing={2} className={classes.subContainer} >
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
                 id="Product"
                 options={products}
-                getOptionLabel={(product) => product.name}
+                getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
                   if (newValue)
                     selectProduct(newValue.id)
@@ -303,6 +307,8 @@ export default function AddProductInwardView() {
               disabled={viewOnly}
               onChange={e => setQuantity(e.target.value)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
+              InputProps={{ inputProps: { min: 1 } }}
+              margin="normal"
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
           </Grid>
@@ -316,6 +322,7 @@ export default function AddProductInwardView() {
               variant="filled"
               value={uom}
               disabled
+              margin="normal"
             />
           </Grid>
           <Grid item xs={2} className={classes.parentContainer}>
