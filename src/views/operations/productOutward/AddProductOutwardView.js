@@ -345,14 +345,15 @@ export default function AddProductOutwardView({ }) {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                {selectedDispatchOrder.Inventories.map((inventory, idx) => {
-                  let remainingQt = 0
-                  selectedDispatchOrder.ProductOutwards.forEach((po) => {
-                    const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
-                    remainingQt += targetedPoInv.OutwardGroup.quantity
-                  })
-                  remainingQt = inventory.OrderGroup.quantity - remainingQt
-                  return <>
+                <TableBody>
+                  {selectedDispatchOrder.Inventories.map((inventory, idx) => {
+                    let remainingQt = 0
+                    selectedDispatchOrder.ProductOutwards.forEach((po) => {
+                      const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
+                      remainingQt += targetedPoInv.OutwardGroup.quantity
+                    })
+                    remainingQt = inventory.OrderGroup.quantity - remainingQt
+                    return
                     <TableRow hover role="checkbox" key={idx}>
                       <TableCell>
                         {inventory.Product.name}
@@ -383,8 +384,8 @@ export default function AddProductOutwardView({ }) {
                         {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
                       </TableCell>
                     </TableRow>
-                  </>
-                })}
+                  })}
+                </TableBody>
               </Table>
             </TableContainer>
             <Grid container className={classes.parentContainer} spacing={3}>
@@ -405,217 +406,3 @@ export default function AddProductOutwardView({ }) {
     </>
   );
 }
-
-
-{/* <div style={{ display: "inline" }}>
-      <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle>
-            {!selectedProductOutward ? 'Add Product Outward' : 'Edit Product Outward'}
-          </DialogTitle>
-          <DialogContent>
-            {formErrors}
-            <Grid container>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <Autocomplete
-                      id="dispatchOrderId"
-                      value={dispatchOrderBusinessId}
-                      options={dispatchOrdersForDropdown}
-                      getOptionLabel={(dispatchOrder) => (dispatchOrder.internalIdForBusiness || '')}
-                      renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" value={params.id} />}
-                      onChange={(event, newValue) => {
-                        if (newValue)
-                          selectDispatchOrder(newValue.id, (newValue.internalIdForBusiness || ''))
-                      }}
-                      inputValue={dispatchOrderBusinessId}
-                      onBlur={e => setValidation({ ...validation, dispatchOrderId: true })}
-                      disabled={disabledFlag}
-                    />
-                    {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? <Typography color="error">Dispatch order is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="quantity"
-                    label="Actual Quantity to Dispatch"
-                    InputProps={{ inputProps: { min: 0, max: remainingQuantity } }}
-                    type="number"
-                    variant="outlined"
-                    value={quantity}
-                    disabled={!!selectedProductOutward}
-                    onChange={e => setQuantity(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, quantity: true })}
-                  />
-                  {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Vehicle</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      displayEmpty
-                      id="vehicleId"
-                      label="Vehicle"
-                      variant="outlined"
-                      value={vehicleId}
-                      onChange={e => setVehicleId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, vehicleId: true })}
-                    >
-                      {vehicles.map((vehicle, index) => <MenuItem key={index} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
-                    </Select>
-                    {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="referenceId"
-                    label="Reference Id"
-                    type="text"
-                    variant="outlined"
-                    value={referenceId}
-                    // disabled
-                    inputProps={{ maxLength: 30 }}
-                    onChange={(e) => { setReferenceId(e.target.value) }}
-                  />
-                </Grid>
-
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="product"
-                    label="Product Name"
-                    type="text"
-                    variant="filled"
-                    value={product}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UoM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="requestedQuantity"
-                    label="Quantity of Product to Dispatch"
-                    type="text"
-                    variant="filled"
-                    value={requestedQuantity}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="remainingQuantity"
-                    label="Remaining quantity"
-                    type="text"
-                    variant="filled"
-                    value={remainingQuantity}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="customer"
-                    label="Customer"
-                    type="text"
-                    variant="filled"
-                    value={customer}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="warehouse"
-                    label="Warehouse"
-                    type="text"
-                    variant="filled"
-                    value={warehouse}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="shipmentDate"
-                    label="Shipment Date"
-                    type="text"
-                    variant="filled"
-                    value={shipmentDate}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="receiverName"
-                    label="Receiver Name"
-                    type="text"
-                    variant="filled"
-                    value={receiverName}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="receiverPhone"
-                    label="Receiver Phone"
-                    type="text"
-                    variant="filled"
-                    value={receiverPhone}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedProductOutward ? 'Add Product Outward' : 'Update Product Outward'}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </form>
-    </div > */}
