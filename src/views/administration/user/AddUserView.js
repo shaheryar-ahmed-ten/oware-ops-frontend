@@ -26,9 +26,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
-  const [portal, setPortal] = useState(null);
-  const [roleId, setRoleId] = useState(null);
-  const [companyId, setCompanyId] = useState(null);
+  const [portal, setPortal] = useState('');
+  const [roleId, setRoleId] = useState('');
+  const [companyId, setCompanyId] = useState('');
 
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
@@ -43,8 +43,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
       setPortal((selectedUser.Role && selectedUser.Role.allowedApps) || '');
-      setRoleId(selectedUser.roleId || null);
-      setCompanyId(selectedUser.companyId || null);
+      setRoleId(selectedUser.roleId || '');
+      setCompanyId(selectedUser.companyId || '');
       setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
@@ -53,9 +53,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setUsername('');
       setPassword('');
       setPhone('');
-      setRoleId(null);
-      setPortal(null);
-      setCompanyId(null);
+      setRoleId('');
+      setPortal('');
+      setCompanyId('');
       setActive(true);
     }
   }, [selectedUser]);
@@ -66,8 +66,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
 
 
   const changePortal = portal => {
-    setRoleId(null);
-    setCompanyId(null);
+    setRoleId('');
+    setCompanyId('');
     setPortal(portal);
   }
 
@@ -286,7 +286,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
                   Active
-              </Grid>
+                </Grid>
                 : ''}
             </Grid>
           </DialogContent>
