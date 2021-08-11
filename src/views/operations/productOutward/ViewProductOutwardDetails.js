@@ -51,8 +51,7 @@ function ViewProductOutwardDetails() {
   const classes = useStyles();
   const { state } = useLocation();
   const { uid } = useParams();
-  const [selectedProductOutward, setSelectedProductOutward] = useState(state ? state.selectedProductOutward : null)
-
+  const [selectedProductOutward, setSelectedProductOutward] = useState(null)
   useEffect(() => {
     if (!selectedProductOutward) {
       fetchProductOutwards()
