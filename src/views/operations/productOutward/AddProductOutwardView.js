@@ -347,7 +347,6 @@ export default function AddProductOutwardView({ }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {console.log(selectedDispatchOrder)}
                   {selectedDispatchOrder.Inventories.map((inventory, idx) => {
                     let remainingQt = 0
                     selectedDispatchOrder.ProductOutwards.forEach((po) => {
