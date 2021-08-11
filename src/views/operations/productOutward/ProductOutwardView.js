@@ -167,7 +167,7 @@ export default function ProductOutwardView() {
   const [showMessage, setShowMessage] = useState(null)
 
   const [searchFilter, setSearchFilter] = useState('Company.name')
-
+  console.log(searchFilter)
 
   const deleteProductOutward = data => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
@@ -193,7 +193,7 @@ export default function ProductOutwardView() {
     setDeleteProductOutwardViewOpen(false);
   }
 
-  const _getProductOutwards = (page, searchKeyword) => {
+  const _getProductOutwards = (page, searchKeyword, searchFilter) => {
     axios.get(getURL('product-outward'), { params: { page, [`${searchFilter}`]: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
@@ -201,12 +201,12 @@ export default function ProductOutwardView() {
       });
   }
 
-  const getProductOutwards = useCallback(debounce((page, searchKeyword) => {
-    _getProductOutwards(page, searchKeyword);
+  const getProductOutwards = useCallback(debounce((page, searchKeyword, searchFilter) => {
+    _getProductOutwards(page, searchKeyword, searchFilter);
   }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
-    getProductOutwards(page, searchKeyword);
+    getProductOutwards(page, searchKeyword, searchFilter);
   }, [page, searchKeyword]);
 
 
