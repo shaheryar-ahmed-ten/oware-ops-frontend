@@ -167,7 +167,6 @@ export default function ProductOutwardView() {
   const [showMessage, setShowMessage] = useState(null)
 
   const [searchFilter, setSearchFilter] = useState('Company.name')
-  console.log(searchFilter)
 
   const deleteProductOutward = data => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
@@ -254,7 +253,6 @@ export default function ProductOutwardView() {
     title={"ProductOutward"}
   />
 
-  // const searchBy = 
 
   const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal];
 
