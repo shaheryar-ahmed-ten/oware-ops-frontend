@@ -11,6 +11,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  InputLabel,
+  FormControl,
+  Select,
+  FormHelperText,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -26,6 +30,7 @@ import ViewProductOutwardDetails from './ViewProductOutwardDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
+import { MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,6 +52,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: 7,
     height: 30,
   },
+  searchFilter: {
+    marginRight: 7,
+  }
 }));
 
 
@@ -158,8 +166,7 @@ export default function ProductOutwardView() {
   const [deleteProductOutwardViewOpen, setDeleteProductOutwardViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
-
-
+  const [searchFilter, setSearchFilter] = useState('Company.name')
 
   const deleteProductOutward = data => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`))
@@ -185,34 +192,49 @@ export default function ProductOutwardView() {
     setDeleteProductOutwardViewOpen(false);
   }
 
-  const _getProductOutwards = (page, searchKeyword) => {
-    axios.get(getURL('product-outward'), { params: { page, [`Company.name`]: searchKeyword } })
+  const _getProductOutwards = (page, searchKeyword, searchFilter) => {
+    axios.get(getURL('product-outward'), { params: { page, [`${searchFilter}`]: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
       });
   }
 
-  const getProductOutwards = useCallback(debounce((page, searchKeyword) => {
-    _getProductOutwards(page, searchKeyword);
+  const getProductOutwards = useCallback(debounce((page, searchKeyword, searchFilter) => {
+    _getProductOutwards(page, searchKeyword, searchFilter);
   }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
-    getProductOutwards(page, searchKeyword);
+    getProductOutwards(page, searchKeyword, searchFilter);
   }, [page, searchKeyword]);
 
 
-  const searchInput = <InputBase
-    placeholder="Search"
-    className={classes.searchInput}
-    id="search"
-    label="Search"
-    type="text"
-    variant="outlined"
-    value={searchKeyword}
-    key={1}
-    onChange={e => setSearchKeyword(e.target.value)}
-  />;
+  const searchInput = <>
+    <InputBase
+      placeholder="Search"
+      className={classes.searchInput}
+      id="search"
+      label="Search"
+      type="text"
+      variant="outlined"
+      value={searchKeyword}
+      key={1}
+      onChange={e => setSearchKeyword(e.target.value)}
+    />
+    <FormControl className={classes.searchFilter}>
+      <Select
+        labelId="searchBy"
+        id="searchBy"
+        value={searchFilter}
+        onChange={(e) => setSearchFilter(e.target.value)}
+      >
+        <MenuItem value={'Company.name'}>Company</MenuItem>
+        <MenuItem value={'Product.name'}>Product</MenuItem>
+        <MenuItem value={'Warehouse.name'}>Warehouse</MenuItem>
+      </Select>
+      <FormHelperText>Search By</FormHelperText>
+    </FormControl>
+  </>
   const addProductOutwardButton = <Button
     key={2}
     variant="contained"

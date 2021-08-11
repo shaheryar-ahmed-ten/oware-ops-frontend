@@ -354,37 +354,38 @@ export default function AddProductOutwardView({ }) {
                       remainingQt += targetedPoInv.OutwardGroup.quantity
                     })
                     remainingQt = inventory.OrderGroup.quantity - remainingQt
-                    return
-                    <TableRow hover role="checkbox" key={idx}>
-                      <TableCell>
-                        {inventory.Product.name}
-                      </TableCell>
-                      <TableCell>
-                        {inventory.Product.UOM.name}
-                      </TableCell>
-                      <TableCell>
-                        {inventory.OrderGroup.quantity}
-                      </TableCell>
-                      <TableCell>
-                        {remainingQt}
-                        {/* {inventory.OrderGroup.quantity - inventory.committedQuantity} */}
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          fullWidth={true}
-                          margin="dense"
-                          InputProps={{ inputProps: { min: 0, max: inventory.availableQuantity } }}
-                          id="quantity"
-                          label="Quantity"
-                          type="number"
-                          variant="outlined"
-                          value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
-                          onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id } })} // TODO: Fix multi inputs
-                          onBlur={e => setValidation({ ...validation, quantity: true })}
-                        />
-                        {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
-                      </TableCell>
-                    </TableRow>
+                    return (
+                      <TableRow hover role="checkbox" key={idx}>
+                        <TableCell>
+                          {inventory.Product.name}
+                        </TableCell>
+                        <TableCell>
+                          {inventory.Product.UOM.name}
+                        </TableCell>
+                        <TableCell>
+                          {inventory.OrderGroup.quantity}
+                        </TableCell>
+                        <TableCell>
+                          {remainingQt}
+                          {/* {inventory.OrderGroup.quantity - inventory.committedQuantity} */}
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            fullWidth={true}
+                            margin="dense"
+                            InputProps={{ inputProps: { min: 0, max: inventory.availableQuantity } }}
+                            id="quantity"
+                            label="Quantity"
+                            type="number"
+                            variant="outlined"
+                            value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
+                            onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id } })} // TODO: Fix multi inputs
+                            onBlur={e => setValidation({ ...validation, quantity: true })}
+                          />
+                          {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
+                        </TableCell>
+                      </TableRow>
+                    )
                   })}
                 </TableBody>
               </Table>
