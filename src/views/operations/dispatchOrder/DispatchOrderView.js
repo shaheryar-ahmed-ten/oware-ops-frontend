@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -11,24 +11,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  IconButton
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
-
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,6 +44,22 @@ const useStyles = makeStyles(theme => ({
     marginRight: 7,
     height: 30,
   },
+  pendingStatusButtonStyling: {
+    backgroundColor: '#FFEEDB',
+    color: '#F69148',
+    borderRadius : "10px"
+},
+ partialStatusButtonStyling: {
+    backgroundColor: '#F0F0F0',
+    color: '#7D7D7D',
+    width: 150,
+    borderRadius : "10px"
+},
+ fullfilledStatusButtonStyling: {
+    backgroundColor: '#EAF7D5',
+    color: '#69A022',
+    borderRadius : "10px"
+},
 }));
 
 
@@ -70,13 +80,6 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventory.Company.name
   },
-  //  {
-  //   id: 'Inventory.Product.name',
-  //   label: 'PRODUCT',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.Inventory.Product.name
-  // },
   {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
@@ -84,13 +87,6 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
   },
-  //  {
-  //   id: 'Inventory.Product.UOM.name',
-  //   label: 'UOM',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.Inventory.Product.UOM.name
-  // },
   {
     id: 'receiverName',
     label: 'RECEIVER NAME',
@@ -102,17 +98,36 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'quantity',
-    label: 'REQUESTED QUANTITY',
-    minWidth: 'auto',
-    className: '',
-  }, {
     id: 'shipmentDate',
     label: 'FULFILMENT DATE',
     minWidth: 'auto',
     className: '',
     format: dateFormat
-  }, {
+  }, 
+  {
+    id: 'status',
+    label: 'STATUS',
+    minWidth: 'auto',
+    className: classes.tableCellStyle,
+    format: (value, entity) => {
+        let totalDispatched = 0
+        entity.ProductOutwards.forEach(po => {
+            po.OutwardGroups.forEach(outGroup => {
+                totalDispatched += outGroup.quantity
+            });
+        });
+        return (
+            totalDispatched === 0 ? <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
+                Pending
+            </Button> : totalDispatched > 0 && totalDispatched < entity.quantity ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
+                Partially fulfilled
+            </Button> : entity.quantity === totalDispatched ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
+                Fulfilled
+            </Button> : ''
+        )
+    }
+  },
+  {
     id: 'actions',
     label: '',
     minWidth: 'auto',
@@ -126,18 +141,11 @@ export default function DispatchOrderView() {
               viewOnly: true
             }
           })} />,
-        // <EditIcon key="edit" onClick={() => navigate('edit', {
-        //   state: {
-        //     selectedDispatchOrder: entity
-        //   }
-        // })} />,
-        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
   const [formErrors, setFormErrors] = useState('');
@@ -265,7 +273,6 @@ export default function DispatchOrderView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-          // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
