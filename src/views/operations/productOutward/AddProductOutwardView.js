@@ -351,9 +351,10 @@ export default function AddProductOutwardView({ }) {
                     let remainingQt = 0
                     selectedDispatchOrder.ProductOutwards.forEach((po) => {
                       const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
-                      remainingQt += targetedPoInv.OutwardGroup.quantity
+                      if (targetedPoInv)
+                        remainingQt += targetedPoInv.OutwardGroup.quantity
                     })
-                    remainingQt = inventory.OrderGroup.quantity - remainingQt
+                      remainingQt = inventory.OrderGroup.quantity - remainingQt
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
