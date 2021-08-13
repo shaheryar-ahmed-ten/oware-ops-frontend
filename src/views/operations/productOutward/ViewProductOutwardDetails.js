@@ -347,7 +347,9 @@ function ViewProductOutwardDetails() {
                 selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
                   let remainingQt = 0, sentQt = 0;
                   const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
-                  sentQt += targetedPoInv.OutwardGroup.quantity
+                  if (targetedPoInv) {
+                    sentQt += targetedPoInv.OutwardGroup.quantity
+                  }
                   remainingQt = order.OrderGroup.quantity - sentQt
                   return (
                     <TableRow key={idx}>
