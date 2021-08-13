@@ -18,7 +18,6 @@ import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCompanyView from './AddCompanyView';
 import CompanyDetailsView from './CompanyDetailsView';
@@ -224,7 +223,7 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>ADD {relationType}</Button>;
+    onClick={() => setAddCompanyViewOpen(true)}>ADD COMPANY</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -253,7 +252,7 @@ export default function CompanyView({ relationType }) {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title={pageHeadTitle} buttons={headerButtons} />
+        <TableHeader title= "Company" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
