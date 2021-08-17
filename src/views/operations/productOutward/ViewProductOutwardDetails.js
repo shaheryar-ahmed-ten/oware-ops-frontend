@@ -172,7 +172,7 @@ function ViewProductOutwardDetails() {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <Box display="none" displayPrint="block" style={{ margin: "10mm 0mm 0mm 0mm" }}>
+              <Box display="none" displayPrint="block" style={{ margin: "5mm 0mm 0mm 0mm" }}>
                 <Typography variant="h3">
                   Products
                 </Typography>
@@ -201,11 +201,15 @@ function ViewProductOutwardDetails() {
                       </TableCell>
                       <TableCell
                         className={classes.tableHeadText}>
-                        SENT QUANTITY
+                        AVAILABLE QTY
                       </TableCell>
                       <TableCell
                         className={classes.tableHeadText}>
-                        REMAINING QUANTITY
+                        SENT QTY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        REMAINING QTY
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -214,7 +218,9 @@ function ViewProductOutwardDetails() {
                       selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
                         let remainingQt = 0, sentQt = 0;
                         const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
-                        sentQt += targetedPoInv.OutwardGroup.quantity
+                        if (targetedPoInv) {
+                          sentQt += targetedPoInv.OutwardGroup.quantity
+                        }
                         remainingQt = order.OrderGroup.quantity - sentQt
                         return (
                           <TableRow key={idx}>
@@ -231,10 +237,13 @@ function ViewProductOutwardDetails() {
                               {order.OrderGroup.quantity}
                             </TableCell>
                             <TableCell>
+                              {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
+                            </TableCell>
+                            <TableCell>
                               {sentQt}
                             </TableCell>
                             <TableCell>
-                              {remainingQt}
+                              {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
                             </TableCell>
                           </TableRow>
                         )
@@ -334,15 +343,20 @@ function ViewProductOutwardDetails() {
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>
+                  AVAILABLE QUANTITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
                   SENT QUANTITY
                 </TableCell>
-                {/* <TableCell
+                <TableCell
                   className={classes.tableHeadText}>
                   REMAINING QUANTITY
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
+
               {
                 selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
                   let remainingQt = 0, sentQt = 0;
@@ -363,11 +377,14 @@ function ViewProductOutwardDetails() {
                         {order.OrderGroup.quantity}
                       </TableCell>
                       <TableCell>
+                        {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
+                      </TableCell>
+                      <TableCell>
                         {sentQt}
                       </TableCell>
-                      {/* <TableCell>
-                        {remainingQt}
-                      </TableCell> */}
+                      <TableCell>
+                        {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
+                      </TableCell>
                     </TableRow>
                   )
                 })
