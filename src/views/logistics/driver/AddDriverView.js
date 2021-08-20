@@ -92,6 +92,40 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
 
     }
   }
+
+  const validateImage = (event) => {
+    const checkFile = event.target.files[0];
+    if (!checkFile) {
+        return;
+    }
+
+    let file = event.target.files[0]
+    // let dimentions
+    const isImage = file.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
+    if (!isImage) {
+        alert('You can only upload image file!');
+        return;
+    }
+    setDrivingLicenseImage(file);
+}
+
+ const validateDrivingImage  = (event) => {
+    const checkFile = event.target.files[0];
+    if(!checkFile) {
+      return;
+    }
+
+    let file = event.target.files[0]
+
+    const isImage = file.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
+    if (!isImage) {
+      alert('You can only upload image file!');
+      return;
+  }
+
+     setCNICImage(file)
+ }
+
   return (
     <div style={{ display: "inline" }}>
       <form>

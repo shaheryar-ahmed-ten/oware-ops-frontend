@@ -56,7 +56,7 @@ export default function ProductInwardView() {
 
   const columns = [{
     id: 'Customer.name',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Company.name,
