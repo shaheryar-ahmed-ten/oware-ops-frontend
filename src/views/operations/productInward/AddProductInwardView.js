@@ -233,10 +233,10 @@ export default function AddProductInwardView() {
                 if (newValue)
                   setCustomerId(newValue.id)
               }}
-              renderInput={(params) => <TextField {...params} label="Customer" variant="outlined" />}
+              renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, customerId: true })}
             />
-            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
+            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
           </FormControl>
         </Grid>
         <Grid item sm={6}>

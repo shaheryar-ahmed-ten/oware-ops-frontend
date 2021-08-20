@@ -74,14 +74,14 @@ export default function DispatchOrderView() {
   const navigate = useNavigate();
   const columns = [{
     id: 'id',
-    label: 'OUTWARD ID',
+    label: 'DISPATCH ORDER ID',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
   },
   {
     id: 'Inventory.Company.name',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Company.name
@@ -105,7 +105,7 @@ export default function DispatchOrderView() {
     className: '',
   }, {
     id: 'shipmentDate',
-    label: 'FULFILMENT DATE',
+    label: 'SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
     format: dateFormat
