@@ -640,7 +640,7 @@ function AddRideView() {
               variant="outlined"
               value={price}
               minuteStep={15}
-              onChange={e => setPrice(e.target.value)}
+              onChange={e => setPrice(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, price: true })}
             />
             {validation.price && !isRequired(price) ? <Typography color="error">Price is required!</Typography> : ''}
@@ -655,7 +655,7 @@ function AddRideView() {
               type="number"
               variant="outlined"
               value={cost}
-              onChange={e => setCost(e.target.value)}
+              onChange={e => setCost(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, cost: true })}
             />
             {validation.cost && !isRequired(cost) ? <Typography color="error">Cost is required!</Typography> : ''}
@@ -673,7 +673,7 @@ function AddRideView() {
               variant="outlined"
               value={customerDiscount}
               minuteStep={15}
-              onChange={e => setCustomerDiscount(e.target.value)}
+              onChange={e => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
             />
             {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer Discount is required!</Typography> : ''}
@@ -688,7 +688,7 @@ function AddRideView() {
               type="number"
               variant="outlined"
               value={driverIncentive}
-              onChange={e => setDriverIncentive(e.target.value)}
+              onChange={e => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
             {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
@@ -831,6 +831,7 @@ function AddRideView() {
                     type="file"
                     hidden
                     onChange={(e) => { setManifestImage(e.target.files[0]) }}
+                    accept=".jpg,.png,.jpeg"
                   />
                 </Button>
               </FormControl>
