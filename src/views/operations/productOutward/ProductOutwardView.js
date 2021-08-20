@@ -193,7 +193,7 @@ export default function ProductOutwardView() {
   }
 
   const _getProductOutwards = (page, searchKeyword, searchFilter) => {
-    axios.get(getURL('product-outward'), { params: { page, [`${searchFilter}`]: searchKeyword } })
+    axios.get(getURL('product-outward'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setProductOutwards(res.data.data)
@@ -208,7 +208,10 @@ export default function ProductOutwardView() {
     getProductOutwards(page, searchKeyword, searchFilter);
   }, [page, searchKeyword]);
 
-
+  const handleSearch = (e) => {
+    setPage(1)
+    setSearchKeyword(e.target.value)
+  }
   const searchInput = <>
     <InputBase
       placeholder="Search"
@@ -219,9 +222,9 @@ export default function ProductOutwardView() {
       variant="outlined"
       value={searchKeyword}
       key={1}
-      onChange={e => setSearchKeyword(e.target.value)}
+      onChange={e => handleSearch(e)}
     />
-    <FormControl className={classes.searchFilter}>
+    {/* <FormControl className={classes.searchFilter}>
       <Select
         labelId="searchBy"
         id="searchBy"
@@ -233,7 +236,7 @@ export default function ProductOutwardView() {
         <MenuItem value={'Warehouse.name'}>Warehouse</MenuItem>
       </Select>
       <FormHelperText>Search By</FormHelperText>
-    </FormControl>
+    </FormControl> */}
   </>
   const addProductOutwardButton = <Button
     key={2}

@@ -351,7 +351,8 @@ export default function AddProductOutwardView({ }) {
                     let remainingQt = 0
                     selectedDispatchOrder.ProductOutwards.forEach((po) => {
                       const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
-                      remainingQt += targetedPoInv.OutwardGroup.quantity
+                      if (targetedPoInv)
+                        remainingQt += targetedPoInv.OutwardGroup.quantity
                     })
                     remainingQt = inventory.OrderGroup.quantity - remainingQt
                     return (
@@ -379,7 +380,7 @@ export default function AddProductOutwardView({ }) {
                             type="number"
                             variant="outlined"
                             value={inventoryQuantities[idx] ? inventoryQuantities[idx].quantity : 0}
-                            onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id } })} // TODO: Fix multi inputs
+                            onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id, availableQuantity: remainingQt } })} // TODO: Fix multi inputs
                             onBlur={e => setValidation({ ...validation, quantity: true })}
                           />
                           {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
