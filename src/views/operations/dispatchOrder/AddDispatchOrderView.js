@@ -419,7 +419,7 @@ export default function AddDispatchOrderView() {
               variant="outlined"
               value={quantity}
               disabled={!!selectedDispatchOrder}
-              onChange={e => e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
+              onChange={e => e.target.value < 0 ? e.target.value == 0 :  e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}

@@ -305,7 +305,7 @@ export default function AddProductInwardView() {
               variant="outlined"
               value={quantity}
               disabled={viewOnly}
-              onChange={e => setQuantity(e.target.value)}
+              onChange={e => setQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
               InputProps={{ inputProps: { min: 1 } }}
               margin="normal"
