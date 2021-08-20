@@ -239,6 +239,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                         type="file"
                         hidden
                         onChange={(e) => { setDrivingLicenseImage(e.target.files[0]) }}
+                        accept=".jpg,.png,.jpeg"
                       />
                     </Button>
                     {!(selectedDriver && selectedDriver.drivingLicenseId) && validation.drivingLicenseImage && !isRequired(drivingLicenseImage) ? <Typography color="error">Driving License is required!</Typography> : ''}
@@ -259,6 +260,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                         type="file"
                         hidden
                         onChange={(e) => { setCNICImage(e.target.files[0]) }}
+                        accept=".jpg,.png,.jpeg"
                       />
                     </Button>
                     {!(selectedDriver && selectedDriver.cnicId) && validation.CNICImage && !isRequired(CNICImage) ? <Typography color="error">CNIC image is required!</Typography> : ''}

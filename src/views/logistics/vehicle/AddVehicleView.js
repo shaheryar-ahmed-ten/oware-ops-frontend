@@ -220,6 +220,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                         type="file"
                         hidden
                         onChange={(e) => { setRunningPaperImage(e.target.files[0]) }}
+                        accept=".jpg,.png,.jpeg"
                       />
                     </Button>
                     {!(selectedVehicle && selectedVehicle.runningPaperId) && validation.runningPaperImage && !isRequired(runningPaperImage) ? <Typography color="error">Running paper is required!</Typography> : ''}
@@ -238,6 +239,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                         type="file"
                         hidden
                         onChange={(e) => { setRoutePermit(e.target.files[0]) }}
+                        accept=".jpg,.png,.jpeg"
                       />
                     </Button>
                     {validation.routePermitImage && !isRequired(routePermitImage) ? <Typography color="error">Route Permit is required!</Typography> : ''}
