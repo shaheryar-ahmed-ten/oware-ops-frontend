@@ -221,6 +221,9 @@ export default function AddProductInwardView() {
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h3" className={classes.heading}>Add Product Inward</Typography>
+          <Button variant="contained" color="primary" onClick={()=>navigate('/operations/product-inward')}>
+            Cancel
+          </Button>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
