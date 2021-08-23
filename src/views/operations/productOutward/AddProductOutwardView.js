@@ -261,7 +261,7 @@ export default function AddProductOutwardView({ }) {
                 <TableRow>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Customer
+                    Company
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>

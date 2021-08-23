@@ -215,7 +215,7 @@ function ViewDispatchOrderDetails() {
                   className={classes.tableHeadText}>DISPATCH ORDER ID
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>CUSTOMER
+                  className={classes.tableHeadText}>COMPANY
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>WAREHOUSE

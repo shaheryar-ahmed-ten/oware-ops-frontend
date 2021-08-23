@@ -169,20 +169,20 @@ export default function AddRideView({ addRide, open, handleClose, selectedRide,
             <Grid container>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>Customer</InputLabel>
+                  <InputLabel>Company</InputLabel>
                   <Select
                     fullWidth={true}
                     id="customerId"
-                    label="Customer"
+                    label="Company"
                     variant="outlined"
                     value={customerId}
                     onChange={e => setCustomerId(e.target.value)}
                     onBlur={e => setValidation({ ...validation, customerId: true })}
                   >
-                    <MenuItem value="" disabled>Select a customer</MenuItem>
+                    <MenuItem value="" disabled>Select a Company</MenuItem>
                     {companies.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
                   </Select>
-                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
+                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
                 </FormControl>
               </Grid>
               <Grid container spacing={2}>

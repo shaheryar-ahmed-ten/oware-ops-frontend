@@ -85,7 +85,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedCompany ? `Add ${relationType.toTitleCase()}` : `Edit ${relationType.toTitleCase()}`}
+            {!selectedCompany ? `Add Company` : `Edit Company`}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -96,39 +96,39 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="name"
-                    label={relationType.toTitleCase() + ' Name'}
+                    label={'Company Name'}
                     type="text"
                     variant="outlined"
                     value={name}
                     onChange={e => setName(e.target.value)}
                     onBlur={e => setValidation({ ...validation, name: true })}
                   />
-                  {validation.name && !isRequired(name) ? <Typography color="error">{relationType.toTitleCase()} name is required!</Typography> : ''}
+                  {validation.name && !isRequired(name) ? <Typography color="error">Company name is required!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
                     margin="dense"
                     id="internalIdForBusiness"
-                    label={relationType.toTitleCase() + ' ID'}
+                    label={'Company ID'}
                     type="text"
                     variant="outlined"
                     value={internalIdForBusiness}
                     onChange={e => setInternalIdForBusiness(e.target.value)}
                     onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
                   />
-                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType.toTitleCase() + ' ID'} is required!</Typography> : ''}
+                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{'Company ID'} is required!</Typography> : ''}
                 </Grid>
               </Grid>
               {relationType == 'CUSTOMER' ?
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                      <InputLabel>{relationType.toTitleCase()} Type</InputLabel>
+                      <InputLabel>Company Type</InputLabel>
                       <Select
                         fullWidth={true}
                         id="type"
-                        label={relationType.toTitleCase() + ' Type'}
+                        label={'Company Type'}
                         variant="outlined"
                         value={type}
                         onChange={e => setType(e.target.value)}
@@ -137,7 +137,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         <MenuItem value="" disabled>Select a customer type</MenuItem>
                         {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
                       </Select>
-                      {validation.type && !isRequired(type) ? <Typography color="error">{relationType.toTitleCase()} type is required!</Typography> : ''}
+                      {validation.type && !isRequired(type) ? <Typography color="error">Company type is required!</Typography> : ''}
                     </FormControl>
                   </Grid>
                 </Grid>

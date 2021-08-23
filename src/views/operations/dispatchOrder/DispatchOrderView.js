@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL, dateFormat, digitize } from '../../../utils/common';
+import { getURL, dateFormat, digitize, dateToPickerFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import { debounce } from 'lodash';
@@ -108,7 +108,7 @@ export default function DispatchOrderView() {
     label: 'SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
-    format: dateFormat
+    format: (value, entity) => entity.shipmentDate
   },
   {
     id: 'status',

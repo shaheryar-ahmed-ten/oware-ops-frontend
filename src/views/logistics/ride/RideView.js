@@ -85,7 +85,7 @@ export default function RideView() {
     format: value => statuses[value]
   }, {
     id: 'customerId',
-    label: 'Customer',
+    label: 'Company',
     minWidth: 100,
     className: '',
     format: (value, entity) => entity.Customer.name

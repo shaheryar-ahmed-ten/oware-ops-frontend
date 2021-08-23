@@ -318,26 +318,26 @@ function AddRideView() {
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
-            <Typography variant="h5" className={classes.pageSubHeading}>Customer & Vehicle</Typography>
+            <Typography variant="h5" className={classes.pageSubHeading}>Company & Vehicle</Typography>
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Customer</InputLabel>
+              <InputLabel>Company</InputLabel>
               <Select
                 fullWidth={true}
                 id="customerId"
-                label="Customer"
+                label="Company"
                 variant="outlined"
                 value={customerId}
                 onChange={e => setCustomerId(e.target.value)}
                 onBlur={e => setValidation({ ...validation, customerId: true })}
               >
-                <MenuItem value="" disabled>Select a customer</MenuItem>
+                <MenuItem value="" disabled>Select a company</MenuItem>
                 {companies.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
               </Select>
-              {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
+              {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
             </FormControl>
           </Grid>
           <Grid item sm={6}>

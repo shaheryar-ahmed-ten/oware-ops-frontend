@@ -25,7 +25,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="cId"
-                                            label={relationType.toTitleCase() + ' ID'}
+                                            label={'Company ID'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -39,7 +39,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="company"
-                                            label={relationType.toTitleCase() + ' Name'}
+                                            label={'Company Name'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,

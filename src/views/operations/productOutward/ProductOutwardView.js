@@ -69,7 +69,7 @@ export default function ProductOutwardView() {
     format: (value, entity) => entity.internalIdForBusiness
   }, {
     id: 'Inventory.Company.name',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Company.name

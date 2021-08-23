@@ -53,7 +53,7 @@ export default function InventoryView() {
     format: (value, entity) => entity.Product.name
   }, {
     id: 'customer',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Company.name
@@ -116,10 +116,10 @@ export default function InventoryView() {
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase
-    placeholder="Product / Customer /Warehouse"
+    placeholder="Product / Company /Warehouse"
     className={classes.searchInput}
     id="search"
-    label="Product / Customer /Warehouse"
+    label="Product / Company /Warehouse"
     type="text"
     variant="outlined"
     value={searchKeyword}
