@@ -132,6 +132,18 @@ const navTreeData = [
       },
     ]
   },
+  {
+    title: 'Management',
+    nodeId: 'management',
+    children: [
+      {
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+        href: '/management/stock-management',
+        title: 'Stock Management',
+        activeRouteName: 'stockmanagement'
+      }
+    ]  
+  }
 ];
 
 const useStyles = makeStyles((theme) => ({
