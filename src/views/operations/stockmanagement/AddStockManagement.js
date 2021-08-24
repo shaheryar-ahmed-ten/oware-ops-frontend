@@ -19,7 +19,7 @@ import { TableContainer } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
 export default function AddStockManagement() {
   const classes = useStyles();
   const navigate = useNavigate();
-
-  const { state } = useLocation();
+  const { uid } = useParams();
+  console.log(uid)
   const
-    [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null),
+    [selectedInventoryWastages, setSelectedInventoryWastages] = useState(null),
     [warehouses, setWarehouses] = useState([]),
     [products, setProducts] = useState([]),
     [validation, setValidation] = useState({}),
@@ -69,9 +69,14 @@ export default function AddStockManagement() {
   const [comment, setComment] = useState('') // optional comment
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
+
+  // If uid exists than fetch details of the selecteInventoryWastages  
   useEffect(() => {
     getRelations();
-  }, []);
+    if (uid)
+      _getInventoryWastage(); // only in case of edit 
+  }, [uid]);
+
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
       .then(res => {
@@ -89,9 +94,9 @@ export default function AddStockManagement() {
     setProducts([]);
     setProductId('');
     if (!customerId) return;
-    if (!!selectedDispatchOrder) {
-      setWarehouses([selectedDispatchOrder.Inventory.Warehouse]);
-      setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
+    if (!!selectedInventoryWastages) {
+      // setWarehouses([selectedInventoryWastages.Inventory.Warehouse]);
+      setWarehouseId(selectedInventoryWastages.Inventory.warehouseId);
     } else {
       getWarehouses({ customerId })
         .then(warehouses => {
@@ -104,8 +109,8 @@ export default function AddStockManagement() {
     setProducts([]);
     setProductId('');
     if (!customerId && !warehouseId) return;
-    if (!!selectedDispatchOrder) {
-      setProducts([selectedDispatchOrder.Inventory.Product]);
+    if (!!selectedInventoryWastages) {
+      setProducts([selectedInventoryWastages.Inventory.Product]);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
       getProducts({ customerId, warehouseId })
@@ -132,6 +137,16 @@ export default function AddStockManagement() {
 
   }, [productId]);
 
+  const _getInventoryWastage = () => {
+    axios.get(getURL(`inventory-wastages/${uid}`))
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
   const getInventory = (params) => {
     return axios.get(getURL('/dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
@@ -154,8 +169,8 @@ export default function AddStockManagement() {
 
   const addAdjustments = data => {
     // let apiPromise = null;
-    // if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
-    // else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
+    // if (!selectedInventoryWastages) apiPromise = axios.post(getURL('/inventory-wastages'), data);
+    // else apiPromise = axios.put(getURL(`inventory-wastages/${selectedInventoryWastages.id}`), data);
     // apiPromise.then(res => {
     //   if (!res.data.success) {
     //     setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -165,7 +180,7 @@ export default function AddStockManagement() {
     //     message: "New dispatch order has been created."
     //   });
     //   setTimeout(() => {
-    //     navigate('/operations/dispatch-order')
+    //     navigate('/operations/stock-management')
     //   }, 2000);
     // });
   };
@@ -247,7 +262,7 @@ export default function AddStockManagement() {
             <Autocomplete
               id="customer"
               options={customers}
-              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
+              defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
               getOptionLabel={(customer) => customer.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
@@ -264,7 +279,7 @@ export default function AddStockManagement() {
             <Autocomplete
               id="warehouse"
               options={warehouses}
-              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
+              defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
               getOptionLabel={(warehouse) => warehouse.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
@@ -305,7 +320,7 @@ export default function AddStockManagement() {
               label="Quantity to adjust"
               variant="outlined"
               value={quantity}
-              disabled={!!selectedDispatchOrder}
+              disabled={!!selectedInventoryWastages}
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
@@ -340,7 +355,7 @@ export default function AddStockManagement() {
               <Autocomplete
                 id="reasonType"
                 options={reasons}
-                // defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
+                // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
                 getOptionLabel={(reasons) => reasons.name || ""}
                 onChange={(event, newValue) => {
                   if (newValue)
@@ -448,7 +463,7 @@ export default function AddStockManagement() {
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button onClick={handleSubmit} color="primary" variant="contained">
-                  {!selectedDispatchOrder ? 'Create Stock Management' : 'Update Stock Management'}
+                  {!selectedInventoryWastages ? 'Create Stock Management' : 'Update Stock Management'}
                 </Button>
               </FormControl>
             </Grid>

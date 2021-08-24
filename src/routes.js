@@ -130,11 +130,19 @@ const routes = (user) => [
       },
       {
         path: 'stock-management',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <StockManagementView /> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" />
       },
       {
         path: 'stock-management/create',
-        element: <AddStockManagement />
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-management/edit/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-management/view/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" /> // TODO: create a view screen
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
