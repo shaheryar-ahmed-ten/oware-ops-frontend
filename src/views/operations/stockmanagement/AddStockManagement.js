@@ -42,30 +42,33 @@ export default function AddStockManagement() {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  const 
-  [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null),
-  [warehouses, setWarehouses] = useState([]),
-  [products, setProducts] = useState([]),
-  [validation, setValidation] = useState({}),
-  [quantity, setQuantity] = useState(0),
-  [shipmentDate, setShipmentDate] = useState(''),
-  [receiverName, setReceiverName] = useState(''),
-  [receiverPhone, setReceiverPhone] = useState(''),
-  [availableQuantity, setAvailableQuantity] = useState(0),
-  [inventoryId, setInventoryId] = useState(''),
-  [uom, setUom] = useState(''),
-  [customerId, setCustomerId] = useState(''),
-  [warehouseId, setWarehouseId] = useState(''),
-  [productId, setProductId] = useState(''),
-  [referenceId, setReferenceId] = useState(''),
-  [internalIdForBusiness, setInternalIdForBusiness] = useState(''),
-  [selectedCustomerName, setSelectedCustomerName] = useState(''),
-  [formErrors, setFormErrors] = useState([]),
-  [customers, setCustomers] = useState([]),
-  [inventories, setInventories] = useState([]),
-  [showMessage, setShowMessage] = useState(null),
-  [messageType, setMessageType] = useState(null);
+  const
+    [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null),
+    [warehouses, setWarehouses] = useState([]),
+    [products, setProducts] = useState([]),
+    [validation, setValidation] = useState({}),
+    [availableQuantity, setAvailableQuantity] = useState(0),
+    [uom, setUom] = useState(''),
+    [customerId, setCustomerId] = useState(''),
+    [warehouseId, setWarehouseId] = useState(''),
+    [productId, setProductId] = useState(''),
+    [formErrors, setFormErrors] = useState([]),
+    [customers, setCustomers] = useState([]),
+    [showMessage, setShowMessage] = useState(null),
+    [messageType, setMessageType] = useState(null);
 
+  const [reasons, setReasons] = useState([{
+    name: 'Damage'
+  }, {
+    name: 'Expired'
+  }, {
+    name: 'Other'
+  }]) // to be displayed on dropdown
+  const [quantity, setQuantity] = useState(0) // adjusted quantity
+  const [reasonType, setReasonType] = useState('') // selcted reason 
+  const [comment, setComment] = useState('') // optional comment
+  const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
+  const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
   useEffect(() => {
     getRelations();
   }, []);
@@ -79,40 +82,6 @@ export default function AddStockManagement() {
       });
   };
 
-  useEffect(() => {
-    if (!!selectedDispatchOrder) {
-      setQuantity(0);
-      setShipmentDate(dateToPickerFormat(selectedDispatchOrder.shipmentDate) || '');
-      setReceiverName(selectedDispatchOrder.receiverName || '');
-      setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
-      setInventoryId(selectedDispatchOrder.inventoryId || '');
-      setCustomerId(selectedDispatchOrder.Inventory.customerId);
-      setReferenceId(selectedDispatchOrder.referenceId || '');
-      if (products.length > 0 && inventories.length == 0) {
-        selectedDispatchOrder.Inventories.forEach(inventory => {
-          setInventories((prevState) => ([
-            ...prevState,
-            {
-              product: products.find(_product => _product.id == inventory.Product.id),
-              // id: inventory.id,
-              id: inventoryId,
-              quantity: inventory.OrderGroup.quantity
-            }
-          ]))
-        });
-      }
-    } else {
-      setInventoryId('');
-      setQuantity('');
-      setCustomerId('');
-      setWarehouseId('');
-      setProductId('');
-      setShipmentDate(dateToPickerFormat(new Date()));
-      setReceiverName('');
-      setReceiverPhone();
-      setReferenceId('');
-    }
-  }, [selectedDispatchOrder])
 
   useEffect(() => {
     setWarehouses([]);
@@ -139,7 +108,6 @@ export default function AddStockManagement() {
       setProducts([selectedDispatchOrder.Inventory.Product]);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
-      setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
       getProducts({ customerId, warehouseId })
         .then(products => {
           return setProducts(products)
@@ -151,7 +119,6 @@ export default function AddStockManagement() {
     setUom('');
     setQuantity('');
     setAvailableQuantity(0);
-    setInventoryId('');
     if (customerId && warehouseId && productId) {
       const product = products.find(product => product.id == productId);
       setUom(product.UOM.name);
@@ -159,7 +126,6 @@ export default function AddStockManagement() {
         .then(inventory => {
           if (inventory) {
             setAvailableQuantity(inventory.availableQuantity);
-            setInventoryId(inventory.id);
           }
         })
     }
@@ -186,45 +152,54 @@ export default function AddStockManagement() {
   };
 
 
-  const addDispatchOrder = data => {
-    let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
-    apiPromise.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      setShowMessage({
-        message: "New dispatch order has been created."
-      });
-      setTimeout(() => {
-        navigate('/operations/dispatch-order')
-      }, 2000);
-    });
+  const addAdjustments = data => {
+    // let apiPromise = null;
+    // if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
+    // else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
+    // apiPromise.then(res => {
+    //   if (!res.data.success) {
+    //     setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+    //     return
+    //   }
+    //   setShowMessage({
+    //     message: "New dispatch order has been created."
+    //   });
+    //   setTimeout(() => {
+    //     navigate('/operations/dispatch-order')
+    //   }, 2000);
+    // });
   };
 
-  const updateDispatchOrdersTable = () => {
+  const updateAdjustmentsTable = () => {
     if (isRequired(customerId) &&
       isRequired(warehouseId) &&
-      isRequired(receiverName) &&
-      isRequired(receiverPhone) &&
       isRequired(productId) &&
       isRequired(quantity)) {
       // checking if particular product is already added once
       // if yes
-      if (checkForMatchInArray(inventories, "id", inventoryId)) {
+      if (checkForMatchInArray(adjustments, "productId", productId)) {
         setMessageType('#FFCC00')
         setShowMessage({ message: "This product is already added, please choose a different one." })
       }
       // if no
       else {
         setMessageType('green')
-        setInventories([...inventories, {
+        setAdjustments([...adjustments, {
+          // product id
+          productId: productId,
+          // type 
+          type: reasonType,
+          // reason
+          reason: comment,
+          // adjustmentQuantity
+          adjustmentQuantity: quantity
+        }]) // will be sent to the backend
+        setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
-          // id: productId,
-          id: inventoryId,
-          quantity
+          availableQuantity,
+          reasonType,
+          comment,
+          adjustmentQuantity: quantity
         }])
       }
     }
@@ -232,8 +207,6 @@ export default function AddStockManagement() {
       setValidation({
         customerId: true,
         warehouseId: true,
-        receiverName: true,
-        receiverPhone: true,
         productId: true,
         quantity: true
       });
@@ -243,42 +216,23 @@ export default function AddStockManagement() {
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
     setMessageType('green')
-    const newDispatchOrder = {
-      quantity,
-      inventories,
-      inventoryId,
+    const adjustmentsObject = {
       customerId,
       warehouseId,
-      productId,
-      shipmentDate,
-      receiverName,
-      receiverPhone,
-      referenceId,
-      internalIdForBusiness
+      adjustment_products: adjustments
     }
 
     setValidation({
-      quantity: true,
-      inventoryId: true,
       customerId: true,
       warehouseId: true,
-      productId: true,
-      shipmentDate: true,
-      receiverName: true,
-      receiverPhone: true
     });
-    if (
-      isRequired(customerId) &&
-      isRequired(shipmentDate) &&
-      isRequired(receiverName) &&
-      isRequired(receiverPhone)) {
-      addDispatchOrder(newDispatchOrder);
+    if (isRequired(customerId)) {
+      addAdjustments(adjustmentsObject);
     }
   }
 
   const handleCustomerSearch = (customerId, customerName) => {
     setCustomerId(customerId);
-    setSelectedCustomerName(customerName)
   }
 
   return (
@@ -322,20 +276,6 @@ export default function AddStockManagement() {
             {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
           </FormControl>
         </Grid>
-        <Grid item sm={6}>
-          <TextField
-            fullWidth={true}
-            margin="dense"
-            id="referenceId"
-            label="Reference Id"
-            type="text"
-            variant="outlined"
-            value={referenceId}
-            onChange={e => setReferenceId(e.target.value)}
-            inputProps={{ maxLength: 30 }}
-          />
-        </Grid>
-
         <Grid item xs={12}>
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
         </Grid>
@@ -347,8 +287,9 @@ export default function AddStockManagement() {
                 options={products}
                 getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
-                  if (newValue)
+                  if (newValue) {
                     setProductId(newValue.id)
+                  }
                 }}
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, productId: true })}
@@ -356,18 +297,16 @@ export default function AddStockManagement() {
               {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
             </FormControl>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={4}>
             <TextField
               fullWidth={true}
               margin="normal"
-              InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
-              id="quantity"
-              label="Quantity"
-              type="number"
+              id="quantityAdjust"
+              label="Quantity to adjust"
               variant="outlined"
               value={quantity}
               disabled={!!selectedDispatchOrder}
-              onChange={e => e.target.value < 0 ? e.target.value == 0 :  e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
+              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
@@ -396,24 +335,37 @@ export default function AddStockManagement() {
               disabled
             />
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={6}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Autocomplete
+                id="reasonType"
+                options={reasons}
+                // defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
+                getOptionLabel={(reasons) => reasons.name || ""}
+                onChange={(event, newValue) => {
+                  if (newValue)
+                    setReasonType(newValue.name)
+                }}
+                renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
+                onBlur={e => setValidation({ ...validation, reasonType: true })}
+              />
+              {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : ''}
+            </FormControl>
+          </Grid>
+          <Grid item sm={6}>
             <TextField
               fullWidth={true}
               margin="normal"
               InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
               id="quantity"
               label="Comment"
-              type="number"
               variant="outlined"
-              value={quantity}
-              disabled={!!selectedDispatchOrder}
-              onChange={e => e.target.value < 0 ? e.target.value == 0 :  e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
-              onBlur={e => setValidation({ ...validation, quantity: true })}
+              value={comment}
+              onChange={e => setComment(e.target.value)}
             />
-            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
           </Grid>
           <Grid item sm={2}>
-            <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth >Add</Button>
+            <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth >Add</Button>
           </Grid>
         </Grid>
       </Grid>
@@ -428,41 +380,59 @@ export default function AddStockManagement() {
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Quantity
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Available Quantity
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Available Quantity (Before Adjustment)
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Adjusted Quantity
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Remaining Quantity (After Adjustment)
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Comments
               </TableCell>
               <TableCell>
-                  Action
+                Action
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventories.map((dispatchGroup, idx) => {
+            {adjustmentsSecondaryArray.map((adjustment, idx) => {
               return (
-                <TableRow hover role="checkbox">
+                <TableRow hover role="checkbox" key={idx}>
                   <TableCell>
-                    {dispatchGroup.product.name}
+                    {adjustment.product.name}
                   </TableCell>
                   <TableCell>
-                    {dispatchGroup.product.UOM.name}
+                    {adjustment.product.UOM.name}
                   </TableCell>
                   <TableCell>
-                    {dispatchGroup.quantity}
+                    {adjustment.availableQuantity}
                   </TableCell>
                   <TableCell>
-                    <DeleteIcon color="error" key="delete" onClick={() =>
-                      setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
+                    {adjustment.adjustmentQuantity}
+                  </TableCell>
+                  <TableCell>
+                    {adjustment.availableQuantity - adjustment.adjustmentQuantity}
+                  </TableCell>
+                  <TableCell>
+                    {adjustment.reasonType}
+                  </TableCell>
+                  <TableCell>
+                    {adjustment.comment}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteIcon color="error" key="delete" onClick={() => {
+                      setAdjustments(adjustments.filter((adjustment, _idx) => _idx != idx));
+                      setAdjustmentsSecondaryArray(adjustmentsSecondaryArray.filter((adjustmentsSecondaryArray, _idx) => _idx != idx))
+                    }
                     } />
                   </TableCell>
                 </TableRow>
@@ -473,7 +443,7 @@ export default function AddStockManagement() {
       </TableContainer>
 
       {
-        inventories.length > 0 ?
+        adjustmentsSecondaryArray.length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
