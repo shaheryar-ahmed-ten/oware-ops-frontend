@@ -87,6 +87,12 @@ const navTreeData = [
         href: '/operations/product-outward',
         title: 'Product Outward',
         activeRouteName: 'product-outward'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+        href: '/operations/stock-management',
+        title: 'Stock Management',
+        activeRouteName: 'stockmanagement'
       }
     ]
   },
@@ -132,18 +138,18 @@ const navTreeData = [
       },
     ]
   },
-  {
-    title: 'Management',
-    nodeId: 'management',
-    children: [
-      {
-        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-        href: '/management/stock-management',
-        title: 'Stock Management',
-        activeRouteName: 'stockmanagement'
-      }
-    ]  
-  }
+  // {
+  //   title: 'Management',
+  //   nodeId: 'management',
+  //   children: [
+  //     {
+  //       canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+  //       href: '/management/stock-management',
+  //       title: 'Stock Management',
+  //       activeRouteName: 'stockmanagement'
+  //     }
+  //   ]  
+  // }
 ];
 
 const useStyles = makeStyles((theme) => ({
