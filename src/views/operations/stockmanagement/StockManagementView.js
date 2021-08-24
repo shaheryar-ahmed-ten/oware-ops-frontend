@@ -10,10 +10,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  InputBase,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL} from '../../../utils/common';
+import { getURL } from '../../../utils/common';
 import { Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -105,15 +106,21 @@ export default function StockManagementView() {
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [stockmanagement, setStockManagement] = useState([]);
+  const [inventoryWastages, setInventoryWastages] = useState([]);
   const [formErrors, setFormErrors] = useState('');
   const [showMessage, setShowMessage] = useState(null)
 
-  const _getStockManagement = (page, searchKeyword) => {
-    axios.get(getURL('stock-management'), { params: { page, search: searchKeyword } })
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  useEffect(() => {
+    // TODO: call stock mang API
+  }, [])
+
+  const _getinventoryWastages = (page, searchKeyword) => {
+    axios.get(getURL('inventory-wastages'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setStockManagement(res.data.data ? res.data.data : [])
+        setInventoryWastages(res.data.data ? res.data.data : [])
       });
   }
 
@@ -125,7 +132,26 @@ export default function StockManagementView() {
     onClick={() => navigate('create')}
   >ADD STOCK MANAGEMENT</Button>;
 
-  const headerButtons = [addStockMangementButton];
+  const handleSearch = (e) => {
+    setPage(1)
+    setSearchKeyword(e.target.value)
+  }
+
+  const searchInput = <>
+    <InputBase
+      placeholder="Search"
+      className={classes.searchInput}
+      id="search"
+      label="Search"
+      type="text"
+      variant="outlined"
+      value={searchKeyword}
+      key={1}
+      onChange={e => handleSearch(e)}
+    />
+  </>
+
+  const headerButtons = [searchInput, addStockMangementButton];
 
   return (
     <Paper className={classes.root}>
@@ -146,15 +172,15 @@ export default function StockManagementView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {stockmanagement.map((stockmanagement) => {
+            {inventoryWastages.map((inventoryWastage) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={stockmanagement.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
                   {columns.map((column) => {
-                    const value = stockmanagement[column.id];
+                    const value = inventoryWastage[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}
                         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, stockmanagement) : value}
+                        {column.format ? column.format(value, inventoryWastage) : value}
                       </TableCell>
                     );
                   })}
