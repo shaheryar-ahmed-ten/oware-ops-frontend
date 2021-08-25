@@ -19,6 +19,9 @@ import { Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
+import SelectDropdown from '../../../components/SelectDropdown';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
+import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,21 +75,47 @@ export default function StockManagementView() {
     label: 'Stock Management ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.internalIdForBusiness
   },
   {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Inventory.Company.name
+    // format: (value, entity) => entity.Inventory.Company.name
+    format: (value, entity) => ''
   },
   {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Inventory.Warehouse.name
+    // format: (value, entity) => entity.Inventory.Warehouse.name
+    format: (value, entity) => ''
+  },
+  {
+    id: 'availableQuantity',
+    label: 'AVAILABLE QUANTITY',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.Inventory.availableQuantity
+  },
+  {
+    id: 'adjustmentQuantity',
+    label: 'ADJUSTMENT QUANTITY',
+    minWidth: 'auto',
+    className: '',
+  },
+  {
+    id: 'reasonType',
+    label: 'REASON',
+    minWidth: 'auto',
+    className: '',
+  },
+  {
+    id: 'comment',
+    label: 'COMMENT',
+    minWidth: 'auto',
+    className: '',
   },
   {
     id: 'actions',
@@ -112,15 +141,27 @@ export default function StockManagementView() {
 
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  // Filters
+  const [customerWarehouses, setCustomerWarehouses] = useState([])
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null)
+
+  const [customerProducts, setCustomerProducts] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null)
+
+  const [companies, setCompanies] = useState([])
+  const [selectedCompany, setSelectedCompany] = useState(null)
+
   useEffect(() => {
     // TODO: call stock mang API
-  }, [])
+    _getinventoryWastages(page, searchKeyword)
+  }, [page, searchKeyword])
 
   const _getinventoryWastages = (page, searchKeyword) => {
     axios.get(getURL('inventory-wastages'), { params: { page, search: searchKeyword } })
       .then(res => {
+        console.log(res)
         setPageCount(res.data.pages)
-        setInventoryWastages(res.data.data ? res.data.data : [])
+        setInventoryWastages(res.data.data.records ? res.data.data.records : [])
       });
   }
 
@@ -137,6 +178,18 @@ export default function StockManagementView() {
     setSearchKeyword(e.target.value)
   }
 
+  const resetFilters = () => {
+    setSelectedWarehouse(null);
+    // setSelectedProduct(null);
+    // setSelectedDay(null);
+    // setSelectedStatus(null);
+  }
+
+  const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...customerWarehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
+  const productSelect = <SelectDropdown icon={<ClassOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Products" name="Select Product" list={[{ name: 'All' }, ...customerProducts]} selectedType={selectedProduct} setSelectedType={setSelectedProduct} setPage={setPage} />
+  const companySelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Company" name="Select Company" list={[{ name: 'All' }, ...companies]} selectedType={selectedCompany} setSelectedType={setSelectedCompany} setPage={setPage} />
+
+
   const searchInput = <>
     <InputBase
       placeholder="Search"
@@ -151,7 +204,7 @@ export default function StockManagementView() {
     />
   </>
 
-  const headerButtons = [searchInput, addStockMangementButton];
+  const headerButtons = [companySelect, warehouseSelect, productSelect, searchInput, addStockMangementButton];
 
   return (
     <Paper className={classes.root}>
@@ -172,6 +225,7 @@ export default function StockManagementView() {
             </TableRow>
           </TableHead>
           <TableBody>
+            {console.log(inventoryWastages)}
             {inventoryWastages.map((inventoryWastage) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>

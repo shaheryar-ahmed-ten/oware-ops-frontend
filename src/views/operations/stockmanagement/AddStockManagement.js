@@ -41,7 +41,7 @@ export default function AddStockManagement() {
   const classes = useStyles();
   const navigate = useNavigate();
   const { uid } = useParams();
-  console.log(uid)
+
   const
     [selectedInventoryWastages, setSelectedInventoryWastages] = useState(null),
     [warehouses, setWarehouses] = useState([]),
@@ -168,21 +168,22 @@ export default function AddStockManagement() {
 
 
   const addAdjustments = data => {
-    // let apiPromise = null;
-    // if (!selectedInventoryWastages) apiPromise = axios.post(getURL('/inventory-wastages'), data);
-    // else apiPromise = axios.put(getURL(`inventory-wastages/${selectedInventoryWastages.id}`), data);
-    // apiPromise.then(res => {
-    //   if (!res.data.success) {
-    //     setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-    //     return
-    //   }
-    //   setShowMessage({
-    //     message: "New dispatch order has been created."
-    //   });
-    //   setTimeout(() => {
-    //     navigate('/operations/stock-management')
-    //   }, 2000);
-    // });
+    let apiPromise = null;
+    if (!selectedInventoryWastages) apiPromise = axios.post(getURL('/inventory-wastages'), data);
+    else apiPromise = axios.put(getURL(`inventory-wastages/${selectedInventoryWastages.id}`), data);
+    apiPromise.then(res => {
+      console.log(res)
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      setShowMessage({
+        message: "New Adjustments have been created."
+      });
+      setTimeout(() => {
+        navigate('/operations/stock-management')
+      }, 2000);
+    });
   };
 
   const updateAdjustmentsTable = () => {
