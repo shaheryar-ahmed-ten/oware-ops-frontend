@@ -193,7 +193,6 @@ export default function AddStockManagement() {
     if (!selectedInventoryWastages) apiPromise = axios.post(getURL('/inventory-wastages'), data);
     else apiPromise = axios.put(getURL(`inventory-wastages/${selectedInventoryWastages.id}`), data);
     apiPromise.then(res => {
-      console.log(res)
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
@@ -268,8 +267,33 @@ export default function AddStockManagement() {
     }
   }
 
+  const handleUpdate = () => {
+    const adjustmentsObject = {
+      adjustmentQuantity: adjustmentsSecondaryArray[0].adjustmentQuantity,
+      type: adjustmentsSecondaryArray[0].reasonType,
+      reason: adjustmentsSecondaryArray[0].comment
+    }
+    addAdjustments(adjustmentsObject);
+  }
+
   const handleCustomerSearch = (customerId, customerName) => {
     setCustomerId(customerId);
+  }
+
+  // For edit only
+  const handleEditAdjustmentQtyForEdit = (e, adjustmentToAlter, name) => {
+    setAdjustmentsSecondaryArray(
+      [...adjustmentsSecondaryArray.filter((adjustment) => adjustment.product.id !== adjustmentToAlter.product.id),
+      {
+        ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
+        [name]: e.target.value
+      }])
+    // setAdjustments(
+    //   [...adjustments.filter((adjustment) => adjustment.productId !== adjustmentToAlter.product.id),
+    //   {
+    //     ...adjustments.find((adjustment) => adjustment.productId === adjustmentToAlter.product.id),
+    //     [name]: e.target.value
+    //   }]) // this wont be sent to  backend while editing
   }
 
   return (
@@ -467,7 +491,7 @@ export default function AddStockManagement() {
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Comments
+                Comment
               </TableCell>
               <TableCell>
                 Action
@@ -488,16 +512,50 @@ export default function AddStockManagement() {
                     {adjustment.availableQuantity}
                   </TableCell>
                   <TableCell>
-                    {adjustment.adjustmentQuantity}
+                    {
+                      selectedInventoryWastages ?
+                        <TextField
+                          fullWidth={true}
+                          id="editAdjustmentQty"
+                          label="Quantity to adjust"
+                          variant="outlined"
+                          value={adjustment.adjustmentQuantity}
+                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'adjustmentQuantity')}
+                        />
+                        :
+                        adjustment.adjustmentQuantity
+                    }
                   </TableCell>
                   <TableCell>
                     {adjustment.availableQuantity - adjustment.adjustmentQuantity}
                   </TableCell>
                   <TableCell>
-                    {adjustment.reasonType}
+                    {
+                      selectedInventoryWastages ?
+                        <TextField
+                          fullWidth={true}
+                          id="editAdjustmentReason"
+                          label="Reason Type"
+                          variant="outlined"
+                          value={adjustment.reasonType}
+                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
+                        />
+                        :
+                        adjustment.reasonType}
                   </TableCell>
                   <TableCell>
-                    {adjustment.comment}
+                    {
+                      selectedInventoryWastages ?
+                        <TextField
+                          fullWidth={true}
+                          id="Comment"
+                          label="Comment"
+                          variant="outlined"
+                          value={adjustment.comment}
+                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'comment')}
+                        />
+                        :
+                        adjustment.comment}
                   </TableCell>
                   <TableCell>
                     <DeleteIcon color="error" key="delete" onClick={() => {
@@ -518,7 +576,7 @@ export default function AddStockManagement() {
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button onClick={handleSubmit} color="primary" variant="contained">
+                <Button onClick={!selectedInventoryWastages ? handleSubmit : handleUpdate} color="primary" variant="contained">
                   {!selectedInventoryWastages ? 'Create Stock Management' : 'Update Stock Management'}
                 </Button>
               </FormControl>
