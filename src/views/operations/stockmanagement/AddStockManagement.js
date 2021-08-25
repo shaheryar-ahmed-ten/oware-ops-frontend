@@ -140,7 +140,8 @@ export default function AddStockManagement() {
   const _getInventoryWastage = () => {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data.data)
+        setSelectedInventoryWastages(res.data.data)
       })
       .catch((error) => {
         console.log(error)
@@ -409,6 +410,10 @@ export default function AddStockManagement() {
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Remaining Quantity (After Adjustment)
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Reason
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>

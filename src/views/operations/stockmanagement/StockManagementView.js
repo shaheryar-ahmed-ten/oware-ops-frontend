@@ -133,7 +133,7 @@ export default function StockManagementView() {
       className: '',
       format: (value, entity) =>
         [
-          <EditIcon key="edit" onClick={() => navigate('edit', {
+          <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
             state: {
               selectedProductOutward: entity
             }
