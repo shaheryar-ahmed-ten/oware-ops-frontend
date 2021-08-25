@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 import { SharedContext } from '../../../utils/common';
 import { checkPermission } from '../../../utils/auth';
-import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
+import { isRequired, isEmail, isUsername, isPhone, isChar } from '../../../utils/validators';
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
   const [filteredRoles, setFilteredRoles] = useState([]);
@@ -134,6 +134,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     onBlur={e => setValidation({ ...validation, firstName: true })}
                   />
                   {validation.firstName && !isRequired(firstName) ? <Typography color="error">First name is required!</Typography> : ''}
+                  {validation.firstName && !isChar(firstName) ? <Typography color="error">First name is only characters!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -148,6 +149,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     onBlur={e => setValidation({ ...validation, lastName: true })}
                   />
                   {validation.lastName && !isRequired(lastName) ? <Typography color="error">Last name is required!</Typography> : ''}
+                  {validation.lastName && !isChar(lastName) ? <Typography color="error">Last name is only characters!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid item sm={12}>

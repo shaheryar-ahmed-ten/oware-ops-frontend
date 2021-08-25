@@ -14,7 +14,7 @@ import {
   InputLabel,
   Typography
 } from '@material-ui/core'
-import { isRequired } from '../../../utils/validators';
+import { isChar, isRequired } from '../../../utils/validators';
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const cities = ['Karachi', 'Lahore'];

@@ -15,7 +15,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { capitalize } from 'lodash';
-import { isRequired } from '../../../utils/validators';
+import { isChar, isRequired } from '../../../utils/validators';
 
 export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -104,6 +104,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onBlur={e => setValidation({ ...validation, name: true })}
                   />
                   {validation.name && !isRequired(name) ? <Typography color="error">Company name is required!</Typography> : ''}
+                  {validation.name && !isChar(name) ? <Typography color="error">Company name is only characters!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField

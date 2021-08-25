@@ -16,7 +16,7 @@ import {
   TableRow,
   TableCell
 } from '@material-ui/core'
-import { isRequired, isNotEmptyArray } from '../../../utils/validators';
+import { isRequired, isNotEmptyArray, isChar } from '../../../utils/validators';
 import { dateToPickerFormat, getURL, digitize } from '../../../utils/common';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Navigate, useLocation, useNavigate } from 'react-router';
@@ -24,6 +24,7 @@ import { upload } from '../../../utils/upload';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import axios from 'axios';
 import { Alert } from '@material-ui/lab';
+import { isNumber } from '@material-ui/data-grid';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -730,6 +731,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
               {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
+              {validation.productName && !isChar(productName) ? <Typography color="error">Product name is only alphabets!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -737,13 +739,14 @@ function AddRideView() {
                 margin="dense"
                 id="productQuantity"
                 label="Product quantity"
-                type="text"
+                type="number"
                 variant="outlined"
                 value={productQuantity}
-                onChange={e => setProductQuantity(e.target.value)}
+                onChange={e => setProductQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
               />
               {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
+              {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''}
             </Grid>
             <Grid item xs={3}>
               <FormControl margin="dense" variant="outlined">

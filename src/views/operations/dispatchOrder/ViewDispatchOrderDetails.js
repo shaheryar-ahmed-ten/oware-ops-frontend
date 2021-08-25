@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, Typography } from '@material-ui/core';
+import { Box, Grid, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, Typography, Button } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat, getURL } from '../../../utils/common';
@@ -6,6 +6,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import { useLocation, useParams } from 'react-router';
 import { TableRow } from '@material-ui/core';
 import axios from 'axios';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -238,6 +239,9 @@ function ViewDispatchOrderDetails() {
                 <TableCell
                   className={classes.tableHeadText}>RECEIVER PHONE
                 </TableCell>
+                {/* <TableCell
+                  className={classes.tableHeadText}>STATUS
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -269,6 +273,30 @@ function ViewDispatchOrderDetails() {
                 <TableCell>
                   {selectedDispatchOrder.receiverPhone}
                 </TableCell>
+                {/* <TableCell>
+                  {selectedDispatchOrder.ProductOutwards.forEach(po => {
+                       let totalDispatched = 0
+                       po.OutwardGroups.forEach(outGroup => {
+                        totalDispatched += outGroup.quantity;  
+                        console.log("total dispatched", totalDispatched)
+                        {
+                          return(
+                            totalDispatched === 0 ? 
+                            <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
+                            Pending
+                          </Button> : totalDispatched > 0 && totalDispatched < selectedDispatchOrder.quantity ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
+                            Partially fulfilled
+                          </Button> : selectedDispatchOrder.quantity === totalDispatched ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
+                            Fulfilled
+                          </Button> : ''
+                          )
+                        }
+                 
+                      })
+                  })   
+                  }
+                </TableCell>
+            */}
               </TableRow>
             </TableBody>
           </Table>

@@ -12,7 +12,7 @@ import {
   DialogTitle,
   Typography
 } from '@material-ui/core'
-import { isPhone, isRequired } from '../../../utils/validators';
+import { isChar, isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
@@ -93,37 +93,46 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
     }
   }
 
-  const validateImage = (event) => {
+  const validateDrivingLicenceImage = (event) => {
     const checkFile = event.target.files[0];
     if (!checkFile) {
         return;
     }
-
-    let file = event.target.files[0]
     // let dimentions
-    const isImage = file.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
+    const isImage = checkFile.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
     if (!isImage) {
         alert('You can only upload image file!');
         return;
     }
-    setDrivingLicenseImage(file);
+    const isLt2M = checkFile.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      alert("Image must smaller than 2MB!");
+      return;
+    } 
+    else  {
+      setDrivingLicenseImage(checkFile)
+    } 
 }
 
- const validateDrivingImage  = (event) => {
-    const checkFile = event.target.files[0];
+ const validateCnicImage  = (event) => {
+    const checkFile =  event.target.files[0];
     if(!checkFile) {
       return;
     }
-
-    let file = event.target.files[0]
-
-    const isImage = file.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
+    const isImage = checkFile.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
     if (!isImage) {
       alert('You can only upload image file!');
       return;
-  }
-
-     setCNICImage(file)
+    }
+    const isLt2M = checkFile.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      alert("Image must smaller than 2MB!");
+      return;
+    } 
+    else  {
+      setCNICImage(checkFile)
+    }  
+   
  }
 
   return (
@@ -150,6 +159,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                     onBlur={e => setValidation({ ...validation, driverName: true })}
                   />
                   {validation.driverName && !isRequired(driverName) ? <Typography color="error">Driver name is required!</Typography> : ''}
+                  {validation.driverName && !isChar(driverName) ? <Typography color="error">Driver name is only characters!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -238,7 +248,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => { setDrivingLicenseImage(e.target.files[0]) }}
+                        onChange={(e) => validateDrivingLicenceImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>
@@ -259,7 +269,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => { setCNICImage(e.target.files[0]) }}
+                        onChange={(e) => validateCnicImage(e) }
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>
