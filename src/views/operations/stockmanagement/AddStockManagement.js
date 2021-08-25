@@ -70,12 +70,15 @@ export default function AddStockManagement() {
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
 
+  const [intentedCustomer, setIntentedCustomer] = useState(null) // will only be used for edit
+
   // If uid exists than fetch details of the selecteInventoryWastages  
   useEffect(() => {
-    getRelations();
+    if (customers.length === 0)
+      getRelations();
     if (uid)
       _getInventoryWastage(); // only in case of edit 
-  }, [uid]);
+  }, [uid, customers]);
 
   const getRelations = () => {
     axios.get(getURL('/dispatch-order/relations'))
@@ -95,7 +98,6 @@ export default function AddStockManagement() {
     setProductId('');
     if (!customerId) return;
     if (!!selectedInventoryWastages) {
-      // setWarehouses([selectedInventoryWastages.Inventory.Warehouse]);
       setWarehouseId(selectedInventoryWastages.Inventory.warehouseId);
     } else {
       getWarehouses({ customerId })
@@ -140,8 +142,26 @@ export default function AddStockManagement() {
   const _getInventoryWastage = () => {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
-        console.log(res.data.data)
         setSelectedInventoryWastages(res.data.data)
+        setCustomerId(res.data.data.Inventory.customerId)
+        setWarehouseId(res.data.data.Inventory.warehouseId)
+        setAdjustmentsSecondaryArray([{
+          product: res.data.data.Inventory.Product,
+          availableQuantity: res.data.data.Inventory.availableQuantity,
+          reasonType: res.data.data.reasonType,
+          comment: res.data.data.comment,
+          adjustmentQuantity: res.data.data.adjustmentQuantity
+        }])
+        setAdjustments([{
+          // product id
+          productId: res.data.data.Inventory.Product.id,
+          // type 
+          type: res.data.data.reasonType,
+          // reason
+          reason: res.data.data.comment,
+          // adjustmentQuantity
+          adjustmentQuantity: res.data.data.adjustmentQuantity
+        }]) // will be sent to the backend
       })
       .catch((error) => {
         console.log(error)
@@ -255,43 +275,70 @@ export default function AddStockManagement() {
   return (
     <>
       {formErrors}
-      <Grid container className={classes.parentContainer} spacing={3}>
+      < Grid container className={classes.parentContainer} spacing={3} >
         <Grid item xs={12}>
           <Typography variant="h3" className={classes.heading}>Add Stock Management</Typography>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <Autocomplete
-              id="customer"
-              options={customers}
-              defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
-              getOptionLabel={(customer) => customer.name || ""}
-              onChange={(event, newValue) => {
-                if (newValue)
-                  handleCustomerSearch(newValue.id, (newValue.name || ''))
-              }}
-              renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
-              onBlur={e => setValidation({ ...validation, customerId: true })}
-            />
-            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
-          </FormControl>
+          {
+            selectedInventoryWastages ?
+              <TextField
+                fullWidth={true}
+                margin="normal"
+                id="customerId"
+                label="Company"
+                variant="outlined"
+                value={selectedInventoryWastages.Inventory.Company.name}
+                disabled={!!selectedInventoryWastages}
+              />
+              :
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Autocomplete
+                  id="customerId"
+                  options={customers}
+                  defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: selectedInventoryWastages.Inventory.Company.id } : ''}
+                  getOptionLabel={(customer) => customer.name || ""}
+                  onChange={(event, newValue) => {
+                    if (newValue)
+                      handleCustomerSearch(newValue.id, (newValue.name || ''))
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
+                  onBlur={e => setValidation({ ...validation, customerId: true })}
+                />
+                {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
+              </FormControl>
+          }
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <Autocomplete
-              id="warehouse"
-              options={warehouses}
-              defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
-              getOptionLabel={(warehouse) => warehouse.name || ""}
-              onChange={(event, newValue) => {
-                if (newValue)
-                  setWarehouseId(newValue.id)
-              }}
-              renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
-              onBlur={e => setValidation({ ...validation, warehouseId: true })}
-            />
-            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
-          </FormControl>
+          {
+            selectedInventoryWastages ?
+              <TextField
+                fullWidth={true}
+                margin="normal"
+                id="warehouseId"
+                label="Warehouse"
+                variant="outlined"
+                value={selectedInventoryWastages.Inventory.Warehouse.name}
+                disabled={!!selectedInventoryWastages}
+              />
+              :
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Autocomplete
+                  id="warehouse"
+                  options={warehouses}
+                  defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
+                  getOptionLabel={(warehouse) => warehouse.name || ""}
+                  onChange={(event, newValue) => {
+                    if (newValue)
+                      setWarehouseId(newValue.id)
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
+                  onBlur={e => setValidation({ ...validation, warehouseId: true })}
+                />
+                {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+              </FormControl>
+          }
+
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
@@ -310,6 +357,7 @@ export default function AddStockManagement() {
                 }}
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, productId: true })}
+                disabled={!!selectedInventoryWastages}
               />
               {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
             </FormControl>
@@ -365,6 +413,7 @@ export default function AddStockManagement() {
                 }}
                 renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, reasonType: true })}
+                disabled={!!selectedInventoryWastages}
               />
               {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : ''}
             </FormControl>
@@ -379,13 +428,14 @@ export default function AddStockManagement() {
               variant="outlined"
               value={comment}
               onChange={e => setComment(e.target.value)}
+              disabled={!!selectedInventoryWastages}
             />
           </Grid>
           <Grid item sm={2}>
-            <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth >Add</Button>
+            <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth disabled={!!selectedInventoryWastages} >Add</Button>
           </Grid>
         </Grid>
-      </Grid>
+      </Grid >
 
       <TableContainer className={classes.parentContainer}>
         <Table stickyHeader aria-label="sticky table">
@@ -475,7 +525,8 @@ export default function AddStockManagement() {
             </Grid>
           </Grid>
           :
-          ''}
+          ''
+      }
 
       <MessageSnackbar showMessage={showMessage} type={messageType} />
     </>

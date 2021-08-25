@@ -167,7 +167,6 @@ export default function StockManagementView() {
   const _getinventoryWastages = (page, searchKeyword) => {
     axios.get(getURL('inventory-wastages'), { params: { page, search: searchKeyword } })
       .then(res => {
-        console.log(res)
         setPageCount(res.data.pages)
         setInventoryWastages(res.data.data ? res.data.data : [])
       });
