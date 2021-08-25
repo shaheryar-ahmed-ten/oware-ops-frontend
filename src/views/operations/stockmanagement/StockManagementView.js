@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { dateFormat, getURL } from '../../../utils/common';
 import { Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -22,6 +22,8 @@ import { useNavigate } from 'react-router';
 import SelectDropdown from '../../../components/SelectDropdown';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,69 +72,75 @@ const useStyles = makeStyles(theme => ({
 export default function StockManagementView() {
   const classes = useStyles();
   const navigate = useNavigate();
-  const columns = [{
-    id: 'id',
-    label: 'Stock Management ID',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'Inventory.Company.name',
-    label: 'COMPANY',
-    minWidth: 'auto',
-    className: '',
-    // format: (value, entity) => entity.Inventory.Company.name
-    format: (value, entity) => ''
-  },
-  {
-    id: 'Inventory.Warehouse.name',
-    label: 'WAREHOUSE',
-    minWidth: 'auto',
-    className: '',
-    // format: (value, entity) => entity.Inventory.Warehouse.name
-    format: (value, entity) => ''
-  },
-  {
-    id: 'availableQuantity',
-    label: 'AVAILABLE QUANTITY',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.availableQuantity
-  },
-  {
-    id: 'adjustmentQuantity',
-    label: 'ADJUSTMENT QUANTITY',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'reasonType',
-    label: 'REASON',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'comment',
-    label: 'COMMENT',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'actions',
-    label: '',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) =>
-      [
-        <VisibilityIcon key="view"
-          onClick={() => navigate(`view/${entity.id}`, {
+  const columns = [
+    {
+      id: 'createdAt',
+      label: 'ADJUSTMENT DATE',
+      minWidth: 'auto',
+      className: '',
+      format: dateFormat
+    },
+    {
+      id: 'Inventory.Company.name',
+      label: 'COMPANY',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventory.Company.name
+    },
+    {
+      id: 'Inventory.Warehouse.name',
+      label: 'WAREHOUSE',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventory.Warehouse.name
+    },
+    {
+      id: 'Inventory.Product.name',
+      label: 'PRODUCT',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventory.Product.name
+    },
+    {
+      id: 'availableQuantity',
+      label: 'AVAILABLE QTY (After Adjustment)',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventory.availableQuantity
+    },
+    {
+      id: 'adjustmentQuantity',
+      label: 'ADJUSTMENT QUANTITY',
+      minWidth: 'auto',
+      className: '',
+    },
+    {
+      id: 'reasonType',
+      label: 'REASON',
+      minWidth: 'auto',
+      className: '',
+    },
+    {
+      id: 'comment',
+      label: 'COMMENT',
+      minWidth: 'auto',
+      className: '',
+    },
+    {
+      id: 'actions',
+      label: '',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) =>
+        [
+          <EditIcon key="edit" onClick={() => navigate('edit', {
             state: {
-              selectedDispatchOrder: entity,
-              viewOnly: true
+              selectedProductOutward: entity
             }
           })} />,
-      ]
-  }];
+          // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+        ]
+    }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [inventoryWastages, setInventoryWastages] = useState([]);
@@ -161,7 +169,7 @@ export default function StockManagementView() {
       .then(res => {
         console.log(res)
         setPageCount(res.data.pages)
-        setInventoryWastages(res.data.data.records ? res.data.data.records : [])
+        setInventoryWastages(res.data.data ? res.data.data : [])
       });
   }
 
@@ -225,7 +233,6 @@ export default function StockManagementView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {console.log(inventoryWastages)}
             {inventoryWastages.map((inventoryWastage) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
