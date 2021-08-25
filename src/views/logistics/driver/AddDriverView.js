@@ -89,50 +89,36 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
       if (!isRequired(newDriver.drivingLicenseId) || !isRequired(newDriver.cnicId)) return
 
       addDriver(newDriver);
-
     }
   }
 
   const validateDrivingLicenceImage = (event) => {
     const checkFile = event.target.files[0];
-    if (!checkFile) {
-        return;
-    }
     // let dimentions
-    const isImage = checkFile.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
-    if (!isImage) {
-        alert('You can only upload image file!');
-        return;
+    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      alert("Driving lisence image must be only image file!")
+     return false;
     }
-    const isLt2M = checkFile.size / 1024 / 1024 < 2;
+    const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
-      alert("Image must smaller than 2MB!");
-      return;
-    } 
-    else  {
-      setDrivingLicenseImage(checkFile)
-    } 
+      alert("Driving lisence image must smaller than 1MB!");
+      return false;
+    }  
+    setDrivingLicenseImage(checkFile)  
 }
 
  const validateCnicImage  = (event) => {
     const checkFile =  event.target.files[0];
-    if(!checkFile) {
-      return;
+    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      alert("Driving lisence image must be only image file!")
+     return false;
     }
-    const isImage = checkFile.type === 'image/png' || 'image/jpg' || 'image/jpeg' ;
-    if (!isImage) {
-      alert('You can only upload image file!');
-      return;
-    }
-    const isLt2M = checkFile.size / 1024 / 1024 < 2;
+    const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
-      alert("Image must smaller than 2MB!");
-      return;
+      alert("Driving licence image must smaller than 1MB!");
+      return false;
     } 
-    else  {
-      setCNICImage(checkFile)
-    }  
-   
+    setCNICImage(checkFile)
  }
 
   return (

@@ -106,6 +106,37 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
       }
     }
   }
+
+  
+  const validateRunningPaperImage = (event) => {
+    const checkFile = event.target.files[0];
+    // let dimentions
+    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      alert("Running Paper image must be only image file!")
+     return false;
+    }
+    const isLt2M = checkFile.size / 1024 / 1024 < 1;
+    if (!isLt2M) {
+      alert("Running Paper image must smaller than 1MB!");
+      return false;
+    }  
+    setRunningPaperImage(checkFile)  
+}
+
+ const validatePermitFileImage  = (event) => {
+    const checkFile =  event.target.files[0];
+    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      alert("Route Permit image must be only image file!")
+     return false;
+    }
+    const isLt2M = checkFile.size / 1024 / 1024 < 1;
+    if (!isLt2M) {
+      alert("Route Permit image must smaller than 1MB!");
+      return false;
+    } 
+    setRoutePermit(checkFile)
+ }
+
   return (
     <div style={{ display: "inline" }}>
       <form>
@@ -219,7 +250,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => { setRunningPaperImage(e.target.files[0]) }}
+                        onChange={(e) => validateRunningPaperImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>
@@ -238,7 +269,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => { setRoutePermit(e.target.files[0]) }}
+                        onChange={(e) =>  validatePermitFileImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>

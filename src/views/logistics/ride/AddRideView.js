@@ -25,7 +25,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import axios from 'axios';
 import { Alert } from '@material-ui/lab';
 import { isNumber } from '@material-ui/data-grid';
-
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -43,12 +43,6 @@ function AddRideView() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const classes = useStyles();
-  // const {
-  //     selectedRide
-  // } = state ? state : {
-  //     selectedRide: null,
-  // };
-
   const [selectedRide, setSelectedRide] = useState(state ? state.selectedRide : null);
   const [vehicles, setVehicles] = useState([]);
   const [drivers, setDrivers] = useState([]);
@@ -233,9 +227,6 @@ function AddRideView() {
     }
   }, [dropoffCityZoneId, dropoffZones])
 
-
-
-
   const handleSubmit = async e => {
     let newRide = {
       status,
@@ -301,6 +292,10 @@ function AddRideView() {
       }
       addRide(newRide);
     }
+  }
+
+  const disabledDate = (current) => {
+    return current < moment(current).startOf('day');
   }
 
   return (

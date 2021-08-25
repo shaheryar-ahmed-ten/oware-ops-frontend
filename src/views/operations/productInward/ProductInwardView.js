@@ -54,13 +54,22 @@ export default function ProductInwardView() {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const columns = [{
+  const columns = [
+    {
+      id: 'id',
+      label: 'INWARD ID',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.internalIdForBusiness,
+    }, 
+    {
     id: 'Customer.name',
     label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Company.name,
-  }, {
+  }, 
+  {
     //   id: 'Product.name',
     //   label: 'PRODUCT',
     //   minWidth: 'auto',
@@ -72,7 +81,15 @@ export default function ProductInwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Warehouse.name,
-  }, {
+  }, 
+  {
+    id: 'product',
+    label: 'PRODUCTS',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.Products.length,
+  }, 
+  {
     //   id: 'Product.UOM.name',
     //   label: 'UOM',
     //   minWidth: 'auto',
