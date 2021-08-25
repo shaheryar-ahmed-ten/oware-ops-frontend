@@ -29,6 +29,8 @@ import AddProductInwardView from './views/operations/productInward/AddProductInw
 import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
 import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
 import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
+import StockManagementView from './views/operations/stockmanagement/StockManagementView';
+import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 
 
 const routes = (user) => [
@@ -126,6 +128,22 @@ const routes = (user) => [
         path: 'product-outward/view/:uid',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ViewProductOutwardDetails /> : <Navigate to="404" />
       },
+      {
+        path: 'stock-management',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-management/create',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-management/edit/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-management/view/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" /> // TODO: create a view screen
+      },
       { path: '*', element: <Navigate to='/404' /> }
     ]
   },
@@ -178,7 +196,21 @@ const routes = (user) => [
       }
     ]
 
-  }
+  },
+  // {
+  //   path: 'management',
+  //   element: <DashboardLayout />,
+  //   children: [
+  //     {
+  //       path: 'stock-management',
+  //       element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <StockManagementView /> : <Navigate to="404" />
+  //     },
+  //     {
+  //       path: 'stock-management/create',
+  //       element: <AddStockManagement />
+  //     }
+  //   ]
+  // },
 ];
 
 export default routes;

@@ -224,19 +224,6 @@ export default function ProductOutwardView() {
       key={1}
       onChange={e => handleSearch(e)}
     />
-    {/* <FormControl className={classes.searchFilter}>
-      <Select
-        labelId="searchBy"
-        id="searchBy"
-        value={searchFilter}
-        onChange={(e) => setSearchFilter(e.target.value)}
-      >
-        <MenuItem value={'Company.name'}>Company</MenuItem>
-        <MenuItem value={'Product.name'}>Product</MenuItem>
-        <MenuItem value={'Warehouse.name'}>Warehouse</MenuItem>
-      </Select>
-      <FormHelperText>Search By</FormHelperText>
-    </FormControl> */}
   </>
   const addProductOutwardButton = <Button
     key={2}
