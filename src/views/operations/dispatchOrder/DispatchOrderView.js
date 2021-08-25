@@ -108,7 +108,7 @@ export default function DispatchOrderView() {
     label: 'SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.shipmentDate
+    format: (value, entity) => dateFormat(entity.shipmentDate)
   },
   {
     id: 'status',
