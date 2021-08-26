@@ -81,6 +81,13 @@ export default function StockManagementView() {
       format: dateFormat
     },
     {
+      id: 'admin',
+      label: 'ADJUSTED BY',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`
+    },
+    {
       id: 'Inventory.Company.name',
       label: 'COMPANY',
       minWidth: 'auto',
@@ -110,7 +117,7 @@ export default function StockManagementView() {
     },
     {
       id: 'adjustmentQuantity',
-      label: 'ADJUSTMENT QUANTITY',
+      label: 'ADJUSTMENT QTY',
       minWidth: 'auto',
       className: '',
     },
@@ -160,12 +167,17 @@ export default function StockManagementView() {
   const [selectedCompany, setSelectedCompany] = useState(null)
 
   useEffect(() => {
-    // TODO: call stock mang API
-    _getinventoryWastages(page, searchKeyword)
+    // DONE: call stock mang API
+    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
   }, [page, searchKeyword])
 
-  const _getinventoryWastages = (page, searchKeyword) => {
-    axios.get(getURL('inventory-wastages'), { params: { page, search: searchKeyword } })
+  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+    axios.get(getURL('inventory-wastages'), {
+      params: {
+        page, search: searchKeyword,
+        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany
+      }
+    })
       .then(res => {
         setPageCount(res.data.pages)
         setInventoryWastages(res.data.data ? res.data.data : [])
@@ -187,9 +199,8 @@ export default function StockManagementView() {
 
   const resetFilters = () => {
     setSelectedWarehouse(null);
-    // setSelectedProduct(null);
-    // setSelectedDay(null);
-    // setSelectedStatus(null);
+    setSelectedProduct(null);
+    setSelectedCompany(null);
   }
 
   const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...customerWarehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
