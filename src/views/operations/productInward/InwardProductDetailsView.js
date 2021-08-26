@@ -212,7 +212,7 @@ function InwardProductDetailsView() {
                   className={classes.tableHeadText}>Inward Id
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Customer
+                  className={classes.tableHeadText}>Company
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>Warehouse

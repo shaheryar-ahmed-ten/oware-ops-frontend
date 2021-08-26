@@ -1,10 +1,5 @@
 import {
   Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   IconButton,
   makeStyles,
@@ -275,7 +270,7 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>DISPATCH ORDER ID
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>CUSTOMER
+                  className={classes.tableHeadText}>COMPANY
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>WAREHOUSE

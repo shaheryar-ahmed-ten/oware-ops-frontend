@@ -94,11 +94,26 @@ export default function DispatchOrderView() {
     format: (value, entity) => entity.Inventory.Warehouse.name
   },
   {
+    id: 'Inventory.Warehouse.city',
+    label: 'CITY',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.Inventory.Warehouse.city
+  },
+  {
+    id: 'Inventories.length',
+    label: 'PRODUCTS',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.Inventories.length
+  },
+  {
     id: 'receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
-  }, {
+  }, 
+  {
     id: 'receiverPhone',
     label: 'RECEIVER PHONE',
     minWidth: 'auto',
@@ -109,6 +124,13 @@ export default function DispatchOrderView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => dateFormat(entity.shipmentDate)
+  },
+  {
+    id: 'referenceid',
+    label: 'REFERENCE ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.referenceId
   },
   {
     id: 'status',

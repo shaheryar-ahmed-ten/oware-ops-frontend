@@ -640,6 +640,7 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, price: true })}
             />
             {validation.price && !isRequired(price) ? <Typography color="error">Price is required!</Typography> : ''}
+            {validation.price && !isNumber(price) ? <Typography color="error">Price is only numbers!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
@@ -655,6 +656,7 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, cost: true })}
             />
             {validation.cost && !isRequired(cost) ? <Typography color="error">Cost is required!</Typography> : ''}
+            {validation.cost && !isNumber(cost) ? <Typography color="error">Cost is only numbers!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -673,6 +675,7 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
             />
             {validation.customerDiscount && !isRequired(customerDiscount) ? <Typography color="error">Customer Discount is required!</Typography> : ''}
+            {validation.customerDiscount && !isNumber(customerDiscount) ? <Typography color="error">Customer Discount is only numbers!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
@@ -688,6 +691,7 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
             {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
+            {validation.driverIncentive && !isNumber(driverIncentive) ? <Typography color="error">Driver Incentive is only numbers!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>

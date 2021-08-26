@@ -67,7 +67,8 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
-  }, {
+  }, 
+  {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
     minWidth: 'auto',
@@ -75,15 +76,7 @@ export default function ProductOutwardView() {
     format: (value, entity) => entity.DispatchOrder.Inventory.Company.name
     // format: (value, entity, inventory) => inventory.Company.name
   },
-    //  {
-    //   id: 'Inventory.Product.name',
-    //   label: 'PRODUCT',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.name
-    //   // format: (value, entity, inventory) => inventory.Product.name
-    // }
-    , {
+  {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
@@ -105,13 +98,29 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.receiverName
-  }, {
+  },
+   {
     id: 'DispatchOrder.receiverPhone',
     label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.receiverPhone
-  }, {
+  }, 
+  {
+    id: 'city',
+    label: 'CITY',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.city
+  },
+  {
+    id: 'products',
+    label: 'PRODUCTS',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.DispatchOrder.Inventories.length
+  },
+  {
     id: 'DispatchOrder.quantity',
     label: 'Requested Quantity to Dispatch',
     minWidth: 'auto',
@@ -148,12 +157,6 @@ export default function ProductOutwardView() {
             selectedProductOutward: entity
           }
         })} />,
-        // <EditIcon key="edit" onClick={() => navigate('edit', {
-        //   state: {
-        //     selectedProductOutward: entity
-        //   }
-        // })} />,
-        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
   const [pageCount, setPageCount] = useState(1);

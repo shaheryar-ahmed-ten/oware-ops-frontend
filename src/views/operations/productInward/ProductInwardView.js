@@ -70,12 +70,6 @@ export default function ProductInwardView() {
     format: (value, entity) => entity.Company.name,
   }, 
   {
-    //   id: 'Product.name',
-    //   label: 'PRODUCT',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Product.name,
-    // }, {
     id: 'Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
@@ -88,19 +82,15 @@ export default function ProductInwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Products.length,
-  }, 
+  },
   {
-    //   id: 'Product.UOM.name',
-    //   label: 'UOM',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Product.UOM.name,
-    // }, {
-    //   id: 'quantity',
-    //   label: 'QUANTITY RECEIVED',
-    //   minWidth: 'auto',
-    //   className: '',
-    // }, {
+    id: 'referenceId',
+    label: 'REFERENCE ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.referenceId,
+  },  
+  {
     id: 'createdAt',
     label: 'INWARD DATE',
     minWidth: 'auto',
@@ -119,13 +109,6 @@ export default function ProductInwardView() {
             viewOnly: true
           }
         })} />,
-        // <EditIcon key="edit" onClick={() => navigate('edit', {
-        //   state: {
-        //     selectedProductInward: entity,
-        //     viewOnly: false
-        //   }
-        // })} />,
-        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   },
   ];
