@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { dateFormat, getURL } from '../../../utils/common';
-import { Pagination } from '@material-ui/lab';
+import { Alert, Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
@@ -146,8 +146,10 @@ export default function StockManagementView() {
             state: {
               selectedProductOutward: entity
             }
-          })} />,
-          // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+          })}
+            style={{ cursor: 'pointer' }}
+          />,
+          <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
         ]
     }];
   const [pageCount, setPageCount] = useState(1);
@@ -176,6 +178,20 @@ export default function StockManagementView() {
     // DONE: call stock mang API
     getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
   }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
+
+  const deleteAdjustment = (adjustmentId) => {
+    axios.delete(getURL(`inventory-wastages/${adjustmentId}`))
+      .then((res) => {
+        if (!res.data.success) {
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+          return
+        }
+        getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   const getRelations = () => {
     axios.get(getURL(`product-inward/relations`))

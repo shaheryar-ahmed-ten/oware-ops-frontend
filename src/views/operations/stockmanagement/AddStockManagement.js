@@ -536,8 +536,7 @@ export default function AddStockManagement() {
                       null
                       :
                       <TableCell>
-
-                        adjustment.availableQuantity - adjustment.adjustmentQuantity
+                        {adjustment.availableQuantity - adjustment.adjustmentQuantity}
                       </TableCell>
                   }
                   <TableCell>
