@@ -283,11 +283,11 @@ export default function AddStockManagement() {
   // For edit only
   const handleEditAdjustmentQtyForEdit = (e, adjustmentToAlter, name) => {
     setAdjustmentsSecondaryArray(
-      [...adjustmentsSecondaryArray.filter((adjustment) => adjustment.product.id !== adjustmentToAlter.product.id),
-      {
-        ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
-        [name]: e.target.value
-      }])
+      [
+        {
+          ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
+          [name]: e.target.value
+        }])
     // setAdjustments(
     //   [...adjustments.filter((adjustment) => adjustment.productId !== adjustmentToAlter.product.id),
     //   {
@@ -481,10 +481,15 @@ export default function AddStockManagement() {
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Adjusted Quantity
               </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Remaining Quantity (After Adjustment)
-              </TableCell>
+              {
+                selectedInventoryWastages ?
+                  null
+                  :
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Remaining Quantity (After Adjustment)
+                  </TableCell>
+              }
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Reason
@@ -526,9 +531,14 @@ export default function AddStockManagement() {
                         adjustment.adjustmentQuantity
                     }
                   </TableCell>
-                  <TableCell>
-                    {adjustment.availableQuantity - adjustment.adjustmentQuantity}
-                  </TableCell>
+                  {
+                    selectedInventoryWastages ?
+                      null
+                      :
+                      <TableCell>
+                        {adjustment.availableQuantity - adjustment.adjustmentQuantity}
+                      </TableCell>
+                  }
                   <TableCell>
                     {
                       selectedInventoryWastages ?

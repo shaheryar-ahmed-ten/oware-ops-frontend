@@ -15,7 +15,7 @@ import {
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { dateFormat, getURL } from '../../../utils/common';
-import { Pagination } from '@material-ui/lab';
+import { Alert, Pagination } from '@material-ui/lab';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
@@ -24,6 +24,8 @@ import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import { debounce } from 'lodash';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,6 +83,13 @@ export default function StockManagementView() {
       format: dateFormat
     },
     {
+      id: 'admin',
+      label: 'ADJUSTED BY',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`
+    },
+    {
       id: 'Inventory.Company.name',
       label: 'COMPANY',
       minWidth: 'auto',
@@ -110,7 +119,7 @@ export default function StockManagementView() {
     },
     {
       id: 'adjustmentQuantity',
-      label: 'ADJUSTMENT QUANTITY',
+      label: 'ADJUSTMENT QTY',
       minWidth: 'auto',
       className: '',
     },
@@ -137,8 +146,10 @@ export default function StockManagementView() {
             state: {
               selectedProductOutward: entity
             }
-          })} />,
-          // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+          })}
+            style={{ cursor: 'pointer' }}
+          />,
+          <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
         ]
     }];
   const [pageCount, setPageCount] = useState(1);
@@ -160,17 +171,56 @@ export default function StockManagementView() {
   const [selectedCompany, setSelectedCompany] = useState(null)
 
   useEffect(() => {
-    // TODO: call stock mang API
-    _getinventoryWastages(page, searchKeyword)
-  }, [page, searchKeyword])
+    getRelations()
+  }, [])
 
-  const _getinventoryWastages = (page, searchKeyword) => {
-    axios.get(getURL('inventory-wastages'), { params: { page, search: searchKeyword } })
+  useEffect(() => {
+    // DONE: call stock mang API
+    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
+
+  const deleteAdjustment = (adjustmentId) => {
+    axios.delete(getURL(`inventory-wastages/${adjustmentId}`))
+      .then((res) => {
+        if (!res.data.success) {
+          setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+          return
+        }
+        getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getRelations = () => {
+    axios.get(getURL(`product-inward/relations`))
+      .then((response) => {
+        setCustomerProducts(response.data.products)
+        setCustomerWarehouses(response.data.warehouses)
+        setCompanies(response.data.customers)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  };
+
+  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+    axios.get(getURL('inventory-wastages'), {
+      params: {
+        page, search: searchKeyword,
+        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany
+      }
+    })
       .then(res => {
         setPageCount(res.data.pages)
         setInventoryWastages(res.data.data ? res.data.data : [])
       });
   }
+
+  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+  }, 500), [])
 
   const addStockMangementButton = <Button
     key={2}
@@ -187,9 +237,8 @@ export default function StockManagementView() {
 
   const resetFilters = () => {
     setSelectedWarehouse(null);
-    // setSelectedProduct(null);
-    // setSelectedDay(null);
-    // setSelectedStatus(null);
+    setSelectedProduct(null);
+    setSelectedCompany(null);
   }
 
   const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...customerWarehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
