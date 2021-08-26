@@ -24,6 +24,8 @@ import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import { debounce } from 'lodash';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -172,7 +174,7 @@ export default function StockManagementView() {
 
   useEffect(() => {
     // DONE: call stock mang API
-    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
   }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
 
   const getRelations = () => {
@@ -199,6 +201,10 @@ export default function StockManagementView() {
         setInventoryWastages(res.data.data ? res.data.data : [])
       });
   }
+
+  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+  }, 500), [])
 
   const addStockMangementButton = <Button
     key={2}
