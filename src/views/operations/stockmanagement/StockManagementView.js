@@ -173,13 +173,14 @@ export default function StockManagementView() {
   useEffect(() => {
     // DONE: call stock mang API
     _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
-  }, [page, searchKeyword])
+  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
 
   const getRelations = () => {
-    axios.get(getURL(`inventory-wastages/relations`))
+    axios.get(getURL(`product-inward/relations`))
       .then((response) => {
-        // setCustomerProducts(response.data.relations.products)
-        // setCustomerWarehouses(response.data.relations.warehouses)
+        setCustomerProducts(response.data.products)
+        setCustomerWarehouses(response.data.warehouses)
+        setCompanies(response.data.customers)
       })
       .catch((err) => {
         console.log(err)
