@@ -1,7 +1,7 @@
 const emailRE = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 const usernameRE = /^\w+$/i;
 const phoneRE = /^\d( ?\d){10}$/;
-const characterRE =  /^[a-zA-Z ]{3,30}$/;
+const characterRE =  /^[a-zA-Z ]{1,30}$/;
 
 const isRequired = value => !!value;
 const isNotEmptyArray = arr => !!arr.length;

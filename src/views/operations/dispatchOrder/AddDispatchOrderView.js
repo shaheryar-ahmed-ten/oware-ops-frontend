@@ -114,7 +114,7 @@ export default function AddDispatchOrderView() {
       setCustomerId('');
       setWarehouseId('');
       setProductId('');
-      setShipmentDate(dateToPickerFormat(new Date()));
+      setShipmentDate('');
       setReceiverName('');
       setReceiverPhone();
       setReferenceId('');

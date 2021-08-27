@@ -12,9 +12,9 @@ export const digitize = (value, places) => {
   return new Array(places - strVal.length).fill('0').join('') + strVal;
 }
 
-export const dateFormat = value => moment(value).utcOffset(value).format('DD-MM-yyyy hh:mm A');
+export const dateFormat = value => value ? moment(value).utcOffset(value).format('DD-MM-yyyy hh:mm A') : "-";
 
-export const dateToPickerFormat = value => moment(value).utcOffset(value).format('yyyy-MM-DDTHH:mm')
+export const dateToPickerFormat = value => value ?  moment(value).utcOffset(value).format('yyyy-MM-DDTHH:mm') : "-";
 
 export const SharedContext = createContext(null);
 
