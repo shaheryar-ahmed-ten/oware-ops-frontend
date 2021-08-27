@@ -12,7 +12,7 @@ import {
   TableCell
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
-import { checkForMatchInArray, dateToPickerFormat, getURL } from '../../../utils/common';
+import { checkForMatchInArray, dateFormat, dateToPickerFormat, getURL } from '../../../utils/common';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
 import { TableContainer } from '@material-ui/core';
@@ -114,7 +114,7 @@ export default function AddDispatchOrderView() {
       setCustomerId('');
       setWarehouseId('');
       setProductId('');
-      setShipmentDate('');
+      setShipmentDate(new Date());
       setReceiverName('');
       setReceiverPhone();
       setReferenceId('');
@@ -366,6 +366,9 @@ export default function AddDispatchOrderView() {
             margin="dense"
             id="shipmentDate"
             label="Shipment Date"
+            InputLabelProps={{
+              shrink: true,
+            }}
             placeholder="Shipment Date"
             type="datetime-local"
             variant="outlined"
