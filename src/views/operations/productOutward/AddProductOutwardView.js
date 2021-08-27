@@ -318,6 +318,9 @@ export default function AddProductOutwardView({ }) {
             <Grid container className={classes.parentContainer} spacing={3}>
               <Grid item xs={12}>
                 <Typography variant="h3" className={classes.heading}>Product Details</Typography>
+                <Button variant="contained" color="primary" onClick={() => navigate('/operations/dispatch-order')}>
+                  Cancel
+                </Button>
               </Grid>
             </Grid>
             <TableContainer className={classes.parentContainer}>
