@@ -67,6 +67,8 @@ export default function AddStockManagement() {
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
 
+  const [availableQtyForEdit, setAvailableQtyForEdit] = useState(0) // will be utilized only while editing because we have to show the sum of adjustedQty + availableQty during edit ops
+
   useEffect(() => {
     getReasonsType()
   }, [])
@@ -163,16 +165,7 @@ export default function AddStockManagement() {
           comment: res.data.data.comment,
           adjustmentQuantity: res.data.data.adjustmentQuantity
         }])
-        setAdjustments([{
-          // product id
-          productId: res.data.data.Inventory.Product.id,
-          // type 
-          type: res.data.data.reasonType,
-          // reason
-          reason: res.data.data.comment,
-          // adjustmentQuantity
-          adjustmentQuantity: res.data.data.adjustmentQuantity
-        }]) // will be sent to the backend
+        setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
       })
       .catch((error) => {
         console.log(error)
@@ -299,12 +292,6 @@ export default function AddStockManagement() {
           ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
           [name]: e.target.value
         }])
-    // setAdjustments(
-    //   [...adjustments.filter((adjustment) => adjustment.productId !== adjustmentToAlter.product.id),
-    //   {
-    //     ...adjustments.find((adjustment) => adjustment.productId === adjustmentToAlter.product.id),
-    //     [name]: e.target.value
-    //   }]) // this wont be sent to  backend while editing
   }
 
   return (
@@ -525,7 +512,12 @@ export default function AddStockManagement() {
                     {adjustment.product.UOM.name}
                   </TableCell>
                   <TableCell>
-                    {adjustment.availableQuantity}
+                    {
+                      selectedInventoryWastages ?
+                        availableQtyForEdit
+                        :
+                        adjustment.availableQuantity
+                    }
                   </TableCell>
                   <TableCell>
                     {

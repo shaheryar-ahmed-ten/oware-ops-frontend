@@ -76,7 +76,7 @@ export default function StockManagementView() {
   const navigate = useNavigate();
   const columns = [
     {
-      id: 'createdAt',
+      id: 'updatedAt',
       label: 'ADJUSTMENT DATE',
       minWidth: 'auto',
       className: '',
