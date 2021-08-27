@@ -128,6 +128,7 @@ export default function StockManagementView() {
       label: 'REASON',
       minWidth: 'auto',
       className: '',
+      format: (value, entity) => entity.WastagesType.name
     },
     {
       id: 'comment',
