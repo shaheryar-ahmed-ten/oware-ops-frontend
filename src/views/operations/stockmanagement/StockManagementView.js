@@ -76,7 +76,7 @@ export default function StockManagementView() {
   const navigate = useNavigate();
   const columns = [
     {
-      id: 'createdAt',
+      id: 'updatedAt',
       label: 'ADJUSTMENT DATE',
       minWidth: 'auto',
       className: '',
@@ -128,6 +128,7 @@ export default function StockManagementView() {
       label: 'REASON',
       minWidth: 'auto',
       className: '',
+      format: (value, entity) => entity.WastagesType.name
     },
     {
       id: 'comment',

@@ -9,7 +9,10 @@ import {
   Table,
   TableHead,
   TableRow,
-  TableCell
+  TableCell,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
 import { checkForMatchInArray, dateToPickerFormat, getURL } from '../../../utils/common';
@@ -57,20 +60,19 @@ export default function AddStockManagement() {
     [showMessage, setShowMessage] = useState(null),
     [messageType, setMessageType] = useState(null);
 
-  const [reasons, setReasons] = useState([{
-    name: 'Damage'
-  }, {
-    name: 'Expired'
-  }, {
-    name: 'Other'
-  }]) // to be displayed on dropdown
+  const [reasons, setReasons] = useState([]) // to be displayed on dropdown
   const [quantity, setQuantity] = useState(0) // adjusted quantity
   const [reasonType, setReasonType] = useState('') // selcted reason 
   const [comment, setComment] = useState('') // optional comment
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
 
-  const [intentedCustomer, setIntentedCustomer] = useState(null) // will only be used for edit
+  const [availableQtyForEdit, setAvailableQtyForEdit] = useState(0) // will be utilized only while editing because we have to show the sum of adjustedQty + availableQty during edit ops
+
+  useEffect(() => {
+    getReasonsType()
+  }, [])
+
 
   // If uid exists than fetch details of the selecteInventoryWastages  
   useEffect(() => {
@@ -139,6 +141,17 @@ export default function AddStockManagement() {
 
   }, [productId]);
 
+  const getReasonsType = () => {
+    axios.get(getURL(`inventory-wastages/wastages-type`))
+      .then((res) => {
+        console.log(res)
+        setReasons(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   const _getInventoryWastage = () => {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
@@ -152,16 +165,7 @@ export default function AddStockManagement() {
           comment: res.data.data.comment,
           adjustmentQuantity: res.data.data.adjustmentQuantity
         }])
-        setAdjustments([{
-          // product id
-          productId: res.data.data.Inventory.Product.id,
-          // type 
-          type: res.data.data.reasonType,
-          // reason
-          reason: res.data.data.comment,
-          // adjustmentQuantity
-          adjustmentQuantity: res.data.data.adjustmentQuantity
-        }]) // will be sent to the backend
+        setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
       })
       .catch((error) => {
         console.log(error)
@@ -288,12 +292,6 @@ export default function AddStockManagement() {
           ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
           [name]: e.target.value
         }])
-    // setAdjustments(
-    //   [...adjustments.filter((adjustment) => adjustment.productId !== adjustmentToAlter.product.id),
-    //   {
-    //     ...adjustments.find((adjustment) => adjustment.productId === adjustmentToAlter.product.id),
-    //     [name]: e.target.value
-    //   }]) // this wont be sent to  backend while editing
   }
 
   return (
@@ -433,7 +431,7 @@ export default function AddStockManagement() {
                 getOptionLabel={(reasons) => reasons.name || ""}
                 onChange={(event, newValue) => {
                   if (newValue)
-                    setReasonType(newValue.name)
+                    setReasonType(newValue.id)
                 }}
                 renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, reasonType: true })}
@@ -514,7 +512,12 @@ export default function AddStockManagement() {
                     {adjustment.product.UOM.name}
                   </TableCell>
                   <TableCell>
-                    {adjustment.availableQuantity}
+                    {
+                      selectedInventoryWastages ?
+                        availableQtyForEdit
+                        :
+                        adjustment.availableQuantity
+                    }
                   </TableCell>
                   <TableCell>
                     {
@@ -542,14 +545,24 @@ export default function AddStockManagement() {
                   <TableCell>
                     {
                       selectedInventoryWastages ?
-                        <TextField
-                          fullWidth={true}
-                          id="editAdjustmentReason"
-                          label="Reason Type"
-                          variant="outlined"
-                          value={adjustment.reasonType}
-                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
-                        />
+                        <FormControl variant="outlined" className={classes.formControl}>
+                          <InputLabel id="reasons">Reason Type</InputLabel>
+                          <Select
+                            labelId="reasons"
+                            id="reasons"
+                            value={adjustment.reasonType}
+                            onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
+                            label="Age"
+                          >
+                            {
+                              reasons.map((reason) => {
+                                return (
+                                  <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                                )
+                              })
+                            }
+                          </Select>
+                        </FormControl>
                         :
                         adjustment.reasonType}
                   </TableCell>

@@ -295,6 +295,9 @@ export default function AddDispatchOrderView() {
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h3" className={classes.heading}>Add Dispatch Order</Typography>
+          <Button variant="contained" color="primary" onClick={() => navigate('/operations/dispatch-order')}>
+            Cancel
+          </Button>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -423,7 +426,7 @@ export default function AddDispatchOrderView() {
               variant="outlined"
               value={quantity}
               disabled={!!selectedDispatchOrder}
-              onChange={e => e.target.value < 0 ? e.target.value == 0 :  e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
+              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
