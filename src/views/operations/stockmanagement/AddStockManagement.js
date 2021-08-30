@@ -497,11 +497,11 @@ export default function AddStockManagement() {
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Available Quantity (Before Adjustment)
+                Available QTY (Before Adjustment)
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Adjusted Quantity
+                Adjusted QTY
               </TableCell>
               {
                 selectedInventoryWastages ?
@@ -576,7 +576,7 @@ export default function AddStockManagement() {
                             id="reasons"
                             value={adjustment.reasonType}
                             onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
-                            label="Age"
+                            label="Reason Type"
                           >
                             {
                               reasons.map((reason) => {
