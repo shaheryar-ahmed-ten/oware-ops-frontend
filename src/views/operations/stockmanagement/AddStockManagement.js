@@ -247,7 +247,11 @@ export default function AddStockManagement() {
           // reason
           reason: comment,
           // adjustmentQuantity
-          adjustmentQuantity: quantity
+          adjustmentQuantity: quantity,
+          // customer Id
+          customerId,
+          // warehouse Id
+          warehouseId
         }]) // will be sent to the backend
         setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
@@ -272,8 +276,8 @@ export default function AddStockManagement() {
   const handleSubmit = e => {
     setMessageType('green')
     const adjustmentsObject = {
-      customerId,
-      warehouseId,
+      // customerId,
+      // warehouseId,
       adjustment_products: adjustments
     }
 
