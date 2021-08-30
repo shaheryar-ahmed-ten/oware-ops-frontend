@@ -31,6 +31,7 @@ import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispa
 import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
+import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
 
 
 const routes = (user) => [
@@ -142,7 +143,7 @@ const routes = (user) => [
       },
       {
         path: 'stock-management/view/:uid',
-        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" /> // TODO: create a view screen
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <ViewStockManagementDetails /> : <Navigate to="404" /> // TODO: create a view screen
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
