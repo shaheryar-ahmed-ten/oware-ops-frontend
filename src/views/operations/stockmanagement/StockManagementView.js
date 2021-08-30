@@ -25,6 +25,7 @@ import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { debounce } from 'lodash';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 
 const useStyles = makeStyles(theme => ({
@@ -177,14 +178,30 @@ export default function StockManagementView() {
   const [companies, setCompanies] = useState([])
   const [selectedCompany, setSelectedCompany] = useState(null)
 
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+
+
   useEffect(() => {
     getRelations()
   }, [])
 
   useEffect(() => {
     // DONE: call stock mang API
-    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
-  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
+    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay)
+  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay])
 
   const deleteAdjustment = (adjustmentId) => {
     axios.delete(getURL(`inventory-wastages/${adjustmentId}`))
@@ -212,11 +229,11 @@ export default function StockManagementView() {
       })
   };
 
-  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay) => {
     axios.get(getURL('inventory-wastages'), {
       params: {
         page, search: searchKeyword,
-        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany
+        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany, days: selectedDay
       }
     })
       .then(res => {
@@ -225,8 +242,8 @@ export default function StockManagementView() {
       });
   }
 
-  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
-    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay) => {
+    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay)
   }, 500), [])
 
   const addStockMangementButton = <Button
@@ -246,11 +263,13 @@ export default function StockManagementView() {
     setSelectedWarehouse(null);
     setSelectedProduct(null);
     setSelectedCompany(null);
+    setSelectedDay(null);
   }
 
   const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...customerWarehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
   const productSelect = <SelectDropdown icon={<ClassOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Products" name="Select Product" list={[{ name: 'All' }, ...customerProducts]} selectedType={selectedProduct} setSelectedType={setSelectedProduct} setPage={setPage} />
   const companySelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Company" name="Select Company" list={[{ name: 'All' }, ...companies]} selectedType={selectedCompany} setSelectedType={setSelectedCompany} setPage={setPage} />
+  const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
 
 
   const searchInput = <>
@@ -267,7 +286,7 @@ export default function StockManagementView() {
     />
   </>
 
-  const headerButtons = [companySelect, warehouseSelect, productSelect, searchInput, addStockMangementButton];
+  const headerButtons = [daysSelect, warehouseSelect, searchInput, addStockMangementButton];
 
   return (
     <Paper className={classes.root}>
