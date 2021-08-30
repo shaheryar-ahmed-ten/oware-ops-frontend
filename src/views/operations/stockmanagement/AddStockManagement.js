@@ -62,10 +62,13 @@ export default function AddStockManagement() {
 
   const [reasons, setReasons] = useState([]) // to be displayed on dropdown
   const [quantity, setQuantity] = useState(0) // adjusted quantity
-  const [reasonType, setReasonType] = useState('') // selcted reason 
+  const [reasonType, setReasonType] = useState('') // selcted reason id
   const [comment, setComment] = useState('') // optional comment
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
+
+  const [reasonTypeLabel, setReasonTypeLabel] = useState('') // selcted reason label for adding
+
 
   const [availableQtyForEdit, setAvailableQtyForEdit] = useState(0) // will be utilized only while editing because we have to show the sum of adjustedQty + availableQty during edit ops
 
@@ -237,7 +240,7 @@ export default function AddStockManagement() {
         setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
           availableQuantity,
-          reasonType,
+          reasonType: reasonTypeLabel,
           comment,
           adjustmentQuantity: quantity
         }])
@@ -393,7 +396,7 @@ export default function AddStockManagement() {
               variant="outlined"
               value={quantity}
               disabled={!!selectedInventoryWastages}
-              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
+              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(Math.round(e.target.value)) : setQuantity(Math.round(availableQuantity))}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
@@ -430,8 +433,10 @@ export default function AddStockManagement() {
                 // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
                 getOptionLabel={(reasons) => reasons.name || ""}
                 onChange={(event, newValue) => {
-                  if (newValue)
+                  if (newValue) {
                     setReasonType(newValue.id)
+                    setReasonTypeLabel(newValue.name)
+                  }
                 }}
                 renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, reasonType: true })}
