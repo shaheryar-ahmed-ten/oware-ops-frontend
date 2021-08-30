@@ -76,6 +76,12 @@ export default function StockManagementView() {
   const navigate = useNavigate();
   const columns = [
     {
+      id: 'stockAdjustmentId',
+      label: 'ADJUSTMENT ID',
+      minWidth: 'auto',
+      className: '',
+    },
+    {
       id: 'updatedAt',
       label: 'ADJUSTMENT DATE',
       minWidth: 'auto',
@@ -89,13 +95,13 @@ export default function StockManagementView() {
       className: '',
       format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`
     },
-    {
-      id: 'Inventory.Company.name',
-      label: 'COMPANY',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.Company.name
-    },
+    // {
+    //   id: 'Inventory.Company.name',
+    //   label: 'COMPANY',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventory.Company.name
+    // },
     {
       id: 'Inventory.Warehouse.name',
       label: 'WAREHOUSE',
@@ -108,37 +114,37 @@ export default function StockManagementView() {
       label: 'PRODUCT',
       minWidth: 'auto',
       className: '',
-      format: (value, entity) => entity.Inventory.Product.name
+      format: (value, entity) => 'TODO: Products-Count'
     },
-    {
-      id: 'availableQuantity',
-      label: 'AVAILABLE QTY (After Adjustment)',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.availableQuantity
-    },
-    {
-      id: 'adjustmentQuantity',
-      label: 'ADJUSTMENT QTY',
-      minWidth: 'auto',
-      className: '',
-    },
-    {
-      id: 'reasonType',
-      label: 'REASON',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.WastagesType.name
-    },
-    {
-      id: 'comment',
-      label: 'COMMENT',
-      minWidth: 'auto',
-      className: '',
-    },
+    // {
+    //   id: 'availableQuantity',
+    //   label: 'AVAILABLE QTY (After Adjustment)',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventory.availableQuantity
+    // },
+    // {
+    //   id: 'adjustmentQuantity',
+    //   label: 'ADJUSTMENT QTY',
+    //   minWidth: 'auto',
+    //   className: '',
+    // },
+    // {
+    //   id: 'reasonType',
+    //   label: 'REASON',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.WastagesType.name
+    // },
+    // {
+    //   id: 'comment',
+    //   label: 'COMMENT',
+    //   minWidth: 'auto',
+    //   className: '',
+    // },
     {
       id: 'actions',
-      label: '',
+      label: 'ACTIONS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) =>
