@@ -68,6 +68,7 @@ function ViewProductOutwardDetails() {
   });
   return (
     selectedProductOutward ? <>
+      {/* Only for printing */}
       <Box display="none" displayPrint="block" ref={componentRef}>
         <Box display="none" displayPrint="block" style={{ padding: "25mm 25mm 0mm 25mm" }}>
           <Typography variant="h3">
@@ -251,6 +252,7 @@ function ViewProductOutwardDetails() {
           </Grid>
         </Box>
       </Box>
+      {/* Only for Displaying */}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h3" className={classes.heading}>Product Ouward Details
