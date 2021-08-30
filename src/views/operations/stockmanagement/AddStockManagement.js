@@ -97,10 +97,8 @@ export default function AddStockManagement() {
 
 
   useEffect(() => {
-    setWarehouses([]);
-    setWarehouseId('');
-    setProducts([]);
-    setProductId('');
+    resetLocalStates()
+
     if (!customerId) return;
     if (!!selectedInventoryWastages) {
       setWarehouseId(selectedInventoryWastages.Inventory.warehouseId);
@@ -144,10 +142,24 @@ export default function AddStockManagement() {
 
   }, [productId]);
 
+  // will be called for 
+  const resetLocalStates = () => {
+    setValidation({})
+    setReasons([]);
+    setWarehouses([]);
+    setWarehouseId('');
+    setProducts([]);
+    setProductId('');
+    getReasonsType();
+
+    setReasonType('');
+    setComment('');
+    setQuantity(0);
+  }
+
   const getReasonsType = () => {
     axios.get(getURL(`inventory-wastages/wastages-type`))
       .then((res) => {
-        console.log(res)
         setReasons(res.data.data)
       })
       .catch((err) => {
@@ -350,8 +362,9 @@ export default function AddStockManagement() {
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Autocomplete
                   id="warehouse"
+                  key={warehouses} // for reRendering after selecting new company
                   options={warehouses}
-                  defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
+                  // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
                   getOptionLabel={(warehouse) => warehouse.name || ""}
                   onChange={(event, newValue) => {
                     if (newValue)
@@ -373,6 +386,7 @@ export default function AddStockManagement() {
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
                 id="product"
+                key={products}
                 options={products}
                 getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
@@ -429,6 +443,7 @@ export default function AddStockManagement() {
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
                 id="reasonType"
+                key={reasons}
                 options={reasons}
                 // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
                 getOptionLabel={(reasons) => reasons.name || ""}
