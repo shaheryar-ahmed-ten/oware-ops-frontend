@@ -232,9 +232,9 @@ export default function AddStockManagement() {
       isRequired(quantity)) {
       // checking if particular product is already added once
       // if yes
-      if (checkForMatchInArray(adjustments, "productId", productId)) {
+      if (checkForMatchInArray(adjustments, "productId", productId) && checkForMatchInArray(adjustments, "customerId", customerId)) {
         setMessageType('#FFCC00')
-        setShowMessage({ message: "This product is already added, please choose a different one." })
+        setShowMessage({ message: "This product is already added for this company, please choose a different product or company." })
       }
       // if no
       else {
@@ -255,6 +255,8 @@ export default function AddStockManagement() {
         }]) // will be sent to the backend
         setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
+          customer: customers.find(_customer => _customer.id == customerId),
+          warehouses: warehouses.find(warehouse => warehouse.id == warehouseId),
           availableQuantity,
           reasonType: reasonTypeLabel,
           comment,
@@ -286,7 +288,8 @@ export default function AddStockManagement() {
       warehouseId: true,
     });
     if (isRequired(customerId)) {
-      addAdjustments(adjustmentsObject);
+      console.log(adjustmentsObject)
+      // addAdjustments(adjustmentsObject);
     }
   }
 
@@ -496,6 +499,10 @@ export default function AddStockManagement() {
             <TableRow>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Company
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Name
               </TableCell>
               <TableCell
@@ -536,6 +543,9 @@ export default function AddStockManagement() {
             {adjustmentsSecondaryArray.map((adjustment, idx) => {
               return (
                 <TableRow hover role="checkbox" key={idx}>
+                  <TableCell>
+                    {adjustment.customer.name}
+                  </TableCell>
                   <TableCell>
                     {adjustment.product.name}
                   </TableCell>
