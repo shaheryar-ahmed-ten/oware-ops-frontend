@@ -193,11 +193,15 @@ export default function AddProductOutwardView({ }) {
     <>
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Add Product Outward</Typography>
-          <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-outward')}>
-            Cancel
-          </Button>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Add Product Outward</Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-outward')}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
         <Grid item sm={6}>
           <FormControl fullWidth={true} variant="outlined">

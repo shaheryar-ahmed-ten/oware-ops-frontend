@@ -63,8 +63,9 @@ const useStyles = makeStyles(theme => ({
   tableCellStyle: {
     color: '#383838',
     fontSize: 14,
-    display: 'flex',
-    justifyContent: 'center'
+    // display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 }));
 
@@ -112,7 +113,7 @@ export default function DispatchOrderView() {
     label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
-  }, 
+  },
   {
     id: 'receiverPhone',
     label: 'RECEIVER PHONE',
