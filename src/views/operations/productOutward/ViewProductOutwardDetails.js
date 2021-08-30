@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Grid,
   IconButton,
   makeStyles,
@@ -16,7 +17,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat, getURL } from '../../../utils/common';
 import PrintIcon from '@material-ui/icons/Print';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ViewProductOutwardDetails() {
   const classes = useStyles();
-  const { state } = useLocation();
+  const navigate = useNavigate();
   const { uid } = useParams();
   const [selectedProductOutward, setSelectedProductOutward] = useState(null)
   useEffect(() => {
@@ -254,13 +255,21 @@ function ViewProductOutwardDetails() {
       </Box>
       {/* Only for Displaying */}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Product Ouward Details
-            <IconButton aria-label="print" onClick={handlePrint}>
-              <PrintIcon />
-            </IconButton>
-          </Typography>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Product Ouward Details
+              <IconButton aria-label="print" onClick={handlePrint}>
+                <PrintIcon />
+              </IconButton>
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-outward')}>
+              Back
+            </Button>
+          </Grid>
         </Grid>
+
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

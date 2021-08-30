@@ -21,7 +21,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
 import { dateFormat, getURL } from '../../../utils/common';
 import PrintIcon from '@material-ui/icons/Print';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 function InwardProductDetailsView() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const { state } = useLocation();
   const { uid } = useParams();
   const [selectedProductInward, setSelectedProductInward] = useState(state ? state.selectedProductInward : null);
@@ -197,12 +198,19 @@ function InwardProductDetailsView() {
         </Box>
       </Box>
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Product Inward Details
-            <IconButton aria-label="print" onClick={handlePrint}>
-              <PrintIcon />
-            </IconButton>
-          </Typography>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Product Inward Details
+              <IconButton aria-label="print" onClick={handlePrint}>
+                <PrintIcon />
+              </IconButton>
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-inward')}>
+              Back
+            </Button>
+          </Grid>
         </Grid>
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">
