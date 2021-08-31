@@ -91,6 +91,13 @@ export default function StockManagementView() {
       format: dateFormat
     },
     {
+      id: 'Inventory.Product.name',
+      label: 'PRODUCTS',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventories.length || ''
+    },
+    {
       id: 'admin',
       label: 'ADJUSTED BY',
       minWidth: 'auto',
@@ -104,20 +111,14 @@ export default function StockManagementView() {
     //   className: '',
     //   format: (value, entity) => entity.Inventory.Company.name
     // },
-    {
-      id: 'Inventory.Warehouse.name',
-      label: 'WAREHOUSE',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventories[0].Warehouse.name || ''
-    },
-    {
-      id: 'Inventory.Product.name',
-      label: 'PRODUCTS',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventories.length || ''
-    },
+    // {
+    //   id: 'Inventory.Warehouse.name',
+    //   label: 'WAREHOUSE',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventories[0].Warehouse.name || ''
+    // },
+
     // {
     //   id: 'availableQuantity',
     //   label: 'AVAILABLE QTY (After Adjustment)',
@@ -292,7 +293,7 @@ export default function StockManagementView() {
     />
   </>
 
-  const headerButtons = [daysSelect, warehouseSelect, searchInput, addStockMangementButton];
+  const headerButtons = [daysSelect, searchInput, addStockMangementButton];
 
   return (
     <Paper className={classes.root}>

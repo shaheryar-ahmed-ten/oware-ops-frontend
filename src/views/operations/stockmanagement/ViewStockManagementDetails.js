@@ -44,6 +44,58 @@ const useStyles = makeStyles((theme) => ({
 
 
 function ViewStockManagementDetails() {
+    const productsColumns = [
+        {
+            id: 'companyName',
+            label: 'COMPANY',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.Company.name
+        },
+        {
+            id: 'warehouseName',
+            label: 'WAREHOUSE',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.Warehouse.name
+        },
+        {
+            id: 'productName',
+            label: 'PRODUCT',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.Product.name
+        },
+        {
+            id: 'availableQty',
+            label: 'ADJUSTMENT QUANTITY',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.AdjustmentInventory.adjustmentQuantity
+        },
+        {
+            id: 'UOM',
+            label: 'UoM',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.Product.UOM.name
+        },
+        {
+            id: 'reasonType',
+            label: 'REASON',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.AdjustmentInventory.reason
+        },
+        {
+            id: 'comment',
+            label: 'COMMENT',
+            minWidth: 'auto',
+            className: '',
+            format: (value, inventory) => inventory.AdjustmentInventory.comment || '-'
+        }
+    ]
+
     const classes = useStyles();
     const { uid } = useParams();
     const [selectedInventoryWastages, setSelectedInventoryWastages] = useState(null); // selected one to view
@@ -59,6 +111,7 @@ function ViewStockManagementDetails() {
         axios.get(getURL(`inventory-wastages/${uid}`))
             .then((res) => {
                 console.log(res.data)
+                setSelectedInventoryWastages(res.data.data)
             })
             .catch((error) => {
                 console.log(error)
@@ -71,7 +124,7 @@ function ViewStockManagementDetails() {
     });
 
     return (
-        !selectedInventoryWastages ?
+        selectedInventoryWastages ?
             <>
                 {/* Only for Displaying */}
                 <Grid container className={classes.parentContainer} spacing={3}>
@@ -87,16 +140,13 @@ function ViewStockManagementDetails() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell
+                                        className={classes.tableHeadText}>ADJUSTMENT DATE
+                                    </TableCell>
+                                    <TableCell
                                         className={classes.tableHeadText}>ADJUSTMENT ID
                                     </TableCell>
                                     <TableCell
                                         className={classes.tableHeadText}>ADJUSTED BY
-                                    </TableCell>
-                                    <TableCell
-                                        className={classes.tableHeadText}>COMPANY
-                                    </TableCell>
-                                    <TableCell
-                                        className={classes.tableHeadText}>WAREHOUSE
                                     </TableCell>
                                     <TableCell
                                         className={classes.tableHeadText}>CITY
@@ -104,13 +154,68 @@ function ViewStockManagementDetails() {
                                     <TableCell
                                         className={classes.tableHeadText}>PRODUCTS
                                     </TableCell>
-                                    <TableCell
-                                        className={classes.tableHeadText}>ADJUSTED AT
-                                    </TableCell>
                                 </TableRow>
                             </TableHead>
+                            <TableBody>
+                                <TableCell>
+                                    {dateFormat(selectedInventoryWastages.updatedAt)}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedInventoryWastages.internalIdForBusiness}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedInventoryWastages.Inventories[0].Warehouse.city}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedInventoryWastages.Inventories.length}
+                                </TableCell>
+                            </TableBody>
                         </Table>
                     </TableContainer>
+
+                    <Grid item xs={12}>
+                        <Typography variant="h4" className={classes.heading}>Products Details</Typography>
+                    </Grid>
+                    <TableContainer className={classes.parentContainer}>
+                        <Table stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    {productsColumns.map((column) => (
+                                        <TableCell
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                                        >
+                                            {column.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    selectedInventoryWastages.Inventories.map((inventoryWastage) => {
+                                        return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                                                {productsColumns.map((column) => {
+                                                    const value = inventoryWastage[column.id];
+                                                    return (
+                                                        <TableCell key={column.id} align={column.align}
+                                                            className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                                                            {column.format ? column.format(value, inventoryWastage) : value}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                            </TableRow>
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
                 </Grid>
             </>
             :

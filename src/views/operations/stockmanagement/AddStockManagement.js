@@ -243,9 +243,9 @@ export default function AddStockManagement() {
           // product id
           productId: productId,
           // type 
-          type: reasonType,
+          reason: reasonType,
           // reason
-          reason: comment,
+          comment,
           // adjustmentQuantity
           adjustmentQuantity: quantity,
           // customer Id
@@ -256,7 +256,7 @@ export default function AddStockManagement() {
         setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
           customer: customers.find(_customer => _customer.id == customerId),
-          warehouses: warehouses.find(warehouse => warehouse.id == warehouseId),
+          warehouse: warehouses.find(warehouse => warehouse.id == warehouseId),
           availableQuantity,
           reasonType: reasonTypeLabel,
           comment,
@@ -392,9 +392,9 @@ export default function AddStockManagement() {
           }
 
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
-        </Grid>
+        </Grid> */}
         <Grid container item xs={12} alignItems="center" spacing={1}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -499,43 +499,34 @@ export default function AddStockManagement() {
             <TableRow>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Company
+                COMPANY
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Name
+                WAREHOUSE
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                UoM
+                PRODUCT
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Available QTY (Before Adjustment)
+                ADJUSTED QUANTITY
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Adjusted QTY
-              </TableCell>
-              {
-                selectedInventoryWastages ?
-                  null
-                  :
-                  <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Remaining Quantity (After Adjustment)
-                  </TableCell>
-              }
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Reason
+                UOM
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Comment
+                REASON
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                COMMENT
               </TableCell>
               <TableCell>
-                Action
+                ACTION
               </TableCell>
             </TableRow>
           </TableHead>
@@ -547,18 +538,10 @@ export default function AddStockManagement() {
                     {adjustment.customer.name}
                   </TableCell>
                   <TableCell>
+                    {adjustment.warehouse.name || ''}
+                  </TableCell>
+                  <TableCell>
                     {adjustment.product.name}
-                  </TableCell>
-                  <TableCell>
-                    {adjustment.product.UOM.name}
-                  </TableCell>
-                  <TableCell>
-                    {
-                      selectedInventoryWastages ?
-                        availableQtyForEdit
-                        :
-                        adjustment.availableQuantity
-                    }
                   </TableCell>
                   <TableCell>
                     {
@@ -575,14 +558,9 @@ export default function AddStockManagement() {
                         adjustment.adjustmentQuantity
                     }
                   </TableCell>
-                  {
-                    selectedInventoryWastages ?
-                      null
-                      :
-                      <TableCell>
-                        {adjustment.availableQuantity - adjustment.adjustmentQuantity}
-                      </TableCell>
-                  }
+                  <TableCell>
+                    {adjustment.product.UOM.name}
+                  </TableCell>
                   <TableCell>
                     {
                       selectedInventoryWastages ?
