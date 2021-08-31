@@ -367,6 +367,8 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
            <MaskedInput
                   className = "mask-text"
+                  guide ={true}
+                  showMask = {true}
                   margin="normal"
                   variant="outlined"
                   name="phone"
@@ -375,7 +377,7 @@ export default function AddDispatchOrderView() {
                   id="receiverPhone"
                   type="text"
                   value={receiverPhone}
-                  placeholder="Reciever Phone"
+                  placeholder="Reciever Phone(e.g 032*-*******)"
                   onChange={e => {
                       setReceiverPhone(e.target.value)
                   }}
