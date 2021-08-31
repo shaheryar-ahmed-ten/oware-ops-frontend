@@ -77,10 +77,11 @@ export default function StockManagementView() {
   const navigate = useNavigate();
   const columns = [
     {
-      id: 'stockAdjustmentId',
+      id: 'internalIdForBusiness',
       label: 'ADJUSTMENT ID',
       minWidth: 'auto',
       className: '',
+      format: (value, entity) => entity.internalIdForBusiness
     },
     {
       id: 'updatedAt',
@@ -108,14 +109,14 @@ export default function StockManagementView() {
       label: 'WAREHOUSE',
       minWidth: 'auto',
       className: '',
-      format: (value, entity) => entity.Inventory.Warehouse.name
+      format: (value, entity) => entity.Inventories[0].Warehouse.name || ''
     },
     {
       id: 'Inventory.Product.name',
-      label: 'PRODUCT',
+      label: 'PRODUCTS',
       minWidth: 'auto',
       className: '',
-      format: (value, entity) => 'TODO: Products-Count'
+      format: (value, entity) => entity.Inventories.length || ''
     },
     // {
     //   id: 'availableQuantity',
@@ -155,13 +156,13 @@ export default function StockManagementView() {
               selectedProductOutward: entity
             }
           })} />,
-          <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
-            state: {
-              selectedProductOutward: entity
-            }
-          })}
-            style={{ cursor: 'pointer' }}
-          />,
+          // <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
+          //   state: {
+          //     selectedProductOutward: entity
+          //   }
+          // })}
+          //   style={{ cursor: 'pointer' }}
+          // />,
           <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
         ]
     }];
@@ -348,3 +349,14 @@ export default function StockManagementView() {
     </Paper>
   );
 }
+                // <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                //   {columns.map((column) => {
+                //     const value = inventoryWastage[column.id];
+                //     return (
+                //       <TableCell key={column.id} align={column.align}
+                //         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                //         {column.format ? column.format(value, inventoryWastage) : value}
+                //       </TableCell>
+                //     );
+                //   })}
+                // </TableRow>

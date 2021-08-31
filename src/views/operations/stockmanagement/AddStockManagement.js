@@ -288,8 +288,8 @@ export default function AddStockManagement() {
       warehouseId: true,
     });
     if (isRequired(customerId)) {
-      console.log(adjustmentsObject)
-      // addAdjustments(adjustmentsObject);
+      // console.log(adjustmentsObject)
+      addAdjustments(adjustmentsObject);
     }
   }
 
