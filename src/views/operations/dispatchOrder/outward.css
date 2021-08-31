@@ -1,0 +1,20 @@
+.mask-text{
+    font: inherit;
+    color: currentColor;
+    width: 96%;
+    border: 0;
+    height: 10%;
+    margin: 0;
+    display: block;
+    padding: 6px 0 7px;
+    min-width: 0;
+    background: none;
+    box-sizing: content-box;
+    animation-name: mui-auto-fill-cancel;
+    letter-spacing: inherit;
+    animation-duration: 10ms;
+    -webkit-tap-highlight-color: lightgray;
+    padding: 20px 14px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}

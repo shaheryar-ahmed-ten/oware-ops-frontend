@@ -294,10 +294,6 @@ function AddRideView() {
     }
   }
 
-  const disabledDate = (current) => {
-    return current < moment(current).startOf('day');
-  }
-
   return (
     <>
       {formErrors}
@@ -594,6 +590,7 @@ function AddRideView() {
               id="pickupDate"
               label="Pickup Date & Time"
               placeholder="Pickup Date & Time"
+              inputProps = {{min: new Date().toISOString().slice(0, 16)}}
               type="datetime-local"
               variant="outlined"
               value={pickupDate}
@@ -609,6 +606,7 @@ function AddRideView() {
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
+              inputProps = {{min: new Date().toISOString().slice(0, 16) }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"

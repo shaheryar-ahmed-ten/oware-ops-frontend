@@ -11,7 +11,7 @@ import {
   TableRow,
   TableCell
 } from '@material-ui/core'
-import { isRequired, isPhone } from '../../../utils/validators';
+import { isRequired, isPhone, isNumber } from '../../../utils/validators';
 import { checkForMatchInArray, dateFormat, dateToPickerFormat, getURL } from '../../../utils/common';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
@@ -20,7 +20,8 @@ import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useLocation, useNavigate } from 'react-router';
-import moment from 'moment';
+import MaskedInput from "react-text-mask";
+import "./outward.css"
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -67,7 +68,6 @@ export default function AddDispatchOrderView() {
   const [customers, setCustomers] = useState([]);
 
   const [inventories, setInventories] = useState([]);
-
   const [showMessage, setShowMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
 
@@ -251,6 +251,8 @@ export default function AddDispatchOrderView() {
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
     setMessageType('green')
+    let strRecieverPhone = receiverPhone
+    let strRecPhone = strRecieverPhone.replace(/-/g, '');
     const newDispatchOrder = {
       quantity,
       inventories,
@@ -260,7 +262,7 @@ export default function AddDispatchOrderView() {
       productId,
       shipmentDate,
       receiverName,
-      receiverPhone,
+      receiverPhone : strRecPhone,
       referenceId,
       internalIdForBusiness
     }
@@ -288,6 +290,21 @@ export default function AddDispatchOrderView() {
     setCustomerId(customerId);
     setSelectedCustomerName(customerName)
   }
+
+  const phoneNumberMask = [
+    /[0-9]/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/
+  ];
 
   return (
     <>
@@ -348,7 +365,24 @@ export default function AddDispatchOrderView() {
           {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
         </Grid>
         <Grid item sm={6}>
-          <TextField
+           <MaskedInput
+                  className = "mask-text"
+                  margin="normal"
+                  variant="outlined"
+                  name="phone"
+                  mask={phoneNumberMask}
+                  label="Receiver Phone"
+                  id="receiverPhone"
+                  type="text"
+                  value={receiverPhone}
+                  placeholder="Reciever Phone"
+                  onChange={e => {
+                      setReceiverPhone(e.target.value)
+                  }}
+                  onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+            />
+              {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
+          {/* <TextField
             fullWidth={true}
             margin="dense"
             id="receiverPhone"
@@ -362,6 +396,7 @@ export default function AddDispatchOrderView() {
           />
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
           {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+    */}
         </Grid>
         <Grid item sm={6}>
           <TextField
@@ -369,6 +404,7 @@ export default function AddDispatchOrderView() {
             margin="dense"
             id="shipmentDate"
             label="Shipment Date"
+            inputProps = {{min: new Date().toISOString().slice(0, 16)}}
             InputLabelProps={{
               shrink: true,
             }}

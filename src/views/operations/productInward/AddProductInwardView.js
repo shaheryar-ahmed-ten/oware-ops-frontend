@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { Alert } from '@material-ui/lab';
-import { isRequired } from '../../../utils/validators';
+import { isNumber, isRequired } from '../../../utils/validators';
 import { useReactToPrint } from 'react-to-print';
 import { Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
