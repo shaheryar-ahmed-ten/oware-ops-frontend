@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   InputBase,
+  IconButton,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -25,6 +26,7 @@ import ClassOutlinedIcon from '@material-ui/icons/ClassOutlined';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import { debounce } from 'lodash';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 
 const useStyles = makeStyles(theme => ({
@@ -76,11 +78,25 @@ export default function StockManagementView() {
   const navigate = useNavigate();
   const columns = [
     {
+      id: 'internalIdForBusiness',
+      label: 'ADJUSTMENT ID',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.internalIdForBusiness
+    },
+    {
       id: 'updatedAt',
       label: 'ADJUSTMENT DATE',
       minWidth: 'auto',
       className: '',
       format: dateFormat
+    },
+    {
+      id: 'Inventory.Product.name',
+      label: 'PRODUCTS',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Inventories.length || ''
     },
     {
       id: 'admin',
@@ -89,68 +105,71 @@ export default function StockManagementView() {
       className: '',
       format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`
     },
-    {
-      id: 'Inventory.Company.name',
-      label: 'COMPANY',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.Company.name
-    },
-    {
-      id: 'Inventory.Warehouse.name',
-      label: 'WAREHOUSE',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.Warehouse.name
-    },
-    {
-      id: 'Inventory.Product.name',
-      label: 'PRODUCT',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.Product.name
-    },
-    {
-      id: 'availableQuantity',
-      label: 'AVAILABLE QTY (After Adjustment)',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Inventory.availableQuantity
-    },
-    {
-      id: 'adjustmentQuantity',
-      label: 'ADJUSTMENT QTY',
-      minWidth: 'auto',
-      className: '',
-    },
-    {
-      id: 'reasonType',
-      label: 'REASON',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.WastagesType.name
-    },
-    {
-      id: 'comment',
-      label: 'COMMENT',
-      minWidth: 'auto',
-      className: '',
-    },
+    // {
+    //   id: 'Inventory.Company.name',
+    //   label: 'COMPANY',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventory.Company.name
+    // },
+    // {
+    //   id: 'Inventory.Warehouse.name',
+    //   label: 'WAREHOUSE',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventories[0].Warehouse.name || ''
+    // },
+
+    // {
+    //   id: 'availableQuantity',
+    //   label: 'AVAILABLE QTY (After Adjustment)',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Inventory.availableQuantity
+    // },
+    // {
+    //   id: 'adjustmentQuantity',
+    //   label: 'ADJUSTMENT QTY',
+    //   minWidth: 'auto',
+    //   className: '',
+    // },
+    // {
+    //   id: 'reasonType',
+    //   label: 'REASON',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.WastagesType.name
+    // },
+    // {
+    //   id: 'comment',
+    //   label: 'COMMENT',
+    //   minWidth: 'auto',
+    //   className: '',
+    // },
     {
       id: 'actions',
-      label: '',
+      label: 'ACTIONS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) =>
         [
-          <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
-            state: {
-              selectedProductOutward: entity
-            }
-          })}
-            style={{ cursor: 'pointer' }}
-          />,
-          <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
+          <IconButton>
+            <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`)}
+              style={{ cursor: 'pointer' }}
+            />
+          </IconButton>,
+          <IconButton>
+            <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
+              state: {
+                selectedProductOutward: entity
+              }
+            })}
+              style={{ cursor: 'pointer' }}
+            />
+          </IconButton>,
+          <IconButton>
+            <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
+          </IconButton>
         ]
     }];
   const [pageCount, setPageCount] = useState(1);
@@ -171,14 +190,30 @@ export default function StockManagementView() {
   const [companies, setCompanies] = useState([])
   const [selectedCompany, setSelectedCompany] = useState(null)
 
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+
+
   useEffect(() => {
     getRelations()
   }, [])
 
   useEffect(() => {
     // DONE: call stock mang API
-    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
-  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany])
+    getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay)
+  }, [page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay])
 
   const deleteAdjustment = (adjustmentId) => {
     axios.delete(getURL(`inventory-wastages/${adjustmentId}`))
@@ -206,11 +241,11 @@ export default function StockManagementView() {
       })
   };
 
-  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
+  const _getinventoryWastages = (page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay) => {
     axios.get(getURL('inventory-wastages'), {
       params: {
         page, search: searchKeyword,
-        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany
+        warehouse: selectedWarehouse, product: selectedProduct, company: selectedCompany, days: selectedDay
       }
     })
       .then(res => {
@@ -219,8 +254,8 @@ export default function StockManagementView() {
       });
   }
 
-  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany) => {
-    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany)
+  const getinventoryWastages = useCallback(debounce((page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay) => {
+    _getinventoryWastages(page, searchKeyword, selectedWarehouse, selectedProduct, selectedCompany, selectedDay)
   }, 500), [])
 
   const addStockMangementButton = <Button
@@ -229,7 +264,7 @@ export default function StockManagementView() {
     color="primary"
     size="small"
     onClick={() => navigate('create')}
-  >ADD STOCK MANAGEMENT</Button>;
+  >ADD Stock Adjustment</Button>;
 
   const handleSearch = (e) => {
     setPage(1)
@@ -240,11 +275,13 @@ export default function StockManagementView() {
     setSelectedWarehouse(null);
     setSelectedProduct(null);
     setSelectedCompany(null);
+    setSelectedDay(null);
   }
 
   const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...customerWarehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
   const productSelect = <SelectDropdown icon={<ClassOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Products" name="Select Product" list={[{ name: 'All' }, ...customerProducts]} selectedType={selectedProduct} setSelectedType={setSelectedProduct} setPage={setPage} />
   const companySelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Company" name="Select Company" list={[{ name: 'All' }, ...companies]} selectedType={selectedCompany} setSelectedType={setSelectedCompany} setPage={setPage} />
+  const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
 
 
   const searchInput = <>
@@ -261,12 +298,12 @@ export default function StockManagementView() {
     />
   </>
 
-  const headerButtons = [companySelect, warehouseSelect, productSelect, searchInput, addStockMangementButton];
+  const headerButtons = [daysSelect, searchInput, addStockMangementButton];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Stock Management" buttons={headerButtons} />
+        <TableHeader title="Stock Adjustment" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
@@ -318,3 +355,14 @@ export default function StockManagementView() {
     </Paper>
   );
 }
+                // <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                //   {columns.map((column) => {
+                //     const value = inventoryWastage[column.id];
+                //     return (
+                //       <TableCell key={column.id} align={column.align}
+                //         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                //         {column.format ? column.format(value, inventoryWastage) : value}
+                //       </TableCell>
+                //     );
+                //   })}
+                // </TableRow>

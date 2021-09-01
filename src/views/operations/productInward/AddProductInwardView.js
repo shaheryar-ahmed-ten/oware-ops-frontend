@@ -219,11 +219,15 @@ export default function AddProductInwardView() {
     <>
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Add Product Inward</Typography>
-          <Button style = {{display : "flex", alignItems : "center"}} variant="contained" color="primary" onClick={()=>navigate('/operations/product-inward')}>
-            Cancel
-          </Button>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Add Product Inward</Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-inward')}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
         <Grid item sm={6}>
           <FormControl margin="dense" fullWidth={true} variant="outlined">

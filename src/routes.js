@@ -31,6 +31,7 @@ import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispa
 import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
+import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
 
 
 const routes = (user) => [
@@ -129,20 +130,20 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ViewProductOutwardDetails /> : <Navigate to="404" />
       },
       {
-        path: 'stock-management',
+        path: 'stock-adjustment',
         element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" />
       },
       {
-        path: 'stock-management/create',
+        path: 'stock-adjustment/create',
         element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
       },
       {
-        path: 'stock-management/edit/:uid',
+        path: 'stock-adjustment/edit/:uid',
         element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
       },
       {
-        path: 'stock-management/view/:uid',
-        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" /> // TODO: create a view screen
+        path: 'stock-adjustment/view/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <ViewStockManagementDetails /> : <Navigate to="404" /> // TODO: create a view screen
       },
       { path: '*', element: <Navigate to='/404' /> }
     ]
@@ -202,11 +203,11 @@ const routes = (user) => [
   //   element: <DashboardLayout />,
   //   children: [
   //     {
-  //       path: 'stock-management',
+  //       path: 'stock-adjustment',
   //       element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <StockManagementView /> : <Navigate to="404" />
   //     },
   //     {
-  //       path: 'stock-management/create',
+  //       path: 'stock-adjustment/create',
   //       element: <AddStockManagement />
   //     }
   //   ]

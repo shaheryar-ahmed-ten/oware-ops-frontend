@@ -62,12 +62,15 @@ export default function AddStockManagement() {
 
   const [reasons, setReasons] = useState([]) // to be displayed on dropdown
   const [quantity, setQuantity] = useState(0) // adjusted quantity
-  const [reasonType, setReasonType] = useState('') // selcted reason 
+  const [reasonType, setReasonType] = useState('') // selcted reason id
   const [comment, setComment] = useState('') // optional comment
   const [adjustments, setAdjustments] = useState([]) // contains products along with adjusted quantities, will not be displayed at the bottom table
   const [adjustmentsSecondaryArray, setAdjustmentsSecondaryArray] = useState([]) // contains more details of added products to be displayed at the bottom table
 
-  const [availableQtyForEdit, setAvailableQtyForEdit] = useState(0) // will be utilized only while editing because we have to show the sum of adjustedQty + availableQty during edit ops
+  const [reasonTypeLabel, setReasonTypeLabel] = useState('') // selcted reason label for adding
+
+  const [selectedInventoryWastageInventories, setSelectedInventoryWastageInventories] = useState([]) // only for edit, to list all the inventories for edition
+  const [adjustmentsArrayForEdit, setAjustmentsArrayForEdit] = useState([]) // for edit only.
 
   useEffect(() => {
     getReasonsType()
@@ -94,10 +97,8 @@ export default function AddStockManagement() {
 
 
   useEffect(() => {
-    setWarehouses([]);
-    setWarehouseId('');
-    setProducts([]);
-    setProductId('');
+    resetLocalStates()
+
     if (!customerId) return;
     if (!!selectedInventoryWastages) {
       setWarehouseId(selectedInventoryWastages.Inventory.warehouseId);
@@ -141,10 +142,24 @@ export default function AddStockManagement() {
 
   }, [productId]);
 
+  // will be called for 
+  const resetLocalStates = () => {
+    setValidation({})
+    setReasons([]);
+    setWarehouses([]);
+    setWarehouseId('');
+    setProducts([]);
+    setProductId('');
+    getReasonsType();
+
+    setReasonType('');
+    setComment('');
+    setQuantity(0);
+  }
+
   const getReasonsType = () => {
     axios.get(getURL(`inventory-wastages/wastages-type`))
       .then((res) => {
-        console.log(res)
         setReasons(res.data.data)
       })
       .catch((err) => {
@@ -155,17 +170,22 @@ export default function AddStockManagement() {
   const _getInventoryWastage = () => {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
-        setSelectedInventoryWastages(res.data.data)
-        setCustomerId(res.data.data.Inventory.customerId)
-        setWarehouseId(res.data.data.Inventory.warehouseId)
-        setAdjustmentsSecondaryArray([{
-          product: res.data.data.Inventory.Product,
-          availableQuantity: res.data.data.Inventory.availableQuantity,
-          reasonType: res.data.data.reasonType,
-          comment: res.data.data.comment,
-          adjustmentQuantity: res.data.data.adjustmentQuantity
-        }])
-        setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
+        if (res.data) {
+          // console.log(res)
+          setSelectedInventoryWastages(res.data.data)
+          setSelectedInventoryWastageInventories(res.data.data.Inventories || [])
+        }
+        // setCustomerId(res.data.data.Inventory.customerId)
+        // setWarehouseId(res.data.data.Inventory.warehouseId)
+        // setAdjustmentsSecondaryArray([{
+        //   product: res.data.data.Inventory.Product,
+        //   availableQuantity: res.data.data.Inventory.availableQuantity,
+        //   reasonType: res.data.data.reasonType,
+        //   comment: res.data.data.comment,
+        //   adjustmentQuantity: res.data.data.adjustmentQuantity
+        // }])
+        // setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
+
       })
       .catch((error) => {
         console.log(error)
@@ -205,7 +225,7 @@ export default function AddStockManagement() {
         message: "New Adjustments have been created."
       });
       setTimeout(() => {
-        navigate('/operations/stock-management')
+        navigate('/operations/stock-adjustment')
       }, 2000);
     });
   };
@@ -217,9 +237,9 @@ export default function AddStockManagement() {
       isRequired(quantity)) {
       // checking if particular product is already added once
       // if yes
-      if (checkForMatchInArray(adjustments, "productId", productId)) {
+      if (checkForMatchInArray(adjustments, "productId", productId) && checkForMatchInArray(adjustments, "customerId", customerId)) {
         setMessageType('#FFCC00')
-        setShowMessage({ message: "This product is already added, please choose a different one." })
+        setShowMessage({ message: "This product is already added for this company, please choose a different product or company." })
       }
       // if no
       else {
@@ -228,16 +248,22 @@ export default function AddStockManagement() {
           // product id
           productId: productId,
           // type 
-          type: reasonType,
+          reason: reasonType,
           // reason
-          reason: comment,
+          comment,
           // adjustmentQuantity
-          adjustmentQuantity: quantity
+          adjustmentQuantity: quantity,
+          // customer Id
+          customerId,
+          // warehouse Id
+          warehouseId
         }]) // will be sent to the backend
         setAdjustmentsSecondaryArray([...adjustmentsSecondaryArray, {
           product: products.find(_product => _product.id == productId),
+          customer: customers.find(_customer => _customer.id == customerId),
+          warehouse: warehouses.find(warehouse => warehouse.id == warehouseId),
           availableQuantity,
-          reasonType,
+          reasonType: reasonTypeLabel,
           comment,
           adjustmentQuantity: quantity
         }])
@@ -257,8 +283,8 @@ export default function AddStockManagement() {
   const handleSubmit = e => {
     setMessageType('green')
     const adjustmentsObject = {
-      customerId,
-      warehouseId,
+      // customerId,
+      // warehouseId,
       adjustment_products: adjustments
     }
 
@@ -267,16 +293,24 @@ export default function AddStockManagement() {
       warehouseId: true,
     });
     if (isRequired(customerId)) {
+      // console.log(adjustmentsObject)
       addAdjustments(adjustmentsObject);
     }
   }
 
   const handleUpdate = () => {
+    const adjustment_products = []
+
+    selectedInventoryWastageInventories.forEach(inventory => {
+      const { reason, comment, adjustmentQuantity } = inventory.AdjustmentDetails;
+      const { id, availableQuantity } = inventory
+      adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
+    });
+
     const adjustmentsObject = {
-      adjustmentQuantity: adjustmentsSecondaryArray[0].adjustmentQuantity,
-      type: adjustmentsSecondaryArray[0].reasonType,
-      reason: adjustmentsSecondaryArray[0].comment
+      adjustment_products
     }
+    // console.log(adjustmentsObject);
     addAdjustments(adjustmentsObject);
   }
 
@@ -284,323 +318,450 @@ export default function AddStockManagement() {
     setCustomerId(customerId);
   }
 
-  // For edit only
-  const handleEditAdjustmentQtyForEdit = (e, adjustmentToAlter, name) => {
-    setAdjustmentsSecondaryArray(
-      [
-        {
-          ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
-          [name]: e.target.value
-        }])
+  // For edit only 
+  // For udpating the values of individual adjustment
+  const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
+    setSelectedInventoryWastageInventories((prevState) => {
+      return [
+        ...selectedInventoryWastageInventories.map((inventory) => {
+          if (inventory.id === IdOfAdjustmentToBeAltered) {
+            inventory.AdjustmentDetails[name] = value
+          }
+          return inventory
+        })
+      ]
+    })
   }
 
   return (
     <>
       {formErrors}
-      < Grid container className={classes.parentContainer} spacing={3} >
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>Add Stock Management</Typography>
-        </Grid>
-        <Grid item sm={6}>
-          {
-            selectedInventoryWastages ?
-              <TextField
-                fullWidth={true}
-                margin="normal"
-                id="customerId"
-                label="Company"
-                variant="outlined"
-                value={selectedInventoryWastages.Inventory.Company.name}
-                disabled={!!selectedInventoryWastages}
-              />
-              :
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Autocomplete
-                  id="customerId"
-                  options={customers}
-                  defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: selectedInventoryWastages.Inventory.Company.id } : ''}
-                  getOptionLabel={(customer) => customer.name || ""}
-                  onChange={(event, newValue) => {
-                    if (newValue)
-                      handleCustomerSearch(newValue.id, (newValue.name || ''))
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
-                  onBlur={e => setValidation({ ...validation, customerId: true })}
-                />
-                {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
-              </FormControl>
-          }
-        </Grid>
-        <Grid item sm={6}>
-          {
-            selectedInventoryWastages ?
-              <TextField
-                fullWidth={true}
-                margin="normal"
-                id="warehouseId"
-                label="Warehouse"
-                variant="outlined"
-                value={selectedInventoryWastages.Inventory.Warehouse.name}
-                disabled={!!selectedInventoryWastages}
-              />
-              :
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Autocomplete
-                  id="warehouse"
-                  options={warehouses}
-                  defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
-                  getOptionLabel={(warehouse) => warehouse.name || ""}
-                  onChange={(event, newValue) => {
-                    if (newValue)
-                      setWarehouseId(newValue.id)
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
-                  onBlur={e => setValidation({ ...validation, warehouseId: true })}
-                />
-                {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
-              </FormControl>
-          }
-
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h4" className={classes.heading}>Product Details</Typography>
-        </Grid>
-        <Grid container item xs={12} alignItems="center" spacing={1}>
-          <Grid item sm={4}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <Autocomplete
-                id="product"
-                options={products}
-                getOptionLabel={(product) => product.name || ""}
-                onChange={(event, newValue) => {
-                  if (newValue) {
-                    setProductId(newValue.id)
-                  }
-                }}
-                renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                onBlur={e => setValidation({ ...validation, productId: true })}
-                disabled={!!selectedInventoryWastages}
-              />
-              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-            </FormControl>
-          </Grid>
-          <Grid item sm={4}>
-            <TextField
-              fullWidth={true}
-              margin="normal"
-              id="quantityAdjust"
-              label="Quantity to adjust"
-              variant="outlined"
-              value={quantity}
-              disabled={!!selectedInventoryWastages}
-              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
-              onBlur={e => setValidation({ ...validation, quantity: true })}
-            />
-            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
-          </Grid>
-          <Grid item sm={2}>
-            <TextField
-              fullWidth={true}
-              margin="normal"
-              id="availableQuantity"
-              label="Available Quantity"
-              type="number"
-              variant="filled"
-              value={availableQuantity}
-              disabled
-            />
-          </Grid>
-          <Grid item sm={2}>
-            <TextField
-              fullWidth={true}
-              margin="normal"
-              id="uom"
-              label="UOM"
-              type="text"
-              variant="filled"
-              value={uom}
-              disabled
-            />
-          </Grid>
-          <Grid item sm={6}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <Autocomplete
-                id="reasonType"
-                options={reasons}
-                // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
-                getOptionLabel={(reasons) => reasons.name || ""}
-                onChange={(event, newValue) => {
-                  if (newValue)
-                    setReasonType(newValue.id)
-                }}
-                renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
-                onBlur={e => setValidation({ ...validation, reasonType: true })}
-                disabled={!!selectedInventoryWastages}
-              />
-              {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : ''}
-            </FormControl>
-          </Grid>
-          <Grid item sm={6}>
-            <TextField
-              fullWidth={true}
-              margin="normal"
-              InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
-              id="quantity"
-              label="Comment"
-              variant="outlined"
-              value={comment}
-              onChange={e => setComment(e.target.value)}
-              disabled={!!selectedInventoryWastages}
-            />
-          </Grid>
-          <Grid item sm={2}>
-            <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth disabled={!!selectedInventoryWastages} >Add</Button>
-          </Grid>
-        </Grid>
-      </Grid >
-
-      <TableContainer className={classes.parentContainer}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Name
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                UoM
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Available Quantity (Before Adjustment)
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Adjusted Quantity
-              </TableCell>
+      {
+        !selectedInventoryWastages ?
+          <Grid container className={classes.parentContainer} spacing={3} >
+            <Grid container item xs={12} justifyContent="space-between">
+              <Grid item xs={11}>
+                <Typography variant="h3" className={classes.heading}> {!!selectedInventoryWastages ? 'Edit Stock Adjustment' : 'Add Stock Adjustment'} </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Button variant="contained" color="primary" onClick={() => navigate('/operations/stock-adjustment')}>
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item sm={6}>
               {
-                selectedInventoryWastages ?
-                  null
-                  :
-                  <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Remaining Quantity (After Adjustment)
-                  </TableCell>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Autocomplete
+                    id="customerId"
+                    options={customers}
+                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: selectedInventoryWastages.Inventory.Company.id } : ''}
+                    getOptionLabel={(customer) => customer.name || ""}
+                    onChange={(event, newValue) => {
+                      if (newValue)
+                        handleCustomerSearch(newValue.id, (newValue.name || ''))
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
+                    onBlur={e => setValidation({ ...validation, customerId: true })}
+                    disabled={!!selectedInventoryWastages}
+                  />
+                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
+                </FormControl>
               }
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Reason
-              </TableCell>
-              <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Comment
-              </TableCell>
-              <TableCell>
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {adjustmentsSecondaryArray.map((adjustment, idx) => {
-              return (
-                <TableRow hover role="checkbox" key={idx}>
-                  <TableCell>
-                    {adjustment.product.name}
-                  </TableCell>
-                  <TableCell>
-                    {adjustment.product.UOM.name}
-                  </TableCell>
-                  <TableCell>
-                    {
-                      selectedInventoryWastages ?
-                        availableQtyForEdit
-                        :
-                        adjustment.availableQuantity
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      selectedInventoryWastages ?
-                        <TextField
-                          fullWidth={true}
-                          id="editAdjustmentQty"
-                          label="Quantity to adjust"
-                          variant="outlined"
-                          value={adjustment.adjustmentQuantity}
-                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'adjustmentQuantity')}
-                        />
-                        :
-                        adjustment.adjustmentQuantity
-                    }
-                  </TableCell>
-                  {
-                    selectedInventoryWastages ?
-                      null
-                      :
-                      <TableCell>
-                        {adjustment.availableQuantity - adjustment.adjustmentQuantity}
-                      </TableCell>
-                  }
-                  <TableCell>
-                    {
-                      selectedInventoryWastages ?
-                        <FormControl variant="outlined" className={classes.formControl}>
-                          <InputLabel id="reasons">Reason Type</InputLabel>
-                          <Select
-                            labelId="reasons"
-                            id="reasons"
-                            value={adjustment.reasonType}
-                            onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
-                            label="Age"
-                          >
-                            {
-                              reasons.map((reason) => {
-                                return (
-                                  <MenuItem value={reason.id}>{reason.name}</MenuItem>
-                                )
-                              })
-                            }
-                          </Select>
-                        </FormControl>
-                        :
-                        adjustment.reasonType}
-                  </TableCell>
-                  <TableCell>
-                    {
-                      selectedInventoryWastages ?
-                        <TextField
-                          fullWidth={true}
-                          id="Comment"
-                          label="Comment"
-                          variant="outlined"
-                          value={adjustment.comment}
-                          onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'comment')}
-                        />
-                        :
-                        adjustment.comment}
-                  </TableCell>
-                  <TableCell>
-                    <DeleteIcon color="error" key="delete" onClick={() => {
-                      setAdjustments(adjustments.filter((adjustment, _idx) => _idx != idx));
-                      setAdjustmentsSecondaryArray(adjustmentsSecondaryArray.filter((adjustmentsSecondaryArray, _idx) => _idx != idx))
-                    }
-                    } />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </Grid>
+            <Grid item sm={6}>
+              {
+                // selectedInventoryWastages ?
+                //   <TextField
+                //     fullWidth={true}
+                //     margin="normal"
+                //     id="warehouseId"
+                //     label="Warehouse"
+                //     variant="outlined"
+                //     value={selectedInventoryWastages.Inventory.Warehouse.name}
+                //     disabled={!!selectedInventoryWastages}
+                //   />
+                //   :
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Autocomplete
+                    id="warehouse"
+                    key={warehouses} // for reRendering after selecting new company
+                    options={warehouses}
+                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
+                    getOptionLabel={(warehouse) => warehouse.name || ""}
+                    onChange={(event, newValue) => {
+                      if (newValue)
+                        setWarehouseId(newValue.id)
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
+                    onBlur={e => setValidation({ ...validation, warehouseId: true })}
+                    disabled={!!selectedInventoryWastages}
+                  />
+                  {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+                </FormControl>
+              }
+
+            </Grid>
+
+            {/* Product Details */}
+            <Grid container item xs={12} alignItems="center" spacing={1}>
+              <Grid item sm={4}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Autocomplete
+                    id="product"
+                    key={products}
+                    options={products}
+                    getOptionLabel={(product) => product.name || ""}
+                    onChange={(event, newValue) => {
+                      if (newValue) {
+                        setProductId(newValue.id)
+                      }
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+                    onBlur={e => setValidation({ ...validation, productId: true })}
+                    disabled={!!selectedInventoryWastages}
+                  />
+                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+                </FormControl>
+              </Grid>
+              <Grid item sm={4}>
+                <TextField
+                  fullWidth={true}
+                  margin="normal"
+                  id="quantityAdjust"
+                  label="Quantity to adjust"
+                  variant="outlined"
+                  value={quantity}
+                  disabled={!!selectedInventoryWastages}
+                  onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(Math.round(e.target.value)) : setQuantity(Math.round(availableQuantity))}
+                  onBlur={e => setValidation({ ...validation, quantity: true })}
+                />
+                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+              </Grid>
+              <Grid item sm={2}>
+                <TextField
+                  fullWidth={true}
+                  margin="normal"
+                  id="availableQuantity"
+                  label="Available Quantity"
+                  type="number"
+                  variant="filled"
+                  value={availableQuantity}
+                  disabled
+                />
+              </Grid>
+              <Grid item sm={2}>
+                <TextField
+                  fullWidth={true}
+                  margin="normal"
+                  id="uom"
+                  label="UOM"
+                  type="text"
+                  variant="filled"
+                  value={uom}
+                  disabled
+                />
+              </Grid>
+              <Grid item sm={6}>
+                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <Autocomplete
+                    id="reasonType"
+                    key={reasons}
+                    options={reasons}
+                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
+                    getOptionLabel={(reasons) => reasons.name || ""}
+                    onChange={(event, newValue) => {
+                      if (newValue) {
+                        setReasonType(newValue.id)
+                        setReasonTypeLabel(newValue.name)
+                      }
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
+                    onBlur={e => setValidation({ ...validation, reasonType: true })}
+                    disabled={!!selectedInventoryWastages}
+                  />
+                  {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : ''}
+                </FormControl>
+              </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  fullWidth={true}
+                  margin="normal"
+                  InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+                  id="quantity"
+                  label="Comment"
+                  variant="outlined"
+                  value={comment}
+                  onChange={e => setComment(e.target.value)}
+                  disabled={!!selectedInventoryWastages}
+                />
+              </Grid>
+              <Grid item sm={2}>
+                <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth disabled={!!selectedInventoryWastages} >Add</Button>
+              </Grid>
+            </Grid>
+          </Grid >
+          :
+          <Grid container className={classes.parentContainer} spacing={3}>
+            <Grid container item xs={12} justifyContent="space-between">
+              <Grid item xs={11}>
+                <Typography variant="h3" className={classes.heading}> Edit Stock Adjustment </Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <Button variant="contained" color="primary" onClick={() => navigate('/operations/stock-adjustment')}>
+                  Cancel
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+      }
 
       {
-        adjustmentsSecondaryArray.length > 0 ?
+        !selectedInventoryWastages ?
+          <TableContainer className={classes.parentContainer}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    COMPANY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    WAREHOUSE
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    PRODUCT
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    ADJUSTED QUANTITY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    UOM
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    REASON
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    COMMENT
+                  </TableCell>
+                  <TableCell>
+                    ACTION
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {adjustmentsSecondaryArray.map((adjustment, idx) => {
+                  return (
+                    <TableRow hover role="checkbox" key={idx}>
+                      <TableCell>
+                        {adjustment.customer.name}
+                      </TableCell>
+                      <TableCell>
+                        {adjustment.warehouse.name || ''}
+                      </TableCell>
+                      <TableCell>
+                        {adjustment.product.name}
+                      </TableCell>
+                      <TableCell>
+                        {
+                          // selectedInventoryWastages ?
+                          //   <TextField
+                          //     fullWidth={true}
+                          //     id="editAdjustmentQty"
+                          //     label="Quantity to adjust"
+                          //     variant="outlined"
+                          //     value={adjustment.adjustmentQuantity}
+                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'adjustmentQuantity')}
+                          //   />
+                          //   :
+                          adjustment.adjustmentQuantity
+                        }
+                      </TableCell>
+                      <TableCell>
+                        {adjustment.product.UOM.name}
+                      </TableCell>
+                      <TableCell>
+                        {
+                          // selectedInventoryWastages ?
+                          //   <FormControl variant="outlined" className={classes.formControl}>
+                          //     <InputLabel id="reasons">Reason Type</InputLabel>
+                          //     <Select
+                          //       labelId="reasons"
+                          //       id="reasons"
+                          //       value={adjustment.reasonType}
+                          //       onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
+                          //       label="Reason Type"
+                          //     >
+                          //       {
+                          //         reasons.map((reason) => {
+                          //           return (
+                          //             <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                          //           )
+                          //         })
+                          //       }
+                          //     </Select>
+                          //   </FormControl>
+                          //   :
+                          adjustment.reasonType}
+                      </TableCell>
+                      <TableCell>
+                        {
+                          // selectedInventoryWastages ?
+                          //   <TextField
+                          //     fullWidth={true}
+                          //     id="Comment"
+                          //     label="Comment"
+                          //     variant="outlined"
+                          //     value={adjustment.comment}
+                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'comment')}
+                          //   />
+                          //   :
+                          adjustment.comment}
+                      </TableCell>
+                      <TableCell>
+                        <DeleteIcon color="error" key="delete" onClick={() => {
+                          setAdjustments(adjustments.filter((adjustment, _idx) => _idx != idx));
+                          setAdjustmentsSecondaryArray(adjustmentsSecondaryArray.filter((adjustmentsSecondaryArray, _idx) => _idx != idx))
+                        }
+                        } />
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          :
+          <TableContainer className={classes.parentContainer}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    COMPANY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    WAREHOUSE
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    PRODUCT
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    AVAILABLE QUANTITY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    ADJUSTED QUANTITY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    UOM
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    REASON
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    COMMENT
+                  </TableCell>
+                  <TableCell>
+                    ACTION
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  selectedInventoryWastageInventories.map((inventory, idx) => {
+                    return (
+                      <TableRow hover role="checkbox" key={idx}>
+                        <TableCell>
+                          {inventory.Company.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {inventory.Warehouse.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {inventory.Product.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {inventory.availableQuantity}
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            fullWidth={true}
+                            id="editAdjustmentQty"
+                            label="Quantity to adjust"
+                            variant="outlined"
+                            value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
+                            onChange={(e) => handleEdit(e.target.value > inventory.availableQuantity ? inventory.availableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {inventory.Product.UOM.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="reasons">Reason Type</InputLabel>
+                            <Select
+                              labelId="reasons"
+                              id="reasons"
+                              value={inventory.AdjustmentDetails.reason || '0'}
+                              onChange={(e) => handleEdit(e.target.value, inventory.id, 'reason')}
+                              label="Reason Type"
+                            >
+                              {
+                                reasons.map((reason) => {
+                                  return (
+                                    <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                                  )
+                                })
+                              }
+                            </Select>
+                          </FormControl>
+
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            fullWidth={true}
+                            id="comment"
+                            label="Comment"
+                            variant="outlined"
+                            value={inventory.AdjustmentDetails.comment || '-'}
+                            onChange={(e) => handleEdit(e.target.value, inventory.id, 'comment')}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <DeleteIcon color="error" key="delete" onClick={() => {
+                            setSelectedInventoryWastageInventories(selectedInventoryWastageInventories.filter((inventory, _idx) => _idx != idx))
+                          }
+                          } />
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+      }
+
+      {
+        adjustmentsSecondaryArray.length > 0 || selectedInventoryWastageInventories.length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button onClick={!selectedInventoryWastages ? handleSubmit : handleUpdate} color="primary" variant="contained">
-                  {!selectedInventoryWastages ? 'Create Stock Management' : 'Update Stock Management'}
+                  {!selectedInventoryWastages ? 'Create Stock Adjustment' : 'Update Stock Adjustment'}
                 </Button>
               </FormControl>
             </Grid>
