@@ -71,7 +71,7 @@ function ViewStockManagementDetails() {
             label: 'ADJUSTMENT QUANTITY',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => inventory.AdjustmentInventory.adjustmentQuantity
+            format: (value, inventory) => inventory.AdjustmentDetails.adjustmentQuantity
         },
         {
             id: 'UOM',
@@ -85,14 +85,14 @@ function ViewStockManagementDetails() {
             label: 'REASON',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => inventory.AdjustmentInventory.reason
+            format: (value, inventory) => inventory.AdjustmentDetails.WastagesType.name
         },
         {
             id: 'comment',
             label: 'COMMENT',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => inventory.AdjustmentInventory.comment || '-'
+            format: (value, inventory) => inventory.AdjustmentDetails.comment || '-'
         }
     ]
 
@@ -110,7 +110,6 @@ function ViewStockManagementDetails() {
     const _getInventoryWastage = () => {
         axios.get(getURL(`inventory-wastages/${uid}`))
             .then((res) => {
-                console.log(res.data)
                 setSelectedInventoryWastages(res.data.data)
             })
             .catch((error) => {

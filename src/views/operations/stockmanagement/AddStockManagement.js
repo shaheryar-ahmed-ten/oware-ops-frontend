@@ -70,6 +70,7 @@ export default function AddStockManagement() {
   const [reasonTypeLabel, setReasonTypeLabel] = useState('') // selcted reason label for adding
 
   const [selectedInventoryWastageInventories, setSelectedInventoryWastageInventories] = useState([]) // only for edit, to list all the inventories for edition
+  const [adjustmentsArrayForEdit, setAjustmentsArrayForEdit] = useState([]) // for edit only.
 
   useEffect(() => {
     getReasonsType()
@@ -170,7 +171,7 @@ export default function AddStockManagement() {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
         if (res.data) {
-          console.log(res)
+          // console.log(res)
           setSelectedInventoryWastages(res.data.data)
           setSelectedInventoryWastageInventories(res.data.data.Inventories || [])
         }
@@ -298,11 +299,18 @@ export default function AddStockManagement() {
   }
 
   const handleUpdate = () => {
+    const adjustment_products = []
+
+    selectedInventoryWastageInventories.forEach(inventory => {
+      const { reason, comment, adjustmentQuantity } = inventory.AdjustmentDetails;
+      const { id, availableQuantity } = inventory
+      adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
+    });
+
     const adjustmentsObject = {
-      adjustmentQuantity: adjustmentsSecondaryArray[0].adjustmentQuantity,
-      type: adjustmentsSecondaryArray[0].reasonType,
-      reason: adjustmentsSecondaryArray[0].comment
+      adjustment_products
     }
+    // console.log(adjustmentsObject);
     addAdjustments(adjustmentsObject);
   }
 
@@ -310,14 +318,19 @@ export default function AddStockManagement() {
     setCustomerId(customerId);
   }
 
-  // For edit only
-  const handleEditAdjustmentQtyForEdit = (e, adjustmentToAlter, name) => {
-    setAdjustmentsSecondaryArray(
-      [
-        {
-          ...adjustmentsSecondaryArray.find((adjustment) => adjustment.product.id === adjustmentToAlter.product.id),
-          [name]: e.target.value
-        }])
+  // For edit only 
+  // For udpating the values of individual adjustment
+  const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
+    setSelectedInventoryWastageInventories((prevState) => {
+      return [
+        ...selectedInventoryWastageInventories.map((inventory) => {
+          if (inventory.id === IdOfAdjustmentToBeAltered) {
+            inventory.AdjustmentDetails[name] = value
+          }
+          return inventory
+        })
+      ]
+    })
   }
 
   return (
@@ -643,6 +656,10 @@ export default function AddStockManagement() {
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    AVAILABLE QUANTITY
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     ADJUSTED QUANTITY
                   </TableCell>
                   <TableCell
@@ -677,16 +694,51 @@ export default function AddStockManagement() {
                           {inventory.Product.name || '-'}
                         </TableCell>
                         <TableCell>
-                          {inventory.AdjustmentInventory.adjustmentQuantity || '-'}
+                          {inventory.availableQuantity}
+                        </TableCell>
+                        <TableCell>
+                          <TextField
+                            fullWidth={true}
+                            id="editAdjustmentQty"
+                            label="Quantity to adjust"
+                            variant="outlined"
+                            value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
+                            onChange={(e) => handleEdit(e.target.value > inventory.availableQuantity ? inventory.availableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
+                          />
                         </TableCell>
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
                         </TableCell>
                         <TableCell>
-                          {inventory.AdjustmentInventory.reason || '-'}
+                          <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="reasons">Reason Type</InputLabel>
+                            <Select
+                              labelId="reasons"
+                              id="reasons"
+                              value={inventory.AdjustmentInventory.reason || '0'}
+                              onChange={(e) => handleEdit(e.target.value, inventory.id, 'reason')}
+                              label="Reason Type"
+                            >
+                              {
+                                reasons.map((reason) => {
+                                  return (
+                                    <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                                  )
+                                })
+                              }
+                            </Select>
+                          </FormControl>
+
                         </TableCell>
                         <TableCell>
-                          {inventory.AdjustmentInventory.comment || '-'}
+                          <TextField
+                            fullWidth={true}
+                            id="comment"
+                            label="Comment"
+                            variant="outlined"
+                            value={inventory.AdjustmentDetails.comment || '-'}
+                            onChange={(e) => handleEdit(e.target.value, inventory.id, 'comment')}
+                          />
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() => {
@@ -702,8 +754,9 @@ export default function AddStockManagement() {
             </Table>
           </TableContainer>
       }
+
       {
-        adjustmentsSecondaryArray.length > 0 ?
+        adjustmentsSecondaryArray.length > 0 || selectedInventoryWastageInventories.length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
