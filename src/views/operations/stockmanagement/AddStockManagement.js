@@ -715,7 +715,7 @@ export default function AddStockManagement() {
                             <Select
                               labelId="reasons"
                               id="reasons"
-                              value={inventory.AdjustmentInventory.reason || '0'}
+                              value={inventory.AdjustmentDetails.reason || '0'}
                               onChange={(e) => handleEdit(e.target.value, inventory.id, 'reason')}
                               label="Reason Type"
                             >
