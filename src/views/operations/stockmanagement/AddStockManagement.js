@@ -220,7 +220,7 @@ export default function AddStockManagement() {
         message: "New Adjustments have been created."
       });
       setTimeout(() => {
-        navigate('/operations/stock-management')
+        navigate('/operations/stock-adjustment')
       }, 2000);
     });
   };
@@ -322,10 +322,10 @@ export default function AddStockManagement() {
       <Grid container className={classes.parentContainer} spacing={3} >
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
-            <Typography variant="h3" className={classes.heading}>Add Stock Management</Typography>
+            <Typography variant="h3" className={classes.heading}>Add Stock Adjustment</Typography>
           </Grid>
           <Grid item xs={1}>
-            <Button variant="contained" color="primary" onClick={() => navigate('/operations/stock-management')}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/stock-adjustment')}>
               Cancel
             </Button>
           </Grid>
@@ -619,7 +619,7 @@ export default function AddStockManagement() {
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button onClick={!selectedInventoryWastages ? handleSubmit : handleUpdate} color="primary" variant="contained">
-                  {!selectedInventoryWastages ? 'Create Stock Management' : 'Update Stock Management'}
+                  {!selectedInventoryWastages ? 'Create Stock Adjustment' : 'Update Stock Adjustment'}
                 </Button>
               </FormControl>
             </Grid>

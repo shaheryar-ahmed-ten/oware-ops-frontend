@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   InputBase,
+  IconButton,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -152,19 +153,23 @@ export default function StockManagementView() {
       className: '',
       format: (value, entity) =>
         [
-          <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
-            state: {
-              selectedProductOutward: entity
-            }
-          })} />,
-          // <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
-          //   state: {
-          //     selectedProductOutward: entity
-          //   }
-          // })}
-          //   style={{ cursor: 'pointer' }}
-          // />,
-          <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
+          <IconButton>
+            <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`)}
+              style={{ cursor: 'pointer' }}
+            />
+          </IconButton>,
+          <IconButton>
+            <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
+              state: {
+                selectedProductOutward: entity
+              }
+            })}
+              style={{ cursor: 'pointer' }}
+            />
+          </IconButton>,
+          <IconButton>
+            <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
+          </IconButton>
         ]
     }];
   const [pageCount, setPageCount] = useState(1);
@@ -259,7 +264,7 @@ export default function StockManagementView() {
     color="primary"
     size="small"
     onClick={() => navigate('create')}
-  >ADD STOCK MANAGEMENT</Button>;
+  >ADD Stock Adjustment</Button>;
 
   const handleSearch = (e) => {
     setPage(1)
@@ -298,7 +303,7 @@ export default function StockManagementView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Stock Management" buttons={headerButtons} />
+        <TableHeader title="Stock Adjustment" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>

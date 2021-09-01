@@ -90,9 +90,9 @@ const navTreeData = [
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-        href: '/operations/stock-management',
-        title: 'Stock Management',
-        activeRouteName: 'stockmanagement'
+        href: '/operations/stock-adjustment',
+        title: 'Stock Adjustment',
+        activeRouteName: 'stock-adjustment'
       }
     ]
   },
@@ -144,8 +144,8 @@ const navTreeData = [
   //   children: [
   //     {
   //       canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-  //       href: '/management/stock-management',
-  //       title: 'Stock Management',
+  //       href: '/management/stock-adjustment',
+  //       title: 'Stock Adjustment',
   //       activeRouteName: 'stockmanagement'
   //     }
   //   ]  
