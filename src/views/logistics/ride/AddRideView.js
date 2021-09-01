@@ -204,7 +204,7 @@ function AddRideView() {
 
   useEffect(() => {
     if (dropoffCityId) {
-      const getCity = cities.find(city => city.id == pickupCityId)
+      const getCity = cities.find(city => city.id == dropoffCityId)
       if (getCity)
         setDropoffZones(getCity.Zones)
     }
