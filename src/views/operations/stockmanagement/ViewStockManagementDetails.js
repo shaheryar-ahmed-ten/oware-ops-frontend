@@ -10,6 +10,7 @@ import {
     TableHead,
     TableRow,
     TextField,
+    Tooltip,
     Typography
 } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react'
@@ -47,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
         "&:last-child th, &:last-child td": {
             borderBottom: 0,
         },
+    },
+    customWidth: {
+        maxWidth: 500,
+        fontSize: 14
     },
 }));
 
@@ -101,7 +106,16 @@ function ViewStockManagementDetails() {
             label: 'COMMENT',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => inventory.AdjustmentDetails.comment || '-'
+            format: (value, inventory) => {
+                return (
+                    <Tooltip title={`${inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment}`} classes={{ tooltip: classes.customWidth }} arrow>
+                        <Typography>
+                            {`${inventory.AdjustmentDetails.comment.substring(0, 20)}...` || '-'}
+                        </Typography>
+                    </Tooltip>
+                )
+            }
+
         }
     ]
 
