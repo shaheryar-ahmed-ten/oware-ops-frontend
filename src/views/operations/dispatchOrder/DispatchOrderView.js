@@ -63,9 +63,10 @@ const useStyles = makeStyles(theme => ({
   tableCellStyle: {
     color: '#383838',
     fontSize: 14,
-    // display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
+    display: 'table-cell',
+    // justifyContent: 'center',
+    textAlign:'center'
+    // alignItems: 'center'
   },
 }));
 
@@ -265,7 +266,7 @@ export default function DispatchOrderView() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' ,textAlign: 'center'}}
                 >
                   {column.label}
                 </TableCell>
