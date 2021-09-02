@@ -171,21 +171,14 @@ export default function AddStockManagement() {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
         if (res.data) {
-          // console.log(res)
           setSelectedInventoryWastages(res.data.data)
-          setSelectedInventoryWastageInventories(res.data.data.Inventories || [])
+          const modifiedInventories = res.data.data.Inventories.map((inventory) => {
+            inventory.AdjustmentDetails['remainingQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity
+            inventory.AdjustmentDetails['actualAvailableQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity // saving qty before adjustment
+            return inventory
+          })
+          setSelectedInventoryWastageInventories(modifiedInventories || [])
         }
-        // setCustomerId(res.data.data.Inventory.customerId)
-        // setWarehouseId(res.data.data.Inventory.warehouseId)
-        // setAdjustmentsSecondaryArray([{
-        //   product: res.data.data.Inventory.Product,
-        //   availableQuantity: res.data.data.Inventory.availableQuantity,
-        //   reasonType: res.data.data.reasonType,
-        //   comment: res.data.data.comment,
-        //   adjustmentQuantity: res.data.data.adjustmentQuantity
-        // }])
-        // setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
-
       })
       .catch((error) => {
         console.log(error)
@@ -322,6 +315,7 @@ export default function AddStockManagement() {
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
     setSelectedInventoryWastageInventories((prevState) => {
+      // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
@@ -656,15 +650,19 @@ export default function AddStockManagement() {
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    AVAILABLE QUANTITY
+                    AVAILABLE QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    ADJUSTED QUANTITY
+                    ADJUSTED QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     UOM
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    REMAINING QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
@@ -703,11 +701,14 @@ export default function AddStockManagement() {
                             label="Quantity to adjust"
                             variant="outlined"
                             value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
-                            onChange={(e) => handleEdit(e.target.value > inventory.availableQuantity ? inventory.availableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
+                            onChange={(e) => handleEdit(e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ? inventory.AdjustmentDetails.actualAvailableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
                           />
                         </TableCell>
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
                         </TableCell>
                         <TableCell>
                           <FormControl variant="outlined" className={classes.formControl}>
