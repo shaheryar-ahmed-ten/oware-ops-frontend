@@ -433,6 +433,7 @@ export default function AddStockManagement() {
                   value={availableQuantity}
                   disabled
                 />
+                {validation.reasonType && !isRequired(reasonType) ? <Typography color="error" style={{ visibility: 'hidden' }}>DUMMY</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
               <Grid item sm={2}>
                 <TextField
@@ -445,6 +446,7 @@ export default function AddStockManagement() {
                   value={uom}
                   disabled
                 />
+                {validation.reasonType && !isRequired(reasonType) ? <Typography color="error" style={{ visibility: 'hidden' }}>DUMMY</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
               <Grid item sm={6}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
