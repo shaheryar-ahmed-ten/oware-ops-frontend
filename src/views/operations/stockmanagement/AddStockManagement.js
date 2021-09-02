@@ -12,7 +12,8 @@ import {
   TableCell,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Box
 } from '@material-ui/core'
 import { isRequired, isPhone } from '../../../utils/validators';
 import { checkForMatchInArray, dateToPickerFormat, getURL } from '../../../utils/common';
@@ -171,21 +172,14 @@ export default function AddStockManagement() {
     axios.get(getURL(`inventory-wastages/${uid}`))
       .then((res) => {
         if (res.data) {
-          // console.log(res)
           setSelectedInventoryWastages(res.data.data)
-          setSelectedInventoryWastageInventories(res.data.data.Inventories || [])
+          const modifiedInventories = res.data.data.Inventories.map((inventory) => {
+            inventory.AdjustmentDetails['remainingQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity
+            inventory.AdjustmentDetails['actualAvailableQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity // saving qty before adjustment
+            return inventory
+          })
+          setSelectedInventoryWastageInventories(modifiedInventories || [])
         }
-        // setCustomerId(res.data.data.Inventory.customerId)
-        // setWarehouseId(res.data.data.Inventory.warehouseId)
-        // setAdjustmentsSecondaryArray([{
-        //   product: res.data.data.Inventory.Product,
-        //   availableQuantity: res.data.data.Inventory.availableQuantity,
-        //   reasonType: res.data.data.reasonType,
-        //   comment: res.data.data.comment,
-        //   adjustmentQuantity: res.data.data.adjustmentQuantity
-        // }])
-        // setAvailableQtyForEdit(res.data.data.Inventory.availableQuantity + res.data.data.adjustmentQuantity)
-
       })
       .catch((error) => {
         console.log(error)
@@ -274,7 +268,8 @@ export default function AddStockManagement() {
         customerId: true,
         warehouseId: true,
         productId: true,
-        quantity: true
+        quantity: true,
+        reasonType: true
       });
     }
   }
@@ -322,6 +317,7 @@ export default function AddStockManagement() {
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
     setSelectedInventoryWastageInventories((prevState) => {
+      // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
@@ -355,7 +351,7 @@ export default function AddStockManagement() {
                   <Autocomplete
                     id="customerId"
                     options={customers}
-                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: selectedInventoryWastages.Inventory.Company.id } : ''}
+                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: selectedInventoryWastages.Inventory.Company.id } : <Typography color="error"></Typography>}
                     getOptionLabel={(customer) => customer.name || ""}
                     onChange={(event, newValue) => {
                       if (newValue)
@@ -365,29 +361,17 @@ export default function AddStockManagement() {
                     onBlur={e => setValidation({ ...validation, customerId: true })}
                     disabled={!!selectedInventoryWastages}
                   />
-                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
+                  {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
                 </FormControl>
               }
             </Grid>
             <Grid item sm={6}>
               {
-                // selectedInventoryWastages ?
-                //   <TextField
-                //     fullWidth={true}
-                //     margin="normal"
-                //     id="warehouseId"
-                //     label="Warehouse"
-                //     variant="outlined"
-                //     value={selectedInventoryWastages.Inventory.Warehouse.name}
-                //     disabled={!!selectedInventoryWastages}
-                //   />
-                //   :
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <Autocomplete
                     id="warehouse"
                     key={warehouses} // for reRendering after selecting new company
                     options={warehouses}
-                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Warehouse.name, id: selectedInventoryWastages.Inventory.Warehouse.id } : ''}
                     getOptionLabel={(warehouse) => warehouse.name || ""}
                     onChange={(event, newValue) => {
                       if (newValue)
@@ -397,7 +381,7 @@ export default function AddStockManagement() {
                     onBlur={e => setValidation({ ...validation, warehouseId: true })}
                     disabled={!!selectedInventoryWastages}
                   />
-                  {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+                  {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
                 </FormControl>
               }
 
@@ -421,7 +405,7 @@ export default function AddStockManagement() {
                     onBlur={e => setValidation({ ...validation, productId: true })}
                     disabled={!!selectedInventoryWastages}
                   />
-                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
                 </FormControl>
               </Grid>
               <Grid item sm={4}>
@@ -436,7 +420,7 @@ export default function AddStockManagement() {
                   onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(Math.round(e.target.value)) : setQuantity(Math.round(availableQuantity))}
                   onBlur={e => setValidation({ ...validation, quantity: true })}
                 />
-                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
               <Grid item sm={2}>
                 <TextField
@@ -468,7 +452,6 @@ export default function AddStockManagement() {
                     id="reasonType"
                     key={reasons}
                     options={reasons}
-                    // defaultValue={selectedInventoryWastages ? { name: selectedInventoryWastages.Inventory.Company.name, id: customerId } : ''}
                     getOptionLabel={(reasons) => reasons.name || ""}
                     onChange={(event, newValue) => {
                       if (newValue) {
@@ -480,7 +463,7 @@ export default function AddStockManagement() {
                     onBlur={e => setValidation({ ...validation, reasonType: true })}
                     disabled={!!selectedInventoryWastages}
                   />
-                  {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : ''}
+                  {validation.reasonType && !isRequired(reasonType) ? <Typography color="error">Reason type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
                 </FormControl>
               </Grid>
               <Grid item sm={6}>
@@ -495,6 +478,7 @@ export default function AddStockManagement() {
                   onChange={e => setComment(e.target.value)}
                   disabled={!!selectedInventoryWastages}
                 />
+                {validation.reasonType && !isRequired(reasonType) ? <Typography color="error" style={{ visibility: 'hidden' }}>Reason type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
               <Grid item sm={2}>
                 <Button variant="contained" onClick={updateAdjustmentsTable} color="primary" fullWidth disabled={!!selectedInventoryWastages} >Add</Button>
@@ -656,15 +640,19 @@ export default function AddStockManagement() {
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    AVAILABLE QUANTITY
+                    AVAILABLE QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    ADJUSTED QUANTITY
+                    ADJUSTED QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     UOM
+                  </TableCell>
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    REMAINING QTY
                   </TableCell>
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
@@ -703,11 +691,14 @@ export default function AddStockManagement() {
                             label="Quantity to adjust"
                             variant="outlined"
                             value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
-                            onChange={(e) => handleEdit(e.target.value > inventory.availableQuantity ? inventory.availableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
+                            onChange={(e) => handleEdit(e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ? inventory.AdjustmentDetails.actualAvailableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
                           />
                         </TableCell>
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
                         </TableCell>
                         <TableCell>
                           <FormControl variant="outlined" className={classes.formControl}>

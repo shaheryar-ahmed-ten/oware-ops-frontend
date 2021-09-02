@@ -1,13 +1,8 @@
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   IconButton,
-  TextField,
   Typography,
   TableContainer,
   Table,
@@ -43,7 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadText: {
     background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
-  }
+  },
+  tableRow: {
+    "&:last-child th, &:last-child td": {
+        borderBottom: 0,
+    },
+},
 }));
 
 function InwardProductDetailsView() {
@@ -237,7 +237,7 @@ function InwardProductDetailsView() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow hover role="checkbox">
+              <TableRow hover role="checkbox" className={classes.tableRow}>
                 <TableCell>
                   {selectedProductInward.internalIdForBusiness}
                 </TableCell>

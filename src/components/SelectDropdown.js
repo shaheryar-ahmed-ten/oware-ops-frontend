@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     dropdownListItem: {
-        fontSize: 12,
+        fontSize: 14,
     },
     inputAdronmentStyle: {
         '& .MuiInputAdornment-positionStart': {
