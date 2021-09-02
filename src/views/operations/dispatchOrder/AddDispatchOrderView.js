@@ -262,7 +262,7 @@ export default function AddDispatchOrderView() {
       productId,
       shipmentDate,
       receiverName,
-      receiverPhone : strRecPhone,
+      receiverPhone: strRecPhone,
       referenceId,
       internalIdForBusiness
     }
@@ -334,7 +334,7 @@ export default function AddDispatchOrderView() {
               renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, customerId: true })}
             />
-            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
+            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
         </Grid>
         <Grid item sm={6}>
@@ -351,7 +351,7 @@ export default function AddDispatchOrderView() {
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
             />
-            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
         </Grid>
         <Grid item sm={6}>
@@ -366,28 +366,28 @@ export default function AddDispatchOrderView() {
             onChange={e => setReceiverName(e.target.value)}
             onBlur={e => setValidation({ ...validation, receiverName: true })}
           />
-          {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
+          {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
         <Grid item sm={6}>
-           <MaskedInput
-                  className = "mask-text"
-                  guide ={true}
-                  showMask = {true}
-                  margin="normal"
-                  variant="outlined"
-                  name="phone"
-                  mask={phoneNumberMask}
-                  label="Receiver Phone"
-                  id="receiverPhone"
-                  type="text"
-                  value={receiverPhone}
-                  placeholder="Reciever Phone(e.g 032*-*******)"
-                  onChange={e => {
-                      setReceiverPhone(e.target.value)
-                  }}
-                  onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-            />
-              {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
+          <MaskedInput
+            className="mask-text"
+            guide={true}
+            showMask={true}
+            margin="normal"
+            variant="outlined"
+            name="phone"
+            mask={phoneNumberMask}
+            label="Receiver Phone"
+            id="receiverPhone"
+            type="text"
+            value={receiverPhone}
+            placeholder="Reciever Phone(e.g 032*-*******)"
+            onChange={e => {
+              setReceiverPhone(e.target.value)
+            }}
+            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+          />
+          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           {/* <TextField
             fullWidth={true}
             margin="dense"
@@ -410,7 +410,7 @@ export default function AddDispatchOrderView() {
             margin="dense"
             id="shipmentDate"
             label="Shipment Date"
-            inputProps = {{min: new Date().toISOString().slice(0, 16)}}
+            inputProps={{ min: new Date().toISOString().slice(0, 16) }}
             InputLabelProps={{
               shrink: true,
             }}
@@ -421,7 +421,7 @@ export default function AddDispatchOrderView() {
             onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
             onBlur={e => setValidation({ ...validation, shipmentDate: true })}
           />
-          {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
+          {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
         <Grid item sm={6}>
           <TextField
@@ -435,6 +435,7 @@ export default function AddDispatchOrderView() {
             onChange={e => setReferenceId(e.target.value)}
             inputProps={{ maxLength: 30 }}
           />
+
         </Grid>
 
         <Grid item xs={12}>
@@ -454,7 +455,7 @@ export default function AddDispatchOrderView() {
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, productId: true })}
               />
-              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </FormControl>
           </Grid>
           <Grid item sm={2}>
@@ -471,7 +472,7 @@ export default function AddDispatchOrderView() {
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
-            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item sm={2}>
             <TextField
@@ -484,6 +485,7 @@ export default function AddDispatchOrderView() {
               value={availableQuantity}
               disabled
             />
+            {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item sm={2}>
             <TextField
@@ -496,6 +498,7 @@ export default function AddDispatchOrderView() {
               value={uom}
               disabled
             />
+            {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item sm={2}>
             <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth >Add Dispatch</Button>
