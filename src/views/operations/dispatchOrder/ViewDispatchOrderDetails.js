@@ -6,7 +6,6 @@ import PrintIcon from '@material-ui/icons/Print';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { TableRow } from '@material-ui/core';
 import axios from 'axios';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -27,7 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadText: {
     background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
-  }
+  },
+  tableRow: {
+    "&:last-child th, &:last-child td": {
+      borderBottom: 0,
+    },
+  },
 }));
 
 function ViewDispatchOrderDetails() {
@@ -253,7 +257,7 @@ function ViewDispatchOrderDetails() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
+              <TableRow className={classes.tableRow} className={classes.tableRow}>
                 <TableCell>
                   {selectedDispatchOrder.internalIdForBusiness}
                 </TableCell>
