@@ -329,6 +329,20 @@ export default function AddStockManagement() {
     })
   }
 
+  const removeFromAdjustmentArrayForEdit = (IdOfAdjustmentToBeAltered) => {
+    setSelectedInventoryWastageInventories((prevState) => {
+      // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
+      return [
+        ...selectedInventoryWastageInventories.map((inventory) => {
+          if (inventory.id === IdOfAdjustmentToBeAltered) {
+            inventory.AdjustmentDetails['adjustmentQuantity'] = 0
+          }
+          return inventory
+        })
+      ]
+    })
+  }
+
   return (
     <>
       {formErrors}
@@ -627,7 +641,7 @@ export default function AddStockManagement() {
               </TableHead>
               <TableBody>
                 {
-                  selectedInventoryWastageInventories.map((inventory, idx) => {
+                  selectedInventoryWastageInventories.filter((inventory) => inventory.AdjustmentDetails['adjustmentQuantity'] > 0).map((inventory, idx) => {
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -692,7 +706,8 @@ export default function AddStockManagement() {
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() => {
-                            setSelectedInventoryWastageInventories(selectedInventoryWastageInventories.filter((inventory, _idx) => _idx != idx))
+                            removeFromAdjustmentArrayForEdit(inventory.id)
+                            // setSelectedInventoryWastageInventories(selectedInventoryWastageInventories.filter((inventory, _idx) => _idx != idx))
                           }
                           } />
                         </TableCell>

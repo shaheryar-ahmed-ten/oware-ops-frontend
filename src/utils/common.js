@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import moment from 'moment';
 
-export const apiBaseURL = (process.env.NODE_ENV === 'development' ? 'http://0239-111-119-183-16.ngrok.io' : '') + '/api/v1';
+export const apiBaseURL = (process.env.NODE_ENV === 'development' ? 'http://e218-2400-adc1-12f-ae00-8c5f-96a8-a0ab-4606.ngrok.io' : '') + '/api/v1';
 
 export const getURL = (...args) => {
   return [apiBaseURL, ...Array.from(args)].join('/');
