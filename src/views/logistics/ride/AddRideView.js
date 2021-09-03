@@ -590,7 +590,7 @@ function AddRideView() {
               id="pickupDate"
               label="Pickup Date & Time"
               placeholder="Pickup Date & Time"
-              inputProps = {{min: new Date().toISOString().slice(0, 16)}}
+              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
               type="datetime-local"
               variant="outlined"
               value={pickupDate}
@@ -606,7 +606,7 @@ function AddRideView() {
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
-              inputProps = {{min: new Date().toISOString().slice(0, 16) }}
+              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
@@ -720,7 +720,7 @@ function AddRideView() {
                 type="text"
                 variant="outlined"
                 value={productName}
-                onChange={e => setProductName(e.target.value)}
+                onChange={e => isChar(parseInt(e.target.value)) ? setProductName(e.target.value) : ''}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
               {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
@@ -759,19 +759,19 @@ function AddRideView() {
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Category
-                                        </TableCell>
+                    </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Name
-                                        </TableCell>
+                    </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Quantity
-                                        </TableCell>
+                    </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Manifest
-                                        </TableCell>
+                    </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>

@@ -243,7 +243,7 @@ export default function AddProductInwardView() {
               renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, customerId: true })}
             />
-            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : ''}
+            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
         </Grid>
         <Grid item sm={6}>
@@ -262,7 +262,7 @@ export default function AddProductInwardView() {
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, warehouseId: true })}
             />
-            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
+            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
         </Grid>
         <Grid item sm={12}>
@@ -279,7 +279,7 @@ export default function AddProductInwardView() {
             inputProps={{ maxLength: 30 }}
             onBlur={e => setValidation({ ...validation, referenceId: true })}
           />
-          {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : ''}
+          {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
 
         <Grid item xs={12}>
@@ -299,7 +299,7 @@ export default function AddProductInwardView() {
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
                 onBlur={e => setValidation({ ...validation, productId: true })}
               />
-              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
+              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </FormControl>
           </Grid>
           <Grid item xs={2}>
@@ -312,12 +312,12 @@ export default function AddProductInwardView() {
               variant="outlined"
               value={quantity}
               disabled={viewOnly}
-              onChange={e => setQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              onChange={e => setQuantity(e.target.value < 0 ? e.target.value == 0 : parseInt(Math.round(e.target.value)))}
               onBlur={e => setValidation({ ...validation, quantity: true })}
               InputProps={{ inputProps: { min: 1 } }}
               margin="normal"
             />
-            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
+            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item xs={2}>
             <TextField
@@ -331,6 +331,7 @@ export default function AddProductInwardView() {
               disabled
               margin="normal"
             />
+            {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item xs={2} className={classes.parentContainer}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -357,7 +358,7 @@ export default function AddProductInwardView() {
                 className={classes.tableHeadText}>
                 Quantity
               </TableCell>
-              <TableCell></TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
