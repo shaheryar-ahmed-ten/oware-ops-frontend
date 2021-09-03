@@ -318,12 +318,16 @@ export default function AddStockManagement() {
   // For edit only 
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
+    console.log(isNaN(value) && name === 'adjustmentQuantity')
     setSelectedInventoryWastageInventories((prevState) => {
       // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
-            inventory.AdjustmentDetails[name] = value
+            isNaN(value) && name === 'adjustmentQuantity' ?
+              inventory.AdjustmentDetails[name] = 1
+              :
+              inventory.AdjustmentDetails[name] = value
           }
           return inventory
         })
