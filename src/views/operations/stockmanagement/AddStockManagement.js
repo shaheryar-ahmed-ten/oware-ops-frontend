@@ -454,11 +454,11 @@ export default function AddStockManagement() {
                     id="reasonType"
                     key={reasons}
                     options={reasons}
-                    getOptionLabel={(reasons) => reasons.name || ""}
+                    getOptionLabel={(reasons) => reasons.name.charAt(0).toUpperCase() + reasons.name.slice(1).toLowerCase() || ""}
                     onChange={(event, newValue) => {
                       if (newValue) {
                         setReasonType(newValue.id)
-                        setReasonTypeLabel(newValue.name)
+                        setReasonTypeLabel(newValue.name.charAt(0).toUpperCase() + newValue.name.slice(1).toLowerCase())
                       }
                     }}
                     renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
@@ -671,7 +671,7 @@ export default function AddStockManagement() {
                               {
                                 reasons.map((reason) => {
                                   return (
-                                    <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                                    <MenuItem value={reason.id}>{reason.name.charAt(0).toUpperCase() + reason.name.slice(1).toLowerCase()}</MenuItem>
                                   )
                                 })
                               }
