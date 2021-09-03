@@ -24,6 +24,7 @@ import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import UpdateIcon from '@material-ui/icons/Update';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -329,6 +330,20 @@ export default function AddStockManagement() {
     })
   }
 
+  const removeFromAdjustmentArrayForEdit = (IdOfAdjustmentToBeAltered) => {
+    setSelectedInventoryWastageInventories((prevState) => {
+      // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
+      return [
+        ...selectedInventoryWastageInventories.map((inventory) => {
+          if (inventory.id === IdOfAdjustmentToBeAltered) {
+            inventory.AdjustmentDetails['adjustmentQuantity'] = 0
+          }
+          return inventory
+        })
+      ]
+    })
+  }
+
   return (
     <>
       {formErrors}
@@ -418,7 +433,7 @@ export default function AddStockManagement() {
                   value={quantity}
                   disabled={!!selectedInventoryWastages}
                   onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(Math.round(e.target.value)) : setQuantity(Math.round(availableQuantity))}
-                  onBlur={e => setValidation({ ...validation, quantity: true })}
+                // onBlur={e => setValidation({ ...validation, quantity: true })}
                 />
                 {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
@@ -454,11 +469,11 @@ export default function AddStockManagement() {
                     id="reasonType"
                     key={reasons}
                     options={reasons}
-                    getOptionLabel={(reasons) => reasons.name || ""}
+                    getOptionLabel={(reasons) => reasons.name.charAt(0).toUpperCase() + reasons.name.slice(1).toLowerCase() || ""}
                     onChange={(event, newValue) => {
                       if (newValue) {
                         setReasonType(newValue.id)
-                        setReasonTypeLabel(newValue.name)
+                        setReasonTypeLabel(newValue.name.charAt(0).toUpperCase() + newValue.name.slice(1).toLowerCase())
                       }
                     }}
                     renderInput={(params) => <TextField {...params} label="Reason Type" variant="outlined" />}
@@ -555,60 +570,16 @@ export default function AddStockManagement() {
                         {adjustment.product.name}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <TextField
-                          //     fullWidth={true}
-                          //     id="editAdjustmentQty"
-                          //     label="Quantity to adjust"
-                          //     variant="outlined"
-                          //     value={adjustment.adjustmentQuantity}
-                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'adjustmentQuantity')}
-                          //   />
-                          //   :
-                          adjustment.adjustmentQuantity
-                        }
+                        {adjustment.adjustmentQuantity}
                       </TableCell>
                       <TableCell>
                         {adjustment.product.UOM.name}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <FormControl variant="outlined" className={classes.formControl}>
-                          //     <InputLabel id="reasons">Reason Type</InputLabel>
-                          //     <Select
-                          //       labelId="reasons"
-                          //       id="reasons"
-                          //       value={adjustment.reasonType}
-                          //       onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
-                          //       label="Reason Type"
-                          //     >
-                          //       {
-                          //         reasons.map((reason) => {
-                          //           return (
-                          //             <MenuItem value={reason.id}>{reason.name}</MenuItem>
-                          //           )
-                          //         })
-                          //       }
-                          //     </Select>
-                          //   </FormControl>
-                          //   :
-                          adjustment.reasonType}
+                        {adjustment.reasonType}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <TextField
-                          //     fullWidth={true}
-                          //     id="Comment"
-                          //     label="Comment"
-                          //     variant="outlined"
-                          //     value={adjustment.comment}
-                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'comment')}
-                          //   />
-                          //   :
-                          adjustment.comment}
+                        {adjustment.comment}
                       </TableCell>
                       <TableCell>
                         <DeleteIcon color="error" key="delete" onClick={() => {
@@ -652,10 +623,10 @@ export default function AddStockManagement() {
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     UOM
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     REMAINING QTY
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     REASON
@@ -671,7 +642,7 @@ export default function AddStockManagement() {
               </TableHead>
               <TableBody>
                 {
-                  selectedInventoryWastageInventories.map((inventory, idx) => {
+                  selectedInventoryWastageInventories.filter((inventory) => inventory.AdjustmentDetails['adjustmentQuantity'] > 0).map((inventory, idx) => {
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -684,13 +655,22 @@ export default function AddStockManagement() {
                           {inventory.Product.name || '-'}
                         </TableCell>
                         <TableCell>
-                          {inventory.availableQuantity}
+                          {/* {inventory.availableQuantity} */}
+                          {
+                            isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ?
+                              inventory.availableQuantity
+                              :
+                              <>
+                                {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
+                                <UpdateIcon style={{ transform: 'translateY(7px)translateX(7px)' }} />
+                              </>
+                          }
                         </TableCell>
                         <TableCell>
                           <TextField
                             fullWidth={true}
                             id="editAdjustmentQty"
-                            label="Quantity to adjust"
+                            label="Quantity"
                             variant="outlined"
                             value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
                             onChange={(e) => handleEdit(e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ? inventory.AdjustmentDetails.actualAvailableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
@@ -699,9 +679,9 @@ export default function AddStockManagement() {
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel id="reasons">Reason Type</InputLabel>
@@ -715,7 +695,7 @@ export default function AddStockManagement() {
                               {
                                 reasons.map((reason) => {
                                   return (
-                                    <MenuItem value={reason.id}>{reason.name}</MenuItem>
+                                    <MenuItem value={reason.id}>{reason.name.charAt(0).toUpperCase() + reason.name.slice(1).toLowerCase()}</MenuItem>
                                   )
                                 })
                               }
@@ -735,7 +715,8 @@ export default function AddStockManagement() {
                         </TableCell>
                         <TableCell>
                           <DeleteIcon color="error" key="delete" onClick={() => {
-                            setSelectedInventoryWastageInventories(selectedInventoryWastageInventories.filter((inventory, _idx) => _idx != idx))
+                            removeFromAdjustmentArrayForEdit(inventory.id)
+                            // setSelectedInventoryWastageInventories(selectedInventoryWastageInventories.filter((inventory, _idx) => _idx != idx))
                           }
                           } />
                         </TableCell>

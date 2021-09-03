@@ -97,7 +97,7 @@ function InwardProductDetailsView() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                Customer Name :
+                Company Name :
               </Box>
             </Grid>
             <Grid item xs={6}>

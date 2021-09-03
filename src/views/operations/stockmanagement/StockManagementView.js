@@ -12,6 +12,8 @@ import {
   TableRow,
   InputBase,
   IconButton,
+  Backdrop,
+  Typography
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -70,12 +72,31 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center'
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+  backdropGrid: {
+    backgroundColor: 'white',
+    padding: '18px 18px',
+    boxSizing: 'border-box',
+    borderRadius: '4px',
+    color: 'black'
+  },
+  backdropTitle: {
+    fontSize: 24,
+    marginBottom: 18
+  },
+  backdropAgreeButton: {
+    marginLeft: 10
+  }
 }));
 
 
 export default function StockManagementView() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [openBackdrop, setOpenBackdrop] = useState(false);
   const columns = [
     {
       id: 'internalIdForBusiness',
@@ -93,7 +114,7 @@ export default function StockManagementView() {
     },
     {
       id: 'Inventory.Product.name',
-      label: 'PRODUCTS',
+      label: 'NUMBER OF PRODUCTS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) => entity.Inventories.length || ''
@@ -105,47 +126,6 @@ export default function StockManagementView() {
       className: '',
       format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`
     },
-    // {
-    //   id: 'Inventory.Company.name',
-    //   label: 'COMPANY',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Inventory.Company.name
-    // },
-    // {
-    //   id: 'Inventory.Warehouse.name',
-    //   label: 'WAREHOUSE',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Inventories[0].Warehouse.name || ''
-    // },
-
-    // {
-    //   id: 'availableQuantity',
-    //   label: 'AVAILABLE QTY (After Adjustment)',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Inventory.availableQuantity
-    // },
-    // {
-    //   id: 'adjustmentQuantity',
-    //   label: 'ADJUSTMENT QTY',
-    //   minWidth: 'auto',
-    //   className: '',
-    // },
-    // {
-    //   id: 'reasonType',
-    //   label: 'REASON',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.WastagesType.name
-    // },
-    // {
-    //   id: 'comment',
-    //   label: 'COMMENT',
-    //   minWidth: 'auto',
-    //   className: '',
-    // },
     {
       id: 'actions',
       label: 'ACTIONS',
@@ -167,9 +147,22 @@ export default function StockManagementView() {
               style={{ cursor: 'pointer' }}
             />
           </IconButton>,
-          <IconButton>
-            <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} onClick={() => deleteAdjustment(entity.id)} />
-          </IconButton>
+          <IconButton onClick={() => setOpenBackdrop(true)}>
+            <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} />
+          </IconButton>,
+          <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
+            <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
+              <Grid item xs={12}>
+                <Typography className={classes.backdropTitle}>Are you sure to delete this adjustment ?</Typography>
+                <Button autoFocus variant="contained"  >
+                  Disagree
+                </Button>
+                <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => deleteAdjustment(entity.id)}>
+                  Agreed
+                </Button>
+              </Grid>
+            </Grid>
+          </Backdrop>
         ]
     }];
   const [pageCount, setPageCount] = useState(1);
@@ -301,68 +294,59 @@ export default function StockManagementView() {
   const headerButtons = [daysSelect, searchInput, addStockMangementButton];
 
   return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <TableHeader title="Stock Adjustment" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table" >
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {inventoryWastages.map((inventoryWastage) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
-                  {columns.map((column) => {
-                    const value = inventoryWastage[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}
-                        className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                        {column.format ? column.format(value, inventoryWastage) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Grid container justify="space-between">
-        <Grid item></Grid>
-        <Grid item>
-          <Pagination
-            component="div"
-            shape="rounded"
-            count={pageCount}
-            color="primary"
-            page={page}
-            className={classes.pagination}
-            onChange={(e, page) => setPage(page)}
-          />
+    <>
+      <Paper className={classes.root}>
+        <TableContainer className={classes.container}>
+          <TableHeader title="Stock Adjustment" buttons={headerButtons} />
+          <Table stickyHeader aria-label="sticky table" >
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {inventoryWastages.map((inventoryWastage) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                    {columns.map((column) => {
+                      const value = inventoryWastage[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}
+                          className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                          {column.format ? column.format(value, inventoryWastage) : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Grid container justify="space-between">
+          <Grid item></Grid>
+          <Grid item>
+            <Pagination
+              component="div"
+              shape="rounded"
+              count={pageCount}
+              color="primary"
+              page={page}
+              className={classes.pagination}
+              onChange={(e, page) => setPage(page)}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-      <MessageSnackbar showMessage={showMessage} />
-    </Paper>
+        <MessageSnackbar showMessage={showMessage} />
+      </Paper>
+    </>
   );
 }
-                // <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
-                //   {columns.map((column) => {
-                //     const value = inventoryWastage[column.id];
-                //     return (
-                //       <TableCell key={column.id} align={column.align}
-                //         className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                //         {column.format ? column.format(value, inventoryWastage) : value}
-                //       </TableCell>
-                //     );
-                //   })}
-                // </TableRow>
