@@ -82,6 +82,13 @@ const useStyles = makeStyles(theme => ({
     boxSizing: 'border-box',
     borderRadius: '4px',
     color: 'black'
+  },
+  backdropTitle: {
+    fontSize: 24,
+    marginBottom: 18
+  },
+  backdropAgreeButton: {
+    marginLeft: 10
   }
 }));
 
@@ -89,7 +96,7 @@ const useStyles = makeStyles(theme => ({
 export default function StockManagementView() {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [openBackdrop, setOpenBackdrop] = useState(true);
+  const [openBackdrop, setOpenBackdrop] = useState(false);
   const columns = [
     {
       id: 'internalIdForBusiness',
@@ -142,29 +149,22 @@ export default function StockManagementView() {
           </IconButton>,
           <IconButton onClick={() => setOpenBackdrop(true)}>
             <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} />
-            <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
-              <Grid container xs={4} className={classes.backdropGrid}>
-                <Grid item xs={12}>
-                  <Typography>Are you sure to delete this item?</Typography>
-                </Grid>
-                <Grid container item xs={12} justifyContent="flex-end">
-                  <Grid item>
-                    <Button autoFocus variant="contained"  >
-                      Disagree
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained" color="primary">
-                      Agree
-                    </Button>
-                  </Grid>
-                </Grid>
+          </IconButton>,
+          <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
+            <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
+              <Grid item xs={12}>
+                <Typography className={classes.backdropTitle}>Are you sure to delete this adjustment ?</Typography>
+                <Button autoFocus variant="contained"  >
+                  Disagree
+                </Button>
+                <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => deleteAdjustment(entity.id)}>
+                  Agreed
+                </Button>
               </Grid>
-            </Backdrop>
-          </IconButton>
+            </Grid>
+          </Backdrop>
         ]
     }];
-  // onClick={() => deleteAdjustment(entity.id)}
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [inventoryWastages, setInventoryWastages] = useState([]);
