@@ -318,15 +318,14 @@ export default function AddStockManagement() {
   // For edit only 
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
+    if (isNaN(value) && name === 'adjustmentQuantity')
+      value = 0
     setSelectedInventoryWastageInventories((prevState) => {
       // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
-            isNaN(value) && name === 'adjustmentQuantity' ?
-              inventory.AdjustmentDetails[name] = 1
-              :
-              inventory.AdjustmentDetails[name] = value
+            inventory.AdjustmentDetails[name] = value
           }
           return inventory
         })
@@ -646,7 +645,7 @@ export default function AddStockManagement() {
               </TableHead>
               <TableBody>
                 {
-                  selectedInventoryWastageInventories.filter((inventory) => inventory.AdjustmentDetails['adjustmentQuantity'] > 0).map((inventory, idx) => {
+                  selectedInventoryWastageInventories.map((inventory, idx) => {
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -676,8 +675,13 @@ export default function AddStockManagement() {
                             id="editAdjustmentQty"
                             label="Quantity"
                             variant="outlined"
-                            value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
-                            onChange={(e) => handleEdit(e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ? inventory.AdjustmentDetails.actualAvailableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
+                            value={inventory.AdjustmentDetails.adjustmentQuantity || 0}
+                            onChange={(e) => handleEdit(
+                              e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ?
+                                inventory.AdjustmentDetails.actualAvailableQuantity
+                                :
+                                parseInt(e.target.value),
+                              inventory.id, 'adjustmentQuantity')}
                           />
                         </TableCell>
                         <TableCell>
