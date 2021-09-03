@@ -114,7 +114,7 @@ export default function StockManagementView() {
     },
     {
       id: 'Inventory.Product.name',
-      label: 'NUMBER OF PRODUCTS',
+      label: 'NO. OF PRODUCTS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) => entity.Inventories.length || ''

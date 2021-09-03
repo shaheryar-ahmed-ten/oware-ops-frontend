@@ -75,7 +75,7 @@ function ViewStockManagementDetails() {
         },
         {
             id: 'productName',
-            label: 'PRODUCT',
+            label: 'PRODUCTS',
             minWidth: 'auto',
             className: '',
             format: (value, inventory) => inventory.Product.name
@@ -160,38 +160,38 @@ function ViewStockManagementDetails() {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell
-                                            className={classes.tableHeadText}>ADJUSTMENT DATE
-                                        </TableCell>
-                                        <TableCell
                                             className={classes.tableHeadText}>ADJUSTMENT ID
                                         </TableCell>
                                         <TableCell
-                                            className={classes.tableHeadText}>ADJUSTED BY
+                                            className={classes.tableHeadText}>ADJUSTMENT DATE
                                         </TableCell>
                                         {/* <TableCell
                                             className={classes.tableHeadText}>CITY
                                         </TableCell> */}
                                         <TableCell
-                                            className={classes.tableHeadText}>NUMBER OF PRODUCTS
+                                            className={classes.tableHeadText}>NO. OF PRODUCTS
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.tableHeadText}>ADJUSTED BY
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow className={classes.tableRow}>
                                         <TableCell>
-                                            {dateFormat(selectedInventoryWastages.updatedAt)}
-                                        </TableCell>
-                                        <TableCell>
                                             {selectedInventoryWastages.internalIdForBusiness}
                                         </TableCell>
                                         <TableCell>
-                                            {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
+                                            {dateFormat(selectedInventoryWastages.updatedAt)}
                                         </TableCell>
                                         {/* <TableCell>
                                             {selectedInventoryWastages.Inventories[0].Warehouse.city}
                                         </TableCell> */}
                                         <TableCell>
                                             {selectedInventoryWastages.Inventories.length}
+                                        </TableCell>
+                                        <TableCell>
+                                            {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
@@ -254,19 +254,19 @@ function ViewStockManagementDetails() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell
-                                        className={classes.tableHeadText}>ADJUSTMENT DATE
-                                    </TableCell>
-                                    <TableCell
                                         className={classes.tableHeadText}>ADJUSTMENT ID
                                     </TableCell>
                                     <TableCell
-                                        className={classes.tableHeadText}>ADJUSTED BY
+                                        className={classes.tableHeadText}>ADJUSTMENT DATE
                                     </TableCell>
                                     {/* <TableCell
-                                        className={classes.tableHeadText}>CITY
-                                    </TableCell> */}
+                                            className={classes.tableHeadText}>CITY
+                                        </TableCell> */}
                                     <TableCell
-                                        className={classes.tableHeadText}>NUMBER OF PRODUCTS
+                                        className={classes.tableHeadText}>NO. OF PRODUCTS
+                                    </TableCell>
+                                    <TableCell
+                                        className={classes.tableHeadText}>ADJUSTED BY
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
