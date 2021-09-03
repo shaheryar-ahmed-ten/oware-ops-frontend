@@ -155,10 +155,10 @@ export default function StockManagementView() {
               <Grid item xs={12}>
                 <Typography className={classes.backdropTitle}>Are you sure to delete this adjustment ?</Typography>
                 <Button autoFocus variant="contained"  >
-                  Disagree
+                  Cancel
                 </Button>
                 <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => deleteAdjustment(entity.id)}>
-                  Agreed
+                  Confirm
                 </Button>
               </Grid>
             </Grid>
