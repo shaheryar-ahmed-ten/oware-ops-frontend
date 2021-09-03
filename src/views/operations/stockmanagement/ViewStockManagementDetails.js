@@ -82,7 +82,7 @@ function ViewStockManagementDetails() {
         },
         {
             id: 'availableQty',
-            label: 'ADJUSTMENT QUANTITY',
+            label: 'ADJUSTMENT QTY',
             minWidth: 'auto',
             className: '',
             format: (value, inventory) => inventory.AdjustmentDetails.adjustmentQuantity
