@@ -25,6 +25,7 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import UpdateIcon from '@material-ui/icons/Update';
+import NewReleasesOutlinedIcon from '@material-ui/icons/NewReleasesOutlined';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -662,7 +663,7 @@ export default function AddStockManagement() {
                               :
                               <>
                                 {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                                <UpdateIcon style={{ transform: 'translateY(7px)translateX(7px)' }} />
+                                <NewReleasesOutlinedIcon style={{ transform: 'translateY(7px)translateX(7px)' }} />
                               </>
                           }
                         </TableCell>
