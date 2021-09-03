@@ -179,6 +179,7 @@ export default function AddStockManagement() {
           const modifiedInventories = res.data.data.Inventories.map((inventory) => {
             inventory.AdjustmentDetails['remainingQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity
             inventory.AdjustmentDetails['actualAvailableQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity // saving qty before adjustment
+            inventory.AdjustmentDetails['dirtyData'] = false
             return inventory
           })
           setSelectedInventoryWastageInventories(modifiedInventories || [])
@@ -319,14 +320,19 @@ export default function AddStockManagement() {
   // For edit only 
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
-    if (isNaN(value) && name === 'adjustmentQuantity')
+    if (isNaN(value) && name === 'adjustmentQuantity') {
       value = 0
+    }
     setSelectedInventoryWastageInventories((prevState) => {
       // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
             inventory.AdjustmentDetails[name] = value
+            name === 'adjustmentQuantity' ?
+              inventory.AdjustmentDetails['dirtyData'] = true
+              :
+              inventory.AdjustmentDetails['dirtyData'] = false
           }
           return inventory
         })
@@ -341,6 +347,7 @@ export default function AddStockManagement() {
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
             inventory.AdjustmentDetails['adjustmentQuantity'] = 0
+            inventory.AdjustmentDetails['softDelete'] = true
           }
           return inventory
         })
@@ -646,7 +653,7 @@ export default function AddStockManagement() {
               </TableHead>
               <TableBody>
                 {
-                  selectedInventoryWastageInventories.map((inventory, idx) => {
+                  selectedInventoryWastageInventories.filter((inventory) => !inventory.AdjustmentDetails['softDelete']).map((inventory, idx) => {
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -666,7 +673,12 @@ export default function AddStockManagement() {
                               :
                               <>
                                 {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                                <PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />
+                                {
+                                  inventory.AdjustmentDetails['dirtyData'] ?
+                                    <PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />
+                                    :
+                                    null
+                                }
                               </>
                           }
                         </TableCell>
