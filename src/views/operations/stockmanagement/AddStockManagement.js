@@ -418,7 +418,7 @@ export default function AddStockManagement() {
                   value={quantity}
                   disabled={!!selectedInventoryWastages}
                   onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(Math.round(e.target.value)) : setQuantity(Math.round(availableQuantity))}
-                  onBlur={e => setValidation({ ...validation, quantity: true })}
+                // onBlur={e => setValidation({ ...validation, quantity: true })}
                 />
                 {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
@@ -555,60 +555,16 @@ export default function AddStockManagement() {
                         {adjustment.product.name}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <TextField
-                          //     fullWidth={true}
-                          //     id="editAdjustmentQty"
-                          //     label="Quantity to adjust"
-                          //     variant="outlined"
-                          //     value={adjustment.adjustmentQuantity}
-                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'adjustmentQuantity')}
-                          //   />
-                          //   :
-                          adjustment.adjustmentQuantity
-                        }
+                        {adjustment.adjustmentQuantity}
                       </TableCell>
                       <TableCell>
                         {adjustment.product.UOM.name}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <FormControl variant="outlined" className={classes.formControl}>
-                          //     <InputLabel id="reasons">Reason Type</InputLabel>
-                          //     <Select
-                          //       labelId="reasons"
-                          //       id="reasons"
-                          //       value={adjustment.reasonType}
-                          //       onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'reasonType')}
-                          //       label="Reason Type"
-                          //     >
-                          //       {
-                          //         reasons.map((reason) => {
-                          //           return (
-                          //             <MenuItem value={reason.id}>{reason.name}</MenuItem>
-                          //           )
-                          //         })
-                          //       }
-                          //     </Select>
-                          //   </FormControl>
-                          //   :
-                          adjustment.reasonType}
+                        {adjustment.reasonType}
                       </TableCell>
                       <TableCell>
-                        {
-                          // selectedInventoryWastages ?
-                          //   <TextField
-                          //     fullWidth={true}
-                          //     id="Comment"
-                          //     label="Comment"
-                          //     variant="outlined"
-                          //     value={adjustment.comment}
-                          //     onChange={e => handleEditAdjustmentQtyForEdit(e, adjustmentsSecondaryArray[idx], 'comment')}
-                          //   />
-                          //   :
-                          adjustment.comment}
+                        {adjustment.comment}
                       </TableCell>
                       <TableCell>
                         <DeleteIcon color="error" key="delete" onClick={() => {
