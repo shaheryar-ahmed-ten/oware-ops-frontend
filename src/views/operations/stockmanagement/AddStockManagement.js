@@ -24,6 +24,7 @@ import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import UpdateIcon from '@material-ui/icons/Update';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -655,13 +656,21 @@ export default function AddStockManagement() {
                         </TableCell>
                         <TableCell>
                           {/* {inventory.availableQuantity} */}
-                          {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
+                          {
+                            isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ?
+                              inventory.availableQuantity
+                              :
+                              <>
+                                {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
+                                <UpdateIcon style={{ transform: 'translateY(7px)translateX(7px)' }} />
+                              </>
+                          }
                         </TableCell>
                         <TableCell>
                           <TextField
                             fullWidth={true}
                             id="editAdjustmentQty"
-                            label="Quantity to adjust"
+                            label="Quantity"
                             variant="outlined"
                             value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
                             onChange={(e) => handleEdit(e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ? inventory.AdjustmentDetails.actualAvailableQuantity : parseInt(e.target.value), inventory.id, 'adjustmentQuantity')}
