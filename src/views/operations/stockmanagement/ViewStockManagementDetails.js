@@ -99,18 +99,18 @@ function ViewStockManagementDetails() {
             label: 'REASON',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => inventory.AdjustmentDetails.WastagesType.name
+            format: (value, inventory) => inventory.AdjustmentDetails && inventory.AdjustmentDetails.WastagesType ? inventory.AdjustmentDetails.WastagesType.name.charAt(0).toUpperCase() + inventory.AdjustmentDetails.WastagesType.name.slice(1).toLowerCase() : ''
         },
         {
             id: 'comment',
             label: 'COMMENT',
             minWidth: 'auto',
             className: '',
-            format: (value, inventory) => {
+            format: (value, inventory, print) => {
                 return (
-                    <Tooltip title={`${inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment + inventory.AdjustmentDetails.comment}`} classes={{ tooltip: classes.customWidth }} arrow>
+                    <Tooltip title={`${inventory.AdjustmentDetails.comment}`} classes={{ tooltip: classes.customWidth }} arrow>
                         <Typography>
-                            {`${inventory.AdjustmentDetails.comment.substring(0, 20)}...` || '-'}
+                            {inventory.AdjustmentDetails.comment.length > 20 && !print ? `${inventory.AdjustmentDetails.comment.substring(0, 20)}...` || '-' : inventory.AdjustmentDetails.comment || '-'}
                         </Typography>
                     </Tooltip>
                 )
@@ -168,11 +168,11 @@ function ViewStockManagementDetails() {
                                         <TableCell
                                             className={classes.tableHeadText}>ADJUSTED BY
                                         </TableCell>
-                                        <TableCell
+                                        {/* <TableCell
                                             className={classes.tableHeadText}>CITY
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell
-                                            className={classes.tableHeadText}>PRODUCTS
+                                            className={classes.tableHeadText}>NUMBER OF PRODUCTS
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -187,9 +187,9 @@ function ViewStockManagementDetails() {
                                         <TableCell>
                                             {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
                                         </TableCell>
-                                        <TableCell>
+                                        {/* <TableCell>
                                             {selectedInventoryWastages.Inventories[0].Warehouse.city}
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell>
                                             {selectedInventoryWastages.Inventories.length}
                                         </TableCell>
@@ -226,7 +226,7 @@ function ViewStockManagementDetails() {
                                                         return (
                                                             <TableCell key={column.id} align={column.align}
                                                                 className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                                                                {column.format ? column.format(value, inventoryWastage) : value}
+                                                                {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
                                                             </TableCell>
                                                         );
                                                     })}
@@ -262,11 +262,11 @@ function ViewStockManagementDetails() {
                                     <TableCell
                                         className={classes.tableHeadText}>ADJUSTED BY
                                     </TableCell>
-                                    <TableCell
+                                    {/* <TableCell
                                         className={classes.tableHeadText}>CITY
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell
-                                        className={classes.tableHeadText}>PRODUCTS
+                                        className={classes.tableHeadText}>NUMBER OF PRODUCTS
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
@@ -281,9 +281,9 @@ function ViewStockManagementDetails() {
                                     <TableCell>
                                         {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         {selectedInventoryWastages.Inventories[0].Warehouse.city}
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell>
                                         {selectedInventoryWastages.Inventories.length}
                                     </TableCell>

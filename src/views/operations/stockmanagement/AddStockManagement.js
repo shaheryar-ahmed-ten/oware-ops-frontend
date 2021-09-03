@@ -608,10 +608,10 @@ export default function AddStockManagement() {
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     UOM
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     REMAINING QTY
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                     REASON
@@ -640,7 +640,8 @@ export default function AddStockManagement() {
                           {inventory.Product.name || '-'}
                         </TableCell>
                         <TableCell>
-                          {inventory.availableQuantity}
+                          {/* {inventory.availableQuantity} */}
+                          {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
                         </TableCell>
                         <TableCell>
                           <TextField
@@ -655,9 +656,9 @@ export default function AddStockManagement() {
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel id="reasons">Reason Type</InputLabel>
