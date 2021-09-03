@@ -318,7 +318,6 @@ export default function AddStockManagement() {
   // For edit only 
   // For udpating the values of individual adjustment
   const handleEdit = (value, IdOfAdjustmentToBeAltered, name) => {
-    console.log(isNaN(value) && name === 'adjustmentQuantity')
     setSelectedInventoryWastageInventories((prevState) => {
       // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
@@ -667,7 +666,7 @@ export default function AddStockManagement() {
                               :
                               <>
                                 {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                                <NewReleasesOutlinedIcon style={{ transform: 'translateY(7px)translateX(7px)' }} />
+                                <NewReleasesOutlinedIcon style={{ transform: 'translateY(7px)translateX(7px)', color: 'red' }} />
                               </>
                           }
                         </TableCell>
