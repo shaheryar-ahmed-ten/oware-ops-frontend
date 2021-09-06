@@ -235,9 +235,14 @@ export default function AddStockManagement() {
       isRequired(quantity)) {
       // checking if particular product is already added once
       // if yes
-      if (checkForMatchInArray(adjustments, "productId", productId) && checkForMatchInArray(adjustments, "customerId", customerId)) {
+      if (checkForMatchInArray(adjustments, "productId", productId)
+        &&
+        checkForMatchInArray(adjustments, "customerId", customerId)
+        &&
+        checkForMatchInArray(adjustments, "warehouseId", warehouseId)
+      ) {
         setMessageType('#FFCC00')
-        setShowMessage({ message: "This product is already added for this company, please choose a different product or company." })
+        setShowMessage({ message: "This product is already added for this company from this warehouse, please choose a different product/company/warehouse." })
       }
       // if no
       else {

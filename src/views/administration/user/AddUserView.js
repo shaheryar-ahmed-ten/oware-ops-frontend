@@ -17,6 +17,7 @@ import {
 import { SharedContext } from '../../../utils/common';
 import { checkPermission } from '../../../utils/auth';
 import { isRequired, isEmail, isUsername, isPhone, isChar } from '../../../utils/validators';
+import MaskedInput from 'react-text-mask';
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
   const [filteredRoles, setFilteredRoles] = useState([]);
@@ -72,7 +73,6 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   }
 
   const handleSubmit = e => {
-
     const newUser = {
       firstName,
       lastName,
@@ -80,7 +80,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       email,
       roleId,
       companyId,
-      phone,
+      phone:phone.replace('-',''),
       isActive,
       password
     }
@@ -96,6 +96,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       email: true,
       password: !!selectedUser
     });
+
     if (isRequired(firstName) &&
       isRequired(lastName) &&
       isRequired(portal) &&
@@ -103,11 +104,25 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       (portal != 'CUSTOMER' || isRequired(companyId)) &&
       isUsername(username) &&
       (!!selectedUser || isRequired(password)) &&
-      isEmail(email) &&
-      isPhone(phone)) {
+      isEmail(email)) {
       addUser(newUser);
     }
   }
+
+  const phoneNumberMask = [
+    /[0-9]/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/
+  ];
 
   return (
     <div style={{ display: "inline" }}>
@@ -250,7 +265,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 </Grid>
                 : ''}
               <Grid item sm={12}>
-                <TextField
+                {/* <TextField
                   fullWidth={true}
                   margin="dense"
                   id="phone"
@@ -260,9 +275,27 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   onBlur={e => setValidation({ ...validation, phone: true })}
+                /> */}
+                <MaskedInput
+                  className="mask-text"
+                  guide={false}
+                  showMask={true}
+                  margin="dense"
+                  variant="outlined"
+                  name="phone"
+                  mask={phoneNumberMask}
+                  label="Phone"
+                  id="Phone"
+                  type="text"
+                  value={phone}
+                  placeholder="Phone ( 032*-******* )"
+                  onChange={e => {
+                    setPhone(e.target.value)
+                  }}
+                  onBlur={e => setValidation({ ...validation, phone: true })}
                 />
                 {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
-                {validation.phone && !isPhone(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                {/* {validation.phone && !isRequired(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''} */}
               </Grid>
               <Grid item sm={12}>
                 <TextField
