@@ -688,7 +688,7 @@ export default function AddStockManagement() {
                             id="editAdjustmentQty"
                             label="Quantity"
                             variant="outlined"
-                            value={inventory.AdjustmentDetails.adjustmentQuantity || 0}
+                            value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
                             onChange={(e) => handleEdit(
                               e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ?
                                 inventory.AdjustmentDetails.actualAvailableQuantity
