@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 14,
     display: 'table-cell',
     // justifyContent: 'center',
-    textAlign:'center'
+    textAlign: 'center'
     // alignItems: 'center'
   },
 }));
@@ -95,16 +95,16 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
   },
-  {
-    id: 'Inventory.Warehouse.city',
-    label: 'CITY',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Warehouse.city
-  },
+  // {
+  //   id: 'Inventory.Warehouse.city',
+  //   label: 'CITY',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Warehouse.city
+  // },
   {
     id: 'Inventories.length',
-    label: 'PRODUCTS',
+    label: 'NO. OF PRODUCTS',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventories.length
@@ -266,7 +266,7 @@ export default function DispatchOrderView() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' ,textAlign: 'center'}}
+                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px', textAlign: 'center' }}
                 >
                   {column.label}
                 </TableCell>

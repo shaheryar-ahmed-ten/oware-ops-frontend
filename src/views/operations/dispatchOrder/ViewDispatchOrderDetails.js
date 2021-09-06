@@ -237,7 +237,7 @@ function ViewDispatchOrderDetails() {
                   className={classes.tableHeadText}>CITY
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>PRODUCTS
+                  className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>REFERENCE ID

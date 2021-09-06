@@ -197,6 +197,7 @@ function InwardProductDetailsView() {
           </Grid>
         </Box>
       </Box>
+      
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
@@ -226,7 +227,7 @@ function InwardProductDetailsView() {
                   className={classes.tableHeadText}>Warehouse
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Products
+                  className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>Reference Id
