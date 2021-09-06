@@ -1,7 +1,11 @@
 import { createContext } from "react";
 import moment from 'moment';
 
+<<<<<<< Updated upstream
 export const apiBaseURL = (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '') + '/api/v1';
+=======
+export const apiBaseURL = (process.env.NODE_ENV === 'development' ? 'http://localhost:4001' : '') + '/api/v1';
+>>>>>>> Stashed changes
 
 export const getURL = (...args) => {
   return [apiBaseURL, ...Array.from(args)].join('/');
