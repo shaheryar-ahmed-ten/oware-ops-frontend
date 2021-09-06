@@ -23,9 +23,7 @@ import { TableContainer } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation, useNavigate, useParams } from 'react-router';
-import UpdateIcon from '@material-ui/icons/Update';
-import NewReleasesOutlinedIcon from '@material-ui/icons/NewReleasesOutlined';
+import { useNavigate, useParams } from 'react-router';
 import PriorityHighOutlinedIcon from '@material-ui/icons/PriorityHighOutlined';
 
 const useStyles = makeStyles((theme) => ({
@@ -74,7 +72,6 @@ export default function AddStockManagement() {
   const [reasonTypeLabel, setReasonTypeLabel] = useState('') // selcted reason label for adding
 
   const [selectedInventoryWastageInventories, setSelectedInventoryWastageInventories] = useState([]) // only for edit, to list all the inventories for edition
-  const [adjustmentsArrayForEdit, setAjustmentsArrayForEdit] = useState([]) // for edit only.
 
   useEffect(() => {
     getReasonsType()
@@ -177,9 +174,10 @@ export default function AddStockManagement() {
         if (res.data) {
           setSelectedInventoryWastages(res.data.data)
           const modifiedInventories = res.data.data.Inventories.map((inventory) => {
-            inventory.AdjustmentDetails['remainingQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity
-            inventory.AdjustmentDetails['actualAvailableQuantity'] = inventory.availableQuantity + inventory.AdjustmentDetails.adjustmentQuantity // saving qty before adjustment
-            inventory.AdjustmentDetails['dirtyData'] = false
+            // shifting to adjustment inventory
+            inventory.AdjustmentInventory['remainingQuantity'] = inventory.availableQuantity + inventory.AdjustmentInventory.adjustmentQuantity
+            inventory.AdjustmentInventory['actualAvailableQuantity'] = inventory.availableQuantity + inventory.AdjustmentInventory.adjustmentQuantity // saving qty before adjustment
+            inventory.AdjustmentInventory['dirtyData'] = false
             return inventory
           })
           setSelectedInventoryWastageInventories(modifiedInventories || [])
@@ -306,7 +304,7 @@ export default function AddStockManagement() {
     const adjustment_products = []
 
     selectedInventoryWastageInventories.forEach(inventory => {
-      const { reason, comment, adjustmentQuantity } = inventory.AdjustmentDetails;
+      const { reason, comment, adjustmentQuantity } = inventory.AdjustmentInventory;
       const { id, availableQuantity } = inventory
       adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
     });
@@ -314,7 +312,6 @@ export default function AddStockManagement() {
     const adjustmentsObject = {
       adjustment_products
     }
-    // console.log(adjustmentsObject);
     addAdjustments(adjustmentsObject);
   }
 
@@ -333,11 +330,11 @@ export default function AddStockManagement() {
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
-            inventory.AdjustmentDetails[name] = value
+            inventory.AdjustmentInventory[name] = value
             name === 'adjustmentQuantity' ?
-              inventory.AdjustmentDetails['dirtyData'] = true
+              inventory.AdjustmentInventory['dirtyData'] = true
               :
-              inventory.AdjustmentDetails['dirtyData'] = false
+              inventory.AdjustmentInventory['dirtyData'] = false
           }
           return inventory
         })
@@ -351,8 +348,8 @@ export default function AddStockManagement() {
       return [
         ...selectedInventoryWastageInventories.map((inventory) => {
           if (inventory.id === IdOfAdjustmentToBeAltered) {
-            inventory.AdjustmentDetails['adjustmentQuantity'] = 0
-            inventory.AdjustmentDetails['softDelete'] = true
+            inventory.AdjustmentInventory['adjustmentQuantity'] = 0
+            inventory.AdjustmentInventory['softDelete'] = true
           }
           return inventory
         })
@@ -658,7 +655,7 @@ export default function AddStockManagement() {
               </TableHead>
               <TableBody>
                 {
-                  selectedInventoryWastageInventories.filter((inventory) => !inventory.AdjustmentDetails['softDelete']).map((inventory, idx) => {
+                  selectedInventoryWastageInventories.filter((inventory) => !inventory.AdjustmentInventory['softDelete']).map((inventory, idx) => {
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -673,13 +670,13 @@ export default function AddStockManagement() {
                         <TableCell>
                           {/* {inventory.availableQuantity} */}
                           {
-                            isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ?
+                            isNaN(inventory.AdjustmentInventory.remainingQuantity - inventory.AdjustmentInventory.adjustmentQuantity) ?
                               inventory.availableQuantity
                               :
                               <>
-                                {inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
+                                {inventory.AdjustmentInventory.remainingQuantity - inventory.AdjustmentInventory.adjustmentQuantity}
                                 {
-                                  inventory.AdjustmentDetails['dirtyData'] ?
+                                  inventory.AdjustmentInventory['dirtyData'] ?
                                     <PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />
                                     :
                                     null
@@ -693,10 +690,10 @@ export default function AddStockManagement() {
                             id="editAdjustmentQty"
                             label="Quantity"
                             variant="outlined"
-                            value={inventory.AdjustmentDetails.adjustmentQuantity || ''}
+                            value={inventory.AdjustmentInventory.adjustmentQuantity || ''}
                             onChange={(e) => handleEdit(
-                              e.target.value > inventory.AdjustmentDetails.actualAvailableQuantity ?
-                                inventory.AdjustmentDetails.actualAvailableQuantity
+                              e.target.value > inventory.AdjustmentInventory.actualAvailableQuantity ?
+                                inventory.AdjustmentInventory.actualAvailableQuantity
                                 :
                                 parseInt(e.target.value),
                               inventory.id, 'adjustmentQuantity')}
@@ -705,16 +702,14 @@ export default function AddStockManagement() {
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
                         </TableCell>
-                        {/* <TableCell>
-                          {isNaN(inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity) ? inventory.availableQuantity : inventory.AdjustmentDetails.remainingQuantity - inventory.AdjustmentDetails.adjustmentQuantity}
-                        </TableCell> */}
+
                         <TableCell>
                           <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel id="reasons">Reason Type</InputLabel>
                             <Select
                               labelId="reasons"
                               id="reasons"
-                              value={inventory.AdjustmentDetails.reason || '0'}
+                              value={inventory.AdjustmentInventory.reason || '0'}
                               onChange={(e) => handleEdit(e.target.value, inventory.id, 'reason')}
                               label="Reason Type"
                             >
@@ -736,7 +731,7 @@ export default function AddStockManagement() {
                             label="Comment"
                             variant="outlined"
                             InputProps={{ inputProps: { maxLength: 300 } }}
-                            value={inventory.AdjustmentDetails.comment || ''}
+                            value={inventory.AdjustmentInventory.comment || ''}
                             onChange={(e) => handleEdit(e.target.value, inventory.id, 'comment')}
                           />
                         </TableCell>
