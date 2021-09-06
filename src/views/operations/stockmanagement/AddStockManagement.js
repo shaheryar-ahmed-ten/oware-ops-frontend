@@ -730,7 +730,7 @@ export default function AddStockManagement() {
                             id="comment"
                             label="Comment"
                             variant="outlined"
-                            value={inventory.AdjustmentDetails.comment || '-'}
+                            value={inventory.AdjustmentDetails.comment || ''}
                             onChange={(e) => handleEdit(e.target.value, inventory.id, 'comment')}
                           />
                         </TableCell>
