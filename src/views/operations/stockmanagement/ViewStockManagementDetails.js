@@ -53,11 +53,19 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 500,
         fontSize: 14
     },
+    commentWrapper: {
+        width: 105,
+        maxWidth: 105,
+        display: "inline-block",
+        // whiteSpace: 'normal',
+        wordWrap: 'break-word'
+    }
 }));
 
 
 
 function ViewStockManagementDetails() {
+    const classes = useStyles();
     const productsColumns = [
         {
             id: 'companyName',
@@ -105,7 +113,7 @@ function ViewStockManagementDetails() {
             id: 'comment',
             label: 'COMMENT',
             minWidth: 'auto',
-            className: '',
+            className: classes.commentWrapper,
             format: (value, inventory, print) => {
                 return (
                     <Tooltip title={`${inventory.AdjustmentDetails.comment}`} classes={{ tooltip: classes.customWidth }} arrow>
@@ -115,11 +123,9 @@ function ViewStockManagementDetails() {
                     </Tooltip>
                 )
             }
-
         }
     ]
 
-    const classes = useStyles();
     const { uid } = useParams();
     const [selectedInventoryWastages, setSelectedInventoryWastages] = useState(null); // selected one to view
     const componentRef = useRef(); // for printing
@@ -225,7 +231,8 @@ function ViewStockManagementDetails() {
                                                         const value = inventoryWastage[column.id];
                                                         return (
                                                             <TableCell key={column.id} align={column.align}
-                                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
+                                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}
+                                                            >
                                                                 {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
                                                             </TableCell>
                                                         );

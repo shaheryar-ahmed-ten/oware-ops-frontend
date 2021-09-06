@@ -67,7 +67,7 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
-  }, 
+  },
   {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
@@ -99,23 +99,23 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) => entity.DispatchOrder.receiverName
   },
-   {
+  {
     id: 'DispatchOrder.receiverPhone',
     label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.receiverPhone
-  }, 
-  {
-    id: 'city',
-    label: 'CITY',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.city
   },
+  // {
+  //   id: 'city',
+  //   label: 'CITY',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.city
+  // },
   {
     id: 'products',
-    label: 'PRODUCTS',
+    label: 'NO. OF PRODUCTS',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventories.length
