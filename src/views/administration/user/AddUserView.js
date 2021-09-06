@@ -80,7 +80,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       email,
       roleId,
       companyId,
-      phone:phone.replace('-',''),
+      phone: phone.replace('-', ''),
       isActive,
       password
     }
@@ -145,7 +145,11 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     type="text"
                     variant="outlined"
                     value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z]*$/
+                      if (regex.test(e.target.value))
+                        setFirstName(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, firstName: true })}
                   />
                   {validation.firstName && !isRequired(firstName) ? <Typography color="error">First name is required!</Typography> : ''}
@@ -160,7 +164,11 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     type="text"
                     variant="outlined"
                     value={lastName}
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z]*$/
+                      if (regex.test(e.target.value))
+                        setLastName(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, lastName: true })}
                   />
                   {validation.lastName && !isRequired(lastName) ? <Typography color="error">Last name is required!</Typography> : ''}

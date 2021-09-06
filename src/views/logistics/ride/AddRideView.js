@@ -727,7 +727,11 @@ function AddRideView() {
                 type="text"
                 variant="outlined"
                 value={productName}
-                onChange={e => isChar(parseInt(e.target.value)) ? setProductName(e.target.value) : ''}
+                onChange={e => {
+                  const regex = /^[a-zA-Z]*$/
+                  if (regex.test(e.target.value))
+                    setProductName(e.target.value)
+                }}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
               {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
