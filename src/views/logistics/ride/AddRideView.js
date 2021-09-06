@@ -298,15 +298,22 @@ function AddRideView() {
     <>
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.pageHeading}>
-            {!selectedRide ? 'Create' : 'Edit'} Ride
-          </Typography>
-          {selectedRide &&
-            <Typography variant="p">
-              Ride ID: {digitize(selectedRide.id, 6)}
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.pageHeading}>
+              {!selectedRide ? 'Create' : 'Edit'} Ride
             </Typography>
-          }
+            {selectedRide &&
+              <Typography variant="p">
+                Ride ID: {digitize(selectedRide.id, 6)}
+              </Typography>
+            }
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/logistics/ride')}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
