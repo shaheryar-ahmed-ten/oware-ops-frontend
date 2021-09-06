@@ -498,7 +498,7 @@ export default function AddStockManagement() {
                 <TextField
                   fullWidth={true}
                   margin="normal"
-                  InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+                  InputProps={{ inputProps: { maxLength: 300 } }}
                   id="quantity"
                   label="Comment"
                   variant="outlined"
@@ -730,6 +730,7 @@ export default function AddStockManagement() {
                             id="comment"
                             label="Comment"
                             variant="outlined"
+                            InputProps={{ inputProps: { maxLength: 300 } }}
                             value={inventory.AdjustmentDetails.comment || ''}
                             onChange={(e) => handleEdit(e.target.value, inventory.id, 'comment')}
                           />
