@@ -602,7 +602,10 @@ function AddRideView() {
               variant="outlined"
               value={pickupDate}
               minuteStep={15}
-              onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
+              onChange={e => {
+                setPickupDate(dateToPickerFormat(e.target.value));
+                setDropoffDate(dateToPickerFormat(e.target.value))
+              }}
               onBlur={e => setValidation({ ...validation, pickupDate: true })}
             />
             {validation.pickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
@@ -613,7 +616,8 @@ function AddRideView() {
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
-              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              inputProps={{ min: pickupDate }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
