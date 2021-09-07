@@ -14,6 +14,11 @@ export const upload = (images, folders) => {
     formData.append("image", image)
     return axios.post(getURL(`upload/${folders[i]}`), formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
-    }).then(response => response.data.file.id);
+    }).then(response => {
+      return response.data.file.id
+    })
+      .catch((err) => {
+        console.log(err)
+      });
   }));
 }

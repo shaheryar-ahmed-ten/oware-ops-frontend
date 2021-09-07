@@ -732,14 +732,14 @@ function AddRideView() {
                 variant="outlined"
                 value={productName}
                 onChange={e => {
-                  const regex = /^[a-zA-Z]*$/
-                  if (regex.test(e.target.value))
-                    setProductName(e.target.value)
+                  // const regex = /^[a-zA-Z1-9]*$/
+                  // if (regex.test(e.target.value))
+                  setProductName(e.target.value)
                 }}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
               {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
-              {validation.productName && !isChar(productName) ? <Typography color="error">Product name is only alphabets!</Typography> : ''}
+              {/* {validation.productName && !isChar(productName) ? <Typography color="error">Product name is only alphabets!</Typography> : ''} */}
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -754,7 +754,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
               />
               {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
-              {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''}
+              {/* {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''} */}
             </Grid>
             <Grid item xs={3}>
               <FormControl margin="dense" variant="outlined">
