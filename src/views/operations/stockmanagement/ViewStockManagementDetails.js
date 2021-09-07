@@ -280,19 +280,19 @@ function ViewStockManagementDetails() {
                             <TableBody>
                                 <TableRow className={classes.tableRow}>
                                     <TableCell>
-                                        {dateFormat(selectedInventoryWastages.updatedAt)}
-                                    </TableCell>
-                                    <TableCell>
                                         {selectedInventoryWastages.internalIdForBusiness}
                                     </TableCell>
                                     <TableCell>
-                                        {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
+                                        {dateFormat(selectedInventoryWastages.updatedAt)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {selectedInventoryWastages.Inventories.length}
                                     </TableCell>
                                     {/* <TableCell>
                                         {selectedInventoryWastages.Inventories[0].Warehouse.city}
                                     </TableCell> */}
                                     <TableCell>
-                                        {selectedInventoryWastages.Inventories.length}
+                                        {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
