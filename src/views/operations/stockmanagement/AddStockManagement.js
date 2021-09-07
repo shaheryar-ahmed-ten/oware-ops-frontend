@@ -300,19 +300,40 @@ export default function AddStockManagement() {
     }
   }
 
-  const handleUpdate = () => {
-    const adjustment_products = []
+  const verifyEditedAdjustmentQty = () => {
+    return new Promise((resolve, reject) => {
+      selectedInventoryWastageInventories.every((inventory, idx, arr) => {
+        // console.log('inventory.AdjustmentInventory', inventory.AdjustmentInventory.adjustmentQuantity, isRequired(inventory.AdjustmentInventory.adjustmentQuantity))
+        // verify if qty is 0 and not soft deleted
+        if (!isRequired(inventory.AdjustmentInventory.adjustmentQuantity) && !inventory.AdjustmentInventory['softDelete'])
+          return reject(false)
+      })
+      return resolve(true)
+    })
+  }
 
-    selectedInventoryWastageInventories.forEach(inventory => {
-      const { reason, comment, adjustmentQuantity } = inventory.AdjustmentInventory;
-      const { id, availableQuantity } = inventory
-      adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
-    });
+  const handleUpdate = async () => {
+    const adjustment_products = [];
 
-    const adjustmentsObject = {
-      adjustment_products
-    }
-    addAdjustments(adjustmentsObject);
+    verifyEditedAdjustmentQty()
+      .then((res) => {
+        setMessageType('green');
+        selectedInventoryWastageInventories.every((inventory, idx, arr) => {
+          const { reason, comment, adjustmentQuantity } = inventory.AdjustmentInventory;
+          const { id, availableQuantity } = inventory
+          adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
+        })
+
+        const adjustmentsObject = {
+          adjustment_products
+        }
+
+        addAdjustments(adjustmentsObject);
+      })
+      .catch((err) => {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "Please make sure you have entered valid adjustment quantity." })
+      })
   }
 
   const handleCustomerSearch = (customerId, customerName) => {
@@ -325,6 +346,7 @@ export default function AddStockManagement() {
     if (isNaN(value) && name === 'adjustmentQuantity') {
       value = 0
     }
+
     setSelectedInventoryWastageInventories((prevState) => {
       // Explain : We'll have to add another property in each inventory to track/calculate the remaining qty on real time
       return [
@@ -697,7 +719,9 @@ export default function AddStockManagement() {
                                 :
                                 parseInt(e.target.value),
                               inventory.id, 'adjustmentQuantity')}
+                            onBlur={e => setValidation({ ...validation, editAdjustmentQuantity: true })}
                           />
+                          {/* {validation.editAdjustmentQuantity && !isRequired(inventory.AdjustmentInventory.adjustmentQuantity) ? <Typography color="error">Company is required!</Typography> : ''} */}
                         </TableCell>
                         <TableCell>
                           {inventory.Product.UOM.name || '-'}
