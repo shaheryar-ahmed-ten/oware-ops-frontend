@@ -302,27 +302,35 @@ export default function AddStockManagement() {
 
   const verifyEditedAdjustmentQty = () => {
     return new Promise((resolve, reject) => {
-      selectedInventoryWastageInventories.every((inventory, idx, arr) => {
-        // console.log('inventory.AdjustmentInventory', inventory.AdjustmentInventory.adjustmentQuantity, isRequired(inventory.AdjustmentInventory.adjustmentQuantity))
+      for (const inventory of selectedInventoryWastageInventories) {
         // verify if qty is 0 and not soft deleted
         if (!isRequired(inventory.AdjustmentInventory.adjustmentQuantity) && !inventory.AdjustmentInventory['softDelete'])
           return reject(false)
-      })
+      }
       return resolve(true)
     })
   }
 
   const handleUpdate = async () => {
     const adjustment_products = [];
+    setMessageType('green');
+
+    // selectedInventoryWastageInventories.every((inventory, idx, arr) => {
+
+    // })
+
+    const adjustmentsObject = {
+      adjustment_products
+    }
 
     verifyEditedAdjustmentQty()
       .then((res) => {
         setMessageType('green');
-        selectedInventoryWastageInventories.every((inventory, idx, arr) => {
+        selectedInventoryWastageInventories.forEach(inventory => {
           const { reason, comment, adjustmentQuantity } = inventory.AdjustmentInventory;
           const { id, availableQuantity } = inventory
           adjustment_products.push({ reason, comment, adjustmentQuantity, inventoryId: id, availableQuantity })
-        })
+        });
 
         const adjustmentsObject = {
           adjustment_products
