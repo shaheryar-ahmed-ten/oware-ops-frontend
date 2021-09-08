@@ -58,7 +58,7 @@ export default function CompanyView({ relationType }) {
     className: ''
   }, {
     id: 'name',
-    label: 'Company',
+    label: 'Vendor',
     minWidth: 'auto',
     className: '',
   }, ...(relationType == 'CUSTOMER' ? [{
@@ -223,7 +223,7 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>ADD COMPANY</Button>;
+    onClick={() => setAddCompanyViewOpen(true)}>ADD VENDOR</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -252,7 +252,7 @@ export default function CompanyView({ relationType }) {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title= "Company" buttons={headerButtons} />
+        <TableHeader title= "Vendor" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
