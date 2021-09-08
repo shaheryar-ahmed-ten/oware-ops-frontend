@@ -254,18 +254,18 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple">Customer</InputLabel>
+                    <InputLabel htmlFor="outlined-age-native-simple">Company</InputLabel>
                     <Select
                       required
                       fullWidth={true}
                       id="companyId"
-                      label="Customer"
+                      label="Company"
                       variant="outlined"
                       value={companyId}
                       onChange={e => setCompanyId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, companyId: true })}
                     >
-                      <MenuItem value="" disabled>Select a customer</MenuItem>
+                      <MenuItem value="" disabled>Select a company</MenuItem>
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
                     </Select>
                     {validation.companyId && !isRequired(companyId) ? <Typography color="error">Customer is required!</Typography> : ''}

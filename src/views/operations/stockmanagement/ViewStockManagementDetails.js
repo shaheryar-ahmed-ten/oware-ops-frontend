@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     commentWrapper: {
         width: 105,
         maxWidth: 105,
-        display: "inline-block",
+        // display: "inline-block",
         // whiteSpace: 'normal',
         wordWrap: 'break-word'
     }
