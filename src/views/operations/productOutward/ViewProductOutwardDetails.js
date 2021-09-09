@@ -1,442 +1,409 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField, Typography } from '@material-ui/core';
-import React, { useRef } from 'react'
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from '@material-ui/core';
+import React, { useEffect, useRef, useState } from 'react'
 import { useReactToPrint } from 'react-to-print';
-import { dateFormat } from '../../../utils/common';
+import { dateFormat, getURL } from '../../../utils/common';
 import PrintIcon from '@material-ui/icons/Print';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import axios from 'axios';
 
-function ViewProductOutwardDetails({formErrors, selectedProductOutward, open, handleClose}) {
-
-    const componentRef = useRef();
-    const handlePrint = useReactToPrint({
-      content: () => componentRef.current,
-    });
-
-    return (
-      selectedProductOutward ? 
-        <div style={{ display: "inline" }}>
-          <form>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <Box display="block" displayPrint="block" ref={componentRef}>
-                <Box display="none" displayPrint="block" style={{margin:"25mm 25mm 0mm 25mm"}}>
-                    <DialogTitle>
-                      <Typography variant="h3">
-                      Product Outwards
-                      </Typography>
-                    </DialogTitle>                
-                </Box>
-                <Box display="block" displayPrint="none"> 
-                <DialogTitle>
-                  View Product Outward
-                  <IconButton aria-label="print" onClick={handlePrint}>
-                    <PrintIcon/>
-                  </IconButton>
-              </DialogTitle>
-                </Box>
+const useStyles = makeStyles((theme) => ({
+  parentContainer: {
+    boxSizing: 'border-box',
+    padding: "30px 30px",
+  },
+  pageHeading: {
+    fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
+  },
+  heading: {
+    fontWeight: 'bolder'
+  },
+  shadedTableHeader: {
+    backgroundColor: 'rgba(202,201,201,0.3)'
+  },
+  tableHeadText: {
+    background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
+  }
+}));
 
 
-                <Box display="none" displayPrint="block" style={{margin:"0mm 25mm 0mm 25mm"}}>
-                <DialogContent>
-                {formErrors}
-                    <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                          Product Outward Id : 
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.internalIdForBusiness}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                          Dispatch Order Id : 
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.internalIdForBusiness}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                          Customer Name : 
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Company.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Warehouse :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            City :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Product :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Product.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Product Weight :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.Product.weight} Kg/unit
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Requested Quantity :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.quantity + ` ` + selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Available Quantity :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.Inventory.availableQuantity + ` ` + selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Receiver Name :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.receiverName}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Receiver Phone :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.DispatchOrder.receiverPhone}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Vehicle Type :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.Vehicle.type}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Vehicle Number : 
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {selectedProductOutward.Vehicle.number}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Requested Shipment Date&Time :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {dateFormat(selectedProductOutward.shipmentDate)}
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            Shipment Date&Time :
-                        </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Box display="block" displayPrint="block">
-                            {dateFormat(selectedProductOutward.createdAt)}
-                        </Box>
-                    </Grid>
-                </Grid>
-                </DialogContent>
-                </Box>
+function ViewProductOutwardDetails() {
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const { uid } = useParams();
+  const [selectedProductOutward, setSelectedProductOutward] = useState(null)
+  useEffect(() => {
+    if (!selectedProductOutward) {
+      fetchProductOutwards()
+    }
+  }, [uid])
+  const fetchProductOutwards = () => {
+    _getProductOutwards()
+  }
+  const _getProductOutwards = () => {
+    axios.get(getURL('/product-outward'))
+      .then(res => {
+        setSelectedProductOutward(res.data.data.find((outwardOrder) => outwardOrder.id == uid));
+      });
+  }
 
-                <Box display="block" displayPrint="none">
-                  <DialogContent>
-                    {formErrors}
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Product Outward Id"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.internalIdForBusiness}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Dispatch Order Id"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.internalIdForBusiness}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Customer"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Company.name}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Warehouse"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="City"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Product"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Product.name}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Product Weight in KGs/unit"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Product.weight}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Quantity"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.quantity}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Available Qt"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.availableQuantity}
-                        />
-                    </Grid>
-                    
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="UoM"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.Inventory.Product.UOM.name}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Receiver Name"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.receiverName}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Receiver Ph"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.DispatchOrder.receiverPhone}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="vehicle"
-                          label="Vehicle Type"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.Vehicle.type}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="vehicle"
-                          label="Vehicle Number"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={selectedProductOutward.Vehicle.number}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Req Shipment Date&Time"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={dateFormat(selectedProductOutward.shipmentDate)}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                          id="filled-number"
-                          label="Created at"
-                          type="text"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          disabled
-                          fullWidth
-                          variant="filled"
-                          value={dateFormat(selectedProductOutward.createdAt)}
-                        />
-                    </Grid>
-                </Grid>
-                  </DialogContent>
-                </Box>
-
-              <Box displayPrint="none">
-              <DialogActions>
-                <Button onClick={handleClose} color="primary" variant="contained">Close</Button>
-              </DialogActions>
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  return (
+    selectedProductOutward ? <>
+      {/* Only for printing */}
+      <Box display="none" displayPrint="block" ref={componentRef}>
+        <Box display="none" displayPrint="block" style={{ padding: "25mm 25mm 0mm 25mm" }}>
+          <Typography variant="h3">
+            Product Outwards
+          </Typography>
+        </Box>
+        <Box display="none" displayPrint="block" style={{ padding: "10mm 25mm 0mm 25mm" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Outward Id :
               </Box>
-            </Box>
-            </Dialog>
-          </form>
-        </div >
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Dispatch Order Id :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.internalIdForBusiness}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Company Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Company.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Warehouse :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                City :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Name :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.receiverName}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Receiver Phone :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.DispatchOrder.receiverPhone}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Vehicle Number :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || '' : ''}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Shipment Date&Time :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {dateFormat(selectedProductOutward.createdAt)}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="none" displayPrint="block" style={{ margin: "5mm 0mm 0mm 0mm" }}>
+                <Typography variant="h3">
+                  Products
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow className={classes.shadedTableHeader}>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        PRODUCT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        WEIGHT
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        UOM
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        REQUESTED QUANTITY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        AVAILABLE QTY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        SENT QTY
+                      </TableCell>
+                      <TableCell
+                        className={classes.tableHeadText}>
+                        REMAINING QTY
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
+                        let remainingQt = 0, sentQt = 0;
+                        const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
+                        if (targetedPoInv) {
+                          sentQt += targetedPoInv.OutwardGroup.quantity
+                        }
+                        remainingQt = order.OrderGroup.quantity - sentQt
+                        return (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              {order.Product.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.weight} KG
+                            </TableCell>
+                            <TableCell>
+                              {order.Product.UOM.name}
+                            </TableCell>
+                            <TableCell>
+                              {order.OrderGroup.quantity}
+                            </TableCell>
+                            <TableCell>
+                              {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
+                            </TableCell>
+                            <TableCell>
+                              {sentQt}
+                            </TableCell>
+                            <TableCell>
+                              {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+      {/* Only for Displaying */}
+      <Grid container className={classes.parentContainer} spacing={3}>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Product Ouward Details
+              <IconButton aria-label="print" onClick={handlePrint}>
+                <PrintIcon />
+              </IconButton>
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-outward')}>
+              Back
+            </Button>
+          </Grid>
+        </Grid>
+
+        <TableContainer className={classes.parentContainer}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  className={classes.tableHeadText}>OUTWARD ID
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>DISPATCH ORDER ID
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>COMPANY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>WAREHOUSE
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>CITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>NO. OF PRODUCTS
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>VEHICLE NUMBER
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>CREATED AT
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  {selectedProductOutward.internalIdForBusiness}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.DispatchOrder.internalIdForBusiness}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.DispatchOrder.Inventory.Company.name}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.DispatchOrder.Inventory.Warehouse.name}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.DispatchOrder.Inventories.length}
+                </TableCell>
+                <TableCell>
+                  {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || '-' : '-'}
+                </TableCell>
+                <TableCell>
+                  {dateFormat(selectedProductOutward.createdAt)}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <TableContainer className={classes.parentContainer}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow className={classes.shadedTableHeader}>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  PRODUCT
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  UOM
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  REQUESTED QUANTITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  AVAILABLE QUANTITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  SENT QUANTITY
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>
+                  REMAINING QUANTITY
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+
+              {
+                selectedProductOutward.DispatchOrder.Inventories.map((order, idx) => {
+                  let remainingQt = 0, sentQt = 0;
+                  const targetedPoInv = selectedProductOutward.Inventories.find((inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId)
+                  if (targetedPoInv) {
+                    sentQt += targetedPoInv.OutwardGroup.quantity
+                  }
+                  remainingQt = order.OrderGroup.quantity - sentQt
+                  return (
+                    <TableRow key={idx}>
+                      <TableCell>
+                        {order.Product.name}
+                      </TableCell>
+                      <TableCell>
+                        {order.Product.UOM.name}
+                      </TableCell>
+                      <TableCell>
+                        {order.OrderGroup.quantity}
+                      </TableCell>
+                      <TableCell>
+                        {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
+                      </TableCell>
+                      <TableCell>
+                        {sentQt}
+                      </TableCell>
+                      <TableCell>
+                        {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              }
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+      </Grid>
+    </>
       :
       null
-      );
+  );
 }
 
-export default ViewProductOutwardDetails
+export default ViewProductOutwardDetails;

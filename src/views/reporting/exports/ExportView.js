@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Grid, makeStyles, Paper } from '@material-ui/core'
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 
 const useStyles = makeStyles(theme => ({
     root: {

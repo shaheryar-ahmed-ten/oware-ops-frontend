@@ -12,13 +12,14 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader';
+import TableHeader from '../../../components/TableHeader';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
 import moment from 'moment';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,7 +53,7 @@ export default function InventoryView() {
     format: (value, entity) => entity.Product.name
   }, {
     id: 'customer',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Company.name
@@ -90,7 +91,7 @@ export default function InventoryView() {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const _getInventories = (page, searchKeyword) => {
-    axios.get(getURL('/inventory'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setInventories(res.data.data)
@@ -99,10 +100,10 @@ export default function InventoryView() {
 
   const getInventories = useCallback(debounce((page, searchKeyword) => {
     _getInventories(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
-    axios.get(getURL('/inventory/export'), {
+    axios.get(getURL('inventory/export'), {
       responseType: 'blob',
       params: { page, search: searchKeyword },
     }).then(response => {
@@ -115,10 +116,10 @@ export default function InventoryView() {
   }, [page, searchKeyword]);
 
   const searchInput = <InputBase
-    placeholder="Product / Customer /Warehouse"
+    placeholder="Product / Company /Warehouse"
     className={classes.searchInput}
     id="search"
-    label="Product / Customer /Warehouse"
+    label="Product / Company /Warehouse"
     type="text"
     variant="outlined"
     value={searchKeyword}

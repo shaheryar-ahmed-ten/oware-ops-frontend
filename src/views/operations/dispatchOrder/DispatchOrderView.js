@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -11,21 +11,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  IconButton
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL, dateFormat, digitize } from '../../../utils/common';
+import { getURL, dateFormat, digitize, dateToPickerFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddDispatchOrderView from './AddDispatchOrderView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import ViewDispatchOrderDetails from './ViewDispatchOrderDetails';
-
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,108 +44,147 @@ const useStyles = makeStyles(theme => ({
     marginRight: 7,
     height: 30,
   },
+  pendingStatusButtonStyling: {
+    backgroundColor: '#FFEEDB',
+    color: '#F69148',
+    borderRadius: "10px"
+  },
+  partialStatusButtonStyling: {
+    backgroundColor: '#F0F0F0',
+    color: '#7D7D7D',
+    width: 150,
+    borderRadius: "10px"
+  },
+  fullfilledStatusButtonStyling: {
+    backgroundColor: '#EAF7D5',
+    color: '#69A022',
+    borderRadius: "10px"
+  },
+  tableCellStyle: {
+    color: '#383838',
+    fontSize: 14,
+    display: 'table-cell',
+    // justifyContent: 'center',
+    textAlign: 'center'
+    // alignItems: 'center'
+  },
 }));
 
 
 export default function DispatchOrderView() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const columns = [{
     id: 'id',
-    label: 'OUTWARD ID',
+    label: 'DISPATCH ORDER ID',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.internalIdForBusiness
   },
-    {
+  {
     id: 'Inventory.Company.name',
-    label: 'CUSTOMER',
+    label: 'COMPANY',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Company.name
-  }, {
-    id: 'Inventory.Product.name',
-    label: 'PRODUCT',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Inventory.Product.name
-  }, {
+  },
+  {
     id: 'Inventory.Warehouse.name',
     label: 'WAREHOUSE',
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
-  }, {
-    id: 'Inventory.Product.UOM.name',
-    label: 'UOM',
+  },
+  // {
+  //   id: 'Inventory.Warehouse.city',
+  //   label: 'CITY',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Inventory.Warehouse.city
+  // },
+  {
+    id: 'Inventories.length',
+    label: 'NO. OF PRODUCTS',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.Inventory.Product.UOM.name
-  }, {
+    format: (value, entity) => entity.Inventories.length
+  },
+  {
     id: 'receiverName',
     label: 'RECEIVER NAME',
     minWidth: 'auto',
     className: '',
-  }, {
+  },
+  {
     id: 'receiverPhone',
     label: 'RECEIVER PHONE',
     minWidth: 'auto',
     className: '',
   }, {
-    id: 'quantity',
-    label: 'REQUESTED QUANTITY',
-    minWidth: 'auto',
-    className: '',
-  }, {
     id: 'shipmentDate',
-    label: 'FULFILMENT DATE',
+    label: 'SHIPMENT DATE',
     minWidth: 'auto',
     className: '',
-    format: dateFormat
-  }, {
+    format: (value, entity) => dateFormat(entity.shipmentDate)
+  },
+  {
+    id: 'referenceid',
+    label: 'REFERENCE ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.referenceId
+  },
+  {
+    id: 'status',
+    label: 'STATUS',
+    minWidth: 'auto',
+    className: classes.tableCellStyle,
+    format: (value, entity) => {
+      let totalDispatched = 0
+      entity.ProductOutwards.forEach(po => {
+        po.OutwardGroups.forEach(outGroup => {
+          totalDispatched += outGroup.quantity
+        });
+      });
+      return (
+        totalDispatched === 0 ? <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
+          Pending
+        </Button> : totalDispatched > 0 && totalDispatched < entity.quantity ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
+          Partially fulfilled
+        </Button> : entity.quantity === totalDispatched ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
+          Fulfilled
+        </Button> : ''
+      )
+    }
+  },
+  {
     id: 'actions',
     label: '',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>
       [
-        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        // <EditIcon key="edit" onClick={() => openEditView(entity)} />,
-        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+        <VisibilityIcon key="view"
+          onClick={() => navigate(`view/${entity.id}`, {
+            state: {
+              selectedDispatchOrder: entity,
+              viewOnly: true
+            }
+          })} />,
       ]
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [dispatchOrders, setDispatchOrders] = useState([]);
-
-  const [customers, setCustomers] = useState([]);
-  const [warehouses, setWarehouses] = useState([]);
-  const [products, setProducts] = useState([]);
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addDispatchOrderViewOpen, setAddDispatchOrderViewOpen] = useState(false);
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
-  const [dispatchOrderDetailsViewOpen, setdispatchOrderDetailsViewOpen] = useState(false)
-
-
-  const addDispatchOrder = data => {
-    let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
-    else apiPromise = axios.put(getURL(`/dispatch-order/${selectedDispatchOrder.id}`), data);
-    apiPromise.then(res => {
-      if (!res.data.success) {
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
-        return
-      }
-      closeAddDispatchOrderView(false);
-      getDispatchOrders();
-    });
-  };
 
   const deleteDispatchOrder = data => {
-    axios.delete(getURL(`/dispatch-order/${selectedDispatchOrder.id}`))
+    axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -159,29 +195,9 @@ export default function DispatchOrderView() {
       });
   };
 
-  const openEditView = dispatchOrder => {
-    setSelectedDispatchOrder(dispatchOrder);
-    setAddDispatchOrderViewOpen(true);
-  }
-
-  const openViewDetails = dispatchOrder => {
-    setSelectedDispatchOrder(dispatchOrder);
-    setdispatchOrderDetailsViewOpen(true);
-  }
-
   const openDeleteView = dispatchOrder => {
     setSelectedDispatchOrder(dispatchOrder);
     setDeleteDispatchOrderViewOpen(true);
-  }
-
-  const closeAddDispatchOrderView = () => {
-    setSelectedDispatchOrder(null);
-    setAddDispatchOrderViewOpen(false);
-  }
-
-  const closeDispatchOrderDetailsView = () => {
-    setSelectedDispatchOrder(null);
-    setdispatchOrderDetailsViewOpen(false)
   }
 
   const closeDeleteDispatchOrderView = () => {
@@ -190,7 +206,7 @@ export default function DispatchOrderView() {
   }
 
   const _getDispatchOrders = (page, searchKeyword) => {
-    axios.get(getURL('/dispatch-order'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('dispatch-order'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setDispatchOrders(res.data.data)
@@ -199,41 +215,13 @@ export default function DispatchOrderView() {
 
   const getDispatchOrders = useCallback(debounce((page, searchKeyword) => {
     _getDispatchOrders(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
-  const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
-      .then(res => {
-        setCustomers(res.data.customers);
-        setWarehouses(res.data.warehouses);
-        setProducts(res.data.products);
-      });
-  };
-
-  const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
-      .then(res => res.data.inventory);
-  };
-
-  const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
-      .then(res => {
-        return res.data.warehouses
-      });
-  };
-
-  const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
-      .then(res => res.data.products);
-  };
 
   useEffect(() => {
     getDispatchOrders(page, searchKeyword);
   }, [page, searchKeyword]);
 
-  useEffect(() => {
-    getRelations();
-  }, []);
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -251,21 +239,10 @@ export default function DispatchOrderView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddDispatchOrderViewOpen(true)}>ADD DISPATCH ORDER</Button>;
-  const addDispatchOrderModal = <AddDispatchOrderView
-    key={3}
-    formErrors={formErrors}
-    customers={customers}
-    warehouses={warehouses}
-    products={products}
-    selectedDispatchOrder={selectedDispatchOrder}
-    open={addDispatchOrderViewOpen}
-    addDispatchOrder={addDispatchOrder}
-    getInventory={getInventory}
-    getWarehouses={getWarehouses}
-    getProducts={getProducts}
-    handleClose={() => closeAddDispatchOrderView()}
-    dispatchedOrdersLength={dispatchOrders.length} />
+    // onClick={() => setAddDispatchOrderViewOpen(true)}
+    onClick={() => navigate('create')}
+  >ADD DISPATCH ORDER</Button>;
+
   const deleteDispatchOrderModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteDispatchOrder}
@@ -275,27 +252,13 @@ export default function DispatchOrderView() {
     title={"DispatchOrder"}
   />
 
-  const dispatchOrderDetailsModal = <ViewDispatchOrderDetails
-  key={5}
-  formErrors={formErrors}
-  customers={customers}
-    warehouses={warehouses}
-    products={products}
-    selectedDispatchOrder={selectedDispatchOrder}
-    open={dispatchOrderDetailsViewOpen}
-    getInventory={getInventory}
-    getWarehouses={getWarehouses}
-    getProducts={getProducts}
-    handleClose={() => closeDispatchOrderDetailsView()}
-    dispatchedOrdersLength={dispatchOrders.length}
-  />
 
-  const headerButtons = [searchInput, addDispatchOrderButton, addDispatchOrderModal, deleteDispatchOrderModal, dispatchOrderDetailsModal];
+  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Dispatch Order" buttons={headerButtons}/>
+        <TableHeader title="Dispatch Order" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table" >
           <TableHead>
             <TableRow>
@@ -303,7 +266,7 @@ export default function DispatchOrderView() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                  style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px', textAlign: 'center' }}
                 >
                   {column.label}
                 </TableCell>
@@ -340,10 +303,10 @@ export default function DispatchOrderView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-          // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

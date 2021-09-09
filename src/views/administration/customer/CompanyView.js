@@ -12,15 +12,18 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddCustomerView from './AddCustomerView';
-import {debounce} from 'lodash';
+import AddCompanyView from './AddCompanyView';
+import CompanyDetailsView from './CompanyDetailsView';
+import { capitalize, debounce } from 'lodash';
+import MessageSnackbar from '../../../components/MessageSnackbar';
+import { DEBOUNCE_CONST } from '../../../Config';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,29 +44,29 @@ const useStyles = makeStyles(theme => ({
     padding: '0px 8px',
     marginRight: 7,
     height: 30,
-  },
+  }
 }));
 
 
-export default function CustomerView() {
+export default function CompanyView({ relationType }) {
+  const pageHeadTitle = capitalize(`${relationType}s`);
   const classes = useStyles();
   const columns = [{
-    id: 'id',
+    id: 'internalIdForBusiness',
     label: 'ID',
     minWidth: 'auto',
-    className: '',
-    format: (value, entity) => `${entity.name[0]}${entity.type[0]}-${digitize(value, 3)}`
+    className: ''
   }, {
     id: 'name',
     label: 'Company',
     minWidth: 'auto',
     className: '',
-  }, {
+  }, ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
-    label: 'Customer Type',
+    label: 'Company Type',
     minWidth: 'auto',
     className: ''
-  }, {
+  }] : []), {
     id: 'firstName',
     label: 'Contact Name',
     minWidth: 'auto',
@@ -75,12 +78,12 @@ export default function CustomerView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.Contact.email
-  }, {
-    id: 'Contact.phone',
-    label: 'Contact Phone',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Contact.phone
+    // }, {
+    //   id: 'Contact.phone',
+    //   label: 'Contact Phone',
+    //   minWidth: 'auto',
+    //   className: '',
+    //   format: (value, entity) => entity.Contact.phone
   }, {
     id: 'isActive',
     label: 'Status',
@@ -99,82 +102,96 @@ export default function CustomerView() {
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const [customers, setCustomers] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
   const [customerTypes, setCustomerTypes] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState(null);
   const [formErrors, setFormErrors] = useState('');
-  const [addCustomerViewOpen, setAddCustomerViewOpen] = useState(false);
-  const [deleteCustomerViewOpen, setDeleteCustomerViewOpen] = useState(false);
+  const [addCompanyViewOpen, setAddCompanyViewOpen] = useState(false);
+  const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
+  const [companyDetailsView, setCompanyDetailsView] = useState(false)
 
-
-  const addCustomer = data => {
+  const addCompany = data => {
     let apiPromise = null;
-    if (!selectedCustomer) apiPromise = axios.post(getURL('/customer'), data);
-    else apiPromise = axios.put(getURL(`/customer/${selectedCustomer.id}`), data);
+    if (!selectedCompany) apiPromise = axios.post(getURL(`company/${relationType}`), data);
+    else apiPromise = axios.put(getURL(`company/${relationType}/${selectedCompany.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
-      closeAddCustomerView();
-      getCustomers();
+      setShowMessage({
+        message: `${relationType.toLowerCase()} has been ${!!selectedCompany ? 'updated' : 'created'}.`
+      });
+      closeAddCompanyView();
+      getCompanies();
     });
   };
 
-  const deleteCustomer = data => {
-    axios.delete(getURL(`/customer/${selectedCustomer.id}`))
+  const deleteCompany = data => {
+    axios.delete(getURL(`company/${relationType}/${selectedCompany.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
           return
         }
-        closeDeleteCustomerView();
-        getCustomers();
+        closeDeleteCompanyView();
+        getCompanies();
       });
   };
+  const openViewDetails = (driver) => {
+    setSelectedCompany(driver)
+    setCompanyDetailsView(true)
+  }
+
+  const closeCompanyDetailsView = () => {
+    setCompanyDetailsView(false)
+    setSelectedCompany(null)
+  }
 
   const openEditView = customer => {
-    setSelectedCustomer(customer);
-    setAddCustomerViewOpen(true);
+    setSelectedCompany(customer);
+    setAddCompanyViewOpen(true);
   }
 
   const openDeleteView = customer => {
-    setSelectedCustomer(customer);
-    setDeleteCustomerViewOpen(true);
+    setSelectedCompany(customer);
+    setDeleteCompanyViewOpen(true);
   }
 
-  const closeAddCustomerView = () => {
-    setSelectedCustomer(null);
-    setAddCustomerViewOpen(false);
+  const closeAddCompanyView = () => {
+    setSelectedCompany(null);
+    setAddCompanyViewOpen(false);
   }
 
-  const closeDeleteCustomerView = () => {
-    setSelectedCustomer(null);
-    setDeleteCustomerViewOpen(false);
+  const closeDeleteCompanyView = () => {
+    setSelectedCompany(null);
+    setDeleteCompanyViewOpen(false);
   }
 
-  const _getCustomers = (page, searchKeyword) => {
-    axios.get(getURL('/customer'), { params: { page, search: searchKeyword } })
+  const _getCompanies = (page, searchKeyword) => {
+    axios.get(getURL(`company/${relationType}`), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
-        setCustomers(res.data.data)
+        setCompanies(res.data.data)
       });
   }
 
-  const getCustomers = useCallback(debounce((page, searchKeyword) => {
-    _getCustomers(page, searchKeyword);
-  }, 300), []);
+  const getCompanies = useCallback(debounce((page, searchKeyword) => {
+    _getCompanies(page, searchKeyword);
+  }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
-    axios.get(getURL('/customer/relations'))
+    axios.get(getURL(`company/${relationType}/relations`))
       .then(res => {
         setUsers(res.data.users);
         setCustomerTypes(res.data.customerTypes);
@@ -183,7 +200,7 @@ export default function CustomerView() {
 
 
   useEffect(() => {
-    getCustomers(page, searchKeyword);
+    getCompanies(page, searchKeyword);
   }, [page, searchKeyword]);
 
   useEffect(() => {
@@ -201,35 +218,41 @@ export default function CustomerView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
-  const addCustomerButton = <Button
+  const addCompanyButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCustomerViewOpen(true)}>ADD CUSTOMER</Button>;
-  const addCustomerModal = <AddCustomerView
+    onClick={() => setAddCompanyViewOpen(true)}>ADD COMPANY</Button>;
+  const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
     users={users}
+    relationType={relationType}
     customerTypes={customerTypes}
-    selectedCustomer={selectedCustomer}
-    open={addCustomerViewOpen}
-    addCustomer={addCustomer}
-    handleClose={() => closeAddCustomerView()} />
-  const deleteCustomerModal = <ConfirmDelete
+    selectedCompany={selectedCompany}
+    open={addCompanyViewOpen}
+    addCompany={addCompany}
+    handleClose={() => closeAddCompanyView()} />
+  const deleteCompanyModal = <ConfirmDelete
     key={4}
-    confirmDelete={deleteCustomer}
-    open={deleteCustomerViewOpen}
-    handleClose={closeDeleteCustomerView}
-    selectedEntity={selectedCustomer && selectedCustomer.name}
-    title={"Customer"}
+    confirmDelete={deleteCompany}
+    open={deleteCompanyViewOpen}
+    handleClose={closeDeleteCompanyView}
+    selectedEntity={selectedCompany && selectedCompany.name}
+    title={"Company"}
   />
-  const headerButtons = [searchInput, addCustomerButton, addCustomerModal, deleteCustomerModal];
+  const companyDetailsViewModal = <CompanyDetailsView
+    relationType={relationType}
+    selectedCompany={selectedCompany}
+    open={companyDetailsView}
+    handleClose={closeCompanyDetailsView} />;
+  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Customer" buttons={headerButtons} />
+        <TableHeader title= "Company" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -245,7 +268,7 @@ export default function CustomerView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((customer) => {
+            {companies.map((customer) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={customer.id}>
                   {columns.map((column) => {
@@ -278,6 +301,7 @@ export default function CustomerView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

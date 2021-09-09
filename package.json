@@ -7,6 +7,7 @@
     "@material-ui/data-grid": "^4.0.0-alpha.21",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/pickers": "^3.3.10",
     "@material-ui/x-grid-data-generator": "^4.0.0-alpha.21",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -21,6 +22,7 @@
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.2",
+    "react-text-mask": "^5.4.3",
     "react-to-print": "^2.12.4",
     "web-vitals": "^1.1.0"
   },

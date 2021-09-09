@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddBrandView from './AddBrandView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -82,24 +84,28 @@ export default function BrandView() {
   const [formErrors, setFormErrors] = useState('');
   const [addBrandViewOpen, setAddBrandViewOpen] = useState(false);
   const [deleteBrandViewOpen, setDeleteBrandViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
 
   const addBrand = data => {
     let apiPromise = null;
-    if (!selectedBrand) apiPromise = axios.post(getURL('/brand'), data);
-    else apiPromise = axios.put(getURL(`/brand/${selectedBrand.id}`), data);
+    if (!selectedBrand) apiPromise = axios.post(getURL('brand'), data);
+    else apiPromise = axios.put(getURL(`brand/${selectedBrand.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New brand has been created."
+      })
       closeAddBrandView(false);
       getBrands();
     });
   };
 
   const deleteBrand = data => {
-    axios.delete(getURL(`/brand/${selectedBrand.id}`))
+    axios.delete(getURL(`brand/${selectedBrand.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -131,7 +137,7 @@ export default function BrandView() {
   }
 
   const _getBrands = (page, searchKeyword) => {
-    axios.get(getURL('/brand'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('brand'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setBrands(res.data.data)
@@ -140,7 +146,7 @@ export default function BrandView() {
 
   const getBrands = useCallback(debounce((page, searchKeyword) => {
     _getBrands(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getBrands(page, searchKeyword);
@@ -183,7 +189,7 @@ export default function BrandView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Brand" buttons={headerButtons} />
+        <TableHeader title="Brand" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -232,6 +238,7 @@ export default function BrandView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }

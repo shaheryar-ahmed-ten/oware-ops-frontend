@@ -6,7 +6,7 @@ import DashboardLayout from '../src/layouts/DashboardLayout';
 import LoginView from '../src/views/auth/LoginView';
 import NotFoundView from '../src/views/errors/NotFoundView';
 import UserView from '../src/views/administration/user/UserView';
-import CustomerView from '../src/views/administration/customer/CustomerView';
+import CompanyView from '../src/views/administration/customer/CompanyView';
 import BrandView from '../src/views/administration/brand/BrandView';
 import UoMView from '../src/views/administration/uom/UoMView';
 import WarehouseView from '../src/views/administration/warehouse/WarehouseView';
@@ -19,6 +19,19 @@ import ProductOutwardView from '../src/views/operations/productOutward/ProductOu
 import InventoryView from '../src/views/reporting/inventory/InventoryView';
 import ExportView from '../src/views/reporting/exports/ExportView';
 import { checkPermission } from './utils/auth';
+import DriverView from './views/logistics/driver/DriverView';
+import VehicleView from './views/logistics/vehicle/VehicleView';
+import RideView from './views/logistics/ride/RideView';
+import AddRideView from './views/logistics/ride/AddRideView';
+import AddProductOutwardView from './views/operations/productOutward/AddProductOutwardView';
+import ViewProductOutwardDetails from './views/operations/productOutward/ViewProductOutwardDetails';
+import AddProductInwardView from './views/operations/productInward/AddProductInwardView';
+import AddDispatchOrderView from './views/operations/dispatchOrder/AddDispatchOrderView';
+import ViewDispatchOrderDetails from './views/operations/dispatchOrder/ViewDispatchOrderDetails';
+import InwardProductDetailsView from './views/operations/productInward/InwardProductDetailsView';
+import StockManagementView from './views/operations/stockmanagement/StockManagementView';
+import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
+import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
 
 
 const routes = (user) => [
@@ -32,7 +45,7 @@ const routes = (user) => [
       },
       {
         path: 'customer',
-        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CustomerView /> : <Navigate to="404" />
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="CUSTOMER" /> : <Navigate to="404" />
       },
       {
         path: 'warehouse',
@@ -73,14 +86,92 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <ProductInwardView /> : <Navigate to="404" />
       },
       {
+        path: 'product-inward/create',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <AddProductInwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-inward/view/:uid',
+        element: checkPermission(user, 'OPS_PRODUCTINWARD_FULL') ? <InwardProductDetailsView /> : <Navigate to="404" />
+      },
+      {
         path: 'dispatch-order',
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <DispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/create',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/edit',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
+      },
+      {
+        path: 'dispatch-order/view/:uid',
+        element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <ViewDispatchOrderDetails /> : <Navigate to="404" />
       },
       {
         path: 'product-outward',
         element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ProductOutwardView /> : <Navigate to="404" />
       },
+      {
+        path: 'product-outward/create',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <AddProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward/edit',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <AddProductOutwardView /> : <Navigate to="404" />
+      },
+      {
+        path: 'product-outward/view/:uid',
+        element: checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL') ? <ViewProductOutwardDetails /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-adjustment',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <StockManagementView /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-adjustment/create',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-adjustment/edit/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <AddStockManagement /> : <Navigate to="404" />
+      },
+      {
+        path: 'stock-adjustment/view/:uid',
+        element: checkPermission(user, 'OPS_INVENTORY_FULL') ? <ViewStockManagementDetails /> : <Navigate to="404" /> // TODO: create a view screen
+      },
       { path: '*', element: <Navigate to='/404' /> }
+    ]
+  },
+  {
+    path: 'logistics',
+    element: !!user ? <DashboardLayout /> : <Navigate to='/login' />,
+    children: [
+      {
+        path: 'vendor',
+        element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <CompanyView key={window.location.pathname} relationType="VENDOR" /> : <Navigate to="404" />
+      },
+      {
+        path: 'driver',
+        element: <DriverView />
+      },
+      {
+        path: 'vehicle',
+        element: <VehicleView />
+      },
+      {
+        path: 'ride',
+        element: <RideView />
+      },
+      {
+        path: 'ride/create',
+        element: <AddRideView />
+      }
     ]
   },
   {
@@ -106,7 +197,21 @@ const routes = (user) => [
       }
     ]
 
-  }
+  },
+  // {
+  //   path: 'management',
+  //   element: <DashboardLayout />,
+  //   children: [
+  //     {
+  //       path: 'stock-adjustment',
+  //       element: checkPermission(user, 'OPS_CUSTOMER_FULL') ? <StockManagementView /> : <Navigate to="404" />
+  //     },
+  //     {
+  //       path: 'stock-adjustment/create',
+  //       element: <AddStockManagement />
+  //     }
+  //   ]
+  // },
 ];
 
 export default routes;

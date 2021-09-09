@@ -25,58 +25,74 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_USER_FULL'),
         href: '/administration/user',
-        title: 'Manage User'
+        title: 'User',
+        activeRouteName: 'user'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
         href: '/administration/customer',
-        title: 'Manage Customer'
+        title: 'Company',
+        activeRouteName: 'customer'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_WAREHOUSE_FULL'),
         href: '/administration/warehouse',
-        title: 'Manage Warehouse'
+        title: 'Warehouse',
+        activeRouteName: 'warehouse'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_BRAND_FULL'),
         href: '/administration/brand',
-        title: 'Manage Brand'
+        title: 'Brand',
+        activeRouteName: 'brand'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_UOM_FULL'),
         href: '/administration/uom',
-        title: 'Manage UoM'
+        title: 'UoM',
+        activeRouteName: 'uom'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_CATEGORY_FULL'),
         href: '/administration/category',
-        title: 'Manage Category'
+        title: 'Category',
+        activeRouteName: 'category'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
         href: '/administration/product',
-        title: 'Manage Product'
+        title: 'Product',
+        activeRouteName: 'product'
       },
     ]
   },
   {
-    title: 'Operations',
+    title: 'Warehouse Ops',
     nodeId: 'operations',
     children: [
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
         href: '/operations/product-inward',
-        title: 'Product Inward'
+        title: 'Product Inward',
+        activeRouteName: 'product-inward'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_DISPATCHORDER_FULL'),
         href: '/operations/dispatch-order',
-        title: 'Dispatch Order'
+        title: 'Dispatch Order',
+        activeRouteName: 'dispatch-order'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL'),
         href: '/operations/product-outward',
-        title: 'Product Outward'
+        title: 'Product Outward',
+        activeRouteName: 'product-outward'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+        href: '/operations/stock-adjustment',
+        title: 'Stock Adjustment',
+        activeRouteName: 'stock-adjustment'
       }
     ]
   },
@@ -87,10 +103,53 @@ const navTreeData = [
       {
         canActivate: user => checkPermission(user, 'OPS_INVENTORY_FULL'),
         href: '/reporting/inventory',
-        title: 'Inventory'
+        title: 'Inventory',
+        activeRouteName: 'inventory'
       }
     ]
-  }
+  },
+  {
+    title: 'Logistics',
+    nodeId: 'logistics',
+    children: [
+      {
+        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+        href: '/logistics/vendor',
+        title: 'Vendor',
+        activeRouteName: 'vendor'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/logistics/driver',
+        title: 'Driver',
+        activeRouteName: 'driver'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/logistics/vehicle',
+        title: 'Vehicle',
+        activeRouteName: 'vehicle'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/logistics/ride',
+        title: 'Ride',
+        activeRouteName: 'ride'
+      },
+    ]
+  },
+  // {
+  //   title: 'Management',
+  //   nodeId: 'management',
+  //   children: [
+  //     {
+  //       canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
+  //       href: '/management/stock-adjustment',
+  //       title: 'Stock Adjustment',
+  //       activeRouteName: 'stockmanagement'
+  //     }
+  //   ]  
+  // }
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -122,10 +181,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
-  const [expanded, setExpanded] = React.useState([]);
+  const location = useLocation();
+  const [expanded, setExpanded] = React.useState([`${location.pathname.split('/')[1]}`]);
   const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
-  const location = useLocation();
   const { currentUser } = useContext(SharedContext);
 
   useEffect(() => {
@@ -136,7 +195,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const handleToggle = (event, nodeIds) => {
-    setExpanded(nodeIds);
+    setExpanded([nodeIds[0]]);
   };
 
   const handleSelect = (event, nodeIds) => {
@@ -171,7 +230,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
               {treeData.children.map((treeItem, j) => (
-                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} /> : ''
+                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} activeRouteName={treeItem.activeRouteName} /> : ''
               ))}
             </TreeItem>
           ))}

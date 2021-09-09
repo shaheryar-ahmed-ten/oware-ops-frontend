@@ -16,7 +16,8 @@ import {
 } from '@material-ui/core'
 import { SharedContext } from '../../../utils/common';
 import { checkPermission } from '../../../utils/auth';
-import { isRequired, isEmail, isUsername, isPhone } from '../../../utils/validators';
+import { isRequired, isEmail, isUsername, isPhone, isChar } from '../../../utils/validators';
+import MaskedInput from 'react-text-mask';
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
   const [filteredRoles, setFilteredRoles] = useState([]);
@@ -26,9 +27,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [phone, setPhone] = useState('');
-  const [portal, setPortal] = useState(null);
-  const [roleId, setRoleId] = useState(null);
-  const [companyId, setCompanyId] = useState(null);
+  const [portal, setPortal] = useState('');
+  const [roleId, setRoleId] = useState('');
+  const [companyId, setCompanyId] = useState('');
 
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
@@ -43,8 +44,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setUsername(selectedUser.username || '');
       setPhone(selectedUser.phone || '');
       setPortal((selectedUser.Role && selectedUser.Role.allowedApps) || '');
-      setRoleId(selectedUser.roleId || null);
-      setCompanyId(selectedUser.companyId || null);
+      setRoleId(selectedUser.roleId || '');
+      setCompanyId(selectedUser.companyId || '');
       setActive(!!selectedUser.isActive);
     } else {
       setFirstName('');
@@ -53,9 +54,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setUsername('');
       setPassword('');
       setPhone('');
-      setRoleId(null);
-      setPortal(null);
-      setCompanyId(null);
+      setRoleId('');
+      setPortal('');
+      setCompanyId('');
       setActive(true);
     }
   }, [selectedUser]);
@@ -66,13 +67,12 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
 
 
   const changePortal = portal => {
-    setRoleId(null);
-    setCompanyId(null);
+    setRoleId('');
+    setCompanyId('');
     setPortal(portal);
   }
 
   const handleSubmit = e => {
-
     const newUser = {
       firstName,
       lastName,
@@ -80,7 +80,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       email,
       roleId,
       companyId,
-      phone,
+      phone: phone.replace('-', ''),
       isActive,
       password
     }
@@ -96,6 +96,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       email: true,
       password: !!selectedUser
     });
+
     if (isRequired(firstName) &&
       isRequired(lastName) &&
       isRequired(portal) &&
@@ -103,11 +104,25 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       (portal != 'CUSTOMER' || isRequired(companyId)) &&
       isUsername(username) &&
       (!!selectedUser || isRequired(password)) &&
-      isEmail(email) &&
-      isPhone(phone)) {
+      isEmail(email)) {
       addUser(newUser);
     }
   }
+
+  const phoneNumberMask = [
+    /[0-9]/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/
+  ];
 
   return (
     <div style={{ display: "inline" }}>
@@ -130,10 +145,15 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     type="text"
                     variant="outlined"
                     value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z]*$/
+                      if (regex.test(e.target.value))
+                        setFirstName(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, firstName: true })}
                   />
                   {validation.firstName && !isRequired(firstName) ? <Typography color="error">First name is required!</Typography> : ''}
+                  {validation.firstName && !isChar(firstName) ? <Typography color="error">First name is only characters!</Typography> : ''}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -144,10 +164,15 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     type="text"
                     variant="outlined"
                     value={lastName}
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z]*$/
+                      if (regex.test(e.target.value))
+                        setLastName(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, lastName: true })}
                   />
                   {validation.lastName && !isRequired(lastName) ? <Typography color="error">Last name is required!</Typography> : ''}
+                  {validation.lastName && !isChar(lastName) ? <Typography color="error">Last name is only characters!</Typography> : ''}
                 </Grid>
               </Grid>
               <Grid item sm={12}>
@@ -229,18 +254,18 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple">Customer</InputLabel>
+                    <InputLabel htmlFor="outlined-age-native-simple">Company</InputLabel>
                     <Select
                       required
                       fullWidth={true}
                       id="companyId"
-                      label="Customer"
+                      label="Company"
                       variant="outlined"
                       value={companyId}
                       onChange={e => setCompanyId(e.target.value)}
                       onBlur={e => setValidation({ ...validation, companyId: true })}
                     >
-                      <MenuItem value="" disabled>Select a customer</MenuItem>
+                      <MenuItem value="" disabled>Select a company</MenuItem>
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
                     </Select>
                     {validation.companyId && !isRequired(companyId) ? <Typography color="error">Customer is required!</Typography> : ''}
@@ -248,7 +273,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 </Grid>
                 : ''}
               <Grid item sm={12}>
-                <TextField
+                {/* <TextField
                   fullWidth={true}
                   margin="dense"
                   id="phone"
@@ -258,9 +283,27 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   onBlur={e => setValidation({ ...validation, phone: true })}
+                /> */}
+                <MaskedInput
+                  className="mask-text"
+                  guide={false}
+                  showMask={true}
+                  margin="dense"
+                  variant="outlined"
+                  name="phone"
+                  mask={phoneNumberMask}
+                  label="Phone"
+                  id="Phone"
+                  type="text"
+                  value={phone}
+                  placeholder="Phone ( 032*-******* )"
+                  onChange={e => {
+                    setPhone(e.target.value)
+                  }}
+                  onBlur={e => setValidation({ ...validation, phone: true })}
                 />
                 {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
-                {validation.phone && !isPhone(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                {/* {validation.phone && !isRequired(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''} */}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -286,7 +329,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
                   Active
-              </Grid>
+                </Grid>
                 : ''}
             </Grid>
           </DialogContent>

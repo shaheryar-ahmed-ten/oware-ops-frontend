@@ -130,7 +130,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     type="number"
                     variant="outlined"
                     value={dimensionsCBM}
-                    onChange={e => setDimensionsCBM(e.target.value)}
+                    onChange={e => {
+                      if (e.target.value > -1)
+                        setDimensionsCBM(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, dimensionsCBM: true })}
                   />
                   {validation.dimensionsCBM && !isRequired(dimensionsCBM) ? <Typography color="error">Volume is required!</Typography> : ''}
@@ -144,7 +147,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     type="number"
                     variant="outlined"
                     value={weight}
-                    onChange={e => setWeight(e.target.value)}
+                    onChange={e => {
+                      if (e.target.value > -1)
+                        setWeight(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, weight: true })}
                   />
                   {validation.weight && !isRequired(weight) ? <Typography color="error">Weight is required!</Typography> : ''}
@@ -217,7 +223,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
                   Active
-              </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </DialogContent>

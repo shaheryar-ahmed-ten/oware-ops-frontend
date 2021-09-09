@@ -3,21 +3,48 @@ import {
   Grid,
   Button,
   TextField,
-  Select,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography
+  Typography,
+  makeStyles,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell
 } from '@material-ui/core'
-import { isRequired, isPhone } from '../../../utils/validators';
-import { dateToPickerFormat, digitize } from '../../../utils/common';
+import { isRequired, isPhone, isNumber } from '../../../utils/validators';
+import { checkForMatchInArray, dateFormat, dateToPickerFormat, getURL } from '../../../utils/common';
+import { Alert, Autocomplete } from '@material-ui/lab';
+import axios from 'axios';
+import { TableContainer } from '@material-ui/core';
+import { TableBody } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useLocation, useNavigate } from 'react-router';
+import MaskedInput from "react-text-mask";
+import "./outward.css"
 
-export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispatchOrder, getInventory, getWarehouses, getProducts,
-  open, handleClose, selectedDispatchOrder, customers, formErrors }) {
+const useStyles = makeStyles((theme) => ({
+  parentContainer: {
+    boxSizing: 'border-box',
+    padding: "30px 30px",
+  },
+  pageHeading: {
+    fontWeight: 600
+  },
+  pageSubHeading: {
+    fontWeight: 300
+  },
+  heading: {
+    fontWeight: 'bolder'
+  },
+}));
+
+export default function AddDispatchOrderView() {
+  const classes = useStyles();
+  const navigate = useNavigate();
+
+  const { state } = useLocation();
+  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
 
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -27,7 +54,6 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhone, setReceiverPhone] = useState('');
   const [availableQuantity, setAvailableQuantity] = useState(0);
-  const [inventory, setInventory] = useState(null);
   const [inventoryId, setInventoryId] = useState('');
   const [uom, setUom] = useState('');
   const [customerId, setCustomerId] = useState('');
@@ -36,29 +62,67 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   const [referenceId, setReferenceId] = useState('');
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
 
+  const [selectedCustomerName, setSelectedCustomerName] = useState('');
+
+  const [formErrors, setFormErrors] = useState([]);
+  const [customers, setCustomers] = useState([]);
+
+  const [inventories, setInventories] = useState([]);
+  const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState(null);
+
+  useEffect(() => {
+    getRelations();
+  }, []);
+  const getRelations = () => {
+    axios.get(getURL('/dispatch-order/relations'))
+      .then(res => {
+        setCustomers(res.data.customers);
+        // setWarehouses(res.data.warehouses);
+        // setProducts(res.data.products);
+      })
+      .catch((err) => {
+        console.log(err)
+      });
+  };
+
   useEffect(() => {
     if (!!selectedDispatchOrder) {
-      setQuantity(selectedDispatchOrder.quantity || '');
+      setQuantity(0);
       setShipmentDate(dateToPickerFormat(selectedDispatchOrder.shipmentDate) || '');
       setReceiverName(selectedDispatchOrder.receiverName || '');
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
       setReferenceId(selectedDispatchOrder.referenceId || '');
+      if (products.length > 0 && inventories.length == 0) {
+        selectedDispatchOrder.Inventories.forEach(inventory => {
+          setInventories((prevState) => ([
+            ...prevState,
+            {
+              product: products.find(_product => _product.id == inventory.Product.id),
+              // id: inventory.id,
+              id: inventoryId,
+              quantity: inventory.OrderGroup.quantity
+            }
+          ]))
+        });
+      }
     } else {
       setInventoryId('');
       setQuantity('');
       setCustomerId('');
       setWarehouseId('');
       setProductId('');
-      setShipmentDate(dateToPickerFormat(new Date()));
+      setShipmentDate(new Date());
       setReceiverName('');
-      setReceiverPhone('');
+      setReceiverPhone();
       setReferenceId('');
     }
-  }, [selectedDispatchOrder, customers])
+  }, [selectedDispatchOrder])
 
   useEffect(() => {
+    setInventories([]);
     setWarehouses([]);
     setWarehouseId('');
     setProducts([]);
@@ -76,22 +140,28 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
   }, [customerId]);
 
   useEffect(() => {
+    setInventories([]);
     setProducts([]);
     setProductId('');
     if (!customerId && !warehouseId) return;
     if (!!selectedDispatchOrder) {
       setProducts([selectedDispatchOrder.Inventory.Product]);
-      setProductId(selectedDispatchOrder.Inventory.productId);
+      // setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
-      setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
-      getProducts({ customerId, warehouseId })
-        .then(products => setProducts(products));
+      if (warehouse) {
+        setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
+        getProducts({ customerId, warehouseId })
+          .then(products => {
+            return setProducts(products)
+          });
+      }
     }
   }, [warehouseId])
 
   useEffect(() => {
     setUom('');
+    setQuantity('');
     setAvailableQuantity(0);
     setInventoryId('');
     if (customerId && warehouseId && productId) {
@@ -107,17 +177,96 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
     }
 
   }, [productId]);
+
+  const getInventory = (params) => {
+    return axios.get(getURL('/dispatch-order/inventory'), { params })
+      .then(res => res.data.inventory);
+  };
+
+  const getWarehouses = (params) => {
+    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+      .then(res => {
+        return res.data.warehouses
+      });
+  };
+
+  const getProducts = (params) => {
+    return axios.get(getURL('/dispatch-order/products'), { params })
+      .then((res) => {
+        return res.data.products
+      })
+  };
+
+
+  const addDispatchOrder = data => {
+    let apiPromise = null;
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
+    else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
+    apiPromise.then(res => {
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      setShowMessage({
+        message: "New dispatch order has been created."
+      });
+      setTimeout(() => {
+        navigate('/operations/dispatch-order')
+      }, 2000);
+    });
+  };
+
+  const updateDispatchOrdersTable = () => {
+    if (isRequired(customerId) &&
+      isRequired(warehouseId) &&
+      isRequired(receiverName) &&
+      isRequired(receiverPhone) &&
+      isRequired(productId) &&
+      isRequired(quantity)) {
+      // checking if particular product is already added once
+      // if yes
+      if (checkForMatchInArray(inventories, "id", inventoryId)) {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "This product is already added, please choose a different one." })
+      }
+      // if no
+      else {
+        setMessageType('green')
+        setInventories([...inventories, {
+          product: products.find(_product => _product.id == productId),
+          // id: productId,
+          id: inventoryId,
+          quantity
+        }])
+      }
+    }
+    else {
+      setValidation({
+        customerId: true,
+        warehouseId: true,
+        receiverName: true,
+        receiverPhone: true,
+        productId: true,
+        quantity: true
+      });
+    }
+  }
+
   // Done: uncomment dispatch orderId when DO is created
   const handleSubmit = e => {
+    setMessageType('green')
+    let strRecieverPhone = receiverPhone
+    let strRecPhone = strRecieverPhone.replace(/-/g, '');
     const newDispatchOrder = {
       quantity,
+      inventories,
       inventoryId,
       customerId,
       warehouseId,
       productId,
       shipmentDate,
       receiverName,
-      receiverPhone,
+      receiverPhone: strRecPhone,
       referenceId,
       internalIdForBusiness
     }
@@ -132,10 +281,8 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
       receiverName: true,
       receiverPhone: true
     });
-    if (isRequired(quantity) &&
-      isRequired(inventoryId) &&
+    if (
       isRequired(customerId) &&
-      isRequired(productId) &&
       isRequired(shipmentDate) &&
       isRequired(receiverName) &&
       isRequired(receiverPhone)) {
@@ -143,193 +290,291 @@ export default function AddDispatchOrderView({ dispatchedOrdersLength, addDispat
     }
   }
 
-  return (
-    <div style={{ display: "inline" }}>
-      <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle>
-            {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Edit Dispatch Order'}
-          </DialogTitle>
-          <DialogContent>
-            {formErrors}
-            <Grid container>
-              <Grid container spacing={2}>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="uom"
-                    label="UOM"
-                    type="text"
-                    variant="filled"
-                    value={uom}
-                    disabled
-                  />
-                </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="availableQuantity"
-                    label="Available Quantity"
-                    type="number"
-                    variant="filled"
-                    value={availableQuantity}
-                    disabled
-                  />
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Customer</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="customerId"
-                      label="Inventory"
-                      variant="outlined"
-                      value={customerId}
-                      disabled={!!selectedDispatchOrder}
-                      onChange={e => setCustomerId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, customerId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a customer</MenuItem>
-                      {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
-                    </Select>
-                    {validation.customerId && !isRequired(customerId) ? <Typography color="error">Customer is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Warehouse</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="warehouseId"
-                      label="Inventory"
-                      variant="outlined"
-                      value={warehouseId}
-                      disabled={!!selectedDispatchOrder}
-                      onChange={e => { setWarehouseId(e.target.value) }}
-                      onBlur={e => setValidation({ ...validation, warehouseId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a warehouse</MenuItem>
-                      {warehouses.map(warehouse => <MenuItem key={warehouse.id} value={warehouse.id} name="name">{warehouse.name}</MenuItem>)}
-                    </Select>
-                    {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : ''}
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>Product</InputLabel>
-                  <Select
-                    fullWidth={true}
-                    id="productId"
-                    label="Inventory"
-                    variant="outlined"
-                    value={productId}
-                    disabled={!!selectedDispatchOrder}
-                    onChange={e => setProductId(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, productId: true })}
-                  >
-                    <MenuItem value="" disabled>Select a product</MenuItem>
-                    {products.map(product => <MenuItem key={product.id} value={product.id}>{product.name}</MenuItem>)}
-                  </Select>
-                  {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : ''}
-                </FormControl>
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
-                  id="quantity"
-                  label="Quantity"
-                  type="number"
-                  variant="outlined"
-                  value={quantity}
-                  disabled={!!selectedDispatchOrder}
-                  onChange={e => setQuantity(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, quantity: true })}
-                />
-                {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''}
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="receiverName"
-                  label="Receiver Name"
-                  type="text"
-                  variant="outlined"
-                  value={receiverName}
-                  onChange={e => setReceiverName(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, receiverName: true })}
-                />
-                {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="receiverPhone"
-                  label="Receiver Phone"
-                  type="text"
-                  variant="outlined"
-                  value={receiverPhone}
-                  onChange={e => setReceiverPhone(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-                />
-                {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
-                {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="shipmentDate"
-                  label="Shipment Date"
-                  placeholder="Shipment Date"
-                  type="datetime-local"
-                  variant="outlined"
-                  value={shipmentDate}
-                  onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
-                  onBlur={e => setValidation({ ...validation, shipmentDate: true })}
-                />
-                {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : ''}
-              </Grid>
-              <Grid item sm={6}>
-                <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="referenceId"
-                  label="Reference Id"
-                  type="text"
-                  variant="outlined"
-                  value={referenceId}
-                  onChange={e => setReferenceId(e.target.value)}
-                  inputProps={{ maxLength: 30 }}
-                />
-              </Grid>
-            </Grid>
+  const handleCustomerSearch = (customerId, customerName) => {
+    setCustomerId(customerId);
+    setSelectedCustomerName(customerName)
+  }
 
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedDispatchOrder ? 'Add Dispatch Order' : 'Update Dispatch Order'}
+  const phoneNumberMask = [
+    /[0-9]/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/
+  ];
+
+  return (
+    <>
+      {formErrors}
+      <Grid container className={classes.parentContainer} spacing={3}>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>Add Dispatch Order</Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/operations/dispatch-order')}>
+              Cancel
             </Button>
-          </DialogActions>
-        </Dialog>
-      </form>
-    </div >
+          </Grid>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="customer"
+              options={customers}
+              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
+              getOptionLabel={(customer) => customer.name || ""}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  handleCustomerSearch(newValue.id, (newValue.name || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
+              onBlur={e => setValidation({ ...validation, customerId: true })}
+            />
+            {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
+        </Grid>
+        <Grid item sm={6}>
+          <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="warehouse"
+              key={warehouses}
+              options={warehouses}
+              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
+              getOptionLabel={(warehouse) => warehouse.name || ""}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  setWarehouseId(newValue.id)
+              }}
+              renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
+            // onBlur={e => setValidation({ ...validation, warehouseId: true })}
+            />
+            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="receiverName"
+            label="Receiver Name"
+            type="text"
+            variant="outlined"
+            value={receiverName}
+            onChange={e => setReceiverName(e.target.value)}
+          // onBlur={e => setValidation({ ...validation, receiverName: true })}
+          />
+          {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+        </Grid>
+        <Grid item sm={6}>
+          <MaskedInput
+            className="mask-text"
+            guide={true}
+            showMask={true}
+            margin="normal"
+            variant="outlined"
+            name="phone"
+            mask={phoneNumberMask}
+            label="Receiver Phone"
+            id="receiverPhone"
+            type="text"
+            value={receiverPhone}
+            placeholder="Reciever Phone(e.g 032*-*******)"
+            onChange={e => {
+              setReceiverPhone(e.target.value)
+            }}
+          // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+          />
+          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          {/* <TextField
+            fullWidth={true}
+            margin="dense"
+            id="receiverPhone"
+            label="Receiver Phone"
+            type="text"
+            variant="outlined"
+            value={receiverPhone}
+            placeholder="0346xxxxxx8"
+            onChange={e => setReceiverPhone(e.target.value)}
+            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+          />
+          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
+          {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+    */}
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="shipmentDate"
+            label="Shipment Date"
+            inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            placeholder="Shipment Date"
+            type="datetime-local"
+            variant="outlined"
+            value={shipmentDate}
+            onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
+          // onBlur={e => setValidation({ ...validation, shipmentDate: true })}
+          />
+          {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+        </Grid>
+        <Grid item sm={6}>
+          <TextField
+            fullWidth={true}
+            margin="dense"
+            id="referenceId"
+            label="Reference Id"
+            type="text"
+            variant="outlined"
+            value={referenceId}
+            onChange={e => setReferenceId(e.target.value)}
+            inputProps={{ maxLength: 30 }}
+          />
+
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h4" className={classes.heading}>Product Details</Typography>
+        </Grid>
+        <Grid container item xs={12} alignItems="center" spacing={1}>
+          <Grid item sm={4}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <Autocomplete
+                id="product"
+                key={products}
+                options={products}
+                getOptionLabel={(product) => product.name || ""}
+                onChange={(event, newValue) => {
+                  if (newValue)
+                    setProductId(newValue.id)
+                }}
+                renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
+              // onBlur={e => setValidation({ ...validation, productId: true })}
+              />
+              {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+            </FormControl>
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="normal"
+              InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+              id="quantity"
+              label="Quantity"
+              type="number"
+              variant="outlined"
+              value={quantity}
+              disabled={!!selectedDispatchOrder}
+              onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
+            // onBlur={e => setValidation({ ...validation, quantity: true })}
+            />
+            {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="normal"
+              id="availableQuantity"
+              label="Available Quantity"
+              type="number"
+              variant="filled"
+              value={availableQuantity}
+              disabled
+            />
+            {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </Grid>
+          <Grid item sm={2}>
+            <TextField
+              fullWidth={true}
+              margin="normal"
+              id="uom"
+              label="UOM"
+              type="text"
+              variant="filled"
+              value={uom}
+              disabled
+            />
+            {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </Grid>
+          <Grid item sm={2}>
+            <Button variant="contained" onClick={updateDispatchOrdersTable} color="primary" fullWidth >Add Dispatch</Button>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <TableContainer className={classes.parentContainer}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Name
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Quantity
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Available Quantity
+              </TableCell>
+              <TableCell
+                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                UoM
+              </TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {inventories.map((dispatchGroup, idx) => {
+              return (
+                <TableRow hover role="checkbox">
+                  <TableCell>
+                    {dispatchGroup.product.name}
+                  </TableCell>
+                  <TableCell>
+                    {dispatchGroup.product.UOM.name}
+                  </TableCell>
+                  <TableCell>
+                    {dispatchGroup.quantity}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteIcon color="error" key="delete" onClick={() =>
+                      setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
+                    } />
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {
+        inventories.length > 0 ?
+          <Grid container className={classes.parentContainer} xs={12} spacing={3}>
+            <Grid item xs={3}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button onClick={handleSubmit} color="primary" variant="contained">
+                  {!selectedDispatchOrder ? 'Add Products' : 'Update Product'}
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+          :
+          ''}
+
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
+    </>
   );
 }

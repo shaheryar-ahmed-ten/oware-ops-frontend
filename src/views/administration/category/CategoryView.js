@@ -12,7 +12,7 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core';
-import TableHeader from '../../TableHeader'
+import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
@@ -21,6 +21,8 @@ import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
 import AddCategoryView from './AddCategoryView';
 import { debounce } from 'lodash';
+import { DEBOUNCE_CONST } from '../../../Config';
+import MessageSnackbar from '../../../components/MessageSnackbar';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,24 +79,28 @@ export default function CategoryView() {
   const [formErrors, setFormErrors] = useState('');
   const [addCategoryViewOpen, setAddCategoryViewOpen] = useState(false);
   const [deleteCategoryViewOpen, setDeleteCategoryViewOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(null)
 
 
   const addCategory = data => {
     let apiPromise = null;
-    if (!selectedCategory) apiPromise = axios.post(getURL('/category'), data);
-    else apiPromise = axios.put(getURL(`/category/${selectedCategory.id}`), data);
+    if (!selectedCategory) apiPromise = axios.post(getURL('category'), data);
+    else apiPromise = axios.put(getURL(`category/${selectedCategory.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
+      setShowMessage({
+        message: "New category has been created."
+      })
       closeAddCategoryView();
       getCategories();
     });
   };
 
   const deleteCategory = data => {
-    axios.delete(getURL(`/category/${selectedCategory.id}`))
+    axios.delete(getURL(`category/${selectedCategory.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -126,7 +132,7 @@ export default function CategoryView() {
   }
 
   const _getCategories = (page, searchKeyword) => {
-    axios.get(getURL('/category'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('category'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages);
         setCategories(res.data.data);
@@ -135,7 +141,7 @@ export default function CategoryView() {
 
   const getCategories = useCallback(debounce((page, searchKeyword) => {
     _getCategories(page, searchKeyword);
-  }, 300), []);
+  }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
     getCategories(page, searchKeyword);
@@ -178,7 +184,7 @@ export default function CategoryView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Manage Category" buttons={headerButtons} />
+        <TableHeader title="Category" buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -227,6 +233,7 @@ export default function CategoryView() {
           />
         </Grid>
       </Grid>
+      <MessageSnackbar showMessage={showMessage} />
     </Paper>
   );
 }
