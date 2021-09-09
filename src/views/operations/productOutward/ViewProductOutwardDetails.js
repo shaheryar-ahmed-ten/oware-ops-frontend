@@ -196,10 +196,10 @@ function ViewProductOutwardDetails() {
                         className={classes.tableHeadText}>
                         REQUESTED QUANTITY
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         className={classes.tableHeadText}>
                         AVAILABLE QTY
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         className={classes.tableHeadText}>
                         SENT QTY
@@ -233,14 +233,20 @@ function ViewProductOutwardDetails() {
                             <TableCell>
                               {order.OrderGroup.quantity}
                             </TableCell>
-                            <TableCell>
+                            {/* <TableCell>
                               {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell>
                               {sentQt}
                             </TableCell>
                             <TableCell>
-                              {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
+                              {targetedPoInv ?
+                                targetedPoInv.OutwardGroup.availableQuantity - sentQt > 0 ?
+                                  targetedPoInv.OutwardGroup.availableQuantity - sentQt
+                                  :
+                                  0
+                                :
+                                'Not available'}
                             </TableCell>
                           </TableRow>
                         )
@@ -347,13 +353,13 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>
                   REQUESTED QUANTITY
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   className={classes.tableHeadText}>
                   AVAILABLE QUANTITY
-                </TableCell>
+                </TableCell> */}
                 <TableCell
                   className={classes.tableHeadText}>
-                  SENT QUANTITY
+                  DISPATCHED QUANTITY
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>
@@ -382,14 +388,20 @@ function ViewProductOutwardDetails() {
                       <TableCell>
                         {order.OrderGroup.quantity}
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
                         {sentQt}
                       </TableCell>
                       <TableCell>
-                        {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity - sentQt : 'Not available'}
+                        {targetedPoInv ?
+                          targetedPoInv.OutwardGroup.availableQuantity - sentQt > 0 ?
+                            targetedPoInv.OutwardGroup.availableQuantity - sentQt
+                            :
+                            0
+                          :
+                          'Not available'}
                       </TableCell>
                     </TableRow>
                   )
