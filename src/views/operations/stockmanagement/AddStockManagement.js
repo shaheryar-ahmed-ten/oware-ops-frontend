@@ -130,6 +130,7 @@ export default function AddStockManagement() {
     setUom('');
     setQuantity('');
     setAvailableQuantity(0);
+    setComment('');
     if (customerId && warehouseId && productId) {
       const product = products.find(product => product.id == productId);
       setUom(product.UOM.name);
@@ -510,7 +511,7 @@ export default function AddStockManagement() {
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <Autocomplete
                     id="reasonType"
-                    key={reasons}
+                    key={productId}
                     options={reasons}
                     getOptionLabel={(reasons) => reasons.name.charAt(0).toUpperCase() + reasons.name.slice(1).toLowerCase() || ""}
                     onChange={(event, newValue) => {
