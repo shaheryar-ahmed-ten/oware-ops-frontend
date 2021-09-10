@@ -96,7 +96,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="name"
-                    label={'Company Name'}
+                    label={'Vendor Name'}
                     type="text"
                     variant="outlined"
                     value={name}
@@ -111,7 +111,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="internalIdForBusiness"
-                    label={'Company ID'}
+                    label={'Vendor ID'}
                     type="text"
                     variant="outlined"
                     value={internalIdForBusiness}

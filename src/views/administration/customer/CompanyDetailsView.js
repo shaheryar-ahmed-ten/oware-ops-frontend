@@ -39,7 +39,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="company"
-                                            label={'Company Name'}
+                                            label={'Vendor Name'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
