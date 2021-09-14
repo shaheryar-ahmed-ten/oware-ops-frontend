@@ -110,6 +110,14 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                             value={selectedCompany.isActive ? 'Active' : 'In-Active'}
                                         />
                                     </Grid>
+<<<<<<< Updated upstream
+=======
+                                    <Grid item xs={12}>
+                                        {(selectedCompany && selectedCompany.logoId) ?
+                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>Logo Image</a>
+                                        : ''}
+                                     </Grid>
+>>>>>>> Stashed changes
                                 </Grid>
                             </Grid>
                         </DialogContent>

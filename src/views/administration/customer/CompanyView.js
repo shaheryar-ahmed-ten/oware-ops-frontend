@@ -56,12 +56,25 @@ export default function CompanyView({ relationType }) {
     label: 'ID',
     minWidth: 'auto',
     className: ''
-  }, {
+  },
+  ...(relationType == 'VENDOR' ? [{
     id: 'name',
     label: 'Vendor',
     minWidth: 'auto',
-    className: '',
-  }, ...(relationType == 'CUSTOMER' ? [{
+    className: ''
+  }] : [{
+      id: 'name',
+      label: 'Company',
+      minWidth: 'auto',
+      className: '',
+    }]),
+  //  {
+  //   id: 'name',
+  //   label: 'Company',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+   ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
     label: 'Company Type',
     minWidth: 'auto',
@@ -223,7 +236,11 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
+<<<<<<< Updated upstream
     onClick={() => setAddCompanyViewOpen(true)}>ADD VENDOR</Button>;
+=======
+    onClick={() => setAddCompanyViewOpen(true)}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR' }</Button>;
+>>>>>>> Stashed changes
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -252,7 +269,11 @@ export default function CompanyView({ relationType }) {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
+<<<<<<< Updated upstream
         <TableHeader title= "Vendor" buttons={headerButtons} />
+=======
+        <TableHeader title= {relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
+>>>>>>> Stashed changes
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
