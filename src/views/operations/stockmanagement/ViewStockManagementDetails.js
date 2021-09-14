@@ -212,13 +212,16 @@ function ViewStockManagementDetails() {
                                 <TableHead>
                                     <TableRow className={classes.shadedTableHeader}>
                                         {productsColumns.map((column) => (
-                                            <TableCell
-                                                key={column.id}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
-                                            >
-                                                {column.label}
-                                            </TableCell>
+                                            column.id !== 'comment' ?
+                                                <TableCell
+                                                    key={column.id}
+                                                    align={column.align}
+                                                    style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                                                >
+                                                    {column.label}
+                                                </TableCell>
+                                                :
+                                                ''
                                         ))}
                                     </TableRow>
                                 </TableHead>
@@ -226,21 +229,34 @@ function ViewStockManagementDetails() {
                                     {
                                         selectedInventoryWastages.Inventories.map((inventoryWastage) => {
                                             return (
-                                                <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
-                                                    {productsColumns.map((column) => {
-                                                        const value = inventoryWastage[column.id];
-                                                        return (
-                                                            <TableCell key={column.id} align={column.align}
-                                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}
-                                                            >
-                                                                {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
-                                                            </TableCell>
-                                                        );
-                                                    })}
-                                                </TableRow>
+                                                <>
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                                                        {productsColumns.map((column) => {
+                                                            const value = inventoryWastage[column.id];
+                                                            return (
+                                                                column.id !== 'comment' ?
+                                                                    <TableCell key={column.id} align={column.align}
+                                                                        style={{ borderBottom: '0' }}
+                                                                        className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}
+                                                                    >
+                                                                        {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
+                                                                    </TableCell>
+                                                                    :
+                                                                    ''
+                                                            );
+                                                        })}
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell align="right" style={{ fontWeight: 600 }}>Comment</TableCell>
+                                                        <TableCell align="left" colSpan={5}> {
+                                                            inventoryWastage.AdjustmentDetails.comment ? inventoryWastage.AdjustmentDetails.comment : '-'
+                                                        } </TableCell>
+                                                    </TableRow>
+                                                </>
                                             )
                                         })
                                     }
+
                                 </TableBody>
                             </Table>
                         </TableContainer>
