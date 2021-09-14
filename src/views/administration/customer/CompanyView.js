@@ -63,7 +63,7 @@ export default function CompanyView({ relationType }) {
     className: '',
   }, ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
-    label: 'Company Type',
+    label: 'Vendor Type',
     minWidth: 'auto',
     className: ''
   }] : []), {

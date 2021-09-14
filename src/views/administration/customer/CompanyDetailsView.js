@@ -25,7 +25,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="cId"
-                                            label={'Company ID'}
+                                            label={'Venodr ID'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
