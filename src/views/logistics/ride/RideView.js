@@ -117,7 +117,7 @@ export default function RideView() {
   }, {
     id: 'PickupArea',
     label: 'Pickup Area',
-    minWidth: 200,
+    maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.PickupArea.name}, ${entity.PickupArea.Zone.name}, ${entity.PickupArea.Zone.City.name}`
   },
@@ -127,16 +127,17 @@ export default function RideView() {
   //     minWidth: 'auto',
   //     className: ''
   // },
+  // {
+  //   id: 'pickupDate',
+  //   label: 'Pickup date',
+  //   minWidth: 150,
+  //   className: '',
+  //   format: dateFormat
+  // },
   {
-    id: 'pickupDate',
-    label: 'Pickup date',
-    minWidth: 150,
-    className: '',
-    format: dateFormat
-  }, {
     id: 'DropoffArea',
     label: 'Dropoff Area',
-    minWidth: 200,
+    maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.DropoffArea.name}, ${entity.DropoffArea.Zone.name}, ${entity.DropoffArea.Zone.City.name}`
   },
@@ -175,7 +176,7 @@ export default function RideView() {
     className: '',
     format: (value, entity) =>
       [
-        <EditIcon key="edit" onClick={() => navigate('create', {
+        <EditIcon key="edit" style={{ cursor: 'pointer' }} onClick={() => navigate('create', {
           state: {
             selectedRide: entity
           }
