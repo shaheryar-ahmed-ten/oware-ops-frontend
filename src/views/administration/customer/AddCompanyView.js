@@ -96,7 +96,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="name"
-                    label={'Vendor Name'}
+                    label={relationType == 'CUSTOMER' ? ` Company Name` : ` Vendor Name`}
                     type="text"
                     variant="outlined"
                     value={name}
@@ -111,7 +111,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="internalIdForBusiness"
-                    label={'Vendor ID'}
+                    label={relationType == 'CUSTOMER' ? ` Company ID` : ` Vendor ID`}
                     type="text"
                     variant="outlined"
                     value={internalIdForBusiness}
@@ -175,6 +175,37 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                   />
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <Button
+                      variant="contained"
+                      component="label"
+                      color={((selectedCompany && selectedCompany.logoId) || logoImage) ? 'primary' : 'default'}
+                      startIcon={<CloudUploadIcon />}
+                    >
+                      {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
+                      <input
+                        type="file"
+                        hidden
+                        onChange={(e) => validateLogoImage(e) }
+                        accept=".jpg,.png,.jpeg"
+                      />
+                    </Button>
+                    {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''}
+                  </FormControl>
+                  {/* <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="notes"
+                    label="gggg"
+                    type="text"
+                    variant="outlined"
+                    value={notes}
+                    onChange={e => setNotes(e.target.value)}
+                  /> */}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
