@@ -112,7 +112,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     </Grid>
                                     <Grid item xs={12}>
                                         {(selectedCompany && selectedCompany.logoId) ?
-                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>Company Logo Image</a>
+                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>Logo Image</a>
                                         : ''}
                                      </Grid>
                                 </Grid>

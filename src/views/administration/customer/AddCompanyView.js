@@ -121,7 +121,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="name"
-                    label={'Company Name'}
+                    label={relationType == 'CUSTOMER' ? ` Company Name` : ` Vendor Name`}
                     type="text"
                     variant="outlined"
                     value={name}
@@ -136,7 +136,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="internalIdForBusiness"
-                    label={'Company ID'}
+                    label={relationType == 'CUSTOMER' ? ` Company ID` : ` Vendor ID`}
                     type="text"
                     variant="outlined"
                     value={internalIdForBusiness}
@@ -211,7 +211,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       color={((selectedCompany && selectedCompany.logoId) || logoImage) ? 'primary' : 'default'}
                       startIcon={<CloudUploadIcon />}
                     >
-                      Company Logo Image {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
+                      {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
                       <input
                         type="file"
                         hidden
@@ -219,7 +219,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>
-                    {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Company Logo image is required!</Typography> : ''}
+                    {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''}
                   </FormControl>
                   {/* <TextField
                     fullWidth={true}
