@@ -110,6 +110,11 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                             value={selectedCompany.isActive ? 'Active' : 'In-Active'}
                                         />
                                     </Grid>
+                                    <Grid item xs={12}>
+                                        {(selectedCompany && selectedCompany.logoId) ?
+                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>Company Logo Image</a>
+                                        : ''}
+                                     </Grid>
                                 </Grid>
                             </Grid>
                         </DialogContent>
