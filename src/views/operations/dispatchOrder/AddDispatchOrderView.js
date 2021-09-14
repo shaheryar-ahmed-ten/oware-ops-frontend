@@ -222,7 +222,8 @@ export default function AddDispatchOrderView() {
       isRequired(receiverName) &&
       isRequired(receiverPhone) &&
       isRequired(productId) &&
-      isRequired(quantity)) {
+      isRequired(quantity) &&
+      isPhone(receiverPhone.replace(/-/g, ''))) {
       // checking if particular product is already added once
       // if yes
       if (checkForMatchInArray(inventories, "id", inventoryId)) {
@@ -285,7 +286,8 @@ export default function AddDispatchOrderView() {
       isRequired(customerId) &&
       isRequired(shipmentDate) &&
       isRequired(receiverName) &&
-      isRequired(receiverPhone)) {
+      isRequired(receiverPhone)
+    ) {
       addDispatchOrder(newDispatchOrder);
     }
   }
@@ -392,6 +394,7 @@ export default function AddDispatchOrderView() {
             }}
           // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
+          {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           {/* <TextField
             fullWidth={true}
