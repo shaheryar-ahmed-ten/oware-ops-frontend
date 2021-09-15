@@ -32,6 +32,7 @@ import InwardProductDetailsView from './views/operations/productInward/InwardPro
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
+import RideDetailsView from './views/logistics/ride/RideDetailsView';
 
 
 const routes = (user) => [
@@ -171,6 +172,10 @@ const routes = (user) => [
       {
         path: 'ride/create',
         element: <AddRideView />
+      },
+      {
+        path: 'ride/view/:uid',
+        element: <RideDetailsView />
       }
     ]
   },
