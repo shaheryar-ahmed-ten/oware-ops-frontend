@@ -50,6 +50,7 @@ function RideDetailsView() {
     const classes = useStyles();
     const navigate = useNavigate();
     const [selectedRide, setSelectedRide] = useState(null);
+    const [productManifestPreview, setProductManifestPreview] = useState('')
     const { uid } = useParams();
 
     useEffect(() => {
@@ -64,9 +65,17 @@ function RideDetailsView() {
     const _getSelectedRide = () => {
         axios.get(getURL(`/ride/single/${uid}`))
             .then(res => {
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 setSelectedRide(res.data.data)
             });
+        axios.get(getURL(`/ride/preview/7`))
+            .then((res) => {
+                console.log(res)
+                setProductManifestPreview(res.data.preview)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     const componentRef = useRef();
@@ -259,6 +268,61 @@ function RideDetailsView() {
                         <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
                     </Grid>
                 </Grid>
+                <TableContainer className={classes.parentContainer}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow className={classes.shadedTableHeader}>
+                                <TableCell
+                                    className={classes.tableHeadText}>
+                                    CATEGORY
+                                </TableCell>
+                                <TableCell
+                                    className={classes.tableHeadText}>
+                                    NAME
+                                </TableCell>
+                                <TableCell
+                                    className={classes.tableHeadText}>
+                                    QUANTITY
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                selectedRide.RideProducts.map((product) => {
+                                    return (
+                                        <TableRow>
+                                            <TableCell>
+                                                {product.Category.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {product.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {product.quantity}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs={12}>
+                        {(selectedRide && selectedRide.Manifest) ?
+                            <>
+                                <Grid container item xs={12} spacing={3}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h5" className={classes.pageSubHeading}>Product Manifest</Typography>
+                                    </Grid>
+                                </Grid>
+                                <a target="_blank" href={productManifestPreview}>Product Manifest Image</a>
+                            </>
+                            : ''}
+                    </Grid>
+                </Grid>
+
 
             </Grid>
         </>
