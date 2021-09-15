@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
+    Box,
     Button,
     Grid,
     IconButton,
@@ -85,6 +86,123 @@ function RideDetailsView() {
 
     return selectedRide ?
         <>
+            {/* Only for printing */}
+            <Box display="none" displayPrint="block" ref={componentRef}>
+                <Box style={{ padding: "25mm 15mm" }}>
+                    <Grid container item xs={12} justifyContent="space-between">
+                        <Grid item xs={12}>
+                            <Typography variant="h3" className={classes.heading}>Ride Details</Typography>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                        <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>COMPANY & VEHICLE</Typography>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Company</Grid>
+                            <Grid item xs={2}>{selectedRide.Customer.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Status</Grid>
+                            <Grid item xs={2}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Vehicle</Grid>
+                            <Grid item xs={2}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Driver</Grid>
+                            <Grid item xs={2}>{selectedRide.Driver.name || '-'}</Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                        <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>PICKUP & DROPOFF</Typography>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>PickupCity</Grid>
+                            <Grid item xs={6}>{selectedRide.PickupArea.Zone.City.name || '-'}</Grid>
+                            <Grid item xs={6}>PickupZone</Grid>
+                            <Grid item xs={6}>{selectedRide.PickupArea.Zone.name || '-'}</Grid>
+                            <Grid item xs={6}>PickupArea</Grid>
+                            <Grid item xs={6}>{selectedRide.PickupArea.name || '-'}</Grid>
+                            <Grid item xs={6}>PickupAddress</Grid>
+                            <Grid item xs={6}>{selectedRide.pickupAddress || '-'}</Grid>
+                            <Grid item xs={6}>DropoffCity</Grid>
+                            <Grid item xs={6}>{selectedRide.DropoffArea.Zone.City.name || '-'}</Grid>
+                            <Grid item xs={6}>DropoffZone</Grid>
+                            <Grid item xs={6}>{selectedRide.DropoffArea.Zone.name || '-'}</Grid>
+                            <Grid item xs={6}>DropoffArea</Grid>
+                            <Grid item xs={6}>{selectedRide.DropoffArea.name || '-'}</Grid>
+                            <Grid item xs={6}>DropoffAddress</Grid>
+                            <Grid item xs={6}>{selectedRide.dropoffAddress || '-'}</Grid>
+                            <Grid item xs={6}>PickupDate</Grid>
+                            <Grid item xs={6}>{dateFormat(selectedRide.pickupDate) || '-'}</Grid>
+                            <Grid item xs={6}>dropoffDateDate</Grid>
+                            <Grid item xs={6}>{dateFormat(selectedRide.dropoffDate) || '-'}</Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                        <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>COST & PRICE</Typography>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid style={{ fontWeight: 600 }} item xs={5}>Price (Rs.)</Grid>
+                            <Grid item xs={1}>{selectedRide.price || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={5}>Cost (Rs.)</Grid>
+                            <Grid item xs={1}>{selectedRide.cost || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={5}>Customer Discount (Rs.)</Grid>
+                            <Grid item xs={1}>{selectedRide.customerDiscount || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={5}>Driver Incentive (Rs.)</Grid>
+                            <Grid item xs={1}>{selectedRide.driverIncentive || '-'}</Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                        <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>PRODUCT DETAILS</Typography>
+                        </Grid>
+                        <TableContainer className={classes.parentContainer}>
+                            <Table stickyHeader aria-label="sticky table">
+                                <TableHead>
+                                    <TableRow className={classes.shadedTableHeader}>
+                                        <TableCell
+                                            className={classes.tableHeadText}>
+                                            CATEGORY
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.tableHeadText}>
+                                            NAME
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.tableHeadText}>
+                                            QUANTITY
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        selectedRide.RideProducts.map((product) => {
+                                            return (
+                                                <TableRow>
+                                                    <TableCell>
+                                                        {product.Category.name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {product.name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {product.quantity}
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Grid>
+
+                </Box>
+            </Box>
+            {/* Only for Displaying */}
             <Grid container className={classes.parentContainer} spacing={3}>
                 <Grid container item xs={12} justifyContent="space-between">
                     <Grid item xs={11}>
