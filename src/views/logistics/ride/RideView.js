@@ -31,6 +31,7 @@ import TableStatsHeader from '../../../components/TableStatsHeader';
 import { useNavigate } from 'react-router';
 import fileDownload from 'js-file-download';
 import moment from 'moment';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -174,10 +175,13 @@ export default function RideView() {
   }, {
     id: 'actions',
     label: '',
-    minWidth: 'auto',
+    minWidth: 120,
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate(`view/${entity.id}`)} />,
         <EditIcon key="edit" style={{ cursor: 'pointer' }} onClick={() => navigate('create', {
           state: {
             selectedRide: entity
