@@ -18,6 +18,7 @@ import { capitalize } from 'lodash';
 import { isChar, isRequired } from '../../../utils/validators';
 import { upload } from '../../../utils/upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { getURL, digitize } from '../../../utils/common';
 
 export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -110,7 +111,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle>
-            {!selectedCompany ? `Add Company` : `Edit Company`}
+            {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -128,8 +129,9 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onChange={e => setName(e.target.value)}
                     onBlur={e => setValidation({ ...validation, name: true })}
                   />
-                  {validation.name && !isRequired(name) ? <Typography color="error">Company name is required!</Typography> : ''}
-                  {validation.name && !isChar(name) ? <Typography color="error">Company name is only characters!</Typography> : ''}
+                  {validation.name && !isRequired(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is required!</Typography> : ''}
+                  {validation.name && !isChar(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is only characters!</Typography> : ''}
+              
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -143,7 +145,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onChange={e => setInternalIdForBusiness(e.target.value)}
                     onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
                   />
-                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{'Company ID'} is required!</Typography> : ''}
+                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
                 </Grid>
               </Grid>
               {relationType == 'CUSTOMER' ?
@@ -163,7 +165,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         <MenuItem value="" disabled>Select a customer type</MenuItem>
                         {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
                       </Select>
-                      {validation.type && !isRequired(type) ? <Typography color="error">Company type is required!</Typography> : ''}
+                      {validation.type && !isRequired(type) ? <Typography color="error"> {relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}  type is required!</Typography> : ''}
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -221,6 +223,13 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     </Button>
                     {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''}
                   </FormControl>
+                  {(selectedCompany && selectedCompany.logoId) ?
+                  <Grid item xs={12} style={{textAlign: 'center'}}>
+                      {(selectedCompany && selectedCompany.logoId) ?
+                          <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
+                      : ''}
+                  </Grid>
+                  : ''}
                   {/* <TextField
                     fullWidth={true}
                     margin="dense"
