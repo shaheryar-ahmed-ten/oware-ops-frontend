@@ -52,9 +52,11 @@ function AuditView() {
             .then(res => {
                 if (res.data && res.data.data && res.data.data.length > 0) {
                     setDateTrack(res.data.data[0].updatedAt)
-                    // dateTrackerArr = [...dateTrackerArr, res.data.data[0].updatedAt]
                     setPageCount(res.data.pages)
                     setActivityLogs(res.data.data)
+                }
+                else {
+                    setActivityLogs([])
                 }
             });
     }
@@ -89,7 +91,6 @@ function AuditView() {
                                 activityLogs.map((activityLog, idx) => {
                                     let allowDivider = false
                                     if (!dateTrackerArr.includes(dividerDateFormat(activityLog.updatedAt))) {
-                                        console.log(idx, dateTrackerArr, !dateTrackerArr.includes(dividerDateFormat(activityLog.updatedAt)))
                                         dateTrackerArr = [...dateTrackerArr, dividerDateFormat(activityLog.updatedAt)]
                                         allowDivider = true
                                     }
