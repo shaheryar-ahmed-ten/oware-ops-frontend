@@ -14,13 +14,14 @@ import {
   Checkbox,
   Typography
 } from '@material-ui/core'
+import DeleteSharpIcon from '@material-ui/icons/DeleteSharp';
 import { capitalize } from 'lodash';
 import { isChar, isRequired } from '../../../utils/validators';
 import { upload } from '../../../utils/upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { getURL, digitize } from '../../../utils/common';
 
-export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors }) {
+export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors, removeLogoId }) {
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
@@ -57,7 +58,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     if (relationType == 'VENDOR') setType(null);
   }, [relationType]);
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     const newCompany = {
       name,
       internalIdForBusiness,
@@ -75,7 +76,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       internalIdForBusiness: true,
       contactId: true,
       relationType: true,
-      logoImage:true,
+      // logoImage: true,
       type: relationType == 'CUSTOMER'
     });
     if (isRequired(name)
@@ -86,25 +87,27 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
 
       if (logoImage) [newCompany.logoId] = await upload([logoImage], 'customer');
 
-      if (!isRequired(newCompany.logoId)) return
+      // if (!isRequired(newCompany.logoId)) return
       console.log(newCompany)
 
       addCompany(newCompany);
     }
   }
-  const validateLogoImage  = (event) => {
-    const checkFile =  event.target.files[0];
+  const validateLogoImage = (event) => {
+    const checkFile = event.target.files[0];
     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Company Logo image must be only image file!")
-     return false;
+      return false;
     }
     const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
       alert("Company Logo image must smaller than 1MB!");
       return false;
-    } 
-    setLogoImage(checkFile)
- }
+    }
+    const logoFile = checkFile? checkFile: null;
+    console.log(logoFile)
+    setLogoImage(logoFile)
+  }
 
   return (
     <div style={{ display: "inline" }}>
@@ -131,7 +134,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   />
                   {validation.name && !isRequired(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is required!</Typography> : ''}
                   {validation.name && !isChar(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is only characters!</Typography> : ''}
-              
+
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -217,29 +220,21 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => validateLogoImage(e) }
+                        onChange={(e) => validateLogoImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>
-                    {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''}
+                    {/* {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''} */}
                   </FormControl>
                   {(selectedCompany && selectedCompany.logoId) ?
-                  <Grid item xs={12} style={{textAlign: 'center'}}>
+                    <Grid item xs={12} style={{ textAlign: 'center' }}>
                       {(selectedCompany && selectedCompany.logoId) ?
-                          <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
-                      : ''}
-                  </Grid>
-                  : ''}
-                  {/* <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="notes"
-                    label="gggg"
-                    type="text"
-                    variant="outlined"
-                    value={notes}
-                    onChange={e => setNotes(e.target.value)}
-                  /> */}
+                        <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
+                        : ''}
+                      <DeleteSharpIcon onClick={() => removeLogoId()} />
+                    </Grid>
+                    : ''}
+
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
@@ -251,7 +246,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                   />
                   Active
-              </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </DialogContent>
@@ -263,7 +258,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           </DialogActions>
         </Dialog>
       </form>
-   
+
     </div>
   );
 }
