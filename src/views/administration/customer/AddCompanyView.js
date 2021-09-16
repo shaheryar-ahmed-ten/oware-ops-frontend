@@ -95,18 +95,44 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   }
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
-    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-      alert("Company Logo image must be only image file!")
-      return false;
-    }
-    const isLt2M = checkFile.size / 1024 / 1024 < 1;
-    if (!isLt2M) {
-      alert("Company Logo image must smaller than 1MB!");
-      return false;
-    }
-    const logoFile = checkFile? checkFile: null;
-    console.log(logoFile)
-    setLogoImage(logoFile)
+    const reader = new FileReader();
+    reader.readAsDataURL(checkFile);
+    reader.addEventListener('load', event => {
+      const _loadedImageUrl = event.target.result;
+      const image = document.createElement('img');
+      image.src = _loadedImageUrl;
+      image.addEventListener('load', () => {
+        const { width, height } = image;
+        if (width > 142 && height >37){
+          alert("Image Size should be less than or equal to 142*37")
+            return false;
+        }
+        if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+          alert("Company Logo image must be only image file!")
+          return false;
+        }
+        const isLt2M = checkFile.size / 1024 / 1024 < 1;
+        if (!isLt2M) {
+          alert("Company Logo image must smaller than 1MB!");
+          return false;
+        }
+        const logoFile = checkFile? checkFile: null;
+        console.log(logoFile)
+        setLogoImage(logoFile)
+      });
+    });
+    // if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+    //   alert("Company Logo image must be only image file!")
+    //   return false;
+    // }
+    // const isLt2M = checkFile.size / 1024 / 1024 < 1;
+    // if (!isLt2M) {
+    //   alert("Company Logo image must smaller than 1MB!");
+    //   return false;
+    // }
+    // const logoFile = checkFile? checkFile: null;
+    // console.log(logoFile)
+    // setLogoImage(logoFile)
   }
 
   return (
