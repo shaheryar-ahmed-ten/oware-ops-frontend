@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 import React from 'react'
 import { dateFormat, dividerDateFormat } from '../utils/common';
 
@@ -6,12 +6,12 @@ const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         display: 'flex',
-        marginTop: 10,
-        // marginBottom: 10
+        marginTop: 15,
+        marginBottom: 15
     },
     dividerLine: {
-        height: 1,
-        backgroundColor: 'orange',
+        height: 1.5,
+        backgroundColor: 'rgba(202,201,201,0.4)',
         width: '100%',
     },
     labelDiv: {
@@ -30,8 +30,10 @@ function AuditDivider({ label, date }) {
     return (
         <>
             <div className={classes.root}>
-                <div className={classes.dividerLine} style={{ flex: '1' }}></div>
-                <div className={classes.labelDiv} style={{ flex: '1' }}>{dividerDateFormat(date)}</div>
+                <div className={classes.dividerLine} style={{ flex: '0.55' }}></div>
+                <div className={classes.labelDiv} style={{ flex: '1' }}>
+                    <Typography>{dividerDateFormat(date)}</Typography>
+                </div>
                 <div className={classes.dividerLine} style={{ flex: '6' }}></div>
             </div>
         </>

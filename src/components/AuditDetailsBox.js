@@ -6,13 +6,13 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         display: 'flex',
         flexFlow: 'column',
-        backgroundColor: 'rgba(202,201,201,0.5)',
+        backgroundColor: 'rgba(202,201,201,0.3)',
         boxSizing: 'border-box',
         padding: '2rem 1rem',
         marginLeft: '10%',
         marginRight: '10%',
         borderRadius: '4px',
-        marginBottom: 10
+        marginBottom: 20
     },
 }))
 
