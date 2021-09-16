@@ -110,9 +110,14 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                             value={selectedCompany.isActive ? 'Active' : 'In-Active'}
                                         />
                                     </Grid>
+                                    {(selectedCompany && selectedCompany.logoId) ?
+                                    <Grid item xs={12} style={{fontWeight:600 }}>
+                                            Logo
+                                    </Grid>
+                                    : ''}
                                     <Grid item xs={12} style={{textAlign: 'center'}}>
                                         {(selectedCompany && selectedCompany.logoId) ?
-                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
+                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="Company Logo" /></a>
                                         : ''}
                                      </Grid>
                                 </Grid>
