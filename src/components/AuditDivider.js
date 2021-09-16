@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
 function AuditDivider({ label, date }) {
     const classes = useStyles();
-
     return (
         <>
             <div className={classes.root}>
