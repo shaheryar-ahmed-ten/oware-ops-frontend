@@ -33,6 +33,7 @@ import StockManagementView from './views/operations/stockmanagement/StockManagem
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
 import RideDetailsView from './views/logistics/ride/RideDetailsView';
+import AuditView from './views/administration/audit/AuditView';
 
 
 const routes = (user) => [
@@ -67,6 +68,10 @@ const routes = (user) => [
       {
         path: 'product',
         element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ProductView /> : <Navigate to="404" />
+      },
+      {
+        path: 'audit-logs',
+        element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <AuditView /> : <Navigate to="404" />
       },
       {
         path: '/',
