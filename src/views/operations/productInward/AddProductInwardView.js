@@ -102,6 +102,12 @@ export default function AddProductInwardView() {
     else setUom('');
   }
 
+  // Clear the selected products on company/warehouse change 
+  useEffect(() => {
+    setQuantity('');
+    setProductGroups([]);
+  }, [customerId, warehouseId])
+
   useEffect(() => {
     if (!!selectedProductInward) {
       setQuantity(0);
@@ -290,6 +296,7 @@ export default function AddProductInwardView() {
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
                 id="Product"
+                key={productGroups}
                 options={products}
                 getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
@@ -297,7 +304,7 @@ export default function AddProductInwardView() {
                     selectProduct(newValue.id)
                 }}
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                onBlur={e => setValidation({ ...validation, productId: true })}
+              // onBlur={e => setValidation({ ...validation, productId: true })}
               />
               {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </FormControl>
@@ -313,7 +320,7 @@ export default function AddProductInwardView() {
               value={quantity}
               disabled={viewOnly}
               onChange={e => setQuantity(e.target.value < 0 ? e.target.value == 0 : parseInt(Math.round(e.target.value)))}
-              onBlur={e => setValidation({ ...validation, quantity: true })}
+              // onBlur={e => setValidation({ ...validation, quantity: true })}
               InputProps={{ inputProps: { min: 1 } }}
               margin="normal"
             />

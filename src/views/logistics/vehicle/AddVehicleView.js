@@ -107,35 +107,35 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
     }
   }
 
-  
+
   const validateRunningPaperImage = (event) => {
     const checkFile = event.target.files[0];
     // let dimentions
     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Running Paper image must be only image file!")
-     return false;
+      return false;
     }
     const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
       alert("Running Paper image must smaller than 1MB!");
       return false;
-    }  
-    setRunningPaperImage(checkFile)  
-}
+    }
+    setRunningPaperImage(checkFile)
+  }
 
- const validatePermitFileImage  = (event) => {
-    const checkFile =  event.target.files[0];
+  const validatePermitFileImage = (event) => {
+    const checkFile = event.target.files[0];
     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Route Permit image must be only image file!")
-     return false;
+      return false;
     }
     const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
       alert("Route Permit image must smaller than 1MB!");
       return false;
-    } 
+    }
     setRoutePermit(checkFile)
- }
+  }
 
   return (
     <div style={{ display: "inline" }}>
@@ -205,7 +205,11 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                     type="text"
                     variant="outlined"
                     value={registrationNumber}
-                    onChange={e => setRegistrationNumber(e.target.value)}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z0-9_-]*$/
+                      if (regex.test(e.target.value))
+                        setRegistrationNumber(e.target.value)
+                    }}
                     onBlur={e => setValidation({ ...validation, registrationNumber: true })}
                   />
                   {validation.registrationNumber && !isRequired(registrationNumber) ? <Typography color="error">Registraion Number is required!</Typography> : ''}
@@ -269,7 +273,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                       <input
                         type="file"
                         hidden
-                        onChange={(e) =>  validatePermitFileImage(e)}
+                        onChange={(e) => validatePermitFileImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>

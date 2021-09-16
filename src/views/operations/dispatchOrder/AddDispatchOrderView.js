@@ -122,6 +122,7 @@ export default function AddDispatchOrderView() {
   }, [selectedDispatchOrder])
 
   useEffect(() => {
+    setInventories([]);
     setWarehouses([]);
     setWarehouseId('');
     setProducts([]);
@@ -139,6 +140,7 @@ export default function AddDispatchOrderView() {
   }, [customerId]);
 
   useEffect(() => {
+    setInventories([]);
     setProducts([]);
     setProductId('');
     if (!customerId && !warehouseId) return;
@@ -147,11 +149,13 @@ export default function AddDispatchOrderView() {
       // setProductId(selectedDispatchOrder.Inventory.productId);
     } else {
       const warehouse = warehouses.find(element => warehouseId == element.id);
-      setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
-      getProducts({ customerId, warehouseId })
-        .then(products => {
-          return setProducts(products)
-        }); // INPROGRESS: products with 0 available qty are also comming.
+      if (warehouse) {
+        setInternalIdForBusiness(`DO-${warehouse.businessWarehouseCode}-`);
+        getProducts({ customerId, warehouseId })
+          .then(products => {
+            return setProducts(products)
+          });
+      }
     }
   }, [warehouseId])
 
@@ -218,7 +222,8 @@ export default function AddDispatchOrderView() {
       isRequired(receiverName) &&
       isRequired(receiverPhone) &&
       isRequired(productId) &&
-      isRequired(quantity)) {
+      isRequired(quantity) &&
+      isPhone(receiverPhone.replace(/-/g, ''))) {
       // checking if particular product is already added once
       // if yes
       if (checkForMatchInArray(inventories, "id", inventoryId)) {
@@ -281,7 +286,8 @@ export default function AddDispatchOrderView() {
       isRequired(customerId) &&
       isRequired(shipmentDate) &&
       isRequired(receiverName) &&
-      isRequired(receiverPhone)) {
+      isRequired(receiverPhone)
+    ) {
       addDispatchOrder(newDispatchOrder);
     }
   }
@@ -341,6 +347,7 @@ export default function AddDispatchOrderView() {
           <FormControl margin="dense" fullWidth={true} variant="outlined">
             <Autocomplete
               id="warehouse"
+              key={warehouses}
               options={warehouses}
               defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
               getOptionLabel={(warehouse) => warehouse.name || ""}
@@ -349,7 +356,7 @@ export default function AddDispatchOrderView() {
                   setWarehouseId(newValue.id)
               }}
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
-              onBlur={e => setValidation({ ...validation, warehouseId: true })}
+            // onBlur={e => setValidation({ ...validation, warehouseId: true })}
             />
             {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
@@ -364,7 +371,7 @@ export default function AddDispatchOrderView() {
             variant="outlined"
             value={receiverName}
             onChange={e => setReceiverName(e.target.value)}
-            onBlur={e => setValidation({ ...validation, receiverName: true })}
+          // onBlur={e => setValidation({ ...validation, receiverName: true })}
           />
           {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
@@ -385,8 +392,9 @@ export default function AddDispatchOrderView() {
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
-            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+          // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
+          {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           {/* <TextField
             fullWidth={true}
@@ -419,7 +427,7 @@ export default function AddDispatchOrderView() {
             variant="outlined"
             value={shipmentDate}
             onChange={e => setShipmentDate(dateToPickerFormat(e.target.value))}
-            onBlur={e => setValidation({ ...validation, shipmentDate: true })}
+          // onBlur={e => setValidation({ ...validation, shipmentDate: true })}
           />
           {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
@@ -446,6 +454,7 @@ export default function AddDispatchOrderView() {
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <Autocomplete
                 id="product"
+                key={products}
                 options={products}
                 getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
@@ -453,7 +462,7 @@ export default function AddDispatchOrderView() {
                     setProductId(newValue.id)
                 }}
                 renderInput={(params) => <TextField {...params} label="Product" variant="outlined" />}
-                onBlur={e => setValidation({ ...validation, productId: true })}
+              // onBlur={e => setValidation({ ...validation, productId: true })}
               />
               {validation.productId && !isRequired(productId) ? <Typography color="error">Product is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </FormControl>
@@ -470,7 +479,7 @@ export default function AddDispatchOrderView() {
               value={quantity}
               disabled={!!selectedDispatchOrder}
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
-              onBlur={e => setValidation({ ...validation, quantity: true })}
+            // onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>

@@ -29,6 +29,9 @@ import MessageSnackbar from '../../../components/MessageSnackbar';
 import { Select } from '@material-ui/core';
 import TableStatsHeader from '../../../components/TableStatsHeader';
 import { useNavigate } from 'react-router';
+import fileDownload from 'js-file-download';
+import moment from 'moment';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -117,7 +120,7 @@ export default function RideView() {
   }, {
     id: 'PickupArea',
     label: 'Pickup Area',
-    minWidth: 200,
+    maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.PickupArea.name}, ${entity.PickupArea.Zone.name}, ${entity.PickupArea.Zone.City.name}`
   },
@@ -127,16 +130,17 @@ export default function RideView() {
   //     minWidth: 'auto',
   //     className: ''
   // },
+  // {
+  //   id: 'pickupDate',
+  //   label: 'Pickup date',
+  //   minWidth: 150,
+  //   className: '',
+  //   format: dateFormat
+  // },
   {
-    id: 'pickupDate',
-    label: 'Pickup date',
-    minWidth: 150,
-    className: '',
-    format: dateFormat
-  }, {
     id: 'DropoffArea',
     label: 'Dropoff Area',
-    minWidth: 200,
+    maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.DropoffArea.name}, ${entity.DropoffArea.Zone.name}, ${entity.DropoffArea.Zone.City.name}`
   },
@@ -171,11 +175,14 @@ export default function RideView() {
   }, {
     id: 'actions',
     label: '',
-    minWidth: 'auto',
+    minWidth: 120,
     className: '',
     format: (value, entity) =>
       [
-        <EditIcon key="edit" onClick={() => navigate('create', {
+        <VisibilityIcon key="view"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate(`view/${entity.id}`)} />,
+        <EditIcon key="edit" style={{ cursor: 'pointer' }} onClick={() => navigate('create', {
           state: {
             selectedRide: entity
           }
@@ -309,7 +316,9 @@ export default function RideView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const filters = { ALL: 'ALL', ...statuses };
+
   const filterDropdown = <FormControl className={classes.formControl}>
     <Select
       value={currentFilter}
@@ -326,27 +335,31 @@ export default function RideView() {
       ))}
     </Select>
   </FormControl >
+
+  const exportToExcel = () => {
+    axios.get(getURL('ride/export'), {
+      responseType: 'blob',
+      params: { page, search: searchKeyword },
+    }).then(response => {
+      fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
+
   const addRideButton = <Button
     variant="contained"
     color="primary"
     size="small"
     // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
     onClick={() => navigate('/logistics/ride/create')}> ADD RIDE</Button >;
-  const addRideModal = <AddRideView
-    formErrors={formErrors}
-    key={3}
-    vehicles={vehicles}
-    drivers={drivers}
-    statuses={statuses}
-    cities={cities}
-    areas={areas}
-    zones={zones}
-    companies={companies}
-    productCategories={productCategories}
-    selectedRide={selectedRide}
-    open={addRideViewOpen}
-    addRide={addRide}
-    handleClose={() => closeAddRideView()} />
+
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    onClick={() => exportToExcel()
+    }> EXPORT TO EXCEL</Button >;
+
   const deleteRideModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteRide}
@@ -357,7 +370,7 @@ export default function RideView() {
   />
 
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [searchInput];
+  const headerButtons = [searchInput, exportButton];
 
   return (
     <Paper className={classes.root}>

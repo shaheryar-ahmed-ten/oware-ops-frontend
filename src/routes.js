@@ -32,8 +32,13 @@ import InwardProductDetailsView from './views/operations/productInward/InwardPro
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
+<<<<<<< HEAD
 import VehicleTypeView from './views/logistics/vehicletype/VehicleTypeView';
 import AddVehicleTypeView from './views/logistics/vehicletype/AddVehicleTypeView';
+=======
+import RideDetailsView from './views/logistics/ride/RideDetailsView';
+
+>>>>>>> ac0ee40a6b6d4f1c3749fce75cfc7734f578e516
 
 const routes = (user) => [
   {
@@ -180,6 +185,10 @@ const routes = (user) => [
       {
         path: 'ride/create',
         element: <AddRideView />
+      },
+      {
+        path: 'ride/view/:uid',
+        element: <RideDetailsView />
       }
     ]
   },

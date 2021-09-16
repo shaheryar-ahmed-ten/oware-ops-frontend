@@ -61,56 +61,56 @@ export default function ProductInwardView() {
       minWidth: 'auto',
       className: '',
       format: (value, entity) => entity.internalIdForBusiness,
-    }, 
+    },
     {
-    id: 'Customer.name',
-    label: 'COMPANY',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Company.name,
-  }, 
-  {
-    id: 'Warehouse.name',
-    label: 'WAREHOUSE',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Warehouse.name,
-  }, 
-  {
-    id: 'product',
-    label: 'PRODUCTS',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Products.length,
-  },
-  {
-    id: 'referenceId',
-    label: 'REFERENCE ID',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.referenceId,
-  },  
-  {
-    id: 'createdAt',
-    label: 'INWARD DATE',
-    minWidth: 'auto',
-    className: '',
-    format: dateFormat
-  }, {
-    id: 'actions',
-    label: '',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) =>
-      [
-        <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
-          state: {
-            selectedProductInward: entity,
-            viewOnly: true
-          }
-        })} />,
-      ]
-  },
+      id: 'Customer.name',
+      label: 'COMPANY',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Company.name,
+    },
+    {
+      id: 'Warehouse.name',
+      label: 'WAREHOUSE',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Warehouse.name,
+    },
+    {
+      id: 'product',
+      label: 'NO. OF PRODUCTS',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Products.length,
+    },
+    {
+      id: 'referenceId',
+      label: 'REFERENCE ID',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.referenceId,
+    },
+    {
+      id: 'createdAt',
+      label: 'INWARD DATE',
+      minWidth: 'auto',
+      className: '',
+      format: dateFormat
+    }, {
+      id: 'actions',
+      label: '',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) =>
+        [
+          <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`, {
+            state: {
+              selectedProductInward: entity,
+              viewOnly: true
+            }
+          })} />,
+        ]
+    },
   ];
 
   const [pageCount, setPageCount] = useState(1);

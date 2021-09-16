@@ -56,12 +56,25 @@ export default function CompanyView({ relationType }) {
     label: 'ID',
     minWidth: 'auto',
     className: ''
-  }, {
+  },
+  ...(relationType == 'VENDOR' ? [{
+    id: 'name',
+    label: 'Vendor',
+    minWidth: 'auto',
+    className: ''
+  }] : [{
     id: 'name',
     label: 'Company',
     minWidth: 'auto',
     className: '',
-  }, ...(relationType == 'CUSTOMER' ? [{
+  }]),
+  //  {
+  //   id: 'name',
+  //   label: 'Company',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+  ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
     label: 'Company Type',
     minWidth: 'auto',
@@ -118,7 +131,16 @@ export default function CompanyView({ relationType }) {
   const [addCompanyViewOpen, setAddCompanyViewOpen] = useState(false);
   const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
-  const [companyDetailsView, setCompanyDetailsView] = useState(false)
+  const [companyDetailsView, setCompanyDetailsView] = useState(false);
+
+
+  const removeCurrentLogoId = () => {
+    const _selectedCompany = { ...selectedCompany };
+    _selectedCompany.logoId = null;
+    setSelectedCompany(_selectedCompany);
+
+    // Call UPDATE API HERE
+  }
 
   const addCompany = data => {
     let apiPromise = null;
@@ -223,7 +245,7 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>ADD COMPANY</Button>;
+    onClick={() => setAddCompanyViewOpen(true)}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR'}</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -233,7 +255,9 @@ export default function CompanyView({ relationType }) {
     selectedCompany={selectedCompany}
     open={addCompanyViewOpen}
     addCompany={addCompany}
-    handleClose={() => closeAddCompanyView()} />
+    handleClose={() => closeAddCompanyView()}
+    removeLogoId={() => removeCurrentLogoId()}
+  />
   const deleteCompanyModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteCompany}
@@ -252,7 +276,7 @@ export default function CompanyView({ relationType }) {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title= "Company" buttons={headerButtons} />
+        <TableHeader title={relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

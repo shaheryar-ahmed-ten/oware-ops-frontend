@@ -298,15 +298,22 @@ function AddRideView() {
     <>
       {formErrors}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.pageHeading}>
-            {!selectedRide ? 'Create' : 'Edit'} Ride
-          </Typography>
-          {selectedRide &&
-            <Typography variant="p">
-              Ride ID: {digitize(selectedRide.id, 6)}
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.pageHeading}>
+              {!selectedRide ? 'Create' : 'Edit'} Ride
             </Typography>
-          }
+            {selectedRide &&
+              <Typography variant="p">
+                Ride ID: {digitize(selectedRide.id, 6)}
+              </Typography>
+            }
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/logistics/ride')}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
@@ -595,7 +602,10 @@ function AddRideView() {
               variant="outlined"
               value={pickupDate}
               minuteStep={15}
-              onChange={e => setPickupDate(dateToPickerFormat(e.target.value))}
+              onChange={e => {
+                setPickupDate(dateToPickerFormat(e.target.value));
+                setDropoffDate(dateToPickerFormat(e.target.value))
+              }}
               onBlur={e => setValidation({ ...validation, pickupDate: true })}
             />
             {validation.pickupDate && !isRequired(pickupDate) ? <Typography color="error">Pickup date is required!</Typography> : ''}
@@ -606,7 +616,8 @@ function AddRideView() {
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
-              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              inputProps={{ min: pickupDate }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
@@ -720,11 +731,15 @@ function AddRideView() {
                 type="text"
                 variant="outlined"
                 value={productName}
-                onChange={e => isChar(parseInt(e.target.value)) ? setProductName(e.target.value) : ''}
+                onChange={e => {
+                  // const regex = /^[a-zA-Z1-9]*$/
+                  // if (regex.test(e.target.value))
+                  setProductName(e.target.value)
+                }}
                 onBlur={e => setValidation({ ...validation, productName: true })}
               />
               {validation.productName && !isRequired(productName) ? <Typography color="error">Product name is required!</Typography> : ''}
-              {validation.productName && !isChar(productName) ? <Typography color="error">Product name is only alphabets!</Typography> : ''}
+              {/* {validation.productName && !isChar(productName) ? <Typography color="error">Product name is only alphabets!</Typography> : ''} */}
             </Grid>
             <Grid item xs={3}>
               <TextField
@@ -739,7 +754,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, productQuantity: true })}
               />
               {validation.productQuantity && !isRequired(productQuantity) ? <Typography color="error">Product quantity is required!</Typography> : ''}
-              {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''}
+              {/* {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''} */}
             </Grid>
             <Grid item xs={3}>
               <FormControl margin="dense" variant="outlined">
@@ -809,7 +824,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={12}>
               {(selectedRide && selectedRide.Manifest) ?
-                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Driving License Image</a>
+                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Product Manifest Image</a>
                 : ''}
             </Grid>
           </Grid>

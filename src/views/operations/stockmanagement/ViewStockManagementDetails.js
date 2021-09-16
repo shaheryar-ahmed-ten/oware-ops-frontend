@@ -53,11 +53,19 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 500,
         fontSize: 14
     },
+    commentWrapper: {
+        width: 105,
+        maxWidth: 105,
+        // display: "inline-block",
+        // whiteSpace: 'normal',
+        wordWrap: 'break-word'
+    }
 }));
 
 
 
 function ViewStockManagementDetails() {
+    const classes = useStyles();
     const productsColumns = [
         {
             id: 'companyName',
@@ -105,7 +113,7 @@ function ViewStockManagementDetails() {
             id: 'comment',
             label: 'COMMENT',
             minWidth: 'auto',
-            className: '',
+            className: classes.commentWrapper,
             format: (value, inventory, print) => {
                 return (
                     <Tooltip title={`${inventory.AdjustmentDetails.comment}`} classes={{ tooltip: classes.customWidth }} arrow>
@@ -115,11 +123,9 @@ function ViewStockManagementDetails() {
                     </Tooltip>
                 )
             }
-
         }
     ]
 
-    const classes = useStyles();
     const { uid } = useParams();
     const [selectedInventoryWastages, setSelectedInventoryWastages] = useState(null); // selected one to view
     const componentRef = useRef(); // for printing
@@ -206,13 +212,16 @@ function ViewStockManagementDetails() {
                                 <TableHead>
                                     <TableRow className={classes.shadedTableHeader}>
                                         {productsColumns.map((column) => (
-                                            <TableCell
-                                                key={column.id}
-                                                align={column.align}
-                                                style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
-                                            >
-                                                {column.label}
-                                            </TableCell>
+                                            column.id !== 'comment' ?
+                                                <TableCell
+                                                    key={column.id}
+                                                    align={column.align}
+                                                    style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
+                                                >
+                                                    {column.label}
+                                                </TableCell>
+                                                :
+                                                ''
                                         ))}
                                     </TableRow>
                                 </TableHead>
@@ -220,20 +229,34 @@ function ViewStockManagementDetails() {
                                     {
                                         selectedInventoryWastages.Inventories.map((inventoryWastage) => {
                                             return (
-                                                <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
-                                                    {productsColumns.map((column) => {
-                                                        const value = inventoryWastage[column.id];
-                                                        return (
-                                                            <TableCell key={column.id} align={column.align}
-                                                                className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}>
-                                                                {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
-                                                            </TableCell>
-                                                        );
-                                                    })}
-                                                </TableRow>
+                                                <>
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={inventoryWastage.id}>
+                                                        {productsColumns.map((column) => {
+                                                            const value = inventoryWastage[column.id];
+                                                            return (
+                                                                column.id !== 'comment' ?
+                                                                    <TableCell key={column.id} align={column.align}
+                                                                        style={{ borderBottom: '0' }}
+                                                                        className={column.className && typeof column.className === 'function' ? column.className(value) : column.className}
+                                                                    >
+                                                                        {column.format ? column.format(value, inventoryWastage, { print: true }) : value}
+                                                                    </TableCell>
+                                                                    :
+                                                                    ''
+                                                            );
+                                                        })}
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell align="right" style={{ fontWeight: 600 }}>Comment</TableCell>
+                                                        <TableCell align="left" colSpan={5}> {
+                                                            inventoryWastage.AdjustmentDetails.comment ? inventoryWastage.AdjustmentDetails.comment : '-'
+                                                        } </TableCell>
+                                                    </TableRow>
+                                                </>
                                             )
                                         })
                                     }
+
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -273,19 +296,19 @@ function ViewStockManagementDetails() {
                             <TableBody>
                                 <TableRow className={classes.tableRow}>
                                     <TableCell>
-                                        {dateFormat(selectedInventoryWastages.updatedAt)}
-                                    </TableCell>
-                                    <TableCell>
                                         {selectedInventoryWastages.internalIdForBusiness}
                                     </TableCell>
                                     <TableCell>
-                                        {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
+                                        {dateFormat(selectedInventoryWastages.updatedAt)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {selectedInventoryWastages.Inventories.length}
                                     </TableCell>
                                     {/* <TableCell>
                                         {selectedInventoryWastages.Inventories[0].Warehouse.city}
                                     </TableCell> */}
                                     <TableCell>
-                                        {selectedInventoryWastages.Inventories.length}
+                                        {selectedInventoryWastages.Admin.firstName + selectedInventoryWastages.Admin.lastName}
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
