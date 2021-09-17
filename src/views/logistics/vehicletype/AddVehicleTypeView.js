@@ -30,6 +30,7 @@ import { isChar, isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { upload } from '../../../utils/upload';
 import { useNavigate,useLocation } from 'react-router';
+// import { isRequired } from '../../../utils/validators';
 
 
 
@@ -55,23 +56,25 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
+function AddVehicleTypeView({selectedVehicleType, companies, formErrors, open, handleClose, addVehicleType, cars }) {
     const navigate = useNavigate();
     const { state } = useLocation();
     const { viewOnly } = state || '';
     const classes = useStyles();
-    const [selectedVehicleType, setSelectedVehicleType] = useState(state ? state.selectedVehicleType : null);
+    // const [selectedVehicleType, setSelectedVehicleType] = useState(state ? state.selectedVehicleType : null);
     const [pageCount, setPageCount] = useState(1);
     const [page, setPage] = useState(1);
     const [showMessage, setShowMessage] = useState(null)
     const [addVehicleTypeView, setAddVehicleTypeView] = useState(false)
     const [searchKeyword, setSearchKeyword] = useState('');
 
-    const [makeid, setCarMakeId] = useState('')
-  const [modelid, setCarModelId] = useState('')
+    const [make, setCarMake] = useState('')
+  const [model, setCarModel] = useState('')
   const [vehicletype, setVehicleType] = useState({});
   const [vehiclename, setVehicleName] = useState('')
+  const [carName, setCarName] = useState('')
   const [vendorId, setVendorId] = useState(null)
+  const [carId, setCarId] = useState('')
   const [cnicNumber, setCNICNumber] = useState('')
   const [drivingLicenseNumber, setDrivingLicenseNumber] = useState('')
   const [drivingLicenseImage, setDrivingLicenseImage] = useState(null)
@@ -80,8 +83,8 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
     if (open)
       resetLocalStates()
     if (selectedVehicleType) {
-        setCarMakeId(selectedVehicleType ? selectedVehicleType.makeid : '');
-        setCarModelId(selectedVehicleType ? selectedVehicleType.modelid : '');
+        setCarMake(selectedVehicleType ? selectedVehicleType.makeid : '');
+        setCarModel(selectedVehicleType ? selectedVehicleType.modelid : '');
         setVehicleType(selectedVehicleType ? selectedVehicleType.vehicletype : '');
         setVehicleName(selectedVehicleType ? selectedVehicleType.vehiclename : '');
     
@@ -92,18 +95,28 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
   }, [open])
 
   useEffect(() => {
+    if (carId) {
+      cars.forEach(car => {
+        if (car.id === carId) {
+          setCarId(car.car)
+        }
+      });
+    }
+  }, [carId])
+
+  useEffect(() => {
     if (!!selectedVehicleType) {
     //   setQuantity(0);
-      setCarMakeId(selectedVehicleType.makeid || '');
-      setCarModelId(selectedVehicleType.modelid || '');
+      setCarMake(selectedVehicleType.make || '');
+      setCarModel(selectedVehicleType.model || '');
       setVehicleType(selectedVehicleType.vehicletype || '');
       setVehicleName(selectedVehicleType.vehiclename || '');
     }
   }, [selectedVehicleType]);
 
   const resetLocalStates = () => {
-    setCarMakeId('');
-    setCarModelId('');
+    setCarMake('');
+    setCarModel('');
     // setValidation({});
     // setDrivingLicenseNumber('');
     setVehicleType('');
@@ -114,14 +127,14 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
     // navigate('/logistics/vehicle-type')
     // alert('Working')
     const newVehicleType = {
-        // makeid : makeid,
-        // modelid : modelid,
-        // vehicletype : vehicletype,
-        // vehiclename : vehiclename,
-        makeid,
-        modelid,
-        vehicletype,
-        vehiclename,
+        make : make,
+        model : model,
+        vehicletype : vehicletype,
+        vehiclename : vehiclename,
+        // makeid,
+        // modelid,
+        // vehicletype,
+        // vehiclename,
     }
 //     return(<Link
 //     to={{
@@ -130,7 +143,7 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
 //     }}
 // >);
 
-    navigate('/logistics/vehicle-type',newVehicleType)
+    // navigate('/logistics/vehicle-type',newVehicleType)
     // alert(newVehicleType)
     // console.log(newVehicleType)
     // console.log(this.state.makeid)
@@ -155,60 +168,28 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
     //   CNICImage: true,
     // });
 
-    // if (isRequired(driverName) &&
-    //   isRequired(driverPhone) &&
-    //   isRequired(validation) &&
-    //   isRequired(drivingLicenseNumber) &&
-    //   isRequired(vendorId) &&
-    //   isRequired(cnicNumber)) {
+    if (isRequired(carId) &&
+    isRequired(make) &&
+    isRequired(model) 
+    // &&
+    // isRequired(carId)
+    ) 
+    {
 
-    //   if (drivingLicenseImage) [newDriver.drivingLicenseId] = await upload([drivingLicenseImage], 'driver');
-    //   if (CNICImage) [newDriver.cnicId] = await upload([CNICImage], 'driver');
+    // if (runningPaperImage) [newVehicle.runningPaperId] = await upload([runningPaperImage], 'vehicle');
+    // if (routePermitImage) [newVehicle.routePermitId] = await upload([routePermitImage], 'vehicle');
 
-    //   if (!isRequired(newDriver.drivingLicenseId) || !isRequired(newDriver.cnicId)) return
+    // if (!isRequired(newVehicle.runningPaperId) || !isRequired(newVehicle.routePermitId)) return
 
-    //   addDriver(newDriver);
-    // }
+    try {
+      await addVehicleType(newVehicleType);
+    } catch (err) {
+      // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+    }
+  }
   }
 
-//   const validateDrivingLicenceImage = (event) => {
-//     const checkFile = event.target.files[0];
-//     // let dimentions
-//     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-//       alert("Driving lisence image must be only image file!")
-//      return false;
-//     }
-//     const isLt2M = checkFile.size / 1024 / 1024 < 1;
-//     if (!isLt2M) {
-//       alert("Driving lisence image must smaller than 1MB!");
-//       return false;
-//     }  
-//     setDrivingLicenseImage(checkFile)  
-// }
 
-//  const validateCnicImage  = (event) => {
-//     const checkFile =  event.target.files[0];
-//     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-//       alert("Driving lisence image must be only image file!")
-//      return false;
-//     }
-//     const isLt2M = checkFile.size / 1024 / 1024 < 1;
-//     if (!isLt2M) {
-//       alert("Driving licence image must smaller than 1MB!");
-//       return false;
-//     } 
-//     setCNICImage(checkFile)
-//  }
-
-
-
-    // const addVehicleTypeButton = <Button
-    //     key={2}
-    //     variant="contained"
-    //     color="primary"
-    //     size="small"
-    //     onClick={}
-    // >ADD VEHICLE TYPE</Button>;
 
 
     const searchInput = <InputBase
@@ -226,97 +207,122 @@ function AddVehicleTypeView({selectedDriver, companies, formErrors, open, handle
     const headerButtons = []
     return(
 
-        <Grid container className={classes.container} spacing={3}>
-            <Grid container item xs={12} justifyContent="space-between">
-            <Grid item xs={11}>
-                <Typography variant="h3" className={classes.heading}>Add Vehicle Type</Typography>
-            </Grid>
-            <Grid item xs={1}>
-                <Button variant="contained" color="primary" onClick={() => navigate('/logistics/vehicle-type')}>
-                Cancel
-                </Button>
-            </Grid>
-            </Grid>
-       
-            <Grid item sm={12}>
-            <TextField
-                fullWidth={true}
-                margin="dense"
-                id="makeid"
-                label="Car Make"
-                type="text"
-                variant="outlined"
-                value={makeid}
-                disabled={viewOnly}
-                onChange={e => setCarMakeId(e.target.value)}
-                inputProps={{ maxLength: 30 }}
-                // onBlur={e => setValidation({ ...validation, referenceId: true })}
-            />
-            {/* {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">CarMake is required!</Typography> : ''} */}
-            </Grid>
-            <Grid item sm={12}>
-            <TextField
-                fullWidth={true}
-                margin="dense"
-                id="modelid"
-                label="Car Model"
-                type="text"
-                variant="outlined"
-                value={modelid}
-                disabled={viewOnly}
-                onChange={e => setCarModelId(e.target.value)}
-                inputProps={{ maxLength: 30 }}
-                // onBlur={e => setValidation({ ...validation, referenceId: true })}
-            />
-            {/* {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">CarMake is required!</Typography> : ''} */}
-            </Grid>
-            <Grid item sm={12}>
-            <TextField
-                fullWidth={true}
-                margin="dense"
-                id="vehicletype"
-                label="Vehicle Type"
-                type="text"
-                variant="outlined"
-                value={vehicletype}
-                disabled={viewOnly}
-                onChange={e => setVehicleType(e.target.value)}
-                inputProps={{ maxLength: 30 }}
-                // onBlur={e => setValidation({ ...validation, referenceId: true })}
-            />
-            {/* {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">CarMake is required!</Typography> : ''} */}
-            </Grid>
-            <Grid item sm={12}>
-            <TextField
-                fullWidth={true}
-                margin="dense"
-                id="vehiclename"
-                label="Vehicle Name"
-                type="text"
-                variant="outlined"
-                value={vehiclename}
-                disabled={viewOnly}
-                onChange={e => setVehicleName(e.target.value)}
-                inputProps={{ maxLength: 30 }}
-                // onBlur={e => setValidation({ ...validation, referenceId: true })}
-            />
-            {/* {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">CarMake is required!</Typography> : ''} */}
-            </Grid>
-            
-            {/* <Grid container className={classes.parentContainer} xs={12} spacing={3}> */}
-                <Grid item xs={3}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <Button onClick={handleSubmit} color="primary" variant="contained">
-                        Submit
-                    {/* {!selectedProductInward ? 'Add Products' : 'Update Product'} */}
-                    </Button>
-                </FormControl>
+        <div style={{ display: "inline" }}>
+      <form>
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle>
+            {!selectedVehicleType ? 'Add Vehicle Type' : 'Edit Vehicle Type'}
+          </DialogTitle>
+          <DialogContent>
+            {/* {formErrors}
+            <Grid container> */}
+              {/* <Grid container spacing={2}> */}
+                {/* <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Vendor</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="vendorId"
+                      label="Vendor"
+                      variant="outlined"
+                      value={vendorId}
+                      onChange={e => setVendorId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, vendorId: true })}
+                    >
+                      {
+                        vendorId && vendorId !== "" ?
+                          <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
+                          :
+                          <MenuItem value={""} disabled>Select Vendor</MenuItem>
+                      }
+                      {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
+                    </Select>
+                    {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
+                  </FormControl>
+                </Grid> */}
+                {/* <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Driver</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="driverId"
+                      label="Driver"
+                      variant="outlined"
+                      value={driverId}
+                      onChange={e => setDriverId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, driverId: true })}
+                    >
+                      {
+                        driverId && driverId !== "" ?
+                          <MenuItem value={driverId} disabled>{driverName}</MenuItem>
+                          :
+                          <MenuItem value={""} disabled>Select Driver</MenuItem>
+                      }
+                      {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                    </Select>
+                    {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
+                  </FormControl>
+                </Grid> */}
+              {/* </Grid> */}
+              {/* <Grid container spacing={2}>
+                <Grid item sm={12}>
+                  <TextField
+                    fullWidth={true}
+                    margin="dense"
+                    id="RegistrationNumber"
+                    label="Registration Number"
+                    type="text"
+                    variant="outlined"
+                    value={registrationNumber}
+                    onChange={e => {
+                      const regex = /^[a-zA-Z0-9_-]*$/
+                      if (regex.test(e.target.value))
+                        setRegistrationNumber(e.target.value)
+                    }}
+                    onBlur={e => setValidation({ ...validation, registrationNumber: true })}
+                  />
+                  {validation.registrationNumber && !isRequired(registrationNumber) ? <Typography color="error">Registraion Number is required!</Typography> : ''}
                 </Grid>
-            {/* </Grid> */}
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <InputLabel>Vehicle Type</InputLabel>
+                    <Select
+                      fullWidth={true}
+                      id="modelId"
+                      label="Vehicle type"
+                      variant="outlined"
+                      value={carId}
+                      onChange={e => setCarId(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, modelId: true })}
+                    >
+                      {
+                        carId && carId !== "" ?
+                          <MenuItem value={carId} disabled>{carName}</MenuItem>
+                          :
+                          <MenuItem value={""} disabled>Select vehicle type</MenuItem>
+                      }
+                      {cars.map(car => <MenuItem key={car.id} value={car.id}> {`${car.CarMake.name} ${car.CarModel.name}`} </MenuItem>)}
+                    </Select>
+                    {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
 
-    
+              
+            </Grid> */}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              {!selectedVehicleType ? 'Add Vehicle' : 'Update Vehicle'}
+            </Button>
+          </DialogActions>
 
-      </Grid>
+        </Dialog>
+      </form>
+    </div >
 
     );
 }
