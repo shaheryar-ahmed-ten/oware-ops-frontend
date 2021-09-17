@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
         padding: "30px 30px",
     },
     pageHeading: {
-        fontWeight: 600
+        fontWeight: 700
     },
     pageSubHeading: {
-        fontWeight: 300
+        fontWeight: 700
     },
     heading: {
         fontWeight: 'bolder'
@@ -95,67 +95,67 @@ function RideDetailsView() {
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
                             <Typography variant="h5" className={classes.pageSubHeading}>COMPANY & VEHICLE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 600 }} item xs={4}>Company</Grid>
-                            <Grid item xs={2}>{selectedRide.Customer.name || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={4}>Status</Grid>
-                            <Grid item xs={2}>{selectedRide.status || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={4}>Vehicle</Grid>
-                            <Grid item xs={2}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={4}>Driver</Grid>
-                            <Grid item xs={2}>{selectedRide.Driver.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={3}>Company</Grid>
+                            <Grid item xs={3}>{selectedRide.Customer.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={3}>Status</Grid>
+                            <Grid item xs={3}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={3}>Vehicle</Grid>
+                            <Grid item xs={3}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={3}>Driver</Grid>
+                            <Grid item xs={3}>{selectedRide.Driver.name || '-'}</Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
                             <Typography variant="h5" className={classes.pageSubHeading}>PICKUP & DROPOFF</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>PickupCity</Grid>
-                            <Grid item xs={6}>{selectedRide.PickupArea.Zone.City.name || '-'}</Grid>
-                            <Grid item xs={6}>PickupZone</Grid>
-                            <Grid item xs={6}>{selectedRide.PickupArea.Zone.name || '-'}</Grid>
-                            <Grid item xs={6}>PickupArea</Grid>
-                            <Grid item xs={6}>{selectedRide.PickupArea.name || '-'}</Grid>
-                            <Grid item xs={6}>PickupAddress</Grid>
-                            <Grid item xs={6}>{selectedRide.pickupAddress || '-'}</Grid>
-                            <Grid item xs={6}>DropoffCity</Grid>
-                            <Grid item xs={6}>{selectedRide.DropoffArea.Zone.City.name || '-'}</Grid>
-                            <Grid item xs={6}>DropoffZone</Grid>
-                            <Grid item xs={6}>{selectedRide.DropoffArea.Zone.name || '-'}</Grid>
-                            <Grid item xs={6}>DropoffArea</Grid>
-                            <Grid item xs={6}>{selectedRide.DropoffArea.name || '-'}</Grid>
-                            <Grid item xs={6}>DropoffAddress</Grid>
-                            <Grid item xs={6}>{selectedRide.dropoffAddress || '-'}</Grid>
-                            <Grid item xs={6}>PickupDate</Grid>
-                            <Grid item xs={6}>{dateFormat(selectedRide.pickupDate) || '-'}</Grid>
-                            <Grid item xs={6}>dropoffDateDate</Grid>
-                            <Grid item xs={6}>{dateFormat(selectedRide.dropoffDate) || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>PickupCity</Grid>
+                            <Grid item xs={3}>{selectedRide.PickupArea.Zone.City.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>PickupZone</Grid>
+                            <Grid item xs={3}>{selectedRide.PickupArea.Zone.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>PickupArea</Grid>
+                            <Grid item xs={3}>{selectedRide.PickupArea.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>PickupAddress</Grid>
+                            <Grid item xs={3}>{selectedRide.pickupAddress || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>DropoffCity</Grid>
+                            <Grid item xs={3}>{selectedRide.DropoffArea.Zone.City.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>DropoffZone</Grid>
+                            <Grid item xs={3}>{selectedRide.DropoffArea.Zone.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>DropoffArea</Grid>
+                            <Grid item xs={3}>{selectedRide.DropoffArea.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>DropoffAddress</Grid>
+                            <Grid item xs={3}>{selectedRide.dropoffAddress || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>PickupDate</Grid>
+                            <Grid item xs={3}>{dateFormat(selectedRide.pickupDate) || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 600 }} xs={3}>dropoffDate</Grid>
+                            <Grid item xs={3}>{dateFormat(selectedRide.dropoffDate) || '-'}</Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
                             <Typography variant="h5" className={classes.pageSubHeading}>COST & PRICE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 600 }} item xs={5}>Price (Rs.)</Grid>
-                            <Grid item xs={1}>{selectedRide.price || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={5}>Cost (Rs.)</Grid>
-                            <Grid item xs={1}>{selectedRide.cost || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={5}>Customer Discount (Rs.)</Grid>
-                            <Grid item xs={1}>{selectedRide.customerDiscount || '-'}</Grid>
-                            <Grid style={{ fontWeight: 600 }} item xs={5}>Driver Incentive (Rs.)</Grid>
-                            <Grid item xs={1}>{selectedRide.driverIncentive || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Price (Rs.)</Grid>
+                            <Grid item xs={2}>{selectedRide.price || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Cost (Rs.)</Grid>
+                            <Grid item xs={2}>{selectedRide.cost || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Customer Discount (Rs.)</Grid>
+                            <Grid item xs={2}>{selectedRide.customerDiscount || '-'}</Grid>
+                            <Grid style={{ fontWeight: 600 }} item xs={4}>Driver Incentive (Rs.)</Grid>
+                            <Grid item xs={2}>{selectedRide.driverIncentive || '-'}</Grid>
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} style={{ marginTop: 10 }} justifyContent="space-between">
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
                             <Typography variant="h5" className={classes.pageSubHeading}>PRODUCT DETAILS</Typography>
                         </Grid>
