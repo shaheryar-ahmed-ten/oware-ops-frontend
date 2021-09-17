@@ -279,7 +279,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           <DialogActions>
             <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedCompany ? `Add ${relationType.toLowerCase()}` : `Update ${relationType.toLowerCase()}`}
+              {!selectedCompany ? `Add ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}` : `Update ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}`}
             </Button>
           </DialogActions>
         </Dialog>
