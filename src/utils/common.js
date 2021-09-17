@@ -19,6 +19,9 @@ export const dateFormat = (value) => {
 
 export const dateToPickerFormat = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "-");
 
+export const dividerDateFormat = value => value ? moment(value).format('DD-MM-yyyy') : "-";
+export const dividerTimeFormat = value => value ? moment(value).format('hh:mm A') : "-";
+
 export const SharedContext = createContext(null);
 
 String.prototype.toTitleCase = function () {
