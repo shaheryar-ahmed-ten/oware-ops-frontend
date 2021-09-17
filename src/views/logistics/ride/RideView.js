@@ -20,9 +20,7 @@ import axios from 'axios';
 import { getURL, dateFormat, digitize } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddRideView from './AddRideView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -88,38 +86,40 @@ export default function RideView() {
     format: value => statuses[value]
   }, {
     id: 'customerId',
-    label: 'Company',
+    label: 'COMPANY',
     minWidth: 100,
     className: '',
     format: (value, entity) => entity.Customer.name
   }, {
     id: 'driverId',
-    label: 'Driver',
+    label: 'DRIVER',
     minWidth: 100,
     className: '',
     format: (value, entity) => entity.Driver ? entity.Driver.name : ''
   },
+  // {
+  //   id: 'driverPhone',
+  //   label: 'Driver Phone',
+  //   minWidth: 150,
+  //   className: '',
+  //   format: (value, entity) => entity.Driver ? entity.Driver.phone : ''
+  // },
+  //  {
+  //   id: 'vehicleId',
+  //   label: 'Vehicle',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.Vehicle.registrationNumber
+  // },
   {
-    id: 'driverPhone',
-    label: 'Driver Phone',
-    minWidth: 150,
-    className: '',
-    format: (value, entity) => entity.Driver ? entity.Driver.phone : ''
-  }, {
-    id: 'vehicleId',
-    label: 'Vehicle',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.Vehicle.registrationNumber
-  }, {
     id: 'vendorName',
-    label: 'Vendor',
+    label: 'VENDOR',
     minWidth: 100,
     className: '',
     format: (value, entity) => entity.Driver ? entity.Driver.Vendor.name : ''
   }, {
     id: 'PickupArea',
-    label: 'Pickup Area',
+    label: 'PICKUP AREA',
     maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.PickupArea.name}, ${entity.PickupArea.Zone.name}, ${entity.PickupArea.Zone.City.name}`
@@ -139,7 +139,7 @@ export default function RideView() {
   // },
   {
     id: 'DropoffArea',
-    label: 'Dropoff Area',
+    label: 'DROPOFF AREA',
     maxWidth: 200,
     className: '',
     format: (value, entity) => `${entity.DropoffArea.name}, ${entity.DropoffArea.Zone.name}, ${entity.DropoffArea.Zone.City.name}`
