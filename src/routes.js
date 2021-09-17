@@ -32,9 +32,11 @@ import InwardProductDetailsView from './views/operations/productInward/InwardPro
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
+import VehicleTypeView from './views/logistics/vehicletype/VehicleTypeView';
+// import AddVehicleTypeView from './views/logistics/vehicletype/AddVehicleTypeView';
+// import VehicleTypeDetailsView from './views/logistics/vehicletype/VehicleTypeDetailsView';
 import RideDetailsView from './views/logistics/ride/RideDetailsView';
 import AuditView from './views/administration/audit/AuditView';
-
 
 const routes = (user) => [
   {
@@ -170,6 +172,14 @@ const routes = (user) => [
         path: 'vehicle',
         element: <VehicleView />
       },
+      {
+        path: 'vehicle-type',
+        element: <VehicleTypeView />
+      },
+      // {
+      //   path: 'vehicle-type/create',
+      //   element: <AddVehicleTypeView />
+      // },
       {
         path: 'ride',
         element: <RideView />
