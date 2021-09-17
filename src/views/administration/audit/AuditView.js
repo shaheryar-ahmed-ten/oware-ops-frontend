@@ -8,7 +8,8 @@ import axios from 'axios';
 import { dividerDateFormat, dividerTimeFormat, getURL } from '../../../utils/common';
 import AuditDetailsBox from '../../../components/AuditDetailsBox';
 import { Pagination } from '@material-ui/lab';
-import { isRequired } from '../../../utils/validators';
+import SelectDropdown from '../../../components/SelectDropdown';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -40,15 +41,33 @@ function AuditView() {
     const [page, setPage] = useState(1);
     const [activityLogs, setActivityLogs] = useState([])
 
+    const [days] = useState([{
+        id: 1,
+        name: '1 days'
+    }, {
+        id: 7,
+        name: '7 days'
+    }, {
+        id: 14,
+        name: '14 days'
+    }, {
+        id: 30,
+        name: '30 days'
+    }, {
+        id: 60,
+        name: '60 days'
+    }])
+    const [selectedDay, setSelectedDay] = useState(null)
+
     const [dateTrack, setDateTrack] = useState('')
     let dateTrackerArr = []
     // const [dateTrackerArr, setDateTrackerArr] = useState([])
     useEffect(() => {
-        getAuditLogs(page, searchKeyword);
-    }, [page, searchKeyword]);
+        getAuditLogs(page, searchKeyword, selectedDay);
+    }, [page, searchKeyword, selectedDay]);
 
-    const _getAuditLogs = (page, searchKeyword) => {
-        axios.get(getURL('audit-logs'), { params: { page, search: searchKeyword } })
+    const _getAuditLogs = (page, searchKeyword, selectedDay) => {
+        axios.get(getURL('audit-logs'), { params: { page, search: searchKeyword, days: selectedDay } })
             .then(res => {
                 if (res.data && res.data.data && res.data.data.length > 0) {
                     setDateTrack(res.data.data[0].updatedAt)
@@ -61,10 +80,13 @@ function AuditView() {
             });
     }
 
-    const getAuditLogs = useCallback(debounce((page, searchKeyword) => {
-        _getAuditLogs(page, searchKeyword)
+    const getAuditLogs = useCallback(debounce((page, searchKeyword, selectedDay) => {
+        _getAuditLogs(page, searchKeyword, selectedDay)
     }, DEBOUNCE_CONST), [])
 
+    const resetFilters = () => {
+        setSelectedDay(null);
+    }
 
     const searchInput = <InputBase
         placeholder="Search"
@@ -75,10 +97,13 @@ function AuditView() {
         variant="outlined"
         value={searchKeyword}
         key={1}
-        onChange={e => setSearchKeyword(e.target.value)}
+        onChange={e => { setPage(1); setSearchKeyword(e.target.value) }}
     />;
 
-    const headerButtons = [searchInput]
+    const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
+
+
+    const headerButtons = [daysSelect, searchInput]
 
     return (
         <Paper className={classes.root}>
