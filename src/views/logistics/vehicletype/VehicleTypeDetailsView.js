@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogTitle
 } from '@material-ui/core'
-import { getURL } from '../../../utils/common';
 
 function VehicleTypeDetailsView({ selectedVehicleType, open, handleClose }) {
     return (
@@ -25,21 +24,21 @@ function VehicleTypeDetailsView({ selectedVehicleType, open, handleClose }) {
                       <Grid item xs={6}>
                         <TextField
                           id="filled-number"
-                          label="Vendor Name"
+                          label="Car Model"
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedVehicleType.Vendor ? selectedVehicleType.Vendor.name : ''}
+                          value={selectedVehicleType.CarModel ? selectedVehicleType.CarModel.name : ''}
                         />
                       </Grid>
                       <Grid item xs={6}>
                         <TextField
                           id="filled-number"
-                          label="Default Driver"
+                          label="Car Make"
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedVehicleType.Driver ? selectedVehicleType.Driver.name : ''}
+                          value={selectedVehicleType.CarMake ? selectedVehicleType.CarMake.name : ''}
                         />
                       </Grid>
                     </Grid>
@@ -47,15 +46,15 @@ function VehicleTypeDetailsView({ selectedVehicleType, open, handleClose }) {
                       <Grid item xs={12}>
                         <TextField
                           id="filled-number"
-                          label="Car"
+                          label="Vehicle Type"
                           disabled
                           fullWidth
                           variant="filled"
-                          value={selectedVehicleType.Car && selectedVehicleType.Car.CarMake && selectedVehicleType.Car.CarModel ? selectedVehicleType.Car.CarMake.name + " " + selectedVehicleType.Car.CarModel.name : ''}
+                          value={selectedVehicleType.CarMake && selectedVehicleType.CarModel ? selectedVehicleType.VehicleType.name: ''}
                         />
                       </Grid>
                     </Grid>
-                    <Grid item container spacing={2}>
+                    {/* <Grid item container spacing={2}>
                       <Grid item xs={12}>
                         <TextField
                           id="filled-number"
@@ -66,7 +65,7 @@ function VehicleTypeDetailsView({ selectedVehicleType, open, handleClose }) {
                           value={selectedVehicleType ? selectedVehicleType.registrationNumber : ''}
                         />
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                     {/* <Grid item container spacing={2}>
                       <Grid item xs={12}>
                         {(selectedVehicle && selectedVehicle.RunningPaper) ?

@@ -60,59 +60,56 @@ function VehicleTypeView() {
     const [carName, setCarName] = useState('')
     const [pageCount, setPageCount] = useState(1);
     const [validation, setValidation] = useState({});
-    const [carId, setCarId] = useState('')
+    const [carmakes, setCarMakes] = useState('')
+    const [carmodels, setCarModels] = useState('')
     const [page, setPage] = useState(1);
-    const [vehicles, setVehicles] = useState([]);
+    const [types, setTypes] = useState([]);
     const [showMessage, setShowMessage] = useState(null)
     const [addVehicleTypeView, setAddVehicleTypeView] = useState(false)
     const [searchKeyword, setSearchKeyword] = useState('');
     const [makeid, setMakeId] = useState([])
     const [modelid, setModelId] = useState([])
-    const [vehiclename, setVehicleName] = useState([])
+    // const [vehiclename, setVehicleName] = useState([])
     const [vehicletypes, setVehicleTypes] = useState()
-    // const [car, setCarss] = useState([])
     const columns = [{
-        id: 'Vehicle.carmodel',
+        id: 'carmodel',
         label: 'Car Model',
         minWidth: 'auto',
         className: '',
-        // format: (value, entity) => entity.Car.CarModel.name? entity.Car.CarModel.name : ''
+        format: (value, entity) => entity.CarModel.name? entity.CarModel.name : ''
     },
     {
-        id: 'Vehicle.carmake',
+        id: 'carmake',
         label: 'Car Make',
         minWidth: 'auto',
         className: '',
-        // format: (value, entity) => entity.Car.CarMake.name? entity.Car.CarMake.name : ''
+        format: (value, entity) => entity.CarMake.name? entity.CarMake.name : ''
     },
     {
-        id: 'Vehicle.cars',
-        label: 'Vehicle Type',
+        id: 'type',
+        label: 'Type',
         minWidth: 'auto',
         className: '',
-        // format: (value, entity) => entity.Car ? entity.Car.CarMake.name + " " + entity.Car.CarModel.name : ''
-    },
+        format: (value, entity) => entity.VehicleType.name ? entity.VehicleType.name : ''
+    }, 
     {
-        id: 'Vehicle.name',
-        label: 'Vehicle Name',
+        id: 'actions',
+        label: 'Actions',
         minWidth: 'auto',
         className: '',
-        // format: (value, entity) => entity.Car ? entity.Car.CarMake.name + " " + entity.Car.CarModel.name : ''
-    },
+        format: (value, entity) =>
+          [
+            <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
+            <EditIcon key="edit" onClick={() => openEditwView(entity)} />,
+            // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
+          ]
+      }
     ]
 
-    // const [vehicles, setVehicles] = useState([]);
-
-    // const [searchKeyword, setSearchKeyword] = useState('');
-    // const [showMessage, setShowMessage] = useState(null)
-    // const [addVehicleTypeView, setAddVehicleTypeView] = useState(false)
     const [vehicleTypeDetailsView, setVehicleTypeDetailsView] = useState(false)
     const [formErrors, setFormErrors] = useState('');
     const [selectedVehicleType, setSelectedVehicleType] = useState(null);
 
-    // const [drivers, setDrivers] = useState([])
-    // const [vendors, setVendors] = useState([])
-    const [cars, setCars] = useState([])
 
     const addVehicleType = (data) => {
         let apiPromise = null;
@@ -132,7 +129,7 @@ function VehicleTypeView() {
     }
 
     // handle view open functions
-    const openEditView = (vehicletype) => {
+    const openEditwView = (vehicletype) => {
         setSelectedVehicleType(vehicletype)
         setAddVehicleTypeView(true)
     }
@@ -149,6 +146,7 @@ function VehicleTypeView() {
         setVehicleTypeDetailsView(false)
         setSelectedVehicleType(null)
     }
+    
 
     const addVehicleTypeButton = <Button
         key={2}
@@ -163,7 +161,9 @@ function VehicleTypeView() {
         selectedVehicleType={selectedVehicleType}
         // companies={vendors}
         // drivers={drivers}
-        cars={cars}
+        carmakes={carmakes}
+        carmodels={carmodels}
+        types={types}
         formErrors={formErrors}
         addVehicleType={addVehicleType}
         open={addVehicleTypeView}
@@ -177,20 +177,24 @@ function VehicleTypeView() {
     const _getVehicleTypes = (page, searchKeyword) => {
         axios.get(getURL('vehicle-types'), { params: { page, search: searchKeyword } })
             .then(res => {
+                // console.log("ve",res.data)
                 setPageCount(res.data.pages)
-                setVehicleTypes(res.data.data[0])
+                setVehicleTypes(res.data.data)
             });
     }
+
+
     const getVehicleTypes = useCallback(debounce((page, searchKeyword) => {
         _getVehicleTypes(page, searchKeyword);
     }, DEBOUNCE_CONST), []);
 
     const getRelations = () => {
-        axios.get(getURL('vehicle-types'))
+        axios.get(getURL('vehicle-types/relations'))
             .then(res => {
-                console.log(res.data.data[0])
-                console.log(vehicletypes)
-                setCars(res.data.data[0].CarMake.name)
+                console.log("vehicle types/relations",res.data.data)
+                setTypes(res.data.data.vehicleTypes)
+                setCarModels(res.data.data.carModels)
+                setCarMakes(res.data.data.carMakes)
             });
     };
 
@@ -201,7 +205,7 @@ function VehicleTypeView() {
     useEffect(() => {
         getRelations();
     }, []);
-
+// console.log(carmakes)
     const searchInput = <InputBase
         placeholder="Search"
         className={classes.searchInput}
@@ -234,7 +238,8 @@ function VehicleTypeView() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {vehicletypes?.map((vehicletype) => {
+                    {/* {console.log("Vehicle Type",vehicletype)} */}
+                    {vehicletypes && vehicletypes.map((vehicletype) => {
                         return (
                             <TableRow hover role="checkbox" tabIndex={-1} key={vehicletype.id}>
                                 {columns.map((column) => {
