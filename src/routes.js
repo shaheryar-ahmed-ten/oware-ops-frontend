@@ -36,6 +36,7 @@ import VehicleTypeView from './views/logistics/vehicletype/VehicleTypeView';
 // import AddVehicleTypeView from './views/logistics/vehicletype/AddVehicleTypeView';
 // import VehicleTypeDetailsView from './views/logistics/vehicletype/VehicleTypeDetailsView';
 import RideDetailsView from './views/logistics/ride/RideDetailsView';
+import AuditView from './views/administration/audit/AuditView';
 
 const routes = (user) => [
   {
@@ -69,6 +70,10 @@ const routes = (user) => [
       {
         path: 'product',
         element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ProductView /> : <Navigate to="404" />
+      },
+      {
+        path: 'audit-logs',
+        element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <AuditView /> : <Navigate to="404" />
       },
       {
         path: '/',
