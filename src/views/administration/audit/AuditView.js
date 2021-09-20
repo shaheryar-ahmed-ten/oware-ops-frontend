@@ -107,7 +107,7 @@ function AuditView() {
 
     return (
         <Paper className={classes.root}>
-            <TableHeader title="Audit Logs" buttons={headerButtons} />
+            <TableHeader title="Activity Logs" buttons={headerButtons} />
             {
                 activityLogs.length > 0 ?
                     <>

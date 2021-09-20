@@ -72,7 +72,7 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ProductView /> : <Navigate to="404" />
       },
       {
-        path: 'audit-logs',
+        path: 'activity-logs',
         element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <AuditView /> : <Navigate to="404" />
       },
       {
