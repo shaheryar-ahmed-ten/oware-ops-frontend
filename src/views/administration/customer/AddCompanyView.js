@@ -97,17 +97,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
 
-    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Company Logo image must be only image file!")
       return false;
     }
-    const isLt2M = checkFile.size / 1024 / 1024 < 1;
-    if (!isLt2M) {
+    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1;
+    if (checkFile && !isLt2M) {
       alert("Company Logo image must smaller than 1MB!");
       return false;
     }
     const reader = new FileReader();
-    reader.readAsDataURL(checkFile);
+    checkFile && reader.readAsDataURL(checkFile);
     reader.addEventListener('load', event => {
       const _loadedImageUrl = event.target.result;
       const image = document.createElement('img');
@@ -116,44 +116,24 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
         const { width, height } = image;
         if (image && width > 142 && height >37){
           alert("Image Size should be less than or equal to 142*37")
-            return false;
+          setLogoImageSrc(null);  
+          setLogoImage(null);
+          return false;
         }
-        // image.src = URL.createObjectURL(_loadedImageUrl)
-        // if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-        //   alert("Company Logo image must be only image file!")
-        //   return false;
-        // }
-        // const isLt2M = checkFile.size / 1024 / 1024 < 1;
-        // if (!isLt2M) {
-        //   alert("Company Logo image must smaller than 1MB!");
-        //   return false;
-        // }
-        // const logoFile = checkFile? checkFile: null;
-        // console.log(logoFile)
-        // setLogoImage(logoFile)
+        else {
+          setLogoImageSrc(_loadedImageUrl);
+          const logoFile = checkFile? checkFile: null;
+          console.log(logoFile)
+          setLogoImage(logoFile)
+        }
       });
-
-      setLogoImageSrc(_loadedImageUrl);
-
-      // var previmage = document.getElementById('previewImage');
-      // previmage.src = _loadedImageUrl
     });
    
-    const logoFile = checkFile? checkFile: null;
-    console.log(logoFile)
-    setLogoImage(logoFile)
+    
   }
   const removePreviewId =(event) => {
     setLogoImage(null);
     setLogoImageSrc(null);
-    // var previewFile = document.getElementById('previewImage');
-    // previewFile.src = null;
-    // if(previewFile.src = null)
-    // {
-    //   validateLogoImage(event)
-    // }
-    // document.getElementById("previewImage").value=null; 
-
   }
 
   return (
@@ -281,30 +261,15 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     
                         {logoImageSrc == null ? '' :
                           <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          {/* {(selectedCompany && selectedCompany.logoId) ? */}
-                          <DeleteSharpIcon onClick={() => removePreviewId()} />
-                          {/* : ''} */}
+                          <DeleteSharpIcon onClick={() => removePreviewId()} /> 
                         </Grid>}
                         <img id="previewImage" src={logoImageSrc} alt=""/>
                     </Grid>
-                      {/* <Button>
-                        <DeleteSharpIcon />
-                        Remove Logo
-
-                        <input
-                          // type="file"
-                          hidden
-                          onClick={() => removePreviewId()}
-                          // accept=".jpg,.png,.jpeg"
-                        />
-                        </Button> */}
-                    {/* </Grid> */}
                     
                     {/* Remove Logo Trash Bin */}
 
                     {(selectedCompany && selectedCompany.logoId) ?
-                        // <DeleteSharpIcon onClick={() => removeLogoId()} />
-                        // : ''}
+
                         <Grid item xs={12} style={{ marginLeft: 380 }}>
                         {(selectedCompany && selectedCompany.logoId) ?
                         <DeleteSharpIcon onClick={() => removeLogoId()} />
