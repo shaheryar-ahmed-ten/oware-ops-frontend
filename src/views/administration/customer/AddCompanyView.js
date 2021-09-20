@@ -97,17 +97,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
 
-    if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Company Logo image must be only image file!")
       return false;
     }
-    const isLt2M = checkFile.size / 1024 / 1024 < 1;
-    if (!isLt2M) {
+    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1;
+    if (checkFile && !isLt2M) {
       alert("Company Logo image must smaller than 1MB!");
       return false;
     }
     const reader = new FileReader();
-    reader.readAsDataURL(checkFile);
+    checkFile && reader.readAsDataURL(checkFile);
     reader.addEventListener('load', event => {
       const _loadedImageUrl = event.target.result;
       const image = document.createElement('img');
@@ -121,7 +121,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           return false;
         }
         else {
-         setLogoImageSrc(_loadedImageUrl);
+          setLogoImageSrc(_loadedImageUrl);
           const logoFile = checkFile? checkFile: null;
           console.log(logoFile)
           setLogoImage(logoFile)
