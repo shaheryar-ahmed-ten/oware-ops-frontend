@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-function AuditDivider({ label, date }) {
+function ActivityDivider({ label, date }) {
     const classes = useStyles();
     return (
         <>
@@ -40,4 +40,4 @@ function AuditDivider({ label, date }) {
     )
 }
 
-export default AuditDivider
+export default ActivityDivider

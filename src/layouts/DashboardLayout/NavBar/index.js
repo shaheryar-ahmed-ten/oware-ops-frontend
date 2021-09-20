@@ -66,9 +66,9 @@ const navTreeData = [
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
-        href: '/administration/audit-logs',
-        title: 'Audit Logs',
-        activeRouteName: 'audit-logs'
+        href: '/administration/activity-logs',
+        title: 'Activity Logs',
+        activeRouteName: 'activity-logs'
       },
     ]
   },

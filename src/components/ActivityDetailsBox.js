@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-function AuditDetailsBox({ payloadData, activityType }) {
+function ActivityDetailsBox({ payloadData, activityType }) {
     const classes = useStyles();
     return payloadData ?
         <>
@@ -35,4 +35,4 @@ function AuditDetailsBox({ payloadData, activityType }) {
         ''
 }
 
-export default AuditDetailsBox
+export default ActivityDetailsBox
