@@ -122,7 +122,9 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
 
         <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title"
+        fullWidth
+        maxWidth="sm">
           <DialogTitle>
             {!selectedVehicleType ? 'Add Vehicle Type' : 'Edit Vehicle Type'}
           </DialogTitle>
