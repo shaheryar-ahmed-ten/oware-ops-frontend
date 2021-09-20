@@ -15,7 +15,7 @@ import {
   Typography
 } from '@material-ui/core'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp';
-import { capitalize } from 'lodash';
+import { capitalize, remove } from 'lodash';
 import { isChar, isRequired } from '../../../utils/validators';
 import { upload } from '../../../utils/upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -32,7 +32,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const [contactPhone, setContactPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [isActive, setActive] = useState(true);
-  const [logoImage, setLogoImage] = useState(null)
+  const [logoImage, setLogoImage] = useState(null);
+  const [logoImageSrc, setLogoImageSrc] = useState(null);
 
 
   useEffect(() => {
@@ -95,44 +96,44 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   }
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
+
+    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      alert("Company Logo image must be only image file!")
+      return false;
+    }
+    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1;
+    if (checkFile && !isLt2M) {
+      alert("Company Logo image must smaller than 1MB!");
+      return false;
+    }
     const reader = new FileReader();
-    reader.readAsDataURL(checkFile);
+    checkFile && reader.readAsDataURL(checkFile);
     reader.addEventListener('load', event => {
       const _loadedImageUrl = event.target.result;
       const image = document.createElement('img');
       image.src = _loadedImageUrl;
       image.addEventListener('load', () => {
         const { width, height } = image;
-        if (width > 142 && height >37){
+        if (image && width > 142 && height >37){
           alert("Image Size should be less than or equal to 142*37")
-            return false;
-        }
-        if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-          alert("Company Logo image must be only image file!")
+          setLogoImageSrc(null);  
+          setLogoImage(null);
           return false;
         }
-        const isLt2M = checkFile.size / 1024 / 1024 < 1;
-        if (!isLt2M) {
-          alert("Company Logo image must smaller than 1MB!");
-          return false;
+        else {
+          setLogoImageSrc(_loadedImageUrl);
+          const logoFile = checkFile? checkFile: null;
+          console.log(logoFile)
+          setLogoImage(logoFile)
         }
-        const logoFile = checkFile? checkFile: null;
-        console.log(logoFile)
-        setLogoImage(logoFile)
       });
     });
-    // if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-    //   alert("Company Logo image must be only image file!")
-    //   return false;
-    // }
-    // const isLt2M = checkFile.size / 1024 / 1024 < 1;
-    // if (!isLt2M) {
-    //   alert("Company Logo image must smaller than 1MB!");
-    //   return false;
-    // }
-    // const logoFile = checkFile? checkFile: null;
-    // console.log(logoFile)
-    // setLogoImage(logoFile)
+   
+    
+  }
+  const removePreviewId =(event) => {
+    setLogoImage(null);
+    setLogoImageSrc(null);
   }
 
   return (
@@ -243,26 +244,53 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       startIcon={<CloudUploadIcon />}
                     >
                       {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
+
+                      
                       <input
                         type="file"
                         hidden
                         onChange={(e) => validateLogoImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
+                      {/* <img id="previewImage" src="#" alt="Company Logo" /> */}
                     </Button>
                     {/* {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''} */}
                   </FormControl>
+                  
+                    <Grid style={{ textAlign: 'center' }}>
+                    
+                        {logoImageSrc == null ? '' :
+                          <Grid item xs={12} style={{ marginLeft: 380 }}>
+                          <DeleteSharpIcon onClick={() => removePreviewId()} /> 
+                        </Grid>}
+                        <img id="previewImage" src={logoImageSrc} alt=""/>
+                    </Grid>
+                    
+                    {/* Remove Logo Trash Bin */}
+
+                    {(selectedCompany && selectedCompany.logoId) ?
+
+                        <Grid item xs={12} style={{ marginLeft: 380 }}>
+                        {(selectedCompany && selectedCompany.logoId) ?
+                        <DeleteSharpIcon onClick={() => removeLogoId()} />
+                        : ''}
+                        </Grid>
+                    : ''}
+
                   {(selectedCompany && selectedCompany.logoId) ?
                     <Grid item xs={12} style={{ textAlign: 'center' }}>
                       {(selectedCompany && selectedCompany.logoId) ?
                         <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
+                        // <DeleteSharpIcon onClick={() => removeLogoId()} />
                         : ''}
-                      <DeleteSharpIcon onClick={() => removeLogoId()} />
                     </Grid>
                     : ''}
 
                 </Grid>
+
               </Grid>
+
+            
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <Checkbox

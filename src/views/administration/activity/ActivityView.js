@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Grid, InputBase, makeStyles, Paper } from '@material-ui/core'
 import TableHeader from '../../../components/TableHeader';
-import AuditDivider from '../../../components/AuditDivider';
+import ActivityDivider from '../../../components/ActivityDivider';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import axios from 'axios';
 import { dividerDateFormat, dividerTimeFormat, getURL } from '../../../utils/common';
-import AuditDetailsBox from '../../../components/AuditDetailsBox';
+import ActivityDetailsBox from '../../../components/ActivityDetailsBox';
 import { Pagination } from '@material-ui/lab';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function AuditView() {
+function ActivityView() {
     const classes = useStyles();
     const [searchKeyword, setSearchKeyword] = useState('');
     const [pageCount, setPageCount] = useState(1);
@@ -107,7 +107,7 @@ function AuditView() {
 
     return (
         <Paper className={classes.root}>
-            <TableHeader title="Audit Logs" buttons={headerButtons} />
+            <TableHeader title="Activity Logs" buttons={headerButtons} />
             {
                 activityLogs.length > 0 ?
                     <>
@@ -155,11 +155,11 @@ function AuditView() {
                                                 <Grid item container xs={12} justifyContent="center" key={idx} >
                                                     {
                                                         allowDivider && (dividerDateFormat(activityLog.updatedAt) !== dividerDateFormat(dateTrack) || idx === 0) ?
-                                                            <AuditDivider date={activityLog.updatedAt} />
+                                                            <ActivityDivider date={activityLog.updatedAt} />
                                                             :
                                                             ''
                                                     }
-                                                    <AuditDetailsBox activityType={activityLog.activityType} payloadData={payloadData} />
+                                                    <ActivityDetailsBox activityType={activityLog.activityType} payloadData={payloadData} />
                                                 </Grid>
                                             )
                                         case 'EDIT':
@@ -198,12 +198,12 @@ function AuditView() {
                                                     {
                                                         allowDivider && (dividerDateFormat(activityLog.updatedAt) !== dividerDateFormat(dateTrack) || idx === 0) ?
                                                             <>
-                                                                <AuditDivider date={activityLog.updatedAt} />
+                                                                <ActivityDivider date={activityLog.updatedAt} />
                                                             </>
                                                             :
                                                             ''
                                                     }
-                                                    <AuditDetailsBox activityType={activityLog.activityType} payloadData={editPayloadData} />
+                                                    <ActivityDetailsBox activityType={activityLog.activityType} payloadData={editPayloadData} />
                                                 </Grid>
                                             )
                                         case 'DELETE':
@@ -242,12 +242,12 @@ function AuditView() {
                                                     {
                                                         allowDivider && (dividerDateFormat(activityLog.updatedAt) !== dividerDateFormat(dateTrack) || idx === 0) ?
                                                             <>
-                                                                <AuditDivider date={activityLog.updatedAt} />
+                                                                <ActivityDivider date={activityLog.updatedAt} />
                                                             </>
                                                             :
                                                             ''
                                                     }
-                                                    <AuditDetailsBox activityType={activityLog.activityType} payloadData={deletePayloadData} />
+                                                    <ActivityDetailsBox activityType={activityLog.activityType} payloadData={deletePayloadData} />
                                                 </Grid>
                                             )
                                         default:
@@ -280,4 +280,4 @@ function AuditView() {
     )
 }
 
-export default AuditView
+export default ActivityView
