@@ -87,7 +87,7 @@ export default function AddStockManagement() {
   }, [uid, customers]);
 
   const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
+    axios.get(getURL('dispatch-order/relations'))
       .then(res => {
         setCustomers(res.data.customers);
       })
@@ -190,19 +190,19 @@ export default function AddStockManagement() {
   }
 
   const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
+    return axios.get(getURL('dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
   };
 
   const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
       .then(res => {
         return res.data.warehouses
       });
   };
 
   const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
+    return axios.get(getURL('dispatch-order/products'), { params })
       .then((res) => {
         return res.data.products
       })
@@ -211,7 +211,7 @@ export default function AddStockManagement() {
 
   const addAdjustments = data => {
     let apiPromise = null;
-    if (!selectedInventoryWastages) apiPromise = axios.post(getURL('/inventory-wastages'), data);
+    if (!selectedInventoryWastages) apiPromise = axios.post(getURL('inventory-wastages'), data);
     else apiPromise = axios.put(getURL(`inventory-wastages/${selectedInventoryWastages.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
