@@ -35,6 +35,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ActivityView() {
+    const currentPayload = { name: 'khan', price: 400, uid: 2 }
+    const previousPayload = { name: 'ahmed', price: 200, uid: 2 }
+    let updatedPayload = {}
+    for (let key of Object.keys(currentPayload)) {
+        if (currentPayload[key] !== previousPayload[key]) {
+            updatedPayload = { ...updatedPayload, [key]: currentPayload[key] }
+        }
+    }
+    console.log(updatedPayload)
     const classes = useStyles();
     const [searchKeyword, setSearchKeyword] = useState('');
     const [pageCount, setPageCount] = useState(1);
