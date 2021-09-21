@@ -34,6 +34,9 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const [isActive, setActive] = useState(true);
   const [logoImage, setLogoImage] = useState(null);
   const [logoImageSrc, setLogoImageSrc] = useState(null);
+  const [logoDimension, setLogoDimension] = useState(false);
+  const [logoType, setLogoType] = useState(false);
+  const [logoSize, setLogoSize] = useState(false);
 
 
   useEffect(() => {
@@ -96,16 +99,26 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   }
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
-
+    setLogoType(false);
+    setLogoSize(false);
+    setLogoDimension(false);
     if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
-      alert("Company Logo image must be only image file!")
+      // alert("Company Logo image must be only image file!")
+      setLogoType(true);
       return false;
     }
+    setLogoType(false);
+    setLogoSize(false);
+    setLogoDimension(false);
     const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1;
     if (checkFile && !isLt2M) {
-      alert("Company Logo image must smaller than 1MB!");
+      // alert("Company Logo image must smaller than 1MB!");
+      setLogoSize(true);
       return false;
     }
+    setLogoType(false);
+    setLogoSize(false);
+    setLogoDimension(false);
     const reader = new FileReader();
     checkFile && reader.readAsDataURL(checkFile);
     reader.addEventListener('load', event => {
@@ -115,9 +128,13 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       image.addEventListener('load', () => {
         const { width, height } = image;
         if (image && width > 142 && height >37){
-          alert("Image Size should be less than or equal to 142*37")
+          setLogoDimension(true);
+          // setValidation(...validation, logoImage)
+          // alert("Image Size should be less than or equal to 142*37")
+          // return(<Typography>Note: Company Logo must be equal or less than 142*37</Typography>)
           setLogoImageSrc(null);  
           setLogoImage(null);
+          // return(<Typography>Note: Company Logo must be equal or less than 142*37</Typography>)
           return false;
         }
         else {
@@ -152,7 +169,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="name"
-                    label={relationType == 'CUSTOMER' ? ` Company Name` : ` Vendor Name`}
+                    label={relationType == 'CUSTOMER' ? ` Company Name*` : ` Vendor Name*`}
                     type="text"
                     variant="outlined"
                     value={name}
@@ -168,7 +185,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     fullWidth={true}
                     margin="dense"
                     id="internalIdForBusiness"
-                    label={relationType == 'CUSTOMER' ? ` Company ID` : ` Vendor ID`}
+                    label={relationType == 'CUSTOMER' ? ` Company ID*` : ` Vendor ID*`}
                     type="text"
                     variant="outlined"
                     value={internalIdForBusiness}
@@ -182,7 +199,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                      <InputLabel>Company Type</InputLabel>
+                      <InputLabel>Company Type*</InputLabel>
                       <Select
                         fullWidth={true}
                         id="type"
@@ -203,7 +220,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Contact</InputLabel>
+                    <InputLabel>Contact*</InputLabel>
                     <Select
                       fullWidth={true}
                       id="contactId"
@@ -234,8 +251,11 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   />
                 </Grid>
               </Grid>
+              <p>&nbsp;</p>
               <Grid container spacing={2}>
                 <Grid item sm={12}>
+                  <Typography color="#03a9f4"><strong>Note</strong>: Company logo needs to be 142 px x 37px or smaller. Size should be less than 1 MB. Only .jpg, .jpeg or .png formats are allowed.</Typography>
+                  <p>&nbsp;</p>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Button
                       variant="contained"
@@ -250,10 +270,14 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         type="file"
                         hidden
                         onChange={(e) => validateLogoImage(e)}
+                        // onBlur={e => setValidation({ ...validation, logoImage: true })}
                         accept=".jpg,.png,.jpeg"
                       />
                       {/* <img id="previewImage" src="#" alt="Company Logo" /> */}
                     </Button>
+                    {(logoSize == true) ?<Typography color="error">Logo image size should be less than 1 MB</Typography> : ''}
+                    {(logoType == true) ?<Typography color="error">Logo image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+                    {(logoDimension == true) ?<Typography color="error">Logo image dimensions should be 142 px x 37 px or smaller</Typography> : ''}
                     {/* {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''} */}
                   </FormControl>
                   
