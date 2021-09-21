@@ -100,14 +100,14 @@ function RideDetailsView() {
                             <Typography variant="h5" className={classes.pageSubHeading}>COMPANY & VEHICLE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 500 }} item xs={3}>Company</Grid>
-                            <Grid item xs={3}>{selectedRide.Customer.name || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={3}>Status</Grid>
-                            <Grid item xs={3}>{selectedRide.status || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle</Grid>
-                            <Grid item xs={3}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={3}>Driver</Grid>
-                            <Grid item xs={3}>{selectedRide.Driver.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Company :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Customer.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Status :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Driver :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.name || '-'}</Grid>
                         </Grid>
                     </Grid>
 
@@ -116,26 +116,26 @@ function RideDetailsView() {
                             <Typography variant="h5" className={classes.pageSubHeading}>PICKUP & DROPOFF</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupCity</Grid>
-                            <Grid item xs={3}>{selectedRide.PickupArea.Zone.City.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupZone</Grid>
-                            <Grid item xs={3}>{selectedRide.PickupArea.Zone.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupArea</Grid>
-                            <Grid item xs={3}>{selectedRide.PickupArea.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupAddress</Grid>
-                            <Grid item xs={3}>{selectedRide.pickupAddress || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffCity</Grid>
-                            <Grid item xs={3}>{selectedRide.DropoffArea.Zone.City.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffZone</Grid>
-                            <Grid item xs={3}>{selectedRide.DropoffArea.Zone.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffArea</Grid>
-                            <Grid item xs={3}>{selectedRide.DropoffArea.name || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffAddress</Grid>
-                            <Grid item xs={3}>{selectedRide.dropoffAddress || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupDate</Grid>
-                            <Grid item xs={3}>{dateFormat(selectedRide.pickupDate) || '-'}</Grid>
-                            <Grid item style={{ fontWeight: 500 }} xs={3}>dropoffDate</Grid>
-                            <Grid item xs={3}>{dateFormat(selectedRide.dropoffDate) || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupCity :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.PickupArea.Zone.City.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupZone :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.PickupArea.Zone.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupArea :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.PickupArea.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupAddress :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.pickupAddress || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffCity :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.DropoffArea.Zone.City.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffZone :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.DropoffArea.Zone.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffArea :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.DropoffArea.name || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffAddress :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.dropoffAddress || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>PickupDate :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{dateFormat(selectedRide.pickupDate) || '-'}</Grid>
+                            <Grid item style={{ fontWeight: 500 }} xs={3}>DropoffDate :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{dateFormat(selectedRide.dropoffDate) || '-'}</Grid>
                         </Grid>
                     </Grid>
 
@@ -144,14 +144,14 @@ function RideDetailsView() {
                             <Typography variant="h5" className={classes.pageSubHeading}>COST & PRICE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Price (Rs.)</Grid>
-                            <Grid item xs={2}>{selectedRide.price || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Cost (Rs.)</Grid>
-                            <Grid item xs={2}>{selectedRide.cost || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Discount (Rs.)</Grid>
-                            <Grid item xs={2}>{selectedRide.customerDiscount || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Driver Incentive (Rs.)</Grid>
-                            <Grid item xs={2}>{selectedRide.driverIncentive || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Price (Rs.) :</Grid>
+                            <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.price || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Cost (Rs.) :</Grid>
+                            <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.cost || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Discount (Rs.) :</Grid>
+                            <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.customerDiscount || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Driver Incentive (Rs.) :</Grid>
+                            <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.driverIncentive || '-'}</Grid>
                         </Grid>
                     </Grid>
 
