@@ -17,7 +17,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                 <form>
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle>
-                            View {relationType.toTitleCase()}
+                            View {relationType == 'CUSTOMER' ? ` Company` : ` Vendor`}
                         </DialogTitle>
                         <DialogContent>
                             <Grid container spacing={2}>

@@ -71,23 +71,24 @@ function VehicleTypeView() {
     const [modelid, setModelId] = useState([])
     // const [vehiclename, setVehicleName] = useState([])
     const [vehicletypes, setVehicleTypes] = useState()
-    const columns = [{
-        id: 'carmodel',
-        label: 'Car Model',
-        minWidth: 'auto',
-        className: '',
-        format: (value, entity) => entity.CarModel.name? entity.CarModel.name : ''
-    },
+    const columns = [
+        // {
+    //     id: 'carmodel',
+    //     label: 'Car Model',
+    //     minWidth: 'auto',
+    //     className: '',
+    //     format: (value, entity) => entity.CarModel.name? entity.CarModel.name : ''
+    // },
     {
         id: 'carmake',
-        label: 'Car Make',
+        label: 'Name',
         minWidth: 'auto',
         className: '',
-        format: (value, entity) => entity.CarMake.name? entity.CarMake.name : ''
+        format: (value, entity) => entity.CarMake.name? entity.CarMake.name + " " + entity.CarModel.name  : ''
     },
     {
         id: 'type',
-        label: 'Type',
+        label: 'Vehicle Category',
         minWidth: 'auto',
         className: '',
         format: (value, entity) => entity.VehicleType.name ? entity.VehicleType.name : ''
