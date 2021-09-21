@@ -152,7 +152,7 @@ export default function CompanyView({ relationType }) {
         return
       }
       setShowMessage({
-        message: `${relationType.toLowerCase()} has been ${!!selectedCompany ? 'updated' : 'created'}.`
+        message: `${relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} has been ${!!selectedCompany ? 'updated' : 'created'}.`
       });
       closeAddCompanyView();
       getCompanies();
