@@ -64,12 +64,12 @@ function RideDetailsView() {
         _getSelectedRide()
     }
     const _getSelectedRide = () => {
-        axios.get(getURL(`/ride/single/${uid}`))
+        axios.get(getURL(`ride/single/${uid}`))
             .then(res => {
                 // console.log(res.data.data)
                 setSelectedRide(res.data.data)
             });
-        axios.get(getURL(`/ride/preview/7`))
+        axios.get(getURL(`ride/preview/7`))
             .then((res) => {
                 console.log(res)
                 setProductManifestPreview(res.data.preview)

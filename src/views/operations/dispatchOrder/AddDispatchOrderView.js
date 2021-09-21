@@ -75,7 +75,7 @@ export default function AddDispatchOrderView() {
     getRelations();
   }, []);
   const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
+    axios.get(getURL('dispatch-order/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         // setWarehouses(res.data.warehouses);
@@ -179,19 +179,19 @@ export default function AddDispatchOrderView() {
   }, [productId]);
 
   const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
+    return axios.get(getURL('dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
   };
 
   const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
       .then(res => {
         return res.data.warehouses
       });
   };
 
   const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
+    return axios.get(getURL('dispatch-order/products'), { params })
       .then((res) => {
         return res.data.products
       })
@@ -200,7 +200,7 @@ export default function AddDispatchOrderView() {
 
   const addDispatchOrder = data => {
     let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
     else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {

@@ -10,6 +10,7 @@ import ActivityDetailsBox from '../../../components/ActivityDetailsBox';
 import { Pagination } from '@material-ui/lab';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+import { flatTemplate, stockadjustment } from '../../../utils/activitiyLogTemplates';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -35,15 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ActivityView() {
-    const currentPayload = { name: 'khan', price: 400, uid: 2 }
-    const previousPayload = { name: 'ahmed', price: 200, uid: 2 }
-    let updatedPayload = {}
-    for (let key of Object.keys(currentPayload)) {
-        if (currentPayload[key] !== previousPayload[key]) {
-            updatedPayload = { ...updatedPayload, [key]: currentPayload[key] }
-        }
-    }
-    console.log(updatedPayload)
+    
     const classes = useStyles();
     const [searchKeyword, setSearchKeyword] = useState('');
     const [pageCount, setPageCount] = useState(1);
@@ -172,36 +165,7 @@ function ActivityView() {
                                                 </Grid>
                                             )
                                         case 'EDIT':
-                                            const editPayloadData = [
-                                                <span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        edited
-                                                    </span>
-                                                    <span>
-                                                        {
-                                                            ` ${activityLog.ActivitySourceType.name || ''}`
-                                                        }
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        at
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${dividerTimeFormat(activityLog.updatedAt)}`
-                                                        }
-                                                    </span>
-                                                </span>
-                                            ]
+                                            const editPayloadData = activityLog.ActivitySourceType.name.toLowerCase() === stockadjustment ? 'Stock adjustment template' : flatTemplate(activityLog)
                                             return (
                                                 <Grid item container xs={12} justifyContent="center" key={idx} >
                                                     {
