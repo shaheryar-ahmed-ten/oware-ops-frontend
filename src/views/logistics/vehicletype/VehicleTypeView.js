@@ -81,7 +81,7 @@ function VehicleTypeView() {
     // },
     {
         id: 'carmake',
-        label: 'Name',
+        label: 'Vehicle Type',
         minWidth: 'auto',
         className: '',
         format: (value, entity) => entity.CarMake.name? entity.CarMake.name + " " + entity.CarModel.name  : ''
