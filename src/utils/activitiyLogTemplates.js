@@ -5,7 +5,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 // constants
 export const stockadjustment = 'stockadjustment'
-const restrictedKeys = ["updatedAt", "createdAt", "deletedAt", "id", "Id", "userId"]
+const restrictedKeys = ["updatedAt", "createdAt", "deletedAt", "id", "Id", "userId", "cnicId", "photoId", "companyId", "logoId", "contactId"]
 
 
 export const flatTemplate = (activityLog) => [<p>
@@ -48,7 +48,7 @@ export const flatTemplate = (activityLog) => [<p>
                     Object.keys(activityLog.previousPayload).map((key, idx) => {
                         if (!restrictedKeys.includes(key))
 
-                            return <TreeItem nodeId={idx} label={`${key} : ${activityLog.previousPayload[key]}`} />
+                            return <TreeItem nodeId={idx} label={`${key} : ${activityLog.previousPayload[key] || '-'}`} />
                     })
                 }
             </TreeItem>
@@ -57,7 +57,7 @@ export const flatTemplate = (activityLog) => [<p>
                     Object.keys(activityLog.currentPayload).map((key, idx) => {
                         if (!restrictedKeys.includes(key))
 
-                            return <TreeItem nodeId={idx} label={`${key} : ${activityLog.currentPayload[key]}`} />
+                            return <TreeItem nodeId={idx} label={`${key} : ${activityLog.currentPayload[key] || '-'}`} />
                     })
                 }
             </TreeItem>
