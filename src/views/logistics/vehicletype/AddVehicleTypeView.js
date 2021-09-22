@@ -183,11 +183,11 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
                <Grid container spacing={2}>
                     <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                        <InputLabel>Type</InputLabel>
+                        <InputLabel>Vehicle Category</InputLabel>
                         <Select
                         fullWidth={true}
                         id="typeid"
-                        label="Vehicle Type"
+                        label="Vehicle Category"
                         variant="outlined"
                         value={typeid}
                         onChange={e => setTypeId(e.target.value)}
@@ -197,11 +197,11 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
                             typeid && typeid !== "" ?
                             <MenuItem value={typeid} disabled>{typeid}</MenuItem>
                             :
-                            <MenuItem value={""} disabled>Select Type</MenuItem>
+                            <MenuItem value={""} disabled>Select Vehicle Category</MenuItem>
                         }
                         {types && types.map(type => <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
                         </Select>
-                        {validation.typeid && !isRequired(typeid) ? <Typography color="error">Car Type is required!</Typography> : ''}
+                        {validation.typeid && !isRequired(typeid) ? <Typography color="error">Vehicle Category is required!</Typography> : ''}
                     </FormControl>
                     </Grid>
                </Grid>
