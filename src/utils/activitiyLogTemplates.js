@@ -108,7 +108,7 @@ export const editFlatTemplate = (activityLog) => [<p>
         }
     </span>
     {/* Line break */}
-    {
+    {/* {
         <TreeView
             aria-label="file system navigator"
             defaultCollapseIcon={<ExpandMoreIcon />}
@@ -134,5 +134,5 @@ export const editFlatTemplate = (activityLog) => [<p>
                 }
             </TreeItem>
         </TreeView>
-    }
+    } */}
 </p>]

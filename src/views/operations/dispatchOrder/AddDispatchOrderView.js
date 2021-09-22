@@ -510,10 +510,10 @@ export default function AddDispatchOrderView() {
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Quantity
               </TableCell>
-              <TableCell
+              {/* <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Available Quantity
-              </TableCell>
+              </TableCell> */}
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
@@ -529,10 +529,13 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product.name}
                   </TableCell>
                   <TableCell>
-                    {dispatchGroup.product.UOM.name}
-                  </TableCell>
-                  <TableCell>
                     {dispatchGroup.quantity}
+                  </TableCell>
+                  {/* <TableCell>
+                    {dispatchGroup.availableQuantity}
+                  </TableCell> */}
+                  <TableCell>
+                    {dispatchGroup.product.UOM.name}
                   </TableCell>
                   <TableCell>
                     <DeleteIcon color="error" key="delete" onClick={() =>
