@@ -22,7 +22,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import axios from 'axios';
 import { getURL } from '../../../utils/common';
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import { isRequired } from '../../../utils/validators';
 // import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -62,16 +62,22 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
     const [pageCount, setPageCount] = useState(1);
     const [page, setPage] = useState(1);
   const [makeid, setCarMakeId] = useState('')
+  const [carMake, setCarMake] = useState('')
   const [modelid, setCarModelId] = useState('')
+  const [carModel, setCarModel] = useState('')
   const [typeid, setTypeId] = useState('')
+  const [catType, setCatType] = useState('')
 
   useEffect(() => {
     if (open)
       resetLocalStates()
     if (selectedVehicleType) {
         setCarMakeId(selectedVehicleType ? selectedVehicleType.makeId : '');
+        setCarMake(selectedVehicleType ? selectedVehicleType.CarMake.name : '');
         setCarModelId(selectedVehicleType ? selectedVehicleType.modelId : '');
+        setCarModel(selectedVehicleType ? selectedVehicleType.CarModel.name : '');
         setTypeId(selectedVehicleType ? selectedVehicleType.vehicleTypeId : '');
+        setCatType(selectedVehicleType ? selectedVehicleType.VehicleType.name : '')
     }
     else {
       resetLocalStates()
@@ -81,8 +87,11 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
   useEffect(() => {
     if (!!selectedVehicleType) {
       setCarMakeId(selectedVehicleType.makeId || '');
+      setCarMake( selectedVehicleType.CarMake.name || '');
       setCarModelId(selectedVehicleType.modelId || '');
+      setCarModel(selectedVehicleType.CarModel.name || '');
       setTypeId(selectedVehicleType.vehicleTypeId || '');
+      setCatType(selectedVehicleType.VehicleType.name ||'')
     }
   }, [selectedVehicleType]);
 
@@ -146,7 +155,7 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
                             >
                             {
                                 makeid && makeid !== "" ?
-                                <MenuItem value={makeid} disabled>{makeid}</MenuItem>
+                                <MenuItem value={makeid} disabled>{carMake}</MenuItem>
                                 :
                                 <MenuItem value={""} disabled>Select Car Make</MenuItem>
                             }
@@ -170,7 +179,7 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
 
                             {
                                 modelid && modelid !== "" ?
-                                <MenuItem value={modelid} disabled>{modelid}</MenuItem>
+                                <MenuItem value={modelid} disabled>{carModel}</MenuItem>
                                 :
                                 <MenuItem value={""} disabled>Select Car Model</MenuItem>
                             } 
@@ -195,7 +204,7 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
                         >
                         {
                             typeid && typeid !== "" ?
-                            <MenuItem value={typeid} disabled>{typeid}</MenuItem>
+                            <MenuItem value={typeid} disabled>{catType}</MenuItem>
                             :
                             <MenuItem value={""} disabled>Select Vehicle Category</MenuItem>
                         }
