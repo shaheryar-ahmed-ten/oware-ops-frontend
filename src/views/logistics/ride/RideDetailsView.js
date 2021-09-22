@@ -144,9 +144,9 @@ function RideDetailsView() {
                             <Typography variant="h5" className={classes.pageSubHeading}>COST & PRICE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Price (Rs.) :</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Price (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.price || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Cost (Rs.) :</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Vendor Cost (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.cost || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Discount (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.customerDiscount || '-'}</Grid>
@@ -349,10 +349,10 @@ function RideDetailsView() {
                         <TableHead>
                             <TableRow>
                                 <TableCell className={classes.tableHeadText}>
-                                    PRICE (Rs.)
+                                    CUSTOMER PRICE (Rs.)
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
-                                    COST (Rs.)
+                                    VENDOR COST (Rs.)
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
                                     CUSTOMER DISCOUNT (Rs.)
