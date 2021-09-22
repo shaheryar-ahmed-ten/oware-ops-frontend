@@ -10,7 +10,7 @@ import ActivityDetailsBox from '../../../components/ActivityDetailsBox';
 import { Pagination } from '@material-ui/lab';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
-import { flatTemplate, stockadjustment } from '../../../utils/activitiyLogTemplates';
+import { addFlatTemplate, deleteFlatTemplate, editFlatTemplate, stockadjustment } from '../../../utils/activitiyLogTemplates';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ActivityView() {
-    
+
     const classes = useStyles();
     const [searchKeyword, setSearchKeyword] = useState('');
     const [pageCount, setPageCount] = useState(1);
@@ -123,36 +123,7 @@ function ActivityView() {
                                     }
                                     switch (activityLog.activityType) {
                                         case 'ADD':
-                                            const payloadData = [
-                                                <span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        added
-                                                    </span>
-                                                    <span>
-                                                        {
-                                                            ` ${activityLog.ActivitySourceType.name || ''}`
-                                                        }
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        at
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${dividerTimeFormat(activityLog.updatedAt)}`
-                                                        }
-                                                    </span>
-                                                </span>
-                                            ]
+                                            const payloadData = addFlatTemplate(activityLog)
                                             return (
                                                 <Grid item container xs={12} justifyContent="center" key={idx} >
                                                     {
@@ -165,7 +136,7 @@ function ActivityView() {
                                                 </Grid>
                                             )
                                         case 'EDIT':
-                                            const editPayloadData = activityLog.ActivitySourceType.name.toLowerCase() === stockadjustment ? 'Stock adjustment template' : flatTemplate(activityLog)
+                                            const editPayloadData = activityLog.ActivitySourceType.name.toLowerCase() === stockadjustment ? 'Stock adjustment template' : editFlatTemplate(activityLog)
                                             return (
                                                 <Grid item container xs={12} justifyContent="center" key={idx} >
                                                     {
@@ -180,36 +151,7 @@ function ActivityView() {
                                                 </Grid>
                                             )
                                         case 'DELETE':
-                                            const deletePayloadData = [
-                                                <span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        deleted
-                                                    </span>
-                                                    <span>
-                                                        {
-                                                            ` ${activityLog.ActivitySourceType.name || ''}`
-                                                        }
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${activityLog.previousPayload.name || activityLog.previousPayload.internalIdForBusiness || ''} `
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        at
-                                                    </span>
-                                                    <span style={{ fontWeight: 600 }}>
-                                                        {
-                                                            ` ${dividerTimeFormat(activityLog.updatedAt)}`
-                                                        }
-                                                    </span>
-                                                </span>
-                                            ]
+                                            const deletePayloadData = deleteFlatTemplate(activityLog)
                                             return (
                                                 <Grid item container activityType={activityLog.activityType} xs={12} justifyContent="center" key={idx} >
                                                     {
