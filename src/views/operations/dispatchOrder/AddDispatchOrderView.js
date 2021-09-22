@@ -364,7 +364,6 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <TextField
             fullWidth={true}
-            margin="dense"
             id="receiverName"
             label="Receiver Name"
             type="text"
@@ -380,7 +379,6 @@ export default function AddDispatchOrderView() {
             className="mask-text"
             guide={true}
             showMask={true}
-            margin="normal"
             variant="outlined"
             name="phone"
             mask={phoneNumberMask}
@@ -392,25 +390,11 @@ export default function AddDispatchOrderView() {
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
+            style={{ padding: '22px 10px' }}
           // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
           {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          {/* <TextField
-            fullWidth={true}
-            margin="dense"
-            id="receiverPhone"
-            label="Receiver Phone"
-            type="text"
-            variant="outlined"
-            value={receiverPhone}
-            placeholder="0346xxxxxx8"
-            onChange={e => setReceiverPhone(e.target.value)}
-            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-          />
-          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
-          {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-    */}
         </Grid>
         <Grid item sm={6}>
           <TextField
