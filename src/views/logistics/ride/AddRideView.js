@@ -639,8 +639,8 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="price"
-              label="Price (Rs.)"
-              placeholder="Price (Rs.)"
+              label="Customer Price (Rs.)"
+              placeholder="Customer Price (Rs.)"
               type="number"
               variant="outlined"
               value={price}
@@ -655,8 +655,8 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="cost"
-              label="Cost (Rs.)"
-              placeholder="Cost (Rs.)"
+              label="Vendor Cost (Rs.)"
+              placeholder="Vendor Cost (Rs.)"
               type="number"
               variant="outlined"
               value={cost}
