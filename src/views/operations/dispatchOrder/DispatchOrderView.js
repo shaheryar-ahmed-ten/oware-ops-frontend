@@ -95,13 +95,6 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventory.Warehouse.name
   },
-  // {
-  //   id: 'Inventory.Warehouse.city',
-  //   label: 'CITY',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.Inventory.Warehouse.city
-  // },
   {
     id: 'Inventories.length',
     label: 'NO. OF PRODUCTS',
@@ -259,7 +252,7 @@ export default function DispatchOrderView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Dispatch Order" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table" >
+        <Table aria-label="sticky table" >
           <TableHead>
             <TableRow>
               {columns.map((column) => (
