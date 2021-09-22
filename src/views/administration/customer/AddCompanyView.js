@@ -260,7 +260,10 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   />
                 </Grid>
               </Grid>
+              
+              
               <p>&nbsp;</p>
+              {relationType == 'CUSTOMER' ?
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <Typography color="#03a9f4"><strong>Note</strong>: Company logo needs to be 142 px x 37px or smaller. Size should be less than 1 MB. Only .jpg, .jpeg or .png formats are allowed.</Typography>
@@ -332,6 +335,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                 </Grid>
 
               </Grid>
+              : ''}
 
 
               <Grid container spacing={2}>
