@@ -99,6 +99,9 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   }
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
+    // setLogoImage(null);
+    // removeLogoId();
+    // setLogoImageSrc(null);
     setLogoType(false);
     setLogoSize(false);
     setLogoDimension(false);
@@ -127,32 +130,38 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       image.src = _loadedImageUrl;
       image.addEventListener('load', () => {
         const { width, height } = image;
-        if (image && width > 142 && height >37){
+        if (image && width > 142 && height > 37) {
           setLogoDimension(true);
           // setValidation(...validation, logoImage)
           // alert("Image Size should be less than or equal to 142*37")
           // return(<Typography>Note: Company Logo must be equal or less than 142*37</Typography>)
-          setLogoImageSrc(null);  
+          removeLogoId();
+          setLogoImageSrc(null);
           setLogoImage(null);
+          
           // return(<Typography>Note: Company Logo must be equal or less than 142*37</Typography>)
           return false;
         }
         else {
+          removeLogoId() 
           setLogoImageSrc(_loadedImageUrl);
-          const logoFile = checkFile? checkFile: null;
+          const logoFile = checkFile ? checkFile : null;
           console.log(logoFile)
           setLogoImage(logoFile)
+          
         }
       });
     });
-   
-    
+
+
   }
-  const removePreviewId =(event) => {
+  const removePreviewId = (event) => {
     setLogoImage(null);
     setLogoImageSrc(null);
   }
-
+  useEffect(()=>{
+    console.log(logoImageSrc,"logoImageSrc",logoImage,"logoImage",selectedCompany);
+  },[logoImageSrc,logoImage])
   return (
     <div style={{ display: "inline" }}>
       <form>
@@ -265,7 +274,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     >
                       {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
 
-                      
+
                       <input
                         type="file"
                         hidden
@@ -275,36 +284,46 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       />
                       {/* <img id="previewImage" src="#" alt="Company Logo" /> */}
                     </Button>
-                    {(logoSize == true) ?<Typography color="error">Logo image size should be less than 1 MB</Typography> : ''}
-                    {(logoType == true) ?<Typography color="error">Logo image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                    {(logoDimension == true) ?<Typography color="error">Logo image dimensions should be 142 px x 37 px or smaller</Typography> : ''}
+                    {(logoSize == true) ? <Typography color="error">Logo image size should be less than 1 MB</Typography> : ''}
+                    {(logoType == true) ? <Typography color="error">Logo image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+                    {(logoDimension == true) ? <Typography color="error">Logo image dimensions should be 142 px x 37 px or smaller</Typography> : ''}
                     {/* {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''} */}
                   </FormControl>
-                  
-                    <Grid style={{ textAlign: 'center' }}>
-                    
-                        {logoImageSrc == null ? '' :
-                          <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon onClick={() => removePreviewId()} /> 
-                        </Grid>}
-                        <img id="previewImage" src={logoImageSrc} alt=""/>
-                    </Grid>
-                    
-                    {/* Remove Logo Trash Bin */}
 
-                    {(selectedCompany && selectedCompany.logoId) ?
+                  <Grid style={{ textAlign: 'center' }}>
 
-                        <Grid item xs={12} style={{ marginLeft: 380 }}>
-                        {(selectedCompany && selectedCompany.logoId) ?
+                    {!logoImageSrc ? '' :
+                      <Grid item xs={12} style={{ marginLeft: 380 }}>
+                        <DeleteSharpIcon onClick={() => removePreviewId()} />
+                      </Grid>}
+                    {/* {logoImageSrc == null ? '' : */}
+
+                    {
+                      logoImageSrc ?
+                        <img id="previewImage" src={logoImageSrc} /> :
+                        null
+                    }
+
+                    {/* } */}
+                  </Grid>
+
+                  {/* Remove Logo Trash Bin */}
+                      
+                  {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
+
+                    <Grid item xs={12} style={{ marginLeft: 380 }}>
+                      {(selectedCompany && selectedCompany.logoId) ?
                         <DeleteSharpIcon onClick={() => removeLogoId()} />
                         : ''}
-                        </Grid>
+                    </Grid>
                     : ''}
 
-                  {(selectedCompany && selectedCompany.logoId) ?
+                  {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
                     <Grid item xs={12} style={{ textAlign: 'center' }}>
                       {(selectedCompany && selectedCompany.logoId) ?
-                        <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" /></a>
+                        <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>
+                          <img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" />
+                        </a>
                         // <DeleteSharpIcon onClick={() => removeLogoId()} />
                         : ''}
                     </Grid>
@@ -314,7 +333,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
 
               </Grid>
 
-            
+
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <Checkbox
