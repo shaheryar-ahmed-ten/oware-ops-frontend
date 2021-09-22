@@ -116,7 +116,10 @@ export default function CompanyView({ relationType }) {
     format: (value, entity) =>
       [
         <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <EditIcon key="edit" onClick={() => {
+          openEditView(entity)
+          setIsEdit(true)
+        }} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -132,12 +135,14 @@ export default function CompanyView({ relationType }) {
   const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
   const [companyDetailsView, setCompanyDetailsView] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
 
   const removeCurrentLogoId = () => {
     const _selectedCompany = { ...selectedCompany };
     _selectedCompany.logoId = null;
     setSelectedCompany(_selectedCompany);
+    // return false;
 
     // Call UPDATE API HERE
   }
@@ -245,7 +250,10 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR'}</Button>;
+    onClick={() => {
+      setAddCompanyViewOpen(true)
+      setIsEdit(false)
+    }}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR'}</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -257,6 +265,7 @@ export default function CompanyView({ relationType }) {
     addCompany={addCompany}
     handleClose={() => closeAddCompanyView()}
     removeLogoId={() => removeCurrentLogoId()}
+    isEdit={isEdit}
   />
   const deleteCompanyModal = <ConfirmDelete
     key={4}
