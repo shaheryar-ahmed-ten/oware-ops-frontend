@@ -136,7 +136,9 @@ function ActivityView() {
                                                 </Grid>
                                             )
                                         case 'EDIT':
-                                            const editPayloadData = activityLog.ActivitySourceType.name.toLowerCase() === stockadjustment ? 'Stock adjustment template' : editFlatTemplate(activityLog)
+                                            // TODO: separate template for stock adjustment
+                                            // const editPayloadData = activityLog.ActivitySourceType.name.toLowerCase() === stockadjustment ?  editFlatTemplate(activityLog) : editFlatTemplate(activityLog)
+                                            const editPayloadData = editFlatTemplate(activityLog)
                                             return (
                                                 <Grid item container xs={12} justifyContent="center" key={idx} >
                                                     {

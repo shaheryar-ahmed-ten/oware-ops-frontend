@@ -88,9 +88,10 @@ export const editFlatTemplate = (activityLog) => [<p>
         {
             ` ${activityLog.ActivitySourceType &&
                 activityLog.ActivitySourceType.name.toLowerCase() === car ?
-                activityLog.ActivitySourceType.name || ''
-                :
                 'Vehicle Type'
+                :
+                activityLog.ActivitySourceType.name || ''
+
             }`
         }
     </span>
