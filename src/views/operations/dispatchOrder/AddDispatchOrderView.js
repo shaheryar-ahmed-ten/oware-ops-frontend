@@ -215,14 +215,13 @@ export default function AddDispatchOrderView() {
       }, 2000);
     });
   };
-
   const updateDispatchOrdersTable = () => {
     if (isRequired(customerId) &&
       isRequired(warehouseId) &&
       isRequired(receiverName) &&
       isRequired(receiverPhone) &&
       isRequired(productId) &&
-      isRequired(quantity) &&
+      isRequired(parseInt(quantity)) &&
       isPhone(receiverPhone.replace(/-/g, ''))) {
       // checking if particular product is already added once
       // if yes
@@ -463,7 +462,7 @@ export default function AddDispatchOrderView() {
               value={quantity}
               disabled={!!selectedDispatchOrder}
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
-            // onBlur={e => setValidation({ ...validation, quantity: true })}
+              onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>

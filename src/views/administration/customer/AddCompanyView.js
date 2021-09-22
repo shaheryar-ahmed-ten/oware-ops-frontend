@@ -92,7 +92,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       if (logoImage) [newCompany.logoId] = await upload([logoImage], 'customer');
 
       // if (!isRequired(newCompany.logoId)) return
-      console.log(newCompany)
+      // console.log(newCompany)
 
       addCompany(newCompany);
     }
@@ -146,7 +146,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           removeLogoId() 
           setLogoImageSrc(_loadedImageUrl);
           const logoFile = checkFile ? checkFile : null;
-          console.log(logoFile)
+          // console.log(logoFile)
           setLogoImage(logoFile)
           
         }
@@ -160,7 +160,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     setLogoImageSrc(null);
   }
   useEffect(()=>{
-    console.log(logoImageSrc,"logoImageSrc",logoImage,"logoImage",selectedCompany);
+    // console.log(logoImageSrc,"logoImageSrc",logoImage,"logoImage",selectedCompany);
   },[logoImageSrc,logoImage])
   return (
     <div style={{ display: "inline" }}>
