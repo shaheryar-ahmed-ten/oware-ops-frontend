@@ -30,7 +30,7 @@ export const addFlatTemplate = (activityLog) => [
         </span>
         <span style={{ fontWeight: 600 }}>
             {
-                ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || ''} `
+                ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || activityLog.currentPayload.username || ''} `
             }
         </span>
         <span>
@@ -61,7 +61,7 @@ export const deleteFlatTemplate = (activityLog) => [
         </span>
         <span style={{ fontWeight: 600 }}>
             {
-                ` ${activityLog.previousPayload.name || activityLog.previousPayload.internalIdForBusiness || ''} `
+                ` ${activityLog.previousPayload.name || activityLog.previousPayload.internalIdForBusiness || activityLog.previousPayload.registrationNumber || activityLog.previousPayload.username || ''} `
             }
         </span>
         <span>
@@ -97,7 +97,7 @@ export const editFlatTemplate = (activityLog) => [<p>
     </span>
     <span style={{ fontWeight: 600 }}>
         {
-            ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || ''} `
+            ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || activityLog.currentPayload.username || ''} `
         }
     </span>
     <span>
