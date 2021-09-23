@@ -63,18 +63,18 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: ''
   }] : [{
-      id: 'name',
-      label: 'Company',
-      minWidth: 'auto',
-      className: '',
-    }]),
+    id: 'name',
+    label: 'Company',
+    minWidth: 'auto',
+    className: '',
+  }]),
   //  {
   //   id: 'name',
   //   label: 'Company',
   //   minWidth: 'auto',
   //   className: '',
   // },
-   ...(relationType == 'CUSTOMER' ? [{
+  ...(relationType == 'CUSTOMER' ? [{
     id: 'type',
     label: 'Company Type',
     minWidth: 'auto',
@@ -116,7 +116,10 @@ export default function CompanyView({ relationType }) {
     format: (value, entity) =>
       [
         <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
-        <EditIcon key="edit" onClick={() => openEditView(entity)} />,
+        <EditIcon key="edit" onClick={() => {
+          openEditView(entity)
+          setIsEdit(true)
+        }} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
@@ -131,7 +134,18 @@ export default function CompanyView({ relationType }) {
   const [addCompanyViewOpen, setAddCompanyViewOpen] = useState(false);
   const [deleteCompanyViewOpen, setDeleteCompanyViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
-  const [companyDetailsView, setCompanyDetailsView] = useState(false)
+  const [companyDetailsView, setCompanyDetailsView] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
+
+  const removeCurrentLogoId = () => {
+    const _selectedCompany = { ...selectedCompany };
+    _selectedCompany.logoId = null;
+    setSelectedCompany(_selectedCompany);
+    // return false;
+
+    // Call UPDATE API HERE
+  }
 
   const addCompany = data => {
     let apiPromise = null;
@@ -143,7 +157,7 @@ export default function CompanyView({ relationType }) {
         return
       }
       setShowMessage({
-        message: `${relationType.toLowerCase()} has been ${!!selectedCompany ? 'updated' : 'created'}.`
+        message: `${relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} has been ${!!selectedCompany ? 'updated' : 'created'}.`
       });
       closeAddCompanyView();
       getCompanies();
@@ -236,7 +250,10 @@ export default function CompanyView({ relationType }) {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => setAddCompanyViewOpen(true)}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR' }</Button>;
+    onClick={() => {
+      setAddCompanyViewOpen(true)
+      setIsEdit(false)
+    }}>{relationType == 'CUSTOMER' ? 'ADD COMPANY' : 'ADD VENDOR'}</Button>;
   const addCompanyModal = <AddCompanyView
     key={3}
     formErrors={formErrors}
@@ -246,7 +263,10 @@ export default function CompanyView({ relationType }) {
     selectedCompany={selectedCompany}
     open={addCompanyViewOpen}
     addCompany={addCompany}
-    handleClose={() => closeAddCompanyView()} />
+    handleClose={() => closeAddCompanyView()}
+    removeLogoId={() => removeCurrentLogoId()}
+    isEdit={isEdit}
+  />
   const deleteCompanyModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteCompany}
@@ -265,7 +285,7 @@ export default function CompanyView({ relationType }) {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title= {relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
+        <TableHeader title={relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

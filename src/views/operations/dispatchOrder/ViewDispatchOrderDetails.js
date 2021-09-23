@@ -49,7 +49,7 @@ function ViewDispatchOrderDetails() {
     _getDispatchOrders()
   }
   const _getDispatchOrders = () => {
-    axios.get(getURL('/dispatch-order'))
+    axios.get(getURL('dispatch-order'))
       .then(res => {
         setSelectedDispatchOrder(res.data.data.find((order) => order.id == uid))
       });

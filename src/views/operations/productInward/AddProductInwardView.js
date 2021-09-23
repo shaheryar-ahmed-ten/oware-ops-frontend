@@ -167,7 +167,7 @@ export default function AddProductInwardView() {
       setValidation({
         quantity: true,
         customerId: true,
-        referenceId: true,
+        // referenceId: true,
         productId: true,
         warehouseId: true
       });
@@ -208,7 +208,7 @@ export default function AddProductInwardView() {
     }
 
     setValidation({
-      quantity: true,
+      // quantity: true,
       customerId: true,
       productId: true,
       warehouseId: true
@@ -283,7 +283,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={e => setReferenceId(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            onBlur={e => setValidation({ ...validation, referenceId: true })}
+            // onBlur={e => setValidation({ ...validation, referenceId: true })}
           />
           {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
