@@ -97,6 +97,7 @@ export default function StockManagementView() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [entityToBeDeleted, setEntityToBeDeleted] = useState('')
   const columns = [
     {
       id: 'internalIdForBusiness',
@@ -147,7 +148,10 @@ export default function StockManagementView() {
               style={{ cursor: 'pointer' }}
             />
           </IconButton>,
-          <IconButton onClick={() => setOpenBackdrop(true)}>
+          <IconButton onClick={() => {
+            setEntityToBeDeleted(entity.id);
+            setOpenBackdrop(true)
+          }}>
             <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }} />
           </IconButton>,
           <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
@@ -157,7 +161,7 @@ export default function StockManagementView() {
                 <Button autoFocus variant="contained"  >
                   Cancel
                 </Button>
-                <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => deleteAdjustment(entity.id)}>
+                <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => deleteAdjustment(entityToBeDeleted)}>
                   Confirm
                 </Button>
               </Grid>
