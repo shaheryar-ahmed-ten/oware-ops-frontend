@@ -244,8 +244,8 @@ function AddRideView() {
       customerDiscount,
       driverIncentive,
       products,
-      pickupDate,
-      dropoffDate,
+      pickupDate: new Date(pickupDate),
+      dropoffDate: new Date(dropoffDate),
       isActive
     };
 
