@@ -268,7 +268,7 @@ export default function ProductView() {
     selectedEntity={selectedProduct && selectedProduct.name}
     title={"Product"}
   />
-  const headerButtons = [searchInput, addProductButton, addProductModal, deleteProductModal];
+  const headerButtons = [searchInput, addProductButton, addBulkProductsButton, addProductModal, deleteProductModal];
 
   return (
     <Paper className={classes.root}>
