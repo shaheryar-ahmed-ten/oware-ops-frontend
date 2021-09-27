@@ -98,7 +98,7 @@ export default function AddProductOutwardView({ }) {
 
 
   const getRelations = () => {
-    axios.get(getURL('/product-outward/relations'))
+    axios.get(getURL('product-outward/relations'))
       .then(res => {
         // setting dispatchOrder details and vehicleTypes in local State
         // setVehicleTypes((prevState) => res.data.vehicleTypes)

@@ -32,7 +32,11 @@ import InwardProductDetailsView from './views/operations/productInward/InwardPro
 import StockManagementView from './views/operations/stockmanagement/StockManagementView';
 import AddStockManagement from './views/operations/stockmanagement/AddStockManagement';
 import ViewStockManagementDetails from './views/operations/stockmanagement/ViewStockManagementDetails';
-
+import VehicleTypeView from './views/logistics/vehicletype/VehicleTypeView';
+// import AddVehicleTypeView from './views/logistics/vehicletype/AddVehicleTypeView';
+// import VehicleTypeDetailsView from './views/logistics/vehicletype/VehicleTypeDetailsView';
+import RideDetailsView from './views/logistics/ride/RideDetailsView';
+import ActivityView from './views/administration/activity/ActivityView';
 
 const routes = (user) => [
   {
@@ -66,6 +70,10 @@ const routes = (user) => [
       {
         path: 'product',
         element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ProductView /> : <Navigate to="404" />
+      },
+      {
+        path: 'activity-logs',
+        element: checkPermission(user, 'OPS_PRODUCT_FULL') ? <ActivityView /> : <Navigate to="404" />
       },
       {
         path: '/',
@@ -165,12 +173,24 @@ const routes = (user) => [
         element: <VehicleView />
       },
       {
+        path: 'vehicle-type',
+        element: <VehicleTypeView />
+      },
+      // {
+      //   path: 'vehicle-type/create',
+      //   element: <AddVehicleTypeView />
+      // },
+      {
         path: 'ride',
         element: <RideView />
       },
       {
         path: 'ride/create',
         element: <AddRideView />
+      },
+      {
+        path: 'ride/view/:uid',
+        element: <RideDetailsView />
       }
     ]
   },

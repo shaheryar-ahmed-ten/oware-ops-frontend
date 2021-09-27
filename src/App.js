@@ -5,7 +5,7 @@ import GlobalStyles from '../src/components/GlobalStyles';
 import theme from '../src/theme';
 import routes from '../src/routes';
 import { SharedContext } from './utils/common';
-import { getUser, getUserToken } from './utils/auth';
+import { getUser, getUserToken, removeAuth } from './utils/auth';
 import { setRequestInterceptor, setResponseInterceptor, ejectRequestInterceptor, ejectResponseInterceptor } from './utils/interceptors';
 
 const App = () => {
@@ -27,6 +27,7 @@ const App = () => {
       setIsLoading(false);
       if (error.response && error.response.status == 401) {
         if (location.pathname.split('/').pop() != 'login') {
+          removeAuth();
           navigate('/login');
         }
       }

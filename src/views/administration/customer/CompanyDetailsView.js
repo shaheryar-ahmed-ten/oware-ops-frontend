@@ -17,7 +17,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                 <form>
                     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                         <DialogTitle>
-                            View {relationType.toTitleCase()}
+                            View {relationType == 'CUSTOMER' ? ` Company` : ` Vendor`}
                         </DialogTitle>
                         <DialogContent>
                             <Grid container spacing={2}>
@@ -25,7 +25,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="cId"
-                                            label={'Company ID'}
+                                            label={'Venodr ID'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -39,7 +39,7 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     <Grid item xs={6}>
                                         <TextField
                                             id="company"
-                                            label={'Company Name'}
+                                            label={'Vendor Name'}
                                             type="text"
                                             InputLabelProps={{
                                                 shrink: true,
@@ -110,6 +110,16 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                             value={selectedCompany.isActive ? 'Active' : 'In-Active'}
                                         />
                                     </Grid>
+                                    {(selectedCompany && selectedCompany.logoId) ?
+                                    <Grid item xs={12} style={{fontWeight:600 }}>
+                                            Logo
+                                    </Grid>
+                                    : ''}
+                                    <Grid item xs={12} style={{textAlign: 'center'}}>
+                                        {(selectedCompany && selectedCompany.logoId) ?
+                                            <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="Company Logo" /></a>
+                                        : ''}
+                                     </Grid>
                                 </Grid>
                             </Grid>
                         </DialogContent>

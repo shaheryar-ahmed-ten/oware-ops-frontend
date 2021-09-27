@@ -23,6 +23,7 @@ import AddProductView from './AddProductView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import ProductsCsvReader from '../../../components/ProductsCsvReader';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -124,6 +125,7 @@ export default function ProductView() {
   const [addProductViewOpen, setAddProductViewOpen] = useState(false);
   const [deleteProductViewOpen, setDeleteProductViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null);
 
 
   const addProduct = data => {
@@ -143,8 +145,30 @@ export default function ProductView() {
     });
   };
 
+  const bulkUpload = data => {
+    let apiPromise = axios.post(getURL('product/bulk'), data)
+    apiPromise.then((res) => {
+      if (!res.data.success) {
+        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+        return
+      }
+      setMessageType('green')
+      setShowMessage({
+        message: "New products has been created."
+      })
+      closeAddProductView(false);
+      getProducts();
+    })
+      .catch((err) => {
+        setMessageType('#FFCC00')
+        setShowMessage({
+          message: `${err.response.data.message || 'Invalid file data.'}`
+        })
+      })
+  }
+
   const deleteProduct = data => {
-    axios.delete(getURL(`product/${selectedProduct.id}`))
+    axios.delete(getURL(`product / ${selectedProduct.id}`))
       .then(res => {
         if (!res.data.success) {
           setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
@@ -215,12 +239,16 @@ export default function ProductView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
+  const addBulkProductsButton = <ProductsCsvReader bulkUpload={bulkUpload} />;
+
   const addProductButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
     onClick={() => setAddProductViewOpen(true)}>ADD PRODUCT</Button>;
+
   const addProductModal = <AddProductView
     formErrors={formErrors}
     key={3}
@@ -231,6 +259,7 @@ export default function ProductView() {
     open={addProductViewOpen}
     addProduct={addProduct}
     handleClose={() => closeAddProductView()} />
+
   const deleteProductModal = <ConfirmDelete
     key={4}
     confirmDelete={deleteProduct}
@@ -293,7 +322,7 @@ export default function ProductView() {
           />
         </Grid>
       </Grid>
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </Paper>
   );
 }

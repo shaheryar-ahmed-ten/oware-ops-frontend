@@ -244,8 +244,8 @@ function AddRideView() {
       customerDiscount,
       driverIncentive,
       products,
-      pickupDate,
-      dropoffDate,
+      pickupDate: new Date(pickupDate),
+      dropoffDate: new Date(dropoffDate),
       isActive
     };
 
@@ -824,7 +824,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={12}>
               {(selectedRide && selectedRide.Manifest) ?
-                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Driving License Image</a>
+                <a target="_blank" href={getURL('preview', selectedRide.Manifest.id)}>Product Manifest Image</a>
                 : ''}
             </Grid>
           </Grid>

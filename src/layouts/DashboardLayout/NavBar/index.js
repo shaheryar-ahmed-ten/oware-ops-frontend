@@ -64,6 +64,12 @@ const navTreeData = [
         title: 'Product',
         activeRouteName: 'product'
       },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
+        href: '/administration/activity-logs',
+        title: 'Activity Logs',
+        activeRouteName: 'activity-logs'
+      },
     ]
   },
   {
@@ -123,6 +129,12 @@ const navTreeData = [
         href: '/logistics/driver',
         title: 'Driver',
         activeRouteName: 'driver'
+      },
+      {
+        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
+        href: '/logistics/vehicle-type',
+        title: 'Vehicle Type',
+        activeRouteName: 'vehicle-type'
       },
       {
         canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
