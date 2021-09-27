@@ -75,7 +75,7 @@ export default function AddDispatchOrderView() {
     getRelations();
   }, []);
   const getRelations = () => {
-    axios.get(getURL('/dispatch-order/relations'))
+    axios.get(getURL('dispatch-order/relations'))
       .then(res => {
         setCustomers(res.data.customers);
         // setWarehouses(res.data.warehouses);
@@ -179,19 +179,19 @@ export default function AddDispatchOrderView() {
   }, [productId]);
 
   const getInventory = (params) => {
-    return axios.get(getURL('/dispatch-order/inventory'), { params })
+    return axios.get(getURL('dispatch-order/inventory'), { params })
       .then(res => res.data.inventory);
   };
 
   const getWarehouses = (params) => {
-    return axios.get(getURL('/dispatch-order/warehouses'), { params })
+    return axios.get(getURL('dispatch-order/warehouses'), { params })
       .then(res => {
         return res.data.warehouses
       });
   };
 
   const getProducts = (params) => {
-    return axios.get(getURL('/dispatch-order/products'), { params })
+    return axios.get(getURL('dispatch-order/products'), { params })
       .then((res) => {
         return res.data.products
       })
@@ -200,7 +200,7 @@ export default function AddDispatchOrderView() {
 
   const addDispatchOrder = data => {
     let apiPromise = null;
-    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('/dispatch-order'), data);
+    if (!selectedDispatchOrder) apiPromise = axios.post(getURL('dispatch-order'), data);
     else apiPromise = axios.put(getURL(`dispatch-order/${selectedDispatchOrder.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
@@ -215,14 +215,14 @@ export default function AddDispatchOrderView() {
       }, 2000);
     });
   };
-
   const updateDispatchOrdersTable = () => {
     if (isRequired(customerId) &&
       isRequired(warehouseId) &&
       isRequired(receiverName) &&
       isRequired(receiverPhone) &&
       isRequired(productId) &&
-      isRequired(quantity)) {
+      isRequired(parseInt(quantity)) &&
+      isPhone(receiverPhone.replace(/-/g, ''))) {
       // checking if particular product is already added once
       // if yes
       if (checkForMatchInArray(inventories, "id", inventoryId)) {
@@ -264,7 +264,7 @@ export default function AddDispatchOrderView() {
       customerId,
       warehouseId,
       productId,
-      shipmentDate,
+      shipmentDate: new Date(shipmentDate),
       receiverName,
       receiverPhone: strRecPhone,
       referenceId,
@@ -285,7 +285,8 @@ export default function AddDispatchOrderView() {
       isRequired(customerId) &&
       isRequired(shipmentDate) &&
       isRequired(receiverName) &&
-      isRequired(receiverPhone)) {
+      isRequired(receiverPhone)
+    ) {
       addDispatchOrder(newDispatchOrder);
     }
   }
@@ -362,7 +363,6 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <TextField
             fullWidth={true}
-            margin="dense"
             id="receiverName"
             label="Receiver Name"
             type="text"
@@ -378,7 +378,6 @@ export default function AddDispatchOrderView() {
             className="mask-text"
             guide={true}
             showMask={true}
-            margin="normal"
             variant="outlined"
             name="phone"
             mask={phoneNumberMask}
@@ -390,24 +389,11 @@ export default function AddDispatchOrderView() {
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
+            style={{ padding: '22px 10px' }}
           // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
+          {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          {/* <TextField
-            fullWidth={true}
-            margin="dense"
-            id="receiverPhone"
-            label="Receiver Phone"
-            type="text"
-            variant="outlined"
-            value={receiverPhone}
-            placeholder="0346xxxxxx8"
-            onChange={e => setReceiverPhone(e.target.value)}
-            onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-          />
-          {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : ''}
-          {validation.receiverPhone && !isPhone(receiverPhone) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-    */}
         </Grid>
         <Grid item sm={6}>
           <TextField
@@ -476,7 +462,7 @@ export default function AddDispatchOrderView() {
               value={quantity}
               disabled={!!selectedDispatchOrder}
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
-            // onBlur={e => setValidation({ ...validation, quantity: true })}
+              onBlur={e => setValidation({ ...validation, quantity: true })}
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
@@ -524,10 +510,10 @@ export default function AddDispatchOrderView() {
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Quantity
               </TableCell>
-              <TableCell
+              {/* <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Available Quantity
-              </TableCell>
+              </TableCell> */}
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
@@ -543,10 +529,13 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product.name}
                   </TableCell>
                   <TableCell>
-                    {dispatchGroup.product.UOM.name}
-                  </TableCell>
-                  <TableCell>
                     {dispatchGroup.quantity}
+                  </TableCell>
+                  {/* <TableCell>
+                    {dispatchGroup.availableQuantity}
+                  </TableCell> */}
+                  <TableCell>
+                    {dispatchGroup.product.UOM.name}
                   </TableCell>
                   <TableCell>
                     <DeleteIcon color="error" key="delete" onClick={() =>
