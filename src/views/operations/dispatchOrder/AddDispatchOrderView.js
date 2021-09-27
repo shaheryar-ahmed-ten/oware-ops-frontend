@@ -19,7 +19,7 @@ import { TableContainer } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import MessageSnackbar from '../../../components/MessageSnackbar';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import MaskedInput from "react-text-mask";
 import "./outward.css"
 
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddDispatchOrderView() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { uid } = useParams();
 
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
 
@@ -71,8 +72,12 @@ export default function AddDispatchOrderView() {
   const [messageType, setMessageType] = useState(null);
 
   useEffect(() => {
-    getRelations();
+    if (customers.length === 0)
+      getRelations();
+    if (uid)
+      _getDispatchOrder(); // only in case of edit
   }, []);
+
   const getRelations = () => {
     axios.get(getURL('dispatch-order/relations'))
       .then(res => {
@@ -176,6 +181,18 @@ export default function AddDispatchOrderView() {
     }
 
   }, [productId]);
+
+
+  const _getDispatchOrder = () => {
+    axios.get(getURL(`dispatch-order/${uid}`))
+      .then((response) => {
+        console.log(response.data.data)
+        setSelectedDispatchOrder(response.data.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 
   const getInventory = (params) => {
     return axios.get(getURL('dispatch-order/inventory'), { params })
@@ -329,8 +346,9 @@ export default function AddDispatchOrderView() {
           <FormControl margin="dense" fullWidth={true} variant="outlined">
             <Autocomplete
               id="customer"
+              key={selectedDispatchOrder} // for reRendering the autocomplete after dispatch order is selected.
               options={customers}
-              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: customerId } : ''}
+              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Company.name, id: selectedDispatchOrder.Inventory.Company.id } : ''}
               getOptionLabel={(customer) => customer.name || ""}
               onChange={(event, newValue) => {
                 if (newValue)
