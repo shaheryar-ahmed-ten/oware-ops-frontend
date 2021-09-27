@@ -43,8 +43,7 @@ export default function AddDispatchOrderView() {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const { state } = useLocation();
-  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
+  const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
 
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -215,6 +214,7 @@ export default function AddDispatchOrderView() {
       }, 2000);
     });
   };
+
   const updateDispatchOrdersTable = () => {
     if (isRequired(customerId) &&
       isRequired(warehouseId) &&

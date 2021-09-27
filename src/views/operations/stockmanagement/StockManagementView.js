@@ -140,11 +140,7 @@ export default function StockManagementView() {
             />
           </IconButton>,
           <IconButton>
-            <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`, {
-              state: {
-                selectedProductOutward: entity
-              }
-            })}
+            <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
               style={{ cursor: 'pointer' }}
             />
           </IconButton>,

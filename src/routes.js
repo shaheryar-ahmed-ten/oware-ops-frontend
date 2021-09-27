@@ -114,7 +114,7 @@ const routes = (user) => [
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
       },
       {
-        path: 'dispatch-order/edit',
+        path: 'dispatch-order/edit/:uid',
         element: checkPermission(user, 'OPS_DISPATCHORDER_FULL') ? <AddDispatchOrderView /> : <Navigate to="404" />
       },
       {
