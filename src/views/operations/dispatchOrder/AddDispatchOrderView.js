@@ -69,6 +69,20 @@ export default function AddDispatchOrderView() {
   const [showMessage, setShowMessage] = useState(null);
   const [messageType, setMessageType] = useState(null);
 
+  const resetLocalStates = () => {
+    // empty arrays
+    setWarehouses(customerId ? warehouses : []);
+    setProducts([]);
+    setInventories([]);
+    // reset product section quantities
+    setQuantity(0);
+    setAvailableQuantity(0);
+    // reset product id
+    setProductId('');
+    // reset validations
+    setValidation({});
+  }
+
   useEffect(() => {
     if (customers.length === 0)
       getRelations();
@@ -94,7 +108,7 @@ export default function AddDispatchOrderView() {
       setReceiverPhone(selectedDispatchOrder.receiverPhone || '');
       setInventoryId(selectedDispatchOrder.inventoryId || '');
       setCustomerId(selectedDispatchOrder.Inventory.customerId);
-      setWarehouseId(selectedDispatchOrder.Inventory.customerId);
+      setWarehouseId(selectedDispatchOrder.Inventory.warehouseId);
       getWarehouses({ customerId: selectedDispatchOrder.Inventory.warehouseId })
         .then(warehouses => {
           return setWarehouses(warehouses)
@@ -109,8 +123,9 @@ export default function AddDispatchOrderView() {
                 ...prevState,
                 {
                   product: inventory.Product, // because its not necessary that available qty of dispatched product is still available, it will not be available in Products if available qty is 0.
-                  id: inventoryId,
-                  quantity: inventory.OrderGroup.quantity
+                  id: selectedDispatchOrder.inventoryId,
+                  quantity: inventory.OrderGroup.quantity,
+                  availableQuantity: inventory.availableQuantity // to display at bottom table in edit, later it'll be removed before updating.
                 }
               ]))
             }
@@ -131,12 +146,8 @@ export default function AddDispatchOrderView() {
   }, [selectedDispatchOrder])
 
   useEffect(() => {
-    setInventories([]);
-    setWarehouses([]);
-    setWarehouseId('');
-    setProducts([]);
-    setProductId('');
     if (!customerId) return;
+    resetLocalStates()
     if (!!selectedDispatchOrder) {
       // getWarehouses({ customerId: selectedDispatchOrder.Inventory.customerId })
       //   .then(warehouses => {
@@ -152,10 +163,8 @@ export default function AddDispatchOrderView() {
   }, [customerId]);
 
   useEffect(() => {
-    setInventories([]);
-    setProducts([]);
-    setProductId('');
     if (!customerId && !warehouseId) return;
+    resetLocalStates()
     if (!!selectedDispatchOrder) {
       // setProducts([selectedDispatchOrder.Inventory.Product]);
       // setProductId(selectedDispatchOrder.Inventory.productId);
@@ -172,10 +181,6 @@ export default function AddDispatchOrderView() {
   }, [warehouseId])
 
   useEffect(() => {
-    setUom('');
-    setQuantity('');
-    setAvailableQuantity(0);
-    setInventoryId('');
     if (customerId && warehouseId && productId) {
       const product = products.find(product => product.id == productId);
       setUom(product.UOM.name);
@@ -260,7 +265,7 @@ export default function AddDispatchOrderView() {
           product: products.find(_product => _product.id == productId),
           // id: productId,
           id: inventoryId,
-          quantity
+          quantity,
         }])
       }
     }
@@ -333,6 +338,22 @@ export default function AddDispatchOrderView() {
     /\d/,
     /\d/
   ];
+
+  const handleEdit = (value, keyTobeEdit, dispatchGroupId) => {
+    if (isNaN(value)) { value = 0 }
+    else {
+      setInventories((prevState) => {
+        return [
+          ...inventories.map((inventory) => {
+            if (inventory.id === dispatchGroupId) {
+              inventories[0][keyTobeEdit] = value
+            }
+            return inventory
+          })
+        ]
+      })
+    }
+  }
 
   return (
     <>
@@ -484,7 +505,7 @@ export default function AddDispatchOrderView() {
               type="number"
               variant="outlined"
               value={quantity}
-              disabled={!!selectedDispatchOrder}
+              // disabled={!!selectedDispatchOrder}
               onChange={e => e.target.value < 0 ? e.target.value == 0 : e.target.value < availableQuantity ? setQuantity(e.target.value) : setQuantity(availableQuantity)}
               onBlur={e => setValidation({ ...validation, quantity: true })}
             />
@@ -534,10 +555,16 @@ export default function AddDispatchOrderView() {
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 Quantity
               </TableCell>
-              {/* <TableCell
-                style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Available Quantity
-              </TableCell> */}
+              {
+                !!selectedDispatchOrder ?
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Available Quantity
+                  </TableCell>
+                  :
+                  ''
+              }
+
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
@@ -553,11 +580,35 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product ? dispatchGroup.product.name : ''}
                   </TableCell>
                   <TableCell>
-                    {dispatchGroup.quantity}
+                    {!!selectedDispatchOrder ?
+                      <TextField
+                        // fullWidth={true}
+                        id="editDispatchProductQty"
+                        label="Quantity"
+                        variant="outlined"
+                        value={dispatchGroup.quantity || ''}
+                        onChange={(e) => handleEdit(
+                          e.target.value > dispatchGroup.availableQuantity ?
+                            dispatchGroup.availableQuantity
+                            :
+                            e.target.value
+                          , 'quantity'
+                          , dispatchGroup.id
+                        )}
+                      />
+                      :
+                      dispatchGroup.quantity
+                    }
                   </TableCell>
-                  {/* <TableCell>
-                    {dispatchGroup.availableQuantity}
-                  </TableCell> */}
+                  {
+                    !!selectedDispatchOrder ?
+                      <TableCell>
+                        {dispatchGroup.availableQuantity || '-'}
+                      </TableCell>
+                      :
+                      ''
+                  }
+
                   <TableCell>
                     {dispatchGroup.product ? dispatchGroup.product.UOM.name : ''}
                   </TableCell>
