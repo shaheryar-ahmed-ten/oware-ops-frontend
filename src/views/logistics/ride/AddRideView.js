@@ -122,7 +122,8 @@ function AddRideView() {
   const [isActive, setActive] = useState(true);
 
   const [selectedVendor, setSelectedVendor] = useState(null);
-
+  
+  const [mounted,setMounted] = useState(false)
 
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
@@ -166,7 +167,9 @@ function AddRideView() {
 
 
   useEffect(() => {
-    if (!!selectedRide) {
+    if (!!selectedRide && vendors.length > 0) {
+      console.log(selectedRide)
+      setVendorId(selectedRide.Vehicle.Vendor.id || '');
       setStatus(selectedRide.status || '');
       setVehicleId(selectedRide.Vehicle.id || '');
       setDriverId(selectedRide.Driver.id || '');
@@ -191,10 +194,11 @@ function AddRideView() {
       setDriverIncentive(selectedRide.driverIncentive || '');
       // setCarName(selectedRide.cars && selectedRide.cars.CarMake && selectedRide.cars.CarModel ? selectedRide.cars.CarMake.name + " " + selectedRide.cars.CarModel.name : '');
       // setCarId(selectedRide.Vehicle.Car.id || '');
-      // setVendorId(selectedRide.Vehicle.Vendor.id || '');
+      // setSelectedVendor(selectedRide.Vehicle)
+      // console.log(vendors.find(vendor => vendor.id == selectedRide.Vehicle.Vendor.id),selectedRide.Vehicle.Vendor.id,vendors)
 
     }
-  }, [selectedRide]);
+  }, [selectedRide,vendors]);
 
   useEffect(() => {
     setProductName('');
@@ -203,14 +207,24 @@ function AddRideView() {
   }, [products]);
 
 
+
   useEffect(()=>{
     if(vendorId)
     {
-      setCarId('')
       setSelectedVendor(null)
+      setCarId('')
       setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
     }
   },[vendorId])
+
+  useEffect(()=> {
+    console.log(!!selectedRide,!!vendorId,mounted)
+      if(!!selectedRide && !!vendorId && !mounted)
+      {
+        setCarId(selectedRide.Vehicle.Car.id)
+        setMounted(true)
+      }
+  },[selectedVendor])
 
   useEffect(()=> {
     if(carId)
@@ -335,7 +349,6 @@ function AddRideView() {
   return (
     <>
       {formErrors}
-      {console.log(selectedVendor)}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
