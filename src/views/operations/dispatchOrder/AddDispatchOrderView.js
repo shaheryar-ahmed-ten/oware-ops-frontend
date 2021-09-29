@@ -123,9 +123,9 @@ export default function AddDispatchOrderView() {
                 ...prevState,
                 {
                   product: inventory.Product, // because its not necessary that available qty of dispatched product is still available, it will not be available in Products if available qty is 0.
-                  id: selectedDispatchOrder.inventoryId,
+                  id: inventory.id,
                   quantity: inventory.OrderGroup.quantity,
-                  availableQuantity: inventory.availableQuantity // to display at bottom table in edit, later it'll be removed before updating.
+                  availableQuantity: inventory.availableQuantity + inventory.OrderGroup.quantity // to display at bottom table in edit, later it'll be removed before updating.
                 }
               ]))
             }
@@ -266,6 +266,7 @@ export default function AddDispatchOrderView() {
           // id: productId,
           id: inventoryId,
           quantity,
+          availableQuantity: availableQuantity
         }])
       }
     }
@@ -339,20 +340,77 @@ export default function AddDispatchOrderView() {
     /\d/
   ];
 
+  const verifyEditedQty = () => {
+    return new Promise((resolve, reject) => {
+      for (let inventory of inventories) {
+        // verify if qty is 0 or invalid or greater than available qty
+        if (isNaN(inventory.quantity) || !isRequired(inventory.quantity) || inventory.quantity > inventory.availableQuantity)
+          return reject(false)
+        else
+          inventory.inventoryId = inventory.id
+      }
+      return resolve(true)
+    })
+  }
+
+  const handleUpdate = () => {
+    verifyEditedQty()
+      .then(() => {
+        setMessageType('green');
+        let strRecieverPhone = receiverPhone
+        let strRecPhone = strRecieverPhone.replace(/-/g, '');
+        // change the naming convention of id to inventoryId
+        const newDispatchOrder = {
+          products: inventories,
+          inventoryId,
+          customerId,
+          warehouseId,
+          shipmentDate: new Date(shipmentDate),
+          receiverName,
+          receiverPhone: strRecPhone,
+          referenceId,
+          internalIdForBusiness
+        }
+
+        setValidation({
+          inventoryId: true,
+          customerId: true,
+          warehouseId: true,
+          shipmentDate: true,
+          receiverName: true,
+          receiverPhone: true
+        });
+        if (
+          isRequired(inventoryId) &&
+          isRequired(customerId) &&
+          isRequired(warehouseId) &&
+          isRequired(shipmentDate) &&
+          isRequired(receiverName) &&
+          isRequired(receiverPhone)
+        ) {
+          console.log(newDispatchOrder)
+          addDispatchOrder(newDispatchOrder);
+        }
+      })
+      .catch((err) => {
+        setMessageType('#FFCC00')
+        setShowMessage({ message: "Please make sure you have entered valid quantity." })
+      })
+  }
+
   const handleEdit = (value, keyTobeEdit, dispatchGroupId) => {
     if (isNaN(value)) { value = 0 }
-    else {
-      setInventories((prevState) => {
-        return [
-          ...inventories.map((inventory) => {
-            if (inventory.id === dispatchGroupId) {
-              inventories[0][keyTobeEdit] = value
-            }
-            return inventory
-          })
-        ]
-      })
-    }
+
+    setInventories((prevState) => {
+      return [
+        ...inventories.map((inventory) => {
+          if (inventory.id === dispatchGroupId) {
+            inventory[keyTobeEdit] = value
+          }
+          return inventory
+        })
+      ]
+    })
   }
 
   return (
@@ -383,6 +441,7 @@ export default function AddDispatchOrderView() {
               }}
               renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
               onBlur={e => setValidation({ ...validation, customerId: true })}
+              disabled={!!selectedDispatchOrder}
             />
             {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
@@ -400,7 +459,8 @@ export default function AddDispatchOrderView() {
                   setWarehouseId(newValue.id)
               }}
               renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
-            // onBlur={e => setValidation({ ...validation, warehouseId: true })}
+              // onBlur={e => setValidation({ ...validation, warehouseId: true })}
+              disabled={!!selectedDispatchOrder}
             />
             {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
@@ -591,7 +651,7 @@ export default function AddDispatchOrderView() {
                           e.target.value > dispatchGroup.availableQuantity ?
                             dispatchGroup.availableQuantity
                             :
-                            e.target.value
+                            parseInt(e.target.value)
                           , 'quantity'
                           , dispatchGroup.id
                         )}
@@ -629,7 +689,7 @@ export default function AddDispatchOrderView() {
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button onClick={handleSubmit} color="primary" variant="contained">
+                <Button onClick={!selectedDispatchOrder ? handleSubmit : handleUpdate} color="primary" variant="contained">
                   {!selectedDispatchOrder ? 'Add Products' : 'Update Product'}
                 </Button>
               </FormControl>

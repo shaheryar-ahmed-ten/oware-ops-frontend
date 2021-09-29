@@ -158,19 +158,25 @@ export default function DispatchOrderView() {
     label: '',
     minWidth: 100,
     className: '',
-    format: (value, entity) =>
-      [
+    format: (value, entity) => {
+      let totalDispatched = 0
+      entity.ProductOutwards.forEach(po => {
+        po.OutwardGroups.forEach(outGroup => {
+          totalDispatched += outGroup.quantity
+        });
+      });
+      return [
         <VisibilityIcon key="view"
-          onClick={() => navigate(`view/${entity.id}`, {
-            state: {
-              selectedDispatchOrder: entity,
-              viewOnly: true
-            }
-          })} />,
-        <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
-          style={{ cursor: 'pointer' }}
-        />
+          onClick={() => navigate(`view/${entity.id}`)}
+          style={{ cursor: 'pointer' }} />,
+        totalDispatched === 0 ?
+          <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
+            style={{ cursor: 'pointer' }}
+          />
+          :
+          ''
       ]
+    }
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
@@ -233,6 +239,7 @@ export default function DispatchOrderView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const addDispatchOrderButton = <Button
     key={2}
     variant="contained"

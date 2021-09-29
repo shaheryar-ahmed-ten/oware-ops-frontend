@@ -316,14 +316,6 @@ export default function AddStockManagement() {
     const adjustment_products = [];
     setMessageType('green');
 
-    // selectedInventoryWastageInventories.every((inventory, idx, arr) => {
-
-    // })
-
-    const adjustmentsObject = {
-      adjustment_products
-    }
-
     verifyEditedAdjustmentQty()
       .then((res) => {
         setMessageType('green');
