@@ -25,7 +25,7 @@ import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
 import EditIcon from '@material-ui/icons/EditOutlined';
-
+import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -155,8 +155,8 @@ export default function DispatchOrderView() {
   },
   {
     id: 'actions',
-    label: '',
-    minWidth: 100,
+    label: 'Actions',
+    minWidth: 150,
     className: '',
     format: (value, entity) => {
       let totalDispatched = 0
@@ -169,10 +169,14 @@ export default function DispatchOrderView() {
         <VisibilityIcon key="view"
           onClick={() => navigate(`view/${entity.id}`)}
           style={{ cursor: 'pointer' }} />,
-        totalDispatched === 0 ?
+        (totalDispatched === 0) || (totalDispatched > 0 && totalDispatched < entity.quantity) ?
           <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
             style={{ cursor: 'pointer' }}
           />
+          :
+          '',
+          totalDispatched === 0 ?
+          <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} />
           :
           ''
       ]
@@ -187,6 +191,10 @@ export default function DispatchOrderView() {
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
+
+  const cancelDispatchOrder = dispatchOrder => {
+    // TODO: add an api to cancel the dispatch order.
+  }
 
   const deleteDispatchOrder = data => {
     axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))

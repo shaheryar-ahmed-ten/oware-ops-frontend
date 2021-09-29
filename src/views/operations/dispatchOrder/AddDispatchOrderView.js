@@ -22,6 +22,7 @@ import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate, useParams } from 'react-router';
 import MaskedInput from "react-text-mask";
 import "./outward.css"
+import PriorityHighOutlinedIcon from '@material-ui/icons/PriorityHighOutlined';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -125,7 +126,8 @@ export default function AddDispatchOrderView() {
                   product: inventory.Product, // because its not necessary that available qty of dispatched product is still available, it will not be available in Products if available qty is 0.
                   id: inventory.id,
                   quantity: inventory.OrderGroup.quantity,
-                  availableQuantity: inventory.availableQuantity + inventory.OrderGroup.quantity // to display at bottom table in edit, later it'll be removed before updating.
+                  remainingQuantity: inventory.availableQuantity,// to display at bottom table in edit.
+                  availableQuantity: inventory.availableQuantity + inventory.OrderGroup.quantity, // to display at bottom table in edit.
                 }
               ]))
             }
@@ -266,7 +268,8 @@ export default function AddDispatchOrderView() {
           // id: productId,
           id: inventoryId,
           quantity,
-          availableQuantity: availableQuantity
+          availableQuantity: availableQuantity,
+          remainingQuantity: availableQuantity - quantity
         }])
       }
     }
@@ -406,6 +409,7 @@ export default function AddDispatchOrderView() {
         ...inventories.map((inventory) => {
           if (inventory.id === dispatchGroupId) {
             inventory[keyTobeEdit] = value
+            inventory['remainingQuantity'] = inventory.availableQuantity - inventory['quantity']
           }
           return inventory
         })
@@ -624,7 +628,15 @@ export default function AddDispatchOrderView() {
                   :
                   ''
               }
-
+              {
+                !!selectedDispatchOrder ?
+                  <TableCell
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    Remaining Quantity
+                  </TableCell>
+                  :
+                  ''
+              }
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
@@ -662,13 +674,18 @@ export default function AddDispatchOrderView() {
                   </TableCell>
                   {
                     !!selectedDispatchOrder ?
-                      <TableCell>
-                        {dispatchGroup.availableQuantity || '-'}
-                      </TableCell>
+                      <>
+                        <TableCell>
+                          {dispatchGroup.availableQuantity || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {dispatchGroup.remainingQuantity || '-'}
+                          {<PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />}
+                        </TableCell>
+                      </>
                       :
                       ''
                   }
-
                   <TableCell>
                     {dispatchGroup.product ? dispatchGroup.product.UOM.name : ''}
                   </TableCell>
