@@ -53,6 +53,8 @@ function AddRideView() {
   const [formErrors, setFormErrors] = useState([]);
   const [cities, setCities] = useState([]);
   const [manifestImage, setManifestImage] = useState(null)
+  const [vendors, setVendors] = useState([]);
+  const [cars, setCars] = useState([])
 
   useEffect(() => {
     getRelations();
@@ -98,6 +100,9 @@ function AddRideView() {
   const [dropoffCityZoneId, setDropoffCityZoneId] = useState('');
   const [dropoffAreaId, setDropoffAreaId] = useState('');
   const [products, setProducts] = useState([]);
+  const [vendorId, setVendorId] = useState('');
+  const [carName, setCarName] = useState('')
+  const [carId , setCarId] = useState('');
 
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancellationComment, setCancellationComment] = useState('');
@@ -119,6 +124,7 @@ function AddRideView() {
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
       .then(res => {
+        console.log(res.data);
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
         setStatuses(res.data.statuses);
@@ -126,6 +132,8 @@ function AddRideView() {
         setCities(res.data.cities);
         setCompanies(res.data.companies);
         setProductCategories(res.data.productCategories);
+        setCars(res.data.cars);
+        setVendors(res.data.vendors);
       });
   };
 
@@ -178,6 +186,10 @@ function AddRideView() {
       setCost(selectedRide.cost || '');
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
+      // setCarName(selectedRide.cars && selectedRide.cars.CarMake && selectedRide.cars.CarModel ? selectedRide.cars.CarMake.name + " " + selectedRide.cars.CarModel.name : '');
+      setCarId(selectedRide.Vehicle.Car.id || '');
+      setVendorId(selectedRide.Vehicle.Vendor.id || '');
+      console.log("Selected Ride",selectedRide);
 
     }
   }, [selectedRide]);
@@ -188,9 +200,41 @@ function AddRideView() {
     setProductCategoryId(null);
   }, [products]);
 
+  // useEffect(() => {
+  //   const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
+  //   if (vehicle) setDriverId(vehicle.driverId);
+  // }, [vehicleId]);
+
+  // const getCars = (params) => {
+    // const responsedata = axios.get(getURL('ride/cars'), { '45' })
+    //   .then(res => {
+    //     console.log("GetCars",res.data.cars)
+    //     return res.data.cars
+    //   });
+  // };
+
+  // useEffect(() =>{
+  //   if(vendorId)
+  //   getCars(vendorId);
+  // })
+  
+  // useEffect(() => {
+  //   if(vendorId)
+  //     const vendorDependency = vendors.find(vendor => vendor.id == vendorId);
+  //       if (vendorDependency) setCarId(Vehicle.Car.id);
+  // }, [vendorId,carId]);
+
+
+  // useEffect(()=>{
+        // call vehicle
+  // },[vehicleType])
+  useEffect(()=>{
+    const vehciletype = vendors.find(vendor => vendor.id == vendorId);
+  })
+
   useEffect(() => {
     const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
-    if (vehicle) setDriverId(vehicle.driverId);
+    if (vehicle) setDriverId(vehicle.driverId); 
   }, [vehicleId]);
 
   useEffect(() => {
@@ -246,6 +290,8 @@ function AddRideView() {
       products,
       pickupDate: new Date(pickupDate),
       dropoffDate: new Date(dropoffDate),
+      // carId,
+      // vendorId,
       isActive
     };
 
@@ -267,6 +313,8 @@ function AddRideView() {
       products: true,
       pickupDate: true,
       dropoffDate: true,
+      // carId: true,
+      // vendorId: true,
       isActive: true
     });
 
@@ -284,6 +332,8 @@ function AddRideView() {
       isRequired(customerDiscount) &&
       isRequired(driverIncentive) &&
       isNotEmptyArray(products) &&
+      isRequired(carId) &&
+      isRequired(vendorId) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
       if (manifestImage) {
@@ -390,6 +440,52 @@ function AddRideView() {
             </Grid>
           </Grid>
           : ''}
+        {/* Car and Vendor Addition Starts*/}
+        <Grid container item xs={12} spacing={3}>
+          <Grid item sm={6}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel>Vendor</InputLabel>
+              <Select
+                fullWidth={true}
+                id="vendorId"
+                label="Vendor"
+                variant="outlined"
+                value={vendorId}
+                onChange={e => setVendorId(e.target.value)}
+                onBlur={e => setValidation({ ...validation, vendorId: true })}
+              >
+                <MenuItem value="" disabled>Select a vendor</MenuItem>
+                {vendors?.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
+              </Select>
+              {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
+            </FormControl>
+          </Grid>
+          <Grid item sm={6}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel>Vehicle Type</InputLabel>
+              <Select
+                fullWidth={true}
+                id="carName"
+                label="Vehicle Type"
+                variant="outlined"
+                value={carId}
+                onChange={e => setCarId(e.target.value)}
+                onBlur={e => setValidation({ ...validation, carId: true })}
+              >
+               {/* {
+                  carId && carId !== "" ?
+                    <MenuItem value={carId} disabled>{carName}</MenuItem>
+                    :
+                    <MenuItem value={""} disabled>Select a vehicle type</MenuItem>
+                } */}
+                 <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
+                {cars?.map(car => <MenuItem key={car.Car.id} value={car.Car.id}>{`${car.Car.CarMake.name} ${car.Car.CarModel.name}`}</MenuItem>)}
+              </Select>
+              {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
+            </FormControl>
+          </Grid>
+        </Grid>
+        {/* Car and Vendor Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
