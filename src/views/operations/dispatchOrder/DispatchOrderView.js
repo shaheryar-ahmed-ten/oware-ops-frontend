@@ -11,6 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  IconButton,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -23,6 +24,8 @@ import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,7 +55,7 @@ const useStyles = makeStyles(theme => ({
   partialStatusButtonStyling: {
     backgroundColor: '#F0F0F0',
     color: '#7D7D7D',
-    width: 150,
+    width: '100%',
     borderRadius: "10px"
   },
   fullfilledStatusButtonStyling: {
@@ -130,7 +133,7 @@ export default function DispatchOrderView() {
   {
     id: 'status',
     label: 'STATUS',
-    minWidth: 'auto',
+    maxWidth: 150,
     className: classes.tableCellStyle,
     format: (value, entity) => {
       let totalDispatched = 0
@@ -152,19 +155,32 @@ export default function DispatchOrderView() {
   },
   {
     id: 'actions',
-    label: '',
-    minWidth: 'auto',
+    label: 'Actions',
+    minWidth: 150,
     className: '',
-    format: (value, entity) =>
-      [
+    format: (value, entity) => {
+      let totalDispatched = 0
+      entity.ProductOutwards.forEach(po => {
+        po.OutwardGroups.forEach(outGroup => {
+          totalDispatched += outGroup.quantity
+        });
+      });
+      return [
         <VisibilityIcon key="view"
-          onClick={() => navigate(`view/${entity.id}`, {
-            state: {
-              selectedDispatchOrder: entity,
-              viewOnly: true
-            }
-          })} />,
+          onClick={() => navigate(`view/${entity.id}`)}
+          style={{ cursor: 'pointer' }} />,
+        (totalDispatched === 0) || (totalDispatched > 0 && totalDispatched < entity.quantity) ?
+          <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
+            style={{ cursor: 'pointer' }}
+          />
+          :
+          '',
+          totalDispatched === 0 ?
+          <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} />
+          :
+          ''
       ]
+    }
   }];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
@@ -175,6 +191,10 @@ export default function DispatchOrderView() {
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
 
+
+  const cancelDispatchOrder = dispatchOrder => {
+    // TODO: add an api to cancel the dispatch order.
+  }
 
   const deleteDispatchOrder = data => {
     axios.delete(getURL(`dispatch-order/${selectedDispatchOrder.id}`))
@@ -227,6 +247,7 @@ export default function DispatchOrderView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const addDispatchOrderButton = <Button
     key={2}
     variant="contained"
