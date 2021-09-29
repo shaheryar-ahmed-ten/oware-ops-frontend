@@ -121,10 +121,13 @@ function AddRideView() {
 
   const [isActive, setActive] = useState(true);
 
+  const [selectedVendor, setSelectedVendor] = useState(null);
+
+
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
         setStatuses(res.data.statuses);
@@ -187,9 +190,8 @@ function AddRideView() {
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
       // setCarName(selectedRide.cars && selectedRide.cars.CarMake && selectedRide.cars.CarModel ? selectedRide.cars.CarMake.name + " " + selectedRide.cars.CarModel.name : '');
-      setCarId(selectedRide.Vehicle.Car.id || '');
-      setVendorId(selectedRide.Vehicle.Vendor.id || '');
-      console.log("Selected Ride",selectedRide);
+      // setCarId(selectedRide.Vehicle.Car.id || '');
+      // setVendorId(selectedRide.Vehicle.Vendor.id || '');
 
     }
   }, [selectedRide]);
@@ -200,37 +202,23 @@ function AddRideView() {
     setProductCategoryId(null);
   }, [products]);
 
-  // useEffect(() => {
-  //   const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
-  //   if (vehicle) setDriverId(vehicle.driverId);
-  // }, [vehicleId]);
 
-  // const getCars = (params) => {
-    // const responsedata = axios.get(getURL('ride/cars'), { '45' })
-    //   .then(res => {
-    //     console.log("GetCars",res.data.cars)
-    //     return res.data.cars
-    //   });
-  // };
-
-  // useEffect(() =>{
-  //   if(vendorId)
-  //   getCars(vendorId);
-  // })
-  
-  // useEffect(() => {
-  //   if(vendorId)
-  //     const vendorDependency = vendors.find(vendor => vendor.id == vendorId);
-  //       if (vendorDependency) setCarId(Vehicle.Car.id);
-  // }, [vendorId,carId]);
-
-
-  // useEffect(()=>{
-        // call vehicle
-  // },[vehicleType])
   useEffect(()=>{
-    const vehciletype = vendors.find(vendor => vendor.id == vendorId);
-  })
+    if(vendorId)
+    {
+      setCarId('')
+      setSelectedVendor(null)
+      setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
+    }
+  },[vendorId])
+
+  useEffect(()=> {
+    if(carId)
+    {
+      setVehicles(vendors.find(vendor => vendor.id == vendorId).Vehicles)
+    }
+  },[carId])
+
 
   useEffect(() => {
     const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
@@ -347,6 +335,7 @@ function AddRideView() {
   return (
     <>
       {formErrors}
+      {console.log(selectedVendor)}
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
@@ -472,14 +461,13 @@ function AddRideView() {
                 onChange={e => setCarId(e.target.value)}
                 onBlur={e => setValidation({ ...validation, carId: true })}
               >
-               {/* {
-                  carId && carId !== "" ?
-                    <MenuItem value={carId} disabled>{carName}</MenuItem>
-                    :
-                    <MenuItem value={""} disabled>Select a vehicle type</MenuItem>
-                } */}
                  <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
-                {cars?.map(car => <MenuItem key={car.Car.id} value={car.Car.id}>{`${car.Car.CarMake.name} ${car.Car.CarModel.name}`}</MenuItem>)}
+                {
+                  selectedVendor?.Vehicles.map((vehicle,idx)=> {
+                    return <MenuItem key={idx} value={vehicle.Car.id}>{`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
+                    </MenuItem>
+                  })
+              })
               </Select>
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
             </FormControl>
@@ -500,7 +488,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, vehicleId: true })}
               >
                 <MenuItem value="" disabled>Select a vehicle</MenuItem>
-                {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
+                {selectedVendor?.Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
               </Select>
               {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
             </FormControl>
@@ -518,7 +506,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, driverId: true })}
               >
                 <MenuItem value="" disabled>Select a Driver</MenuItem>
-                {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                {selectedVendor?.Drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
               </Select>
               {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
             </FormControl>
