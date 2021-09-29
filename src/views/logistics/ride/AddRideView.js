@@ -128,7 +128,6 @@ function AddRideView() {
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
       .then(res => {
-        // console.log(res.data);
         setVehicles(res.data.vehicles);
         setDrivers(res.data.drivers);
         setStatuses(res.data.statuses);
@@ -168,7 +167,6 @@ function AddRideView() {
 
   useEffect(() => {
     if (!!selectedRide && vendors.length > 0) {
-      console.log(selectedRide)
       setVendorId(selectedRide.Vehicle.Vendor.id || '');
       setStatus(selectedRide.status || '');
       setVehicleId(selectedRide.Vehicle.id || '');
@@ -192,11 +190,6 @@ function AddRideView() {
       setCost(selectedRide.cost || '');
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
-      // setCarName(selectedRide.cars && selectedRide.cars.CarMake && selectedRide.cars.CarModel ? selectedRide.cars.CarMake.name + " " + selectedRide.cars.CarModel.name : '');
-      // setCarId(selectedRide.Vehicle.Car.id || '');
-      // setSelectedVendor(selectedRide.Vehicle)
-      // console.log(vendors.find(vendor => vendor.id == selectedRide.Vehicle.Vendor.id),selectedRide.Vehicle.Vendor.id,vendors)
-
     }
   }, [selectedRide,vendors]);
 
@@ -218,7 +211,6 @@ function AddRideView() {
   },[vendorId])
 
   useEffect(()=> {
-    console.log(!!selectedRide,!!vendorId,mounted)
       if(!!selectedRide && !!vendorId && !mounted)
       {
         setCarId(selectedRide.Vehicle.Car.id)
