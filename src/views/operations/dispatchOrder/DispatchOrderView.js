@@ -194,20 +194,23 @@ export default function DispatchOrderView() {
       return [
         <VisibilityIcon key="view"
           onClick={() => navigate(`view/${entity.id}`)}
-          style={{ cursor: 'pointer' }} />,
-        (totalDispatched === 0) || (totalDispatched > 0 && totalDispatched < entity.quantity) ?
+          style={{ cursor: 'pointer' }} />
+        ,
+        entity.status != 3 && entity.status != 2 ?
           <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
             style={{ cursor: 'pointer' }}
           />
           :
-          '',
-        totalDispatched === 0 ?
+          ''
+        ,
+        entity.status != 3 && entity.status != 1 && entity.status != 2 ?
           <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} onClick={() => {
             setEntityToBeCanceled(entity.id)
             setOpenBackdrop(true)
           }} />
           :
-          '',
+          ''
+        ,
         <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
           <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
             <Grid item xs={12}>
@@ -235,10 +238,8 @@ export default function DispatchOrderView() {
 
 
   const cancelDispatchOrder = (dispatchOrderId) => {
-    // TODO: add an api to cancel the dispatch order.
     axios.put(getURL(`dispatch-order/cancel/${dispatchOrderId}`))
       .then(async (response) => {
-        console.log(response.data.data)
         getDispatchOrders(page, searchKeyword);
       })
       .catch((error) => {
