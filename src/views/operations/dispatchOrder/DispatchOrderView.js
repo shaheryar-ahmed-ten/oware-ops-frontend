@@ -11,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
   Backdrop,
   Typography,
 } from '@material-ui/core';
@@ -27,8 +26,7 @@ import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
-
+import CancelIcon from '@material-ui/icons/Cancel';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -131,18 +129,19 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventories.length
   },
-  {
-    id: 'receiverName',
-    label: 'RECEIVER NAME',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'receiverPhone',
-    label: 'RECEIVER PHONE',
-    minWidth: 'auto',
-    className: '',
-  }, {
+  // {
+  //   id: 'receiverName',
+  //   label: 'RECEIVER NAME',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+  // {
+  //   id: 'receiverPhone',
+  //   label: 'RECEIVER PHONE',
+  //   minWidth: 'auto',
+  //   className: '',
+  // }
+  , {
     id: 'shipmentDate',
     label: 'SHIPMENT DATE',
     minWidth: 'auto',
@@ -185,18 +184,18 @@ export default function DispatchOrderView() {
     minWidth: 150,
     className: '',
     format: (value, entity) => {
-      let totalDispatched = 0
-      entity.ProductOutwards.forEach(po => {
-        po.OutwardGroups.forEach(outGroup => {
-          totalDispatched += outGroup.quantity
-        });
-      });
+      // let totalDispatched = 0
+      // entity.ProductOutwards.forEach(po => {
+      //   po.OutwardGroups.forEach(outGroup => {
+      //     totalDispatched += outGroup.quantity
+      //   });
+      // });
       return [
         <VisibilityIcon key="view"
           onClick={() => navigate(`view/${entity.id}`)}
           style={{ cursor: 'pointer' }} />
         ,
-        entity.status != 3 && entity.status != 2 ?
+        entity.status != 3 ?
           <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
             style={{ cursor: 'pointer' }}
           />
@@ -204,7 +203,7 @@ export default function DispatchOrderView() {
           ''
         ,
         entity.status != 3 && entity.status != 1 && entity.status != 2 ?
-          <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} onClick={() => {
+          <CancelIcon style={{ cursor: 'pointer' }} onClick={() => {
             setEntityToBeCanceled(entity.id)
             setOpenBackdrop(true)
           }} />

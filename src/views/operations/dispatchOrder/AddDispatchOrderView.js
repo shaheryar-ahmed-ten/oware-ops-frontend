@@ -128,6 +128,7 @@ export default function AddDispatchOrderView() {
                   quantity: inventory.OrderGroup.quantity,
                   remainingQuantity: inventory.availableQuantity,// to display at bottom table in edit.
                   availableQuantity: inventory.availableQuantity + inventory.OrderGroup.quantity, // to display at bottom table in edit.
+                  dispatchedQuantity: inventory.outward.quantity // dispatched quantity of this particular inventory
                 }
               ]))
             }
@@ -269,7 +270,8 @@ export default function AddDispatchOrderView() {
           id: inventoryId,
           quantity,
           availableQuantity: availableQuantity,
-          remainingQuantity: availableQuantity - quantity
+          remainingQuantity: availableQuantity - quantity,
+          dispatchedQuantity: 0
         }])
       }
     }
@@ -347,7 +349,13 @@ export default function AddDispatchOrderView() {
     return new Promise((resolve, reject) => {
       for (let inventory of inventories) {
         // verify if qty is 0 or invalid or greater than available qty
-        if (!inventory.softDelete && (isNaN(inventory.quantity) || !isRequired(inventory.quantity) || inventory.quantity > inventory.availableQuantity))
+        if (!inventory.softDelete
+          &&
+          (isNaN(inventory.quantity)
+            || !isRequired(inventory.quantity)
+            || inventory.quantity > inventory.availableQuantity
+            || inventory['lessThanError'])
+        )
           return reject(false)
         else
           inventory.inventoryId = inventory.id
@@ -409,6 +417,8 @@ export default function AddDispatchOrderView() {
           if (inventory.id === dispatchGroupId) {
             inventory[keyTobeEdit] = value
             inventory['remainingQuantity'] = inventory.availableQuantity - inventory['quantity']
+            // enable validation error if user enters quantity less than dispatched quantity
+            inventory['lessThanError'] = inventory.dispatchedQuantity > value ? true : false
           }
           return inventory
         })
@@ -616,13 +626,13 @@ export default function AddDispatchOrderView() {
               </TableCell>
               <TableCell
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                Quantity
+                {!!selectedDispatchOrder ? 'Requested Quantity' : 'Quantity'}
               </TableCell>
               {
                 !!selectedDispatchOrder ?
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Available Quantity
+                    Dispatched Quantity
                   </TableCell>
                   :
                   ''
@@ -675,7 +685,18 @@ export default function AddDispatchOrderView() {
                     !!selectedDispatchOrder ?
                       <>
                         <TableCell>
-                          {dispatchGroup.availableQuantity || '-'}
+                          <Typography variant="body" component="p">
+                            {dispatchGroup.dispatchedQuantity || '0'}
+                          </Typography>
+
+                          {
+                            dispatchGroup['lessThanError'] ?
+                              <Typography variant="body" color="error">
+                                Requested qty can't be less than dispatched qty.'
+                              </Typography>
+                              :
+                              ''
+                          }
                         </TableCell>
                         <TableCell>
                           {dispatchGroup.remainingQuantity || 0}
@@ -689,12 +710,13 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product ? dispatchGroup.product.UOM.name : ''}
                   </TableCell>
                   <TableCell>
-                    <DeleteIcon color="error" key="delete" onClick={() => {
-                      inventories.find((inventory)=>inventory.id === dispatchGroup.id)['quantity'] = 0
-                      inventories.find((inventory)=>inventory.id === dispatchGroup.id)['softDelete'] = true
-                      setInventories([...inventories])
-                    }
-                    } />
+                    <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        inventories.find((inventory) => inventory.id === dispatchGroup.id)['quantity'] = 0
+                        inventories.find((inventory) => inventory.id === dispatchGroup.id)['softDelete'] = true
+                        setInventories([...inventories])
+                      }
+                      } />
                   </TableCell>
                 </TableRow>
               )
@@ -704,7 +726,7 @@ export default function AddDispatchOrderView() {
       </TableContainer>
 
       {
-        inventories.filter((inventory)=> !inventory.softDelete).length > 0 ?
+        inventories.filter((inventory) => !inventory.softDelete).length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
