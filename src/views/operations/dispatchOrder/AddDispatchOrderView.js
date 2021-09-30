@@ -391,7 +391,6 @@ export default function AddDispatchOrderView() {
           isRequired(receiverName) &&
           isRequired(receiverPhone)
         ) {
-          console.log(newDispatchOrder)
           addDispatchOrder(newDispatchOrder);
         }
       })
@@ -695,8 +694,6 @@ export default function AddDispatchOrderView() {
                       inventories.find((inventory)=>inventory.id === dispatchGroup.id)['softDelete'] = true
                       setInventories([...inventories])
                     }
-                      // console.log(inventories[idx]['quantity'])
-                      // setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
                     } />
                   </TableCell>
                 </TableRow>
