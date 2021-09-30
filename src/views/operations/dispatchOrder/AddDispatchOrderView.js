@@ -347,7 +347,7 @@ export default function AddDispatchOrderView() {
     return new Promise((resolve, reject) => {
       for (let inventory of inventories) {
         // verify if qty is 0 or invalid or greater than available qty
-        if (isNaN(inventory.quantity) || !isRequired(inventory.quantity) || inventory.quantity > inventory.availableQuantity)
+        if (!inventory.softDelete && (isNaN(inventory.quantity) || !isRequired(inventory.quantity) || inventory.quantity > inventory.availableQuantity))
           return reject(false)
         else
           inventory.inventoryId = inventory.id
@@ -645,7 +645,7 @@ export default function AddDispatchOrderView() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inventories.map((dispatchGroup, idx) => {
+            {inventories.filter((inventory) => !inventory.softDelete).map((dispatchGroup, idx) => {
               return (
                 <TableRow hover role="checkbox" key={idx}>
                   <TableCell>
@@ -679,7 +679,7 @@ export default function AddDispatchOrderView() {
                           {dispatchGroup.availableQuantity || '-'}
                         </TableCell>
                         <TableCell>
-                          {dispatchGroup.remainingQuantity || '-'}
+                          {dispatchGroup.remainingQuantity || 0}
                           {<PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />}
                         </TableCell>
                       </>
@@ -690,8 +690,13 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product ? dispatchGroup.product.UOM.name : ''}
                   </TableCell>
                   <TableCell>
-                    <DeleteIcon color="error" key="delete" onClick={() =>
-                      setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
+                    <DeleteIcon color="error" key="delete" onClick={() => {
+                      inventories.find((inventory)=>inventory.id === dispatchGroup.id)['quantity'] = 0
+                      inventories.find((inventory)=>inventory.id === dispatchGroup.id)['softDelete'] = true
+                      setInventories([...inventories])
+                    }
+                      // console.log(inventories[idx]['quantity'])
+                      // setInventories(inventories.filter((_dispatchGroup, _idx) => _idx != idx))
                     } />
                   </TableCell>
                 </TableRow>
@@ -702,7 +707,7 @@ export default function AddDispatchOrderView() {
       </TableContainer>
 
       {
-        inventories.length > 0 ?
+        inventories.filter((inventory)=> !inventory.softDelete).length > 0 ?
           <Grid container className={classes.parentContainer} xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">

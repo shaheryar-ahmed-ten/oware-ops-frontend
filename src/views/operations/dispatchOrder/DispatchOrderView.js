@@ -12,6 +12,8 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Backdrop,
+  Typography,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -77,6 +79,8 @@ const useStyles = makeStyles(theme => ({
 export default function DispatchOrderView() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+
   const columns = [{
     id: 'id',
     label: 'DISPATCH ORDER ID',
@@ -175,8 +179,23 @@ export default function DispatchOrderView() {
           />
           :
           '',
-          totalDispatched === 0 ?
-          <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} />
+        totalDispatched === 0 ?
+          <>
+            <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} />
+            <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
+              <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
+                <Grid item xs={12}>
+                  <Typography className={classes.backdropTitle}>Are you sure to cancel this order ?</Typography>
+                  <Button autoFocus variant="contained"  >
+                    Cancel
+                  </Button>
+                  <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => cancelDispatchOrder(entity)}>
+                    Confirm
+                  </Button>
+                </Grid>
+              </Grid>
+            </Backdrop>
+          </>
           :
           ''
       ]
