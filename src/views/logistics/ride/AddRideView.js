@@ -23,7 +23,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import axios from 'axios';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { isNumber } from '@material-ui/data-grid';
 import moment from "moment";
 
@@ -101,6 +101,7 @@ function AddRideView() {
   const [dropoffAreaId, setDropoffAreaId] = useState('');
   const [products, setProducts] = useState([]);
   const [vendorId, setVendorId] = useState('');
+  const [selectedVendorName, setSelectedVendorName] = useState('');
   const [carName, setCarName] = useState('')
   const [carId , setCarId] = useState('');
 
@@ -198,7 +199,6 @@ function AddRideView() {
     setProductQuantity('');
     setProductCategoryId(null);
   }, [products]);
-
 
 
   useEffect(()=>{
@@ -337,6 +337,11 @@ function AddRideView() {
       addRide(newRide);
     }
   }
+  const handleCustomerSearch = (vendorId, vendorName) => {
+    setVendorId(vendorId);
+    setSelectedVendorName(vendorName)
+  }
+
 
   return (
     <>
@@ -437,7 +442,7 @@ function AddRideView() {
         {/* Car and Vendor Addition Starts*/}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
               <InputLabel>Vendor</InputLabel>
               <Select
                 fullWidth={true}
@@ -452,10 +457,25 @@ function AddRideView() {
                 {vendors?.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
               </Select>
               {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
-            </FormControl>
+            </FormControl> */}
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="vendorId"
+              options={vendors}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Vendor.name, id: vendorId } : ''}
+              getOptionLabel={(vendor) => vendor.name || ""}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  handleCustomerSearch(newValue.id, (newValue.name || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
+              onBlur={e => setValidation({ ...validation, vendorId: true })}
+            />
+            {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
           </Grid>
           <Grid item sm={6}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
               <InputLabel>Vehicle Type</InputLabel>
               <Select
                 fullWidth={true}
@@ -475,7 +495,24 @@ function AddRideView() {
               })
               </Select>
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
-            </FormControl>
+            </FormControl> */}
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="carId"
+              // key={cars}
+              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : null }
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  null  }
+              getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
+              onChange={(event,newValue) => {
+                if (newValue)
+                  setCarId(newValue.id)
+              }
+            }
+              renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
+            onBlur={e => setValidation({ ...validation, carId: true })}
+            />
+            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
           </Grid>
         </Grid>
         {/* Car and Vendor Addition Ends */}

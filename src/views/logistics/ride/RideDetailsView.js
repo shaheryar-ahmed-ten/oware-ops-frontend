@@ -104,6 +104,10 @@ function RideDetailsView() {
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Customer.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Status :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vendor :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.Vendor.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle Type :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Driver :</Grid>
@@ -235,6 +239,12 @@ function RideDetailsView() {
                                     STATUS
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
+                                    VENDOR
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
+                                    VEHICLE TYPE
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
                                     VEHICLE
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
@@ -249,6 +259,12 @@ function RideDetailsView() {
                                 </TableCell>
                                 <TableCell>
                                     {selectedRide.status || ''}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedRide.Driver.Vendor.name || ''}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedRide.Vehicle.Car.CarMake.name +" "+selectedRide.Vehicle.Car.CarModel.name || ''}
                                 </TableCell>
                                 <TableCell>
                                     {selectedRide.Vehicle.registrationNumber || ''}
