@@ -104,6 +104,7 @@ function AddRideView() {
   const [selectedVendorName, setSelectedVendorName] = useState('');
   const [carName, setCarName] = useState('')
   const [carId , setCarId] = useState('');
+  const [memo, setMemo] = useState('') // optional comment
 
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancellationComment, setCancellationComment] = useState('');
@@ -192,6 +193,7 @@ function AddRideView() {
       setCost(selectedRide.cost || '');
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
+      setMemo(selectedRide.memo || '');
     }
   }, [selectedRide,vendors]);
 
@@ -205,9 +207,6 @@ function AddRideView() {
   useEffect(()=>{
     if(vendorId)
     {
-      console.log("vendorId changes")
-      console.log(changeCar)
-      console.log(selectedRide?.Vehicle?.Car?.CarMake?.name+" "+ selectedRide?.Vehicle?.Car?.CarModel?.name)
       setSelectedVendor(null)
       setCarId('')
       setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
@@ -225,7 +224,6 @@ function AddRideView() {
   useEffect(()=> {
     if(carId)
     {
-      console.log("carId changes")
       setVehicles(vendors.find(vendor => vendor.id == vendorId).Vehicles)
     }
   },[carId])
@@ -289,6 +287,7 @@ function AddRideView() {
       products,
       pickupDate: new Date(pickupDate),
       dropoffDate: new Date(dropoffDate),
+      memo,
       // carId,
       // vendorId,
       isActive
@@ -544,6 +543,25 @@ function AddRideView() {
             </FormControl>
           </Grid>
         </Grid>
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+          <Grid item sm={12}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="memo"
+              label="Memo For Driver"
+              type="text"
+              variant="outlined"
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+              // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {/* {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup address is required!</Typography> : ''} */}
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Pickup & Drop-off</Typography>
