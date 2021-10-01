@@ -23,7 +23,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import axios from 'axios';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { isNumber } from '@material-ui/data-grid';
 import moment from "moment";
 
@@ -53,6 +53,8 @@ function AddRideView() {
   const [formErrors, setFormErrors] = useState([]);
   const [cities, setCities] = useState([]);
   const [manifestImage, setManifestImage] = useState(null)
+  const [vendors, setVendors] = useState([]);
+  const [cars, setCars] = useState([])
 
   useEffect(() => {
     getRelations();
@@ -98,6 +100,11 @@ function AddRideView() {
   const [dropoffCityZoneId, setDropoffCityZoneId] = useState('');
   const [dropoffAreaId, setDropoffAreaId] = useState('');
   const [products, setProducts] = useState([]);
+  const [vendorId, setVendorId] = useState('');
+  const [selectedVendorName, setSelectedVendorName] = useState('');
+  const [carName, setCarName] = useState('')
+  const [carId , setCarId] = useState('');
+  const [memo, setMemo] = useState('') // optional comment
 
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancellationComment, setCancellationComment] = useState('');
@@ -116,6 +123,11 @@ function AddRideView() {
 
   const [isActive, setActive] = useState(true);
 
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [nullCar, setNullCar] = useState([]);
+  const [changeCar, setChangeCar] = useState();
+  const [mounted,setMounted] = useState(false)
+
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
       .then(res => {
@@ -126,6 +138,8 @@ function AddRideView() {
         setCities(res.data.cities);
         setCompanies(res.data.companies);
         setProductCategories(res.data.productCategories);
+        setCars(res.data.cars);
+        setVendors(res.data.vendors);
       });
   };
 
@@ -155,7 +169,8 @@ function AddRideView() {
 
 
   useEffect(() => {
-    if (!!selectedRide) {
+    if (!!selectedRide && vendors.length > 0) {
+      setVendorId(selectedRide.Vehicle.Vendor.id || '');
       setStatus(selectedRide.status || '');
       setVehicleId(selectedRide.Vehicle.id || '');
       setDriverId(selectedRide.Driver.id || '');
@@ -178,9 +193,9 @@ function AddRideView() {
       setCost(selectedRide.cost || '');
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
-
+      setMemo(selectedRide.memo || '');
     }
-  }, [selectedRide]);
+  }, [selectedRide,vendors]);
 
   useEffect(() => {
     setProductName('');
@@ -188,9 +203,35 @@ function AddRideView() {
     setProductCategoryId(null);
   }, [products]);
 
+
+  useEffect(()=>{
+    if(vendorId)
+    {
+      setSelectedVendor(null)
+      setCarId('')
+      setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
+    }
+  },[vendorId])
+
+  useEffect(()=> {
+      if(!!selectedRide && !!vendorId && !mounted)
+      {
+        setCarId(selectedRide.Vehicle.Car.id)
+        setMounted(true)
+      }
+  },[selectedVendor])
+
+  useEffect(()=> {
+    if(carId)
+    {
+      setVehicles(vendors.find(vendor => vendor.id == vendorId).Vehicles)
+    }
+  },[carId])
+
+
   useEffect(() => {
     const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
-    if (vehicle) setDriverId(vehicle.driverId);
+    if (vehicle) setDriverId(vehicle.driverId); 
   }, [vehicleId]);
 
   useEffect(() => {
@@ -246,6 +287,9 @@ function AddRideView() {
       products,
       pickupDate: new Date(pickupDate),
       dropoffDate: new Date(dropoffDate),
+      memo,
+      // carId,
+      // vendorId,
       isActive
     };
 
@@ -267,6 +311,8 @@ function AddRideView() {
       products: true,
       pickupDate: true,
       dropoffDate: true,
+      // carId: true,
+      // vendorId: true,
       isActive: true
     });
 
@@ -284,6 +330,8 @@ function AddRideView() {
       isRequired(customerDiscount) &&
       isRequired(driverIncentive) &&
       isNotEmptyArray(products) &&
+      isRequired(carId) &&
+      isRequired(vendorId) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
       if (manifestImage) {
@@ -293,6 +341,12 @@ function AddRideView() {
       addRide(newRide);
     }
   }
+  const handleCustomerSearch = (vendorId, vendorName) => {
+    setVendorId(vendorId);
+    setSelectedVendorName(vendorName)
+  }
+  // const Nullcar = ['No Options'];
+
 
   return (
     <>
@@ -390,6 +444,67 @@ function AddRideView() {
             </Grid>
           </Grid>
           : ''}
+        {/* Car and Vendor Addition Starts*/}
+        <Grid container item xs={12} spacing={3}>
+          <Grid item sm={6}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="vendorId"
+              options={vendors}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Vendor.name, id: vendorId } : ''}
+              getOptionLabel={(vendor) => vendor.name || ""}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  handleCustomerSearch(newValue.id, (newValue.name || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
+              onBlur={e => setValidation({ ...validation, vendorId: true })}
+            />
+            {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
+          </Grid>
+          <Grid item sm={6}>
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel>Vehicle Type</InputLabel>
+              <Select
+                fullWidth={true}
+                id="carName"
+                label="Vehicle Type"
+                variant="outlined"
+                value={carId}
+                onChange={e => setCarId(e.target.value)}
+                onBlur={e => setValidation({ ...validation, carId: true })}
+              >
+                 <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
+                {
+                  selectedVendor?.Vehicles.map((vehicle,idx)=> {
+                    return <MenuItem key={idx} value={vehicle.Car.id}>{`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
+                    </MenuItem>
+                  })
+              })
+              </Select>
+              {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
+            </FormControl> */}
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <Autocomplete
+              id="carId"
+              // key={cars}
+              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : nullCar }
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
+              getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
+              onChange={(event,newValue) => {
+                if (newValue)
+                  setCarId(newValue.id)
+              }
+            }
+              renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
+            onBlur={e => setValidation({ ...validation, carId: true })}
+            />
+            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+          </FormControl>
+          </Grid>
+        </Grid>
+        {/* Car and Vendor Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -404,7 +519,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, vehicleId: true })}
               >
                 <MenuItem value="" disabled>Select a vehicle</MenuItem>
-                {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
+                {selectedVendor?.Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
               </Select>
               {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
             </FormControl>
@@ -422,12 +537,31 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, driverId: true })}
               >
                 <MenuItem value="" disabled>Select a Driver</MenuItem>
-                {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                {selectedVendor?.Drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
               </Select>
               {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
             </FormControl>
           </Grid>
         </Grid>
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+          <Grid item sm={12}>
+            <TextField
+              fullWidth={true}
+              margin="dense"
+              id="memo"
+              label="Memo For Driver"
+              type="text"
+              variant="outlined"
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+              // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {/* {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup address is required!</Typography> : ''} */}
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Pickup & Drop-off</Typography>

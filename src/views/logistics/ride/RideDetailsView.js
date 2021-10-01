@@ -104,12 +104,21 @@ function RideDetailsView() {
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Customer.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Status :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vendor :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.Vendor.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle Type :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Driver :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.name || '-'}</Grid>
                         </Grid>
+                        <Grid container spacing={2}>
+                            <Grid style={{ fontWeight: 500, paddingTop: 23 }} item xs={3}>Memo :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
+                        </Grid>
                     </Grid>
+                    
 
                     <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
@@ -235,6 +244,12 @@ function RideDetailsView() {
                                     STATUS
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
+                                    VENDOR
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
+                                    VEHICLE TYPE
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
                                     VEHICLE
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
@@ -251,6 +266,12 @@ function RideDetailsView() {
                                     {selectedRide.status || ''}
                                 </TableCell>
                                 <TableCell>
+                                    {selectedRide.Driver.Vendor.name || ''}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedRide.Vehicle.Car.CarMake.name +" "+selectedRide.Vehicle.Car.CarModel.name || ''}
+                                </TableCell>
+                                <TableCell>
                                     {selectedRide.Vehicle.registrationNumber || ''}
                                 </TableCell>
                                 <TableCell>
@@ -258,6 +279,23 @@ function RideDetailsView() {
                                 </TableCell>
                             </TableRow>
                         </TableBody>
+                    </Table>
+                </TableContainer>
+                    
+                <TableContainer className={classes.parentContainer}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className={classes.tableHeadText}>
+                                    MEMO
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>
+                                {selectedRide.memo}
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
                     </Table>
                 </TableContainer>
 
