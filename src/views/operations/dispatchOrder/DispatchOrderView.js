@@ -11,7 +11,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
+  Backdrop,
+  Typography,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -25,8 +26,7 @@ import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
 import clsx from 'clsx';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import CancelPresentationOutlinedIcon from '@material-ui/icons/CancelPresentationOutlined';
-
+import CancelIcon from '@material-ui/icons/Cancel';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -63,20 +63,44 @@ const useStyles = makeStyles(theme => ({
     color: '#69A022',
     borderRadius: "10px"
   },
+  canceledStatusButtonStyling: {
+    backgroundColor: 'rgba(255, 132, 0,0.3)',
+    color: '#FF8700',
+    borderRadius: "10px"
+  },
   tableCellStyle: {
     color: '#383838',
     fontSize: 14,
     display: 'table-cell',
-    // justifyContent: 'center',
     textAlign: 'center'
-    // alignItems: 'center'
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+  },
+  backdropGrid: {
+    backgroundColor: 'white',
+    padding: '18px 18px',
+    boxSizing: 'border-box',
+    borderRadius: '4px',
+    color: 'black'
+  },
+  backdropTitle: {
+    fontSize: 24,
+    marginBottom: 18
+  },
+  backdropAgreeButton: {
+    marginLeft: 10
+  }
 }));
 
 
 export default function DispatchOrderView() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const [entityToBeCanceled, setEntityToBeCanceled] = useState('')
+
   const columns = [{
     id: 'id',
     label: 'DISPATCH ORDER ID',
@@ -105,18 +129,19 @@ export default function DispatchOrderView() {
     className: '',
     format: (value, entity) => entity.Inventories.length
   },
-  {
-    id: 'receiverName',
-    label: 'RECEIVER NAME',
-    minWidth: 'auto',
-    className: '',
-  },
-  {
-    id: 'receiverPhone',
-    label: 'RECEIVER PHONE',
-    minWidth: 'auto',
-    className: '',
-  }, {
+  // {
+  //   id: 'receiverName',
+  //   label: 'RECEIVER NAME',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+  // {
+  //   id: 'receiverPhone',
+  //   label: 'RECEIVER PHONE',
+  //   minWidth: 'auto',
+  //   className: '',
+  // }
+  , {
     id: 'shipmentDate',
     label: 'SHIPMENT DATE',
     minWidth: 'auto',
@@ -136,20 +161,20 @@ export default function DispatchOrderView() {
     maxWidth: 150,
     className: classes.tableCellStyle,
     format: (value, entity) => {
-      let totalDispatched = 0
-      entity.ProductOutwards.forEach(po => {
-        po.OutwardGroups.forEach(outGroup => {
-          totalDispatched += outGroup.quantity
-        });
-      });
       return (
-        totalDispatched === 0 ? <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
+        entity.status == 0 ? <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
           Pending
-        </Button> : totalDispatched > 0 && totalDispatched < entity.quantity ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
+        </Button> : entity.status == 1 ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
           Partially fulfilled
-        </Button> : entity.quantity === totalDispatched ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
+        </Button> : entity.status == 2 ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
           Fulfilled
-        </Button> : ''
+        </Button>
+          :
+          entity.status == 3 ?
+            <Button color="primary" className={clsx(classes.statusButtons, classes.canceledStatusButtonStyling)}>
+              Canceled
+            </Button>
+            : ''
       )
     }
   },
@@ -159,26 +184,45 @@ export default function DispatchOrderView() {
     minWidth: 150,
     className: '',
     format: (value, entity) => {
-      let totalDispatched = 0
-      entity.ProductOutwards.forEach(po => {
-        po.OutwardGroups.forEach(outGroup => {
-          totalDispatched += outGroup.quantity
-        });
-      });
+      // let totalDispatched = 0
+      // entity.ProductOutwards.forEach(po => {
+      //   po.OutwardGroups.forEach(outGroup => {
+      //     totalDispatched += outGroup.quantity
+      //   });
+      // });
       return [
         <VisibilityIcon key="view"
           onClick={() => navigate(`view/${entity.id}`)}
-          style={{ cursor: 'pointer' }} />,
-        (totalDispatched === 0) || (totalDispatched > 0 && totalDispatched < entity.quantity) ?
+          style={{ cursor: 'pointer' }} />
+        ,
+        entity.status != 3 ?
           <EditIcon key="edit" onClick={() => navigate(`edit/${entity.id}`)}
             style={{ cursor: 'pointer' }}
           />
           :
-          '',
-          totalDispatched === 0 ?
-          <CancelPresentationOutlinedIcon style={{ cursor: 'pointer' }} />
+          ''
+        ,
+        entity.status != 3 && entity.status != 1 && entity.status != 2 ?
+          <CancelIcon style={{ cursor: 'pointer' }} onClick={() => {
+            setEntityToBeCanceled(entity.id)
+            setOpenBackdrop(true)
+          }} />
           :
           ''
+        ,
+        <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
+          <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
+            <Grid item xs={12}>
+              <Typography className={classes.backdropTitle}>Are you sure to cancel this order ?</Typography>
+              <Button autoFocus variant="contained"  >
+                Cancel
+              </Button>
+              <Button autoFocus variant="contained" color="primary" className={classes.backdropAgreeButton} onClick={() => cancelDispatchOrder(entityToBeCanceled)}>
+                Confirm
+              </Button>
+            </Grid>
+          </Grid>
+        </Backdrop>
       ]
     }
   }];
@@ -192,8 +236,14 @@ export default function DispatchOrderView() {
   const [showMessage, setShowMessage] = useState(null)
 
 
-  const cancelDispatchOrder = dispatchOrder => {
-    // TODO: add an api to cancel the dispatch order.
+  const cancelDispatchOrder = (dispatchOrderId) => {
+    axios.put(getURL(`dispatch-order/cancel/${dispatchOrderId}`))
+      .then(async (response) => {
+        getDispatchOrders(page, searchKeyword);
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const deleteDispatchOrder = data => {
