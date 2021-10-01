@@ -316,14 +316,6 @@ export default function AddStockManagement() {
     const adjustment_products = [];
     setMessageType('green');
 
-    // selectedInventoryWastageInventories.every((inventory, idx, arr) => {
-
-    // })
-
-    const adjustmentsObject = {
-      adjustment_products
-    }
-
     verifyEditedAdjustmentQty()
       .then((res) => {
         setMessageType('green');
@@ -676,7 +668,7 @@ export default function AddStockManagement() {
                     REASON
                   </TableCell>
                   <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px', minWidth: 150 }}>
                     COMMENT
                   </TableCell>
                   <TableCell>
