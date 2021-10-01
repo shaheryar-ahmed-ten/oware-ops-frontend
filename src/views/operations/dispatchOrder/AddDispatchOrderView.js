@@ -354,7 +354,9 @@ export default function AddDispatchOrderView() {
           (isNaN(inventory.quantity)
             || !isRequired(inventory.quantity)
             || inventory.quantity > inventory.availableQuantity
-            || inventory['lessThanError'])
+            || inventory['lessThanError']
+            || inventory['greaterThanError']
+          )
         )
           return reject(false)
         else
@@ -419,6 +421,8 @@ export default function AddDispatchOrderView() {
             inventory['remainingQuantity'] = inventory.availableQuantity - inventory['quantity']
             // enable validation error if user enters quantity less than dispatched quantity
             inventory['lessThanError'] = inventory.dispatchedQuantity > value ? true : false
+            // enable validation error if user enters quantity grater than available quantity
+            inventory['greaterThanError'] = inventory.availableQuantity < value ? true : false
           }
           return inventory
         })
@@ -670,7 +674,7 @@ export default function AddDispatchOrderView() {
                         value={dispatchGroup.quantity || ''}
                         onChange={(e) => handleEdit(
                           e.target.value > dispatchGroup.availableQuantity ?
-                            dispatchGroup.availableQuantity
+                            parseInt(e.target.value)
                             :
                             parseInt(e.target.value)
                           , 'quantity'
@@ -701,6 +705,14 @@ export default function AddDispatchOrderView() {
                         <TableCell>
                           {dispatchGroup.remainingQuantity || 0}
                           {<PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />}
+                          {
+                            dispatchGroup['greaterThanError'] ?
+                              <Typography variant="body" color="error" component="p">
+                                Requested qty can't be greater than available qty.
+                              </Typography>
+                              :
+                              ''
+                          }
                         </TableCell>
                       </>
                       :
