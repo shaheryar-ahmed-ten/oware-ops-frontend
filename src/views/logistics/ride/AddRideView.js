@@ -123,7 +123,8 @@ function AddRideView() {
   const [isActive, setActive] = useState(true);
 
   const [selectedVendor, setSelectedVendor] = useState(null);
-  
+  const [nullCar, setNullCar] = useState([]);
+  const [changeCar, setChangeCar] = useState();
   const [mounted,setMounted] = useState(false)
 
   const getRelations = () => {
@@ -204,6 +205,9 @@ function AddRideView() {
   useEffect(()=>{
     if(vendorId)
     {
+      console.log("vendorId changes")
+      console.log(changeCar)
+      console.log(selectedRide?.Vehicle?.Car?.CarMake?.name+" "+ selectedRide?.Vehicle?.Car?.CarModel?.name)
       setSelectedVendor(null)
       setCarId('')
       setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
@@ -221,6 +225,7 @@ function AddRideView() {
   useEffect(()=> {
     if(carId)
     {
+      console.log("carId changes")
       setVehicles(vendors.find(vendor => vendor.id == vendorId).Vehicles)
     }
   },[carId])
@@ -341,6 +346,7 @@ function AddRideView() {
     setVendorId(vendorId);
     setSelectedVendorName(vendorName)
   }
+  // const Nullcar = ['No Options'];
 
 
   return (
@@ -442,22 +448,6 @@ function AddRideView() {
         {/* Car and Vendor Addition Starts*/}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
-            {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Vendor</InputLabel>
-              <Select
-                fullWidth={true}
-                id="vendorId"
-                label="Vendor"
-                variant="outlined"
-                value={vendorId}
-                onChange={e => setVendorId(e.target.value)}
-                onBlur={e => setValidation({ ...validation, vendorId: true })}
-              >
-                <MenuItem value="" disabled>Select a vendor</MenuItem>
-                {vendors?.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
-              </Select>
-              {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
-            </FormControl> */}
             <FormControl margin="dense" fullWidth={true} variant="outlined">
             <Autocomplete
               id="vendorId"
@@ -500,8 +490,8 @@ function AddRideView() {
             <Autocomplete
               id="carId"
               // key={cars}
-              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : null }
-              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  null  }
+              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : nullCar }
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
               getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
               onChange={(event,newValue) => {
                 if (newValue)
