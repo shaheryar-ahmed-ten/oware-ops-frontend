@@ -24,6 +24,7 @@ import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import ProductsCsvReader from '../../../components/ProductsCsvReader';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -127,6 +128,7 @@ export default function ProductView() {
   const [showMessage, setShowMessage] = useState(null)
   const [messageType, setMessageType] = useState(null);
 
+  const navigate = useNavigate();
 
   const addProduct = data => {
     let apiPromise = null;
@@ -240,7 +242,15 @@ export default function ProductView() {
     onChange={e => setSearchKeyword(e.target.value)}
   />;
 
-  const addBulkProductsButton = <ProductsCsvReader bulkUpload={bulkUpload} />;
+  // const addBulkProductsButton = <ProductsCsvReader bulkUpload={bulkUpload} />;
+  const addBulkProductsButton = <Button
+    key={4}
+    variant="contained"
+    color="primary"
+    size="small"
+    style={{ width: 150, transform: 'translateX(7px)' }}
+    onClick={() => navigate('bulk-upload')}>Bulk Upload</Button>;
+
 
   const addProductButton = <Button
     key={2}
