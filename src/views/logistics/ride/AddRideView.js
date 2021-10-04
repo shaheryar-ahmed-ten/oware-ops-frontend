@@ -759,7 +759,7 @@ function AddRideView() {
               placeholder="Customer Price (Rs.)"
               type="number"
               variant="outlined"
-              value={price}
+              value={!!price && price}
               minuteStep={15}
               onChange={e => setPrice(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, price: true })}
@@ -775,7 +775,7 @@ function AddRideView() {
               placeholder="Vendor Cost (Rs.)"
               type="number"
               variant="outlined"
-              value={cost}
+              value={!!cost && cost}
               onChange={e => setCost(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, cost: true })}
             />
@@ -792,7 +792,7 @@ function AddRideView() {
               placeholder="Customer Discount (Rs.)"
               type="number"
               variant="outlined"
-              value={customerDiscount}
+              value={!!customerDiscount && customerDiscount}
               minuteStep={15}
               onChange={e => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
@@ -808,7 +808,7 @@ function AddRideView() {
               placeholder="Driver Incentive (Rs.)"
               type="number"
               variant="outlined"
-              value={driverIncentive}
+              value={!!driverIncentive && driverIncentive}
               onChange={e => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
