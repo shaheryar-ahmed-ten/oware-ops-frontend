@@ -37,6 +37,19 @@ const useStyles = makeStyles((theme) => ({
   },
   pageSubHeading: {
     fontWeight: 300
+  },
+  selectBox:{
+    height: 55
+  },
+  textBox:{
+    height: 34
+    // paddingTop:15
+  },
+  dateBox:{
+    height: 35
+  },
+  labelPadding:{
+    paddingTop:5
   }
 }));
 function AddRideView() {
@@ -377,8 +390,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Company</InputLabel>
+              <InputLabel className={classes.labelPadding }>Company</InputLabel>
               <Select
+                className={classes.selectBox }
                 fullWidth={true}
                 id="customerId"
                 label="Company"
@@ -395,8 +409,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Status</InputLabel>
+              <InputLabel className={classes.labelPadding}>Status</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="status"
                 label="Status"
@@ -416,6 +431,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={6}>
               <TextField
+                inputProps={{className:classes.textBox}}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationReason"
@@ -430,6 +446,7 @@ function AddRideView() {
             </Grid>
             <Grid item sm={6}>
               <TextField
+                inputProps={{className:classes.textBox}}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationComment"
@@ -486,12 +503,13 @@ function AddRideView() {
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
             </FormControl> */}
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
+            {console.log(selectedRide)}
             <Autocomplete
               id="carId"
               // key={cars}
               // ListboxProps={{ style: { maxHeight: '15' } }}
-              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : nullCar }
-              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
+              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
               getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
               onChange={(event,newValue) => {
                 if (newValue)
@@ -509,8 +527,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Vehicle</InputLabel>
+              <InputLabel className={classes.labelPadding}>Vehicle</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="vehicleId"
                 label="Vehicle"
@@ -527,8 +546,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Driver</InputLabel>
+              <InputLabel className={classes.labelPadding}>Driver</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="driverId"
                 label="Driver"
@@ -552,8 +572,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup City</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup City</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Area"
@@ -572,8 +593,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup Zone</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup Zone</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Zone"
@@ -592,8 +614,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup Area</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup Area</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Area"
@@ -614,6 +637,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+              inputProps={{className:classes.textBox}}
               fullWidth={true}
               margin="dense"
               id="pickupAddress"
@@ -630,8 +654,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff City</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff City</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffCityId"
                 label="Drop-off City"
@@ -650,8 +675,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff Zone</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff Zone</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffAreaId"
                 label="Drop-off Area"
@@ -670,8 +696,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff Area</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff Area</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffAreaId"
                 label="Drop-off Area"
@@ -692,6 +719,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+              inputProps={{className:classes.textBox}}
               fullWidth={true}
               margin="dense"
               id="dropoffAddress"
@@ -708,12 +736,13 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="pickupDate"
               label="Pickup Date & Time"
               placeholder="Pickup Date & Time"
-              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              inputProps={{ min: new Date().toISOString().slice(0, 16),className:classes.dateBox }}
               type="datetime-local"
               variant="outlined"
               value={pickupDate}
@@ -728,12 +757,13 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
+              // className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
               // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-              inputProps={{ min: pickupDate }}
+              inputProps={{ min: pickupDate, className:classes.dateBox }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
@@ -753,6 +783,7 @@ function AddRideView() {
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
+              inputProps={{className:classes.textBox}}
               margin="dense"
               id="price"
               label="Customer Price (Rs.)"
@@ -769,6 +800,7 @@ function AddRideView() {
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
+              inputProps={{className:classes.textBox}}
               margin="dense"
               id="cost"
               label="Vendor Cost (Rs.)"
@@ -786,6 +818,7 @@ function AddRideView() {
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
+              inputProps={{className:classes.textBox}}
               margin="dense"
               id="customerDiscount"
               label="Customer Discount (Rs.)"
@@ -802,6 +835,7 @@ function AddRideView() {
           <Grid item sm={6}>
             <TextField
               fullWidth={true}
+              inputProps={{className:classes.textBox}}
               margin="dense"
               id="driverIncentive"
               label="Driver Incentive (Rs.)"
@@ -822,8 +856,9 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <InputLabel>Product Category</InputLabel>
+                <InputLabel className={classes.labelPadding}>Product Category</InputLabel>
                 <Select
+                  className={classes.selectBox}
                   fullWidth={true}
                   id="productCategoryId"
                   label="Product Category"
@@ -841,6 +876,7 @@ function AddRideView() {
             <Grid item xs={3}>
               <TextField
                 fullWidth={true}
+                inputProps={{className:classes.textBox}}
                 margin="dense"
                 id="productName"
                 label="Product name"
@@ -860,6 +896,7 @@ function AddRideView() {
             <Grid item xs={3}>
               <TextField
                 fullWidth={true}
+                inputProps={{className:classes.textBox}}
                 margin="dense"
                 id="productQuantity"
                 label="Product quantity"
@@ -972,17 +1009,18 @@ function AddRideView() {
             <TextField
             multiline
               fullWidth={true}
+              // inputProps={{className:classes.textBox}}
               margin="dense"
+              rows={6}
               id="memo"
-              label="Memo For Driver"
+              label="Memo for driver"
               type="text"
               variant="outlined"
-              InputProps={{ inputProps: { maxLength: 1000 } }}
+              InputProps={{ inputProps: { maxLength: 1000 },className:classes.memoBox }}
               value={memo}
               onChange={e => setMemo(e.target.value)}
               // onBlur={e => setValidation({ ...validation, memo: true })}
             />
-            {console.log(memo.length)}
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
             <Typography style={{color: "#005cfd" ,fontSize: 12}}>Max Length (1000 characters)</Typography>
           
