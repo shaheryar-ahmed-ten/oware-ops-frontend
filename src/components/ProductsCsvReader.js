@@ -79,14 +79,14 @@ function ProductsCsvReader({ bulkUpload, selectedFile, setSelectedFile }) {
 
 
     return (
-        <FormControl margin="dense" fullWidth={true} variant="outlined">
+        <FormControl fullWidth={true} variant="outlined">
             <Button
                 key={12}
                 variant="contained"
                 color="primary"
                 component="label"
                 size="small"
-                style={{ marginLeft: 5 }}
+                style={{ marginRight: 5 }}
             >Bulk Upload
                 <input
                     type="file"

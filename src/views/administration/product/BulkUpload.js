@@ -1,4 +1,4 @@
-import { Button, Grid, makeStyles } from '@material-ui/core'
+import { Button, Grid, makeStyles, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import axios from 'axios'
 import React, { useState } from 'react'
@@ -6,10 +6,34 @@ import ProductsCsvReader from '../../../components/ProductsCsvReader'
 import { getURL } from '../../../utils/common'
 import CheckIcon from '@material-ui/icons/Check';
 import { useNavigate } from 'react-router'
+import fileDownload from 'js-file-download'
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
     root: {
         padding: 20,
+    },
+    headerBtns: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        boxSizing: 'border-box',
+        // padding: 20
+    },
+    heading: {
+        fontWeight: 'bolder',
+        boxSizing: 'border-box',
+        padding: 20
+    },
+    systemAlert: {
+        marginBottom: 10
+    },
+    uploadDetails: {
+        backgroundColor: 'rgba(202,201,201,0.3)',
+        boxSizing: 'border-box',
+        padding: 20
+    },
+    downloadTempBtn: {
+        marginRight: 5,
     }
 }))
 
@@ -29,38 +53,58 @@ function BulkUpload() {
                 setErrorAlerts(res.data.message)
                 return
             }
-            setSuccessAlerts(['Products have been added to system successfully.'])
+            setErrorAlerts([])
+            setSuccessAlerts([`${res.data.message}`])
         })
             .catch((err) => {
                 setSelectedFile(null)
-                setErrorAlerts(err.response.data.message)
+                setSuccessAlerts([])
+                setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk products"])
             })
     }
 
-    // const addBulkProductsButton = <ProductsCsvReader bulkUpload={bulkUpload} />;
+    const downloadTemplate = () => {
+        let apiPromise = axios.get(getURL('product/bulk-template'), {
+            responseType: 'blob',
+        })
+        apiPromise.then((response) => {
+            fileDownload(response.data, `Products ${moment().format('DD-MM-yyyy')}.xlsx`);
+        })
+
+    }
     return (
         <>
             <Grid container className={classes.root}>
-                <Grid item xs={12}>
-                    <ProductsCsvReader bulkUpload={bulkUpload} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                <Grid item xs={12} alignItems="center">
+                    <Typography component="div" variant="h4" className={classes.heading}>Products Bulk Upload</Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} alignItems="center" className={classes.headerBtns}>
+                    <Grid item xs={2}>
+                        <ProductsCsvReader bulkUpload={bulkUpload} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
+                    </Grid>
+                    <Grid item xs={2} className={classes.downloadTempBtn}>
+                        <Button variant="contained" color="primary" size="small" fullWidth onClick={downloadTemplate}>Download Template</Button>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button variant="contained" color="primary" size="small" fullWidth onClick={() => navigate('/administration/product')}>Back</Button>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} alignItems="center">
+                    <Typography component="div" variant="h4" className={classes.heading}>Bulk Upload Details</Typography>
+                </Grid>
+                <Grid item xs={12} className={classes.uploadDetails}>
                     {
-                        errorAlerts.map((alert) => {
+                        errorAlerts?.map((alert) => {
                             return (
-                                <Alert severity="error"> {alert} </Alert>
+                                <Alert severity="error" className={classes.systemAlert}> {alert} </Alert>
                             )
                         })
                     }
                     {
-                        successAlerts.map((alert) => {
+                        successAlerts?.map((alert) => {
                             return (
                                 <Alert icon={<CheckIcon fontSize="inherit" />} severity="success"
-                                    action={
-                                        <Button color="inherit" size="small" onClick={() => navigate('/administration/product')}>
-                                            View Products
-                                        </Button>
-                                    }> {alert}  </Alert>
+                                    className={classes.systemAlert}> {alert}  </Alert>
                             )
                         })
                     }
