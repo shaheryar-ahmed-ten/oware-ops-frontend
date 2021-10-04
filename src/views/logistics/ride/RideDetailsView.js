@@ -113,10 +113,6 @@ function RideDetailsView() {
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Driver :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.name || '-'}</Grid>
                         </Grid>
-                        <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 500, paddingTop: 23 }} item xs={3}>Memo :</Grid>
-                            <Grid item xs={3} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
-                        </Grid>
                     </Grid>
                     
 
@@ -208,6 +204,12 @@ function RideDetailsView() {
                             </Table>
                         </TableContainer>
                     </Grid>
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
+                        <Grid container spacing={2}>
+                                <Grid style={{ fontWeight: 500, paddingTop: 23 }} item xs={3}>Memo :</Grid>
+                                <Grid item xs={9} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
+                        </Grid>
+                    </Grid>
 
                 </Box>
             </Box>
@@ -279,23 +281,6 @@ function RideDetailsView() {
                                 </TableCell>
                             </TableRow>
                         </TableBody>
-                    </Table>
-                </TableContainer>
-                    
-                <TableContainer className={classes.parentContainer}>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell className={classes.tableHeadText}>
-                                    MEMO
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                {selectedRide.memo}
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
                     </Table>
                 </TableContainer>
 
@@ -478,6 +463,26 @@ function RideDetailsView() {
                             : ''}
                     </Grid>
                 </Grid>
+
+                <TableContainer className={classes.parentContainer}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                            <TableRow >
+                                <TableCell className={classes.tableHeadText}>
+                                    MEMO
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody >
+                            <TableRow className={classes.tableRow} className={classes.tableRow}>
+                                <TableCell>
+                                {selectedRide.memo}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+
+                    </Table>
+                </TableContainer>
 
 
             </Grid>
