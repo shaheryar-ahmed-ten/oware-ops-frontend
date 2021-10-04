@@ -128,7 +128,7 @@ export default function AddDispatchOrderView() {
                   quantity: inventory.OrderGroup.quantity,
                   remainingQuantity: inventory.availableQuantity,// to display at bottom table in edit.
                   availableQuantity: inventory.availableQuantity + inventory.OrderGroup.quantity, // to display at bottom table in edit.
-                  dispatchedQuantity: inventory.outward ? inventory.outward.quantity || 0 : 0 // dispatched quantity of this particular inventory
+                  dispatchedQuantity: inventory.outwardQty ? inventory.outwardQty || 0 : 0 // dispatched quantity of this particular inventory
                 }
               ]))
             }
