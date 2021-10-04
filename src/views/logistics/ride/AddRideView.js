@@ -447,7 +447,7 @@ function AddRideView() {
         {/* Car and Vendor Addition Starts*/}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
             <Autocomplete
               id="vendorId"
               options={vendors}
@@ -461,7 +461,7 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, vendorId: true })}
             />
             {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          </FormControl>
+          {/* </FormControl> */}
           </Grid>
           <Grid item sm={6}>
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -485,10 +485,11 @@ function AddRideView() {
               </Select>
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
             </FormControl> */}
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
             <Autocomplete
               id="carId"
               // key={cars}
+              // ListboxProps={{ style: { maxHeight: '15' } }}
               options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : nullCar }
               defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+ selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
               getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
@@ -501,7 +502,7 @@ function AddRideView() {
             onBlur={e => setValidation({ ...validation, carId: true })}
             />
             {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          </FormControl>
+          {/* </FormControl> */}
           </Grid>
         </Grid>
         {/* Car and Vendor Addition Ends */}
@@ -543,25 +544,6 @@ function AddRideView() {
             </FormControl>
           </Grid>
         </Grid>
-        {/* Memo Addition Starts */}
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
-            <TextField
-              fullWidth={true}
-              margin="dense"
-              id="memo"
-              label="Memo For Driver"
-              type="text"
-              variant="outlined"
-              value={memo}
-              onChange={e => setMemo(e.target.value)}
-              // onBlur={e => setValidation({ ...validation, memo: true })}
-            />
-            {/* {validation.pickupAddress && !isRequired(pickupAddress) ? <Typography color="error">Pickup address is required!</Typography> : ''} */}
-          </Grid>
-        </Grid>
-
-        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Pickup & Drop-off</Typography>
@@ -782,7 +764,7 @@ function AddRideView() {
               onChange={e => setPrice(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, price: true })}
             />
-            {validation.price && !isRequired(price) ? <Typography color="error">Price is required!</Typography> : ''}
+            {validation.price && !isRequired(price) ? <Typography color="error">Customer Price is required!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
@@ -797,7 +779,7 @@ function AddRideView() {
               onChange={e => setCost(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, cost: true })}
             />
-            {validation.cost && !isRequired(cost) ? <Typography color="error">Cost is required!</Typography> : ''}
+            {validation.cost && !isRequired(cost) ? <Typography color="error">Vendor Cost is required!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -984,6 +966,30 @@ function AddRideView() {
 
           </Grid>
         </Grid>
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+          <Grid item sm={12}>
+            <TextField
+            multiline
+              fullWidth={true}
+              margin="dense"
+              id="memo"
+              label="Memo For Driver"
+              type="text"
+              variant="outlined"
+              InputProps={{ inputProps: { maxLength: 1000 } }}
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+              // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {console.log(memo.length)}
+            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
+            <Typography style={{color: "#005cfd" ,fontSize: 12}}>Max Length (1000 characters)</Typography>
+          
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
