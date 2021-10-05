@@ -465,23 +465,40 @@ export default function AddDispatchOrderView() {
           </FormControl>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
-            <Autocomplete
-              id="warehouse"
-              key={warehouses}
-              options={warehouses}
-              defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
-              getOptionLabel={(warehouse) => warehouse.name || ""}
-              onChange={(event, newValue) => {
-                if (newValue)
-                  setWarehouseId(newValue.id)
-              }}
-              renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
-              // onBlur={e => setValidation({ ...validation, warehouseId: true })}
-              disabled={!!selectedDispatchOrder}
-            />
-            {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          </FormControl>
+          {
+            !!selectedDispatchOrder ?
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <TextField
+                  fullWidth={true}
+                  key={warehouses}
+                  id="warehouse"
+                  label="Warehouse"
+                  type="text"
+                  variant="outlined"
+                  value={selectedDispatchOrder.Inventory.Warehouse.name}
+                  disabled={!!selectedDispatchOrder}
+                />
+              </FormControl>
+              :
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Autocomplete
+                  id="warehouse"
+                  key={warehouses}
+                  options={warehouses}
+                  defaultValue={selectedDispatchOrder ? { name: selectedDispatchOrder.Inventory.Warehouse.name, id: selectedDispatchOrder.Inventory.Warehouse.id } : ''}
+                  getOptionLabel={(warehouse) => warehouse.name || ""}
+                  onChange={(event, newValue) => {
+                    if (newValue)
+                      setWarehouseId(newValue.id)
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Warehouse" variant="outlined" />}
+                  // onBlur={e => setValidation({ ...validation, warehouseId: true })}
+                  disabled={!!selectedDispatchOrder}
+                />
+                {validation.warehouseId && !isRequired(warehouseId) ? <Typography color="error">Warehouse is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+              </FormControl>
+          }
+
         </Grid>
         <Grid item sm={6}>
           <TextField
