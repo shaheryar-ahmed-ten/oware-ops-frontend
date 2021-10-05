@@ -645,7 +645,7 @@ export default function AddDispatchOrderView() {
                 !!selectedDispatchOrder ?
                   <TableCell
                     style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                    Remaining Quantity
+                    Available Quantity
                   </TableCell>
                   :
                   ''
@@ -722,13 +722,19 @@ export default function AddDispatchOrderView() {
                     {dispatchGroup.product ? dispatchGroup.product.UOM.name : ''}
                   </TableCell>
                   <TableCell>
-                    <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        inventories.find((inventory) => inventory.id === dispatchGroup.id)['quantity'] = 0
-                        inventories.find((inventory) => inventory.id === dispatchGroup.id)['softDelete'] = true
-                        setInventories([...inventories])
-                      }
-                      } />
+                    {
+                      !!selectedDispatchOrder && (dispatchGroup.dispatchedQuantity > 0) ?
+                        ''
+                        :
+                        <DeleteIcon color="error" key="delete" style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            inventories.find((inventory) => inventory.id === dispatchGroup.id)['quantity'] = 0
+                            inventories.find((inventory) => inventory.id === dispatchGroup.id)['softDelete'] = true
+                            setInventories([...inventories])
+                          }
+                          } />
+                    }
+
                   </TableCell>
                 </TableRow>
               )
