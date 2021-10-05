@@ -23,6 +23,7 @@ import { useNavigate, useParams } from 'react-router';
 import MaskedInput from "react-text-mask";
 import "./outward.css"
 import PriorityHighOutlinedIcon from '@material-ui/icons/PriorityHighOutlined';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -420,9 +421,9 @@ export default function AddDispatchOrderView() {
             inventory[keyTobeEdit] = value
             inventory['remainingQuantity'] = inventory.availableQuantity - inventory['quantity']
             // enable validation error if user enters quantity less than dispatched quantity
-            inventory['lessThanError'] = inventory.dispatchedQuantity > value ? true : false
+            inventory['lessThanError'] = inventory.dispatchedQuantity == value ? true : false
             // enable validation error if user enters quantity grater than available quantity
-            inventory['greaterThanError'] = inventory.availableQuantity < value ? true : false
+            inventory['greaterThanError'] = inventory.availableQuantity == value ? true : false
           }
           return inventory
         })
@@ -497,7 +498,7 @@ export default function AddDispatchOrderView() {
         </Grid>
         <Grid item sm={6}>
           <MaskedInput
-            className="mask-text"
+            className={clsx({ ["mask-text"]: true })}
             guide={true}
             showMask={true}
             variant="outlined"
@@ -511,7 +512,7 @@ export default function AddDispatchOrderView() {
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
-            style={{ padding: '22px 10px' }}
+            style={{ padding: '22px 10px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
           // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
           {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
@@ -635,7 +636,7 @@ export default function AddDispatchOrderView() {
               {
                 !!selectedDispatchOrder ?
                   <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px', minWidth: 300 }}>
                     Dispatched Quantity
                   </TableCell>
                   :
@@ -644,7 +645,7 @@ export default function AddDispatchOrderView() {
               {
                 !!selectedDispatchOrder ?
                   <TableCell
-                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                    style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px', minWidth: 300 }}>
                     Available Quantity
                   </TableCell>
                   :
@@ -654,7 +655,9 @@ export default function AddDispatchOrderView() {
                 style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                 UoM
               </TableCell>
-              <TableCell></TableCell>
+              <TableCell style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -674,9 +677,12 @@ export default function AddDispatchOrderView() {
                         value={dispatchGroup.quantity || ''}
                         onChange={(e) => handleEdit(
                           e.target.value > dispatchGroup.availableQuantity ?
-                            parseInt(e.target.value)
+                            parseInt(dispatchGroup.availableQuantity)
                             :
-                            parseInt(e.target.value)
+                            e.target.value < dispatchGroup.dispatchedQuantity ?
+                              parseInt(dispatchGroup.dispatchedQuantity)
+                              :
+                              parseInt(e.target.value)
                           , 'quantity'
                           , dispatchGroup.id
                         )}

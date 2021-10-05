@@ -13,6 +13,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
     "axios": "^0.21.1",
+    "clsx": "^1.1.1",
     "history": "^5.0.0",
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.21",
