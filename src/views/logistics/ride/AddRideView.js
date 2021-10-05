@@ -44,6 +44,15 @@ const useStyles = makeStyles((theme) => ({
   textBox:{
     height: 34
     // paddingTop:15
+    // "& label": {
+    //   paddingTop:5,
+    // }
+    // height: 34
+  },
+  labelBox:{
+    "& label": {
+      paddingTop:7
+    }
   },
   dateBox:{
     height: 35
@@ -462,7 +471,7 @@ function AddRideView() {
           </Grid>
           : ''}
         {/* Car and Vendor Addition Starts*/}
-        <Grid container item xs={12} spacing={3}>
+        <Grid container item xs={12} spacing={3} style={{ marginBottom: -30}}>
           <Grid item sm={6}>
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
             <Autocomplete
@@ -637,6 +646,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+              className={classes.labelBox}
               inputProps={{className:classes.textBox}}
               fullWidth={true}
               margin="dense"
@@ -719,6 +729,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+             className={classes.labelBox}
               inputProps={{className:classes.textBox}}
               fullWidth={true}
               margin="dense"
@@ -736,7 +747,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
-              className={classes.textBox}
+              // className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="pickupDate"
@@ -782,6 +793,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
               inputProps={{className:classes.textBox}}
               margin="dense"
@@ -799,6 +811,7 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
               inputProps={{className:classes.textBox}}
               margin="dense"
@@ -817,6 +830,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
               inputProps={{className:classes.textBox}}
               margin="dense"
@@ -834,6 +848,7 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
               inputProps={{className:classes.textBox}}
               margin="dense"
@@ -875,6 +890,7 @@ function AddRideView() {
             </Grid>
             <Grid item xs={3}>
               <TextField
+                className={classes.labelBox}
                 fullWidth={true}
                 inputProps={{className:classes.textBox}}
                 margin="dense"
@@ -895,6 +911,7 @@ function AddRideView() {
             </Grid>
             <Grid item xs={3}>
               <TextField
+                className={classes.labelBox}
                 fullWidth={true}
                 inputProps={{className:classes.textBox}}
                 margin="dense"
@@ -1022,7 +1039,7 @@ function AddRideView() {
               // onBlur={e => setValidation({ ...validation, memo: true })}
             />
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
-            <Typography style={{color: "#005cfd" ,fontSize: 12}}>Max Length (1000 characters)</Typography>
+            <Typography style={{color: "#1d1d1d" ,fontSize: 12}}>Max Length (1000 characters)</Typography>
           
           </Grid>
         </Grid>
