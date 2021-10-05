@@ -343,10 +343,10 @@ export default function AddProductOutwardView({ }) {
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Ordered Quantity
                     </TableCell>
-                    <TableCell
+                    {/* <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Available Quantity
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Actual Quantity To Dispatch
@@ -373,10 +373,9 @@ export default function AddProductOutwardView({ }) {
                         <TableCell>
                           {inventory.OrderGroup.quantity}
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {remainingQt}
-                          {/* {inventory.OrderGroup.quantity - inventory.committedQuantity} */}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <TextField
                             fullWidth={true}
@@ -390,7 +389,6 @@ export default function AddProductOutwardView({ }) {
                             onChange={e => setInventoryQuantities({ ...inventoryQuantities, [idx]: { quantity: e.target.value < 0 ? e.target.value == 0 : e.target.value < remainingQt ? e.target.value : remainingQt, id: inventory.id, availableQuantity: remainingQt } })} // TODO: Fix multi inputs
                             onBlur={e => setValidation({ ...validation, quantity: true })}
                           />
-                          {/* {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : ''} */}
                         </TableCell>
                       </TableRow>
                     )
