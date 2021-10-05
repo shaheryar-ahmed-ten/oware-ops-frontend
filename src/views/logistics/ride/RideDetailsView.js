@@ -161,6 +161,16 @@ function RideDetailsView() {
                     </Grid>
 
                     <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
+                    <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>OTHER DETAILS</Typography>
+                        </Grid>
+                        <Grid container spacing={2}>
+                                <Grid style={{ fontWeight: 500 }} item xs={3}>Memo :</Grid>
+                                <Grid item xs={9} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
                             <Typography variant="h5" className={classes.pageSubHeading}>PRODUCT DETAILS</Typography>
                         </Grid>
@@ -204,12 +214,7 @@ function RideDetailsView() {
                             </Table>
                         </TableContainer>
                     </Grid>
-                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
-                        <Grid container spacing={2}>
-                                <Grid style={{ fontWeight: 500, paddingTop: 23 }} item xs={3}>Memo :</Grid>
-                                <Grid item xs={9} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
-                        </Grid>
-                    </Grid>
+                    
 
                 </Box>
             </Box>
@@ -464,9 +469,14 @@ function RideDetailsView() {
                     </Grid>
                 </Grid>
 
-                <TableContainer className={classes.parentContainer}>
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+                    </Grid>
+                </Grid>
+                <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
                     <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
+                        <TableHead >
                             <TableRow >
                                 <TableCell className={classes.tableHeadText}>
                                     MEMO
