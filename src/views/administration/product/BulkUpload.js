@@ -19,10 +19,20 @@ const useStyles = makeStyles((theme) => ({
         boxSizing: 'border-box',
         // padding: 20
     },
+    topHeader: {
+        boxSizing: 'border-box',
+        paddingRight: 5
+    },
     heading: {
         fontWeight: 'bolder',
         boxSizing: 'border-box',
         padding: 20
+    },
+    subHeading: {
+        fontWeight: 'normal',
+        boxSizing: 'border-box',
+        padding: 20,
+        fontSize: 18
     },
     systemAlert: {
         marginBottom: 10
@@ -34,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
     },
     downloadTempBtn: {
         marginRight: 5,
+    },
+    backBtn: {
+        display: 'flex',
+        justifyContent: 'flex-end'
     }
 }))
 
@@ -41,11 +55,19 @@ function BulkUpload() {
     const classes = useStyles()
     const navigate = useNavigate()
 
+    const [fileUploaded, setfileUploaded] = useState(null)
     const [selectedFile, setSelectedFile] = useState(null)
     const [errorAlerts, setErrorAlerts] = useState([])
     const [successAlerts, setSuccessAlerts] = useState([])
 
     const bulkUpload = data => {
+        setfileUploaded(true)
+        if (!(Array.isArray(data.products) && data.products.length > 0)) {
+            setSelectedFile(null)
+            setSuccessAlerts([])
+            setErrorAlerts(["Can not upload file having zero products."])
+            return 
+        }
         let apiPromise = axios.post(getURL('product/bulk'), data)
         apiPromise.then((res) => {
             if (!res.data.success) {
@@ -75,40 +97,49 @@ function BulkUpload() {
     return (
         <>
             <Grid container className={classes.root}>
-                <Grid item xs={12} alignItems="center">
-                    <Typography component="div" variant="h4" className={classes.heading}>Products Bulk Upload</Typography>
+                <Grid container item xs={12} alignItems="center" className={classes.topHeader}>
+                    <Grid item xs={10}>
+                        <Typography component="div" variant="h4" className={classes.heading}>Products Bulk Upload</Typography>
+                    </Grid>
+                    <Grid item xs={2} className={classes.backBtn}>
+                        <Button variant="contained" color="primary" onClick={() => navigate('/administration/product')}>Back</Button>
+                    </Grid>
                 </Grid>
                 <Grid item xs={12} alignItems="center" className={classes.headerBtns}>
-                    <Grid item xs={2}>
-                        <ProductsCsvReader bulkUpload={bulkUpload} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
-                    </Grid>
                     <Grid item xs={2} className={classes.downloadTempBtn}>
                         <Button variant="contained" color="primary" size="small" fullWidth onClick={downloadTemplate}>Download Template</Button>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="contained" color="primary" size="small" fullWidth onClick={() => navigate('/administration/product')}>Back</Button>
+                        <ProductsCsvReader bulkUpload={bulkUpload} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                     </Grid>
                 </Grid>
-                <Grid item xs={12} alignItems="center">
-                    <Typography component="div" variant="h4" className={classes.heading}>Bulk Upload Details</Typography>
-                </Grid>
-                <Grid item xs={12} className={classes.uploadDetails}>
-                    {
-                        errorAlerts?.map((alert) => {
-                            return (
-                                <Alert severity="error" className={classes.systemAlert}> {alert} </Alert>
-                            )
-                        })
-                    }
-                    {
-                        successAlerts?.map((alert) => {
-                            return (
-                                <Alert icon={<CheckIcon fontSize="inherit" />} severity="success"
-                                    className={classes.systemAlert}> {alert}  </Alert>
-                            )
-                        })
-                    }
-                </Grid>
+                {
+                    fileUploaded ?
+                        <>
+                            <Grid item xs={12} alignItems="center">
+                                <Typography component="div" className={classes.subHeading}>Bulk Upload Details</Typography>
+                            </Grid>
+                            <Grid item xs={12} className={classes.uploadDetails}>
+                                {
+                                    errorAlerts?.map((alert) => {
+                                        return (
+                                            <Alert severity="error" className={classes.systemAlert}> {alert} </Alert>
+                                        )
+                                    })
+                                }
+                                {
+                                    successAlerts?.map((alert) => {
+                                        return (
+                                            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success"
+                                                className={classes.systemAlert}> {alert}  </Alert>
+                                        )
+                                    })
+                                }
+                            </Grid>
+                        </>
+                        :
+                        ''
+                }
             </Grid>
         </>
     )

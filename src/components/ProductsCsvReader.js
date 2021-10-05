@@ -87,7 +87,7 @@ function ProductsCsvReader({ bulkUpload, selectedFile, setSelectedFile }) {
                 component="label"
                 size="small"
                 style={{ marginRight: 5 }}
-            >Bulk Upload
+            >Upload
                 <input
                     type="file"
                     hidden
