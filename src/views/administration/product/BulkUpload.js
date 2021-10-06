@@ -66,7 +66,7 @@ function BulkUpload() {
             setSelectedFile(null)
             setSuccessAlerts([])
             setErrorAlerts(["Can not upload file having zero products."])
-            return 
+            return
         }
         let apiPromise = axios.post(getURL('product/bulk'), data)
         apiPromise.then((res) => {
@@ -106,10 +106,10 @@ function BulkUpload() {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} alignItems="center" className={classes.headerBtns}>
-                    <Grid item xs={2} className={classes.downloadTempBtn}>
-                        <Button variant="contained" color="primary" size="small" fullWidth onClick={downloadTemplate}>Download Template</Button>
+                    <Grid item xs={3} className={classes.downloadTempBtn}>
+                        <Button variant="contained" color="primary" fullWidth onClick={downloadTemplate}>Download Template</Button>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <ProductsCsvReader bulkUpload={bulkUpload} selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                     </Grid>
                 </Grid>

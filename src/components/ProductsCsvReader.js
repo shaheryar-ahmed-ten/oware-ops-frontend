@@ -85,7 +85,6 @@ function ProductsCsvReader({ bulkUpload, selectedFile, setSelectedFile }) {
                 variant="contained"
                 color="primary"
                 component="label"
-                size="small"
                 style={{ marginRight: 5 }}
             >Upload
                 <input
