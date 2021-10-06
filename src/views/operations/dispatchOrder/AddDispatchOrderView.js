@@ -719,7 +719,7 @@ export default function AddDispatchOrderView() {
                           {
                             dispatchGroup['lessThanError'] ?
                               <Typography variant="body" color="error">
-                                Requested qty can't be less than dispatched qty.'
+                                Requested qty can't be less than dispatched qty.
                               </Typography>
                               :
                               ''
