@@ -240,7 +240,7 @@ export default function AddDispatchOrderView() {
         return
       }
       setShowMessage({
-        message: "New dispatch order has been created."
+        message: !!selectedDispatchOrder ? "The dispatch order has been updated successfully." : "New dispatch order has been created successfully."
       });
       setTimeout(() => {
         navigate('/operations/dispatch-order')
