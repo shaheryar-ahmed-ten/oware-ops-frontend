@@ -355,8 +355,8 @@ export default function AddDispatchOrderView() {
           (isNaN(inventory.quantity)
             || !isRequired(inventory.quantity)
             || inventory.quantity > inventory.availableQuantity
-            || inventory['lessThanError']
-            || inventory['greaterThanError']
+            // || inventory['lessThanError']
+            // || inventory['greaterThanError']
           )
         )
           return reject(false)
