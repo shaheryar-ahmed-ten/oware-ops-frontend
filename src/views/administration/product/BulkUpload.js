@@ -60,8 +60,19 @@ function BulkUpload() {
     const [errorAlerts, setErrorAlerts] = useState([])
     const [successAlerts, setSuccessAlerts] = useState([])
 
+
     const bulkUpload = data => {
         setfileUploaded(true)
+        let temp = []
+        for (let product of data.products) {
+            if (temp.includes(product.Name)) {
+                setSelectedFile(null)
+                setSuccessAlerts([])
+                setErrorAlerts(["Can not upload file having duplicate products."])
+                return
+            }
+            temp.push(product.Name)
+        }
         if (!(Array.isArray(data.products) && data.products.length > 0)) {
             setSelectedFile(null)
             setSuccessAlerts([])
