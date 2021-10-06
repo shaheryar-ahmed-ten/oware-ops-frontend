@@ -411,6 +411,31 @@ function RideDetailsView() {
 
                 <Grid container item xs={12} spacing={3}>
                     <Grid item xs={12}>
+                        <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+                    </Grid>
+                </Grid>
+                <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead >
+                            <TableRow >
+                                <TableCell className={classes.tableHeadText}>
+                                    MEMO
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody >
+                            <TableRow className={classes.tableRow} className={classes.tableRow}>
+                                <TableCell>
+                                {selectedRide.memo}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+
+                    </Table>
+                </TableContainer>
+
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs={12}>
                         <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
                     </Grid>
                 </Grid>
@@ -469,30 +494,6 @@ function RideDetailsView() {
                     </Grid>
                 </Grid>
 
-                <Grid container item xs={12} spacing={3}>
-                    <Grid item xs={12}>
-                        <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
-                    </Grid>
-                </Grid>
-                <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead >
-                            <TableRow >
-                                <TableCell className={classes.tableHeadText}>
-                                    MEMO
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody >
-                            <TableRow className={classes.tableRow} className={classes.tableRow}>
-                                <TableCell>
-                                {selectedRide.memo}
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-
-                    </Table>
-                </TableContainer>
 
 
             </Grid>

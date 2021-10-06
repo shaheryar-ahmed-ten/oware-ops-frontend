@@ -149,6 +149,7 @@ function AddRideView() {
   const [nullCar, setNullCar] = useState([]);
   const [changeCar, setChangeCar] = useState();
   const [mounted, setMounted] = useState(false)
+  const [vehicleType,setVehicleType] = useState([]);
 
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
@@ -234,46 +235,47 @@ function AddRideView() {
       setSelectedVendor(null)
       setCarId('')
       setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
+      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
+      const filterCarArray = removeCarDuplicate(carVehicleTemp);
+      setVehicleType(filterCarArray)
     }
   }, [vendorId])
 
   useEffect(() => {
     if (!!selectedRide && !!vendorId && !mounted) {
-      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
-      const filterCarArray = removeCarDuplicate(carVehicleTemp);
-      console.log(filterCarArray,"i am waqas");
-      setCarId(filterCarArray.map(vehicle=>vehicle.carId))
-      // setCarId(selectedRide.Vehicle.Car.id)
+      setCarId(selectedRide.Vehicle.Car.id)
       setMounted(true)
     }
   }, [selectedVendor])
 
   useEffect(() => {
     if (carId) {
-      const newVehicleType = [];
       const carVehicle = vendors.find(vendor => vendor.id == vendorId).Vehicles.find(vehicle => vehicle.carId == carId);
-      // console.log("carVehicle",carVehicle)
       const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
-
       if (carVehicleTemp && carVehicleTemp?.length > 0) {
         const filterCarArray = removeCarDuplicate(carVehicleTemp);
-        setVehicles(filterCarArray);
-        console.log("carVehicleTemp", carVehicleTemp, filterCarArray)
+        setVehicleType(filterCarArray);
+        // if(selectedRide) {setVehicleId(carVehicle.id)}
+        // setVehicleId(carVehicle.id)
+        getVehicles(carId,vendorId);
+        console.log("carVehicleTemp", filterCarArray)
       }
-
-      setVehicleId(carVehicle.id)
-      // console.log("Vehicless",vehicles)
-      // console.log("VehicleId",vehicleId)
     }
   }, [carId])
+
+  function getVehicles(carId,companyId){
+    axios.get(getURL('vehicle'), { params: { carId, companyId } })
+            .then(res => {
+                setVehicles(res.data.data)
+            });
+
+  }
 
   function removeCarDuplicate(carVehicleTemp) {
     const prevAdded = [];
     const newArray = [];
-    console.log(carVehicleTemp, "carVehicleTemp loop");
     carVehicleTemp.forEach((item) => {
       if (!prevAdded.includes(item.carId)) {
-        console.log(item.carId, "item.carId");
         newArray.push(item);
         prevAdded.push(item.carId);
       }
@@ -520,10 +522,11 @@ function AddRideView() {
             {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             {/* </FormControl> */}
           </Grid>
-          <Grid item sm={6}>
+          <Grid item sm={6} style={{paddingTop:4}}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Vehicle Type</InputLabel>
+              <InputLabel className={classes.labelPadding}>Vehicle Type</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="carName"
                 label="Vehicle Type"
@@ -534,7 +537,7 @@ function AddRideView() {
               >
                 <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
                 {
-                  selectedVendor?.Vehicles.map((vehicle, idx) => {
+                  vehicleType.map((vehicle, idx) => {
                     return <MenuItem key={idx} value={vehicle.Car.id}>{`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
                     </MenuItem>
                   })
@@ -543,19 +546,13 @@ function AddRideView() {
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
             </FormControl>
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
-            {/* {console.log(selectedRide)} */}
             {/* <Autocomplete
               id="carId"
-              // key={cars}
+              key={vehicleType}
               // ListboxProps={{ style: { maxHeight: '15' } }}
-              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
-              // {(selectedRide) ?
-                // inputValue = {selectedRide ? selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name : changeCar}
-                // :
-                defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
-              // }
-              // inputValue = {selectedRide ? selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name : ''}
-              // defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
+              // options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
+              options={vehicleType}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
               getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
               onChange={(event,newValue) => {
                 if (newValue)
@@ -903,6 +900,37 @@ function AddRideView() {
             {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
           </Grid>
         </Grid>
+
+
+
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+        <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+          </Grid>
+          <Grid item sm={12}>
+            <TextField
+              multiline
+              fullWidth={true}
+              // inputProps={{className:classes.textBox}}
+              margin="dense"
+              rows={6}
+              id="memo"
+              label="Memo for driver"
+              type="text"
+              variant="outlined"
+              InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+            // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
+            <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
@@ -1059,31 +1087,7 @@ function AddRideView() {
 
           </Grid>
         </Grid>
-        {/* Memo Addition Starts */}
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
-            <TextField
-              multiline
-              fullWidth={true}
-              // inputProps={{className:classes.textBox}}
-              margin="dense"
-              rows={6}
-              id="memo"
-              label="Memo for driver"
-              type="text"
-              variant="outlined"
-              InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
-              value={memo}
-              onChange={e => setMemo(e.target.value)}
-            // onBlur={e => setValidation({ ...validation, memo: true })}
-            />
-            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
-            <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
-
-          </Grid>
-        </Grid>
-
-        {/* Memo Addition Ends */}
+        
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
