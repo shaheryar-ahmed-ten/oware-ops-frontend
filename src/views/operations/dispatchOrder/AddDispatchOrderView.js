@@ -355,8 +355,8 @@ export default function AddDispatchOrderView() {
           (isNaN(inventory.quantity)
             || !isRequired(inventory.quantity)
             || inventory.quantity > inventory.availableQuantity
-            || inventory['lessThanError']
-            || inventory['greaterThanError']
+            // || inventory['lessThanError']
+            // || inventory['greaterThanError']
           )
         )
           return reject(false)
@@ -719,7 +719,7 @@ export default function AddDispatchOrderView() {
                           {
                             dispatchGroup['lessThanError'] ?
                               <Typography variant="body" color="error">
-                                Requested qty can't be less than dispatched qty.'
+                                Requested qty can't be less than dispatched qty.
                               </Typography>
                               :
                               ''
