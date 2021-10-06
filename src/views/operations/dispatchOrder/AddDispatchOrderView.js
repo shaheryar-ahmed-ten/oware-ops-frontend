@@ -119,7 +119,7 @@ export default function AddDispatchOrderView() {
       setReferenceId(selectedDispatchOrder.referenceId || '');
       getProducts({ customerId: selectedDispatchOrder.Inventory.customerId, warehouseId: selectedDispatchOrder.Inventory.warehouseId })
         .then((products) => {
-          if (products.length > 0 && selectedDispatchOrder.Inventories.length > 0 && inventories.length == 0) {
+          if (selectedDispatchOrder.Inventories.length > 0 && inventories.length == 0) {
             for (let inventory of selectedDispatchOrder.Inventories) {
               setInventories((prevState) => ([
                 ...prevState,
