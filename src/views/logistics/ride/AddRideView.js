@@ -38,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
   pageSubHeading: {
     fontWeight: 300
   },
-  selectBox:{
+  selectBox: {
     height: 55
   },
-  textBox:{
+  textBox: {
     height: 34
     // paddingTop:15
     // "& label": {
@@ -49,16 +49,16 @@ const useStyles = makeStyles((theme) => ({
     // }
     // height: 34
   },
-  labelBox:{
+  labelBox: {
     "& label": {
-      paddingTop:7
+      paddingTop: 7
     }
   },
-  dateBox:{
+  dateBox: {
     height: 35
   },
-  labelPadding:{
-    paddingTop:5
+  labelPadding: {
+    paddingTop: 5
   }
 }));
 function AddRideView() {
@@ -125,7 +125,7 @@ function AddRideView() {
   const [vendorId, setVendorId] = useState('');
   const [selectedVendorName, setSelectedVendorName] = useState('');
   const [carName, setCarName] = useState('')
-  const [carId , setCarId] = useState('');
+  const [carId, setCarId] = useState('');
   const [memo, setMemo] = useState('') // optional comment
 
   const [cancellationReason, setCancellationReason] = useState('');
@@ -148,7 +148,8 @@ function AddRideView() {
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [nullCar, setNullCar] = useState([]);
   const [changeCar, setChangeCar] = useState();
-  const [mounted,setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [vehicleType,setVehicleType] = useState([]);
 
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
@@ -162,9 +163,11 @@ function AddRideView() {
         setProductCategories(res.data.productCategories);
         setCars(res.data.cars);
         setVendors(res.data.vendors);
+        // console.log("Vendors",res.data.vendors)
+        // console.log("Vehicles",res.data.vehicles)
       });
   };
-
+  // console.log(vendors)
   const addProduct = () => {
     setValidation({
       ...validation,
@@ -217,7 +220,7 @@ function AddRideView() {
       setDriverIncentive(selectedRide.driverIncentive || '');
       setMemo(selectedRide.memo || '');
     }
-  }, [selectedRide,vendors]);
+  }, [selectedRide, vendors]);
 
   useEffect(() => {
     setProductName('');
@@ -226,34 +229,64 @@ function AddRideView() {
   }, [products]);
 
 
-  useEffect(()=>{
-    if(vendorId)
-    {
+  useEffect(() => {
+    if (vendorId) {
+      setVehicles([])
       setSelectedVendor(null)
       setCarId('')
       setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
+      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
+      const filterCarArray = removeCarDuplicate(carVehicleTemp);
+      setVehicleType(filterCarArray)
     }
-  },[vendorId])
+  }, [vendorId])
 
-  useEffect(()=> {
-      if(!!selectedRide && !!vendorId && !mounted)
-      {
-        setCarId(selectedRide.Vehicle.Car.id)
-        setMounted(true)
+  useEffect(() => {
+    if (!!selectedRide && !!vendorId && !mounted) {
+      setCarId(selectedRide.Vehicle.Car.id)
+      setMounted(true)
+    }
+  }, [selectedVendor])
+
+  useEffect(() => {
+    if (carId) {
+      const carVehicle = vendors.find(vendor => vendor.id == vendorId).Vehicles.find(vehicle => vehicle.carId == carId);
+      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
+      if (carVehicleTemp && carVehicleTemp?.length > 0) {
+        const filterCarArray = removeCarDuplicate(carVehicleTemp);
+        setVehicleType(filterCarArray);
+        // if(selectedRide) {setVehicleId(carVehicle.id)}
+        // setVehicleId(carVehicle.id)
+        getVehicles(carId,vendorId);
+        console.log("carVehicleTemp", filterCarArray)
       }
-  },[selectedVendor])
-
-  useEffect(()=> {
-    if(carId)
-    {
-      setVehicles(vendors.find(vendor => vendor.id == vendorId).Vehicles)
     }
-  },[carId])
+  }, [carId])
 
+  function getVehicles(carId,companyId){
+    axios.get(getURL('vehicle'), { params: { carId, companyId } })
+            .then(res => {
+                setVehicles(res.data.data)
+            });
+
+  }
+
+  function removeCarDuplicate(carVehicleTemp) {
+    const prevAdded = [];
+    const newArray = [];
+    carVehicleTemp.forEach((item) => {
+      if (!prevAdded.includes(item.carId)) {
+        newArray.push(item);
+        prevAdded.push(item.carId);
+      }
+    });
+
+    return newArray;
+  }
 
   useEffect(() => {
     const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
-    if (vehicle) setDriverId(vehicle.driverId); 
+    if (vehicle) setDriverId(vehicle.driverId);
   }, [vehicleId]);
 
   useEffect(() => {
@@ -399,9 +432,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel className={classes.labelPadding }>Company</InputLabel>
+              <InputLabel className={classes.labelPadding}>Company</InputLabel>
               <Select
-                className={classes.selectBox }
+                className={classes.selectBox}
                 fullWidth={true}
                 id="customerId"
                 label="Company"
@@ -440,7 +473,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={6}>
               <TextField
-                inputProps={{className:classes.textBox}}
+                inputProps={{ className: classes.textBox }}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationReason"
@@ -455,7 +488,7 @@ function AddRideView() {
             </Grid>
             <Grid item sm={6}>
               <TextField
-                inputProps={{className:classes.textBox}}
+                inputProps={{ className: classes.textBox }}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationComment"
@@ -471,7 +504,7 @@ function AddRideView() {
           </Grid>
           : ''}
         {/* Car and Vendor Addition Starts*/}
-        <Grid container item xs={12} spacing={3} style={{ marginBottom: -30}}>
+        <Grid container item xs={12} spacing={3} style={{ marginBottom: -30 }}>
           <Grid item sm={6}>
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
             <Autocomplete
@@ -487,12 +520,13 @@ function AddRideView() {
               onBlur={e => setValidation({ ...validation, vendorId: true })}
             />
             {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          {/* </FormControl> */}
+            {/* </FormControl> */}
           </Grid>
-          <Grid item sm={6}>
-            {/* <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Vehicle Type</InputLabel>
+          <Grid item sm={6} style={{paddingTop:4}}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel className={classes.labelPadding}>Vehicle Type</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="carName"
                 label="Vehicle Type"
@@ -501,24 +535,24 @@ function AddRideView() {
                 onChange={e => setCarId(e.target.value)}
                 onBlur={e => setValidation({ ...validation, carId: true })}
               >
-                 <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
+                <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
                 {
-                  selectedVendor?.Vehicles.map((vehicle,idx)=> {
+                  vehicleType.map((vehicle, idx) => {
                     return <MenuItem key={idx} value={vehicle.Car.id}>{`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
                     </MenuItem>
                   })
-              })
+                })
               </Select>
               {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
-            </FormControl> */}
+            </FormControl>
             {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
-            {console.log(selectedRide)}
-            <Autocomplete
+            {/* <Autocomplete
               id="carId"
-              // key={cars}
+              key={vehicleType}
               // ListboxProps={{ style: { maxHeight: '15' } }}
-              options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
-              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
+              // options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
+              options={vehicleType}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
               getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
               onChange={(event,newValue) => {
                 if (newValue)
@@ -528,11 +562,12 @@ function AddRideView() {
               renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
             onBlur={e => setValidation({ ...validation, carId: true })}
             />
-            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
-          {/* </FormControl> */}
+            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
+            {/* </FormControl> */}
           </Grid>
         </Grid>
         {/* Car and Vendor Addition Ends */}
+        {/* {console.log("Last Vehicle",vehicles)} */}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -548,7 +583,8 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, vehicleId: true })}
               >
                 <MenuItem value="" disabled>Select a vehicle</MenuItem>
-                {selectedVendor?.Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
+                {/* {selectedVendor?.Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)} */}
+                {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
               </Select>
               {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
             </FormControl>
@@ -647,7 +683,7 @@ function AddRideView() {
           <Grid item sm={12}>
             <TextField
               className={classes.labelBox}
-              inputProps={{className:classes.textBox}}
+              inputProps={{ className: classes.textBox }}
               fullWidth={true}
               margin="dense"
               id="pickupAddress"
@@ -729,8 +765,8 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
-             className={classes.labelBox}
-              inputProps={{className:classes.textBox}}
+              className={classes.labelBox}
+              inputProps={{ className: classes.textBox }}
               fullWidth={true}
               margin="dense"
               id="dropoffAddress"
@@ -753,7 +789,7 @@ function AddRideView() {
               id="pickupDate"
               label="Pickup Date & Time"
               placeholder="Pickup Date & Time"
-              inputProps={{ min: new Date().toISOString().slice(0, 16),className:classes.dateBox }}
+              inputProps={{ min: new Date().toISOString().slice(0, 16), className: classes.dateBox }}
               type="datetime-local"
               variant="outlined"
               value={pickupDate}
@@ -774,7 +810,7 @@ function AddRideView() {
               id="dropoffDate"
               label="Dropoff Date & Time"
               // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-              inputProps={{ min: pickupDate, className:classes.dateBox }}
+              inputProps={{ min: pickupDate, className: classes.dateBox }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
@@ -795,7 +831,7 @@ function AddRideView() {
             <TextField
               className={classes.labelBox}
               fullWidth={true}
-              inputProps={{className:classes.textBox}}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="price"
               label="Customer Price (Rs.)"
@@ -813,7 +849,7 @@ function AddRideView() {
             <TextField
               className={classes.labelBox}
               fullWidth={true}
-              inputProps={{className:classes.textBox}}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="cost"
               label="Vendor Cost (Rs.)"
@@ -832,7 +868,7 @@ function AddRideView() {
             <TextField
               className={classes.labelBox}
               fullWidth={true}
-              inputProps={{className:classes.textBox}}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="customerDiscount"
               label="Customer Discount (Rs.)"
@@ -850,7 +886,7 @@ function AddRideView() {
             <TextField
               className={classes.labelBox}
               fullWidth={true}
-              inputProps={{className:classes.textBox}}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="driverIncentive"
               label="Driver Incentive (Rs.)"
@@ -864,6 +900,37 @@ function AddRideView() {
             {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
           </Grid>
         </Grid>
+
+
+
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+        <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+          </Grid>
+          <Grid item sm={12}>
+            <TextField
+              multiline
+              fullWidth={true}
+              // inputProps={{className:classes.textBox}}
+              margin="dense"
+              rows={6}
+              id="memo"
+              label="Memo for driver"
+              type="text"
+              variant="outlined"
+              InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+            // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
+            <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
@@ -892,7 +959,7 @@ function AddRideView() {
               <TextField
                 className={classes.labelBox}
                 fullWidth={true}
-                inputProps={{className:classes.textBox}}
+                inputProps={{ className: classes.textBox }}
                 margin="dense"
                 id="productName"
                 label="Product name"
@@ -913,7 +980,7 @@ function AddRideView() {
               <TextField
                 className={classes.labelBox}
                 fullWidth={true}
-                inputProps={{className:classes.textBox}}
+                inputProps={{ className: classes.textBox }}
                 margin="dense"
                 id="productQuantity"
                 label="Product quantity"
@@ -1020,31 +1087,7 @@ function AddRideView() {
 
           </Grid>
         </Grid>
-        {/* Memo Addition Starts */}
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
-            <TextField
-            multiline
-              fullWidth={true}
-              // inputProps={{className:classes.textBox}}
-              margin="dense"
-              rows={6}
-              id="memo"
-              label="Memo for driver"
-              type="text"
-              variant="outlined"
-              InputProps={{ inputProps: { maxLength: 1000 },className:classes.memoBox }}
-              value={memo}
-              onChange={e => setMemo(e.target.value)}
-              // onBlur={e => setValidation({ ...validation, memo: true })}
-            />
-            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
-            <Typography style={{color: "#1d1d1d" ,fontSize: 12}}>Max Length (1000 characters)</Typography>
-          
-          </Grid>
-        </Grid>
-
-        {/* Memo Addition Ends */}
+        
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
