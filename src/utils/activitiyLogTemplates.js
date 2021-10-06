@@ -1,113 +1,93 @@
 import { TreeItem, TreeView } from "@material-ui/lab";
 import { dividerTimeFormat } from "./common";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 // constants
-export const stockadjustment = 'stockadjustment'
-export const car = 'car'
+export const stockadjustment = "stockadjustment";
+export const car = "car";
 // util functions
-const restrictedKeys = ["updatedAt", "createdAt", "deletedAt", "id", "Id", "userId", "cnicId", "photoId", "companyId", "logoId", "contactId", "categoryId", "brandId", "uomId"]
+const restrictedKeys = [
+  "updatedAt",
+  "createdAt",
+  "deletedAt",
+  "id",
+  "Id",
+  "userId",
+  "cnicId",
+  "photoId",
+  "companyId",
+  "logoId",
+  "contactId",
+  "categoryId",
+  "brandId",
+  "uomId",
+];
 export const replaceKeyWords = (currentKeyWord, customKeyWord) => {
-    return
-}
+  return;
+};
 
 // flat template
 export const addFlatTemplate = (activityLog) => [
-    <span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-            }
-        </span>
-        <span>
-            added
-        </span>
-        <span>
-            {
-                ` ${activityLog.ActivitySourceType.name || ''}`
-            }
-        </span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || activityLog.currentPayload.username || ''} `
-            }
-        </span>
-        <span>
-            at
-        </span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                ` ${dividerTimeFormat(activityLog.updatedAt)}`
-            }
-        </span>
+  <span>
+    <span style={{ fontWeight: 600 }}>{`${activityLog.User.firstName || ""} ${activityLog.User.lastName || ""} `}</span>
+    <span>added</span>
+    <span>{` ${activityLog.ActivitySourceType.name || ""}`}</span>
+    <span style={{ fontWeight: 600 }}>
+      {` ${
+        activityLog.currentPayload.name ||
+        activityLog.currentPayload.internalIdForBusiness ||
+        activityLog.currentPayload.registrationNumber ||
+        activityLog.currentPayload.username ||
+        ""
+      } `}
     </span>
-]
+    <span>at</span>
+    <span style={{ fontWeight: 600 }}>{` ${dividerTimeFormat(activityLog.updatedAt)}`}</span>
+  </span>,
+];
 
 export const deleteFlatTemplate = (activityLog) => [
-    <span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-            }
-        </span>
-        <span>
-            deleted
-        </span>
-        <span>
-            {
-                ` ${activityLog.ActivitySourceType.name || ''}`
-            }
-        </span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                ` ${activityLog.previousPayload.name || activityLog.previousPayload.internalIdForBusiness || activityLog.previousPayload.registrationNumber || activityLog.previousPayload.username || ''} `
-            }
-        </span>
-        <span>
-            at
-        </span>
-        <span style={{ fontWeight: 600 }}>
-            {
-                ` ${dividerTimeFormat(activityLog.updatedAt)}`
-            }
-        </span>
+  <span>
+    <span style={{ fontWeight: 600 }}>{`${activityLog.User.firstName || ""} ${activityLog.User.lastName || ""} `}</span>
+    <span>deleted</span>
+    <span>{` ${activityLog.ActivitySourceType.name || ""}`}</span>
+    <span style={{ fontWeight: 600 }}>
+      {` ${
+        activityLog.previousPayload.name ||
+        activityLog.previousPayload.internalIdForBusiness ||
+        activityLog.previousPayload.registrationNumber ||
+        activityLog.previousPayload.username ||
+        ""
+      } `}
     </span>
-]
+    <span>at</span>
+    <span style={{ fontWeight: 600 }}>{` ${dividerTimeFormat(activityLog.updatedAt)}`}</span>
+  </span>,
+];
 
-export const editFlatTemplate = (activityLog) => [<p>
-    <span style={{ fontWeight: 600 }}>
-        {
-            `${activityLog.User.firstName || ''} ${activityLog.User.lastName || ''} `
-        }
-    </span>
+export const editFlatTemplate = (activityLog) => [
+  <p>
+    <span style={{ fontWeight: 600 }}>{`${activityLog.User.firstName || ""} ${activityLog.User.lastName || ""} `}</span>
+    <span>edited</span>
     <span>
-        edited
-    </span>
-    <span>
-        {
-            ` ${activityLog.ActivitySourceType &&
-                activityLog.ActivitySourceType.name.toLowerCase() === car ?
-                'Vehicle Type'
-                :
-                activityLog.ActivitySourceType.name || ''
-
-            }`
-        }
+      {` ${
+        activityLog.ActivitySourceType && activityLog.ActivitySourceType.name.toLowerCase() === car
+          ? "Vehicle Type"
+          : activityLog.ActivitySourceType.name || ""
+      }`}
     </span>
     <span style={{ fontWeight: 600 }}>
-        {
-            ` ${activityLog.currentPayload.name || activityLog.currentPayload.internalIdForBusiness || activityLog.currentPayload.registrationNumber || activityLog.currentPayload.username || ''} `
-        }
+      {` ${
+        activityLog.currentPayload.name ||
+        activityLog.currentPayload.internalIdForBusiness ||
+        activityLog.currentPayload.registrationNumber ||
+        activityLog.currentPayload.username ||
+        ""
+      } `}
     </span>
-    <span>
-        at
-    </span>
-    <span style={{ fontWeight: 600 }}>
-        {
-            ` ${dividerTimeFormat(activityLog.updatedAt)}`
-        }
-    </span>
+    <span>at</span>
+    <span style={{ fontWeight: 600 }}>{` ${dividerTimeFormat(activityLog.updatedAt)}`}</span>
     {/* Line break */}
     {/* {
         <TreeView
@@ -136,4 +116,24 @@ export const editFlatTemplate = (activityLog) => [<p>
             </TreeItem>
         </TreeView>
     } */}
-</p>]
+  </p>,
+];
+
+export const cancelFlatTemplate = (activityLog) => [
+  <span>
+    <span style={{ fontWeight: 600 }}>{`${activityLog.User.firstName || ""} ${activityLog.User.lastName || ""} `}</span>
+    <span>cancelled</span>
+    <span>{` ${activityLog.ActivitySourceType.name || ""}`}</span>
+    <span style={{ fontWeight: 600 }}>
+      {` ${
+        activityLog.previousPayload.name ||
+        activityLog.previousPayload.internalIdForBusiness ||
+        activityLog.previousPayload.registrationNumber ||
+        activityLog.previousPayload.username ||
+        ""
+      } `}
+    </span>
+    <span>at</span>
+    <span style={{ fontWeight: 600 }}>{` ${dividerTimeFormat(activityLog.updatedAt)}`}</span>
+  </span>,
+];

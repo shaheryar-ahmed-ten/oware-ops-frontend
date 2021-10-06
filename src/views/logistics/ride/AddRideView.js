@@ -23,7 +23,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router';
 import { upload } from '../../../utils/upload';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import axios from 'axios';
-import { Alert } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import { isNumber } from '@material-ui/data-grid';
 import moment from "moment";
 
@@ -37,6 +37,28 @@ const useStyles = makeStyles((theme) => ({
   },
   pageSubHeading: {
     fontWeight: 300
+  },
+  selectBox: {
+    height: 55
+  },
+  textBox: {
+    height: 34
+    // paddingTop:15
+    // "& label": {
+    //   paddingTop:5,
+    // }
+    // height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  },
+  dateBox: {
+    height: 35
+  },
+  labelPadding: {
+    paddingTop: 5
   }
 }));
 function AddRideView() {
@@ -53,6 +75,8 @@ function AddRideView() {
   const [formErrors, setFormErrors] = useState([]);
   const [cities, setCities] = useState([]);
   const [manifestImage, setManifestImage] = useState(null)
+  const [vendors, setVendors] = useState([]);
+  const [cars, setCars] = useState([])
 
   useEffect(() => {
     getRelations();
@@ -98,6 +122,11 @@ function AddRideView() {
   const [dropoffCityZoneId, setDropoffCityZoneId] = useState('');
   const [dropoffAreaId, setDropoffAreaId] = useState('');
   const [products, setProducts] = useState([]);
+  const [vendorId, setVendorId] = useState('');
+  const [selectedVendorName, setSelectedVendorName] = useState('');
+  const [carName, setCarName] = useState('')
+  const [carId, setCarId] = useState('');
+  const [memo, setMemo] = useState('') // optional comment
 
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancellationComment, setCancellationComment] = useState('');
@@ -116,6 +145,12 @@ function AddRideView() {
 
   const [isActive, setActive] = useState(true);
 
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [nullCar, setNullCar] = useState([]);
+  const [changeCar, setChangeCar] = useState();
+  const [mounted, setMounted] = useState(false)
+  const [vehicleType,setVehicleType] = useState([]);
+
   const getRelations = () => {
     axios.get(getURL('ride/relations'))
       .then(res => {
@@ -126,9 +161,13 @@ function AddRideView() {
         setCities(res.data.cities);
         setCompanies(res.data.companies);
         setProductCategories(res.data.productCategories);
+        setCars(res.data.cars);
+        setVendors(res.data.vendors);
+        // console.log("Vendors",res.data.vendors)
+        // console.log("Vehicles",res.data.vehicles)
       });
   };
-
+  // console.log(vendors)
   const addProduct = () => {
     setValidation({
       ...validation,
@@ -155,7 +194,8 @@ function AddRideView() {
 
 
   useEffect(() => {
-    if (!!selectedRide) {
+    if (!!selectedRide && vendors.length > 0) {
+      setVendorId(selectedRide.Vehicle.Vendor.id || '');
       setStatus(selectedRide.status || '');
       setVehicleId(selectedRide.Vehicle.id || '');
       setDriverId(selectedRide.Driver.id || '');
@@ -178,15 +218,71 @@ function AddRideView() {
       setCost(selectedRide.cost || '');
       setCustomerDiscount(selectedRide.customerDiscount || '');
       setDriverIncentive(selectedRide.driverIncentive || '');
-
+      setMemo(selectedRide.memo || '');
     }
-  }, [selectedRide]);
+  }, [selectedRide, vendors]);
 
   useEffect(() => {
     setProductName('');
     setProductQuantity('');
     setProductCategoryId(null);
   }, [products]);
+
+
+  useEffect(() => {
+    if (vendorId) {
+      setVehicles([])
+      setSelectedVendor(null)
+      setCarId('')
+      setSelectedVendor(vendors.find(vendor => vendor.id == vendorId))
+      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
+      const filterCarArray = removeCarDuplicate(carVehicleTemp);
+      setVehicleType(filterCarArray)
+    }
+  }, [vendorId])
+
+  useEffect(() => {
+    if (!!selectedRide && !!vendorId && !mounted) {
+      setCarId(selectedRide.Vehicle.Car.id)
+      setMounted(true)
+    }
+  }, [selectedVendor])
+
+  useEffect(() => {
+    if (carId) {
+      const carVehicle = vendors.find(vendor => vendor.id == vendorId).Vehicles.find(vehicle => vehicle.carId == carId);
+      const carVehicleTemp = vendors.find(vendor => vendor.id == vendorId).Vehicles;
+      if (carVehicleTemp && carVehicleTemp?.length > 0) {
+        const filterCarArray = removeCarDuplicate(carVehicleTemp);
+        setVehicleType(filterCarArray);
+        // if(selectedRide) {setVehicleId(carVehicle.id)}
+        // setVehicleId(carVehicle.id)
+        getVehicles(carId,vendorId);
+        console.log("carVehicleTemp", filterCarArray)
+      }
+    }
+  }, [carId])
+
+  function getVehicles(carId,companyId){
+    axios.get(getURL('vehicle'), { params: { carId, companyId } })
+            .then(res => {
+                setVehicles(res.data.data)
+            });
+
+  }
+
+  function removeCarDuplicate(carVehicleTemp) {
+    const prevAdded = [];
+    const newArray = [];
+    carVehicleTemp.forEach((item) => {
+      if (!prevAdded.includes(item.carId)) {
+        newArray.push(item);
+        prevAdded.push(item.carId);
+      }
+    });
+
+    return newArray;
+  }
 
   useEffect(() => {
     const vehicle = vehicles.find(vehicle => vehicle.id == vehicleId);
@@ -246,6 +342,9 @@ function AddRideView() {
       products,
       pickupDate: new Date(pickupDate),
       dropoffDate: new Date(dropoffDate),
+      memo,
+      // carId,
+      // vendorId,
       isActive
     };
 
@@ -267,6 +366,8 @@ function AddRideView() {
       products: true,
       pickupDate: true,
       dropoffDate: true,
+      // carId: true,
+      // vendorId: true,
       isActive: true
     });
 
@@ -284,6 +385,8 @@ function AddRideView() {
       isRequired(customerDiscount) &&
       isRequired(driverIncentive) &&
       isNotEmptyArray(products) &&
+      isRequired(carId) &&
+      isRequired(vendorId) &&
       isRequired(pickupDate) &&
       isRequired(dropoffDate)) {
       if (manifestImage) {
@@ -293,6 +396,12 @@ function AddRideView() {
       addRide(newRide);
     }
   }
+  const handleCustomerSearch = (vendorId, vendorName) => {
+    setVendorId(vendorId);
+    setSelectedVendorName(vendorName)
+  }
+  // const Nullcar = ['No Options'];
+
 
   return (
     <>
@@ -323,8 +432,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Company</InputLabel>
+              <InputLabel className={classes.labelPadding}>Company</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="customerId"
                 label="Company"
@@ -341,8 +451,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Status</InputLabel>
+              <InputLabel className={classes.labelPadding}>Status</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="status"
                 label="Status"
@@ -362,6 +473,7 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={6}>
               <TextField
+                inputProps={{ className: classes.textBox }}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationReason"
@@ -376,6 +488,7 @@ function AddRideView() {
             </Grid>
             <Grid item sm={6}>
               <TextField
+                inputProps={{ className: classes.textBox }}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationComment"
@@ -390,11 +503,77 @@ function AddRideView() {
             </Grid>
           </Grid>
           : ''}
+        {/* Car and Vendor Addition Starts*/}
+        <Grid container item xs={12} spacing={3} style={{ marginBottom: -30 }}>
+          <Grid item sm={6}>
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
+            <Autocomplete
+              id="vendorId"
+              options={vendors}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Vendor.name, id: vendorId } : ''}
+              getOptionLabel={(vendor) => vendor.name || ""}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  handleCustomerSearch(newValue.id, (newValue.name || ''))
+              }}
+              renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
+              onBlur={e => setValidation({ ...validation, vendorId: true })}
+            />
+            {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+            {/* </FormControl> */}
+          </Grid>
+          <Grid item sm={6} style={{paddingTop:4}}>
+            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <InputLabel className={classes.labelPadding}>Vehicle Type</InputLabel>
+              <Select
+                className={classes.selectBox}
+                fullWidth={true}
+                id="carName"
+                label="Vehicle Type"
+                variant="outlined"
+                value={carId}
+                onChange={e => setCarId(e.target.value)}
+                onBlur={e => setValidation({ ...validation, carId: true })}
+              >
+                <MenuItem value="" disabled>Select a Vehicle Type</MenuItem>
+                {
+                  vehicleType.map((vehicle, idx) => {
+                    return <MenuItem key={idx} value={vehicle.Car.id}>{`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
+                    </MenuItem>
+                  })
+                })
+              </Select>
+              {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : ''}
+            </FormControl>
+            {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
+            {/* <Autocomplete
+              id="carId"
+              key={vehicleType}
+              // ListboxProps={{ style: { maxHeight: '15' } }}
+              // options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
+              options={vehicleType}
+              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
+              getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
+              onChange={(event,newValue) => {
+                if (newValue)
+                  setCarId(newValue.id)
+              }
+            }
+              renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
+            onBlur={e => setValidation({ ...validation, carId: true })}
+            />
+            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
+            {/* </FormControl> */}
+          </Grid>
+        </Grid>
+        {/* Car and Vendor Addition Ends */}
+        {/* {console.log("Last Vehicle",vehicles)} */}
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Vehicle</InputLabel>
+              <InputLabel className={classes.labelPadding}>Vehicle</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="vehicleId"
                 label="Vehicle"
@@ -404,6 +583,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, vehicleId: true })}
               >
                 <MenuItem value="" disabled>Select a vehicle</MenuItem>
+                {/* {selectedVendor?.Vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)} */}
                 {vehicles.map(vehicle => <MenuItem key={vehicle.id} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
               </Select>
               {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle is required!</Typography> : ''}
@@ -411,8 +591,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Driver</InputLabel>
+              <InputLabel className={classes.labelPadding}>Driver</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="driverId"
                 label="Driver"
@@ -422,7 +603,7 @@ function AddRideView() {
                 onBlur={e => setValidation({ ...validation, driverId: true })}
               >
                 <MenuItem value="" disabled>Select a Driver</MenuItem>
-                {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
+                {selectedVendor?.Drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
               </Select>
               {validation.driverId && status == 'ASSIGNED' && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
             </FormControl>
@@ -436,8 +617,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup City</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup City</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Area"
@@ -456,8 +638,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup Zone</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup Zone</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Zone"
@@ -476,8 +659,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Pickup Area</InputLabel>
+              <InputLabel className={classes.labelPadding}>Pickup Area</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="pickupAreaId"
                 label="Pickup Area"
@@ -498,6 +682,8 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+              className={classes.labelBox}
+              inputProps={{ className: classes.textBox }}
               fullWidth={true}
               margin="dense"
               id="pickupAddress"
@@ -514,8 +700,9 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff City</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff City</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffCityId"
                 label="Drop-off City"
@@ -534,8 +721,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff Zone</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff Zone</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffAreaId"
                 label="Drop-off Area"
@@ -554,8 +742,9 @@ function AddRideView() {
           </Grid>
           <Grid item sm={4}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel>Dropoff Area</InputLabel>
+              <InputLabel className={classes.labelPadding}>Dropoff Area</InputLabel>
               <Select
+                className={classes.selectBox}
                 fullWidth={true}
                 id="dropoffAreaId"
                 label="Drop-off Area"
@@ -576,6 +765,8 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={12}>
             <TextField
+              className={classes.labelBox}
+              inputProps={{ className: classes.textBox }}
               fullWidth={true}
               margin="dense"
               id="dropoffAddress"
@@ -592,12 +783,13 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              // className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="pickupDate"
               label="Pickup Date & Time"
               placeholder="Pickup Date & Time"
-              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+              inputProps={{ min: new Date().toISOString().slice(0, 16), className: classes.dateBox }}
               type="datetime-local"
               variant="outlined"
               value={pickupDate}
@@ -612,12 +804,13 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
+              // className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
               // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-              inputProps={{ min: pickupDate }}
+              inputProps={{ min: pickupDate, className: classes.dateBox }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
               variant="outlined"
@@ -636,47 +829,53 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="price"
-              label="Price (Rs.)"
-              placeholder="Price (Rs.)"
+              label="Customer Price (Rs.)"
+              placeholder="Customer Price (Rs.)"
               type="number"
               variant="outlined"
-              value={price}
+              value={!!price && price}
               minuteStep={15}
               onChange={e => setPrice(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, price: true })}
             />
-            {validation.price && !isRequired(price) ? <Typography color="error">Price is required!</Typography> : ''}
+            {validation.price && !isRequired(price) ? <Typography color="error">Customer Price is required!</Typography> : ''}
           </Grid>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="cost"
-              label="Cost (Rs.)"
-              placeholder="Cost (Rs.)"
+              label="Vendor Cost (Rs.)"
+              placeholder="Vendor Cost (Rs.)"
               type="number"
               variant="outlined"
-              value={cost}
+              value={!!cost && cost}
               onChange={e => setCost(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, cost: true })}
             />
-            {validation.cost && !isRequired(cost) ? <Typography color="error">Cost is required!</Typography> : ''}
+            {validation.cost && !isRequired(cost) ? <Typography color="error">Vendor Cost is required!</Typography> : ''}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="customerDiscount"
               label="Customer Discount (Rs.)"
               placeholder="Customer Discount (Rs.)"
               type="number"
               variant="outlined"
-              value={customerDiscount}
+              value={!!customerDiscount && customerDiscount}
               minuteStep={15}
               onChange={e => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, customerDiscount: true })}
@@ -685,20 +884,53 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
+              className={classes.labelBox}
               fullWidth={true}
+              inputProps={{ className: classes.textBox }}
               margin="dense"
               id="driverIncentive"
               label="Driver Incentive (Rs.)"
               placeholder="Driver Incentive (Rs.)"
               type="number"
               variant="outlined"
-              value={driverIncentive}
+              value={!!driverIncentive && driverIncentive}
               onChange={e => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={e => setValidation({ ...validation, driverIncentive: true })}
             />
             {validation.driverIncentive && !isRequired(driverIncentive) ? <Typography color="error">Driver Incentive is required!</Typography> : ''}
           </Grid>
         </Grid>
+
+
+
+        {/* Memo Addition Starts */}
+        <Grid container item xs={12} spacing={3}>
+        <Grid item xs={12}>
+            <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+          </Grid>
+          <Grid item sm={12}>
+            <TextField
+              multiline
+              fullWidth={true}
+              // inputProps={{className:classes.textBox}}
+              margin="dense"
+              rows={6}
+              id="memo"
+              label="Memo for driver"
+              type="text"
+              variant="outlined"
+              InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
+              value={memo}
+              onChange={e => setMemo(e.target.value)}
+            // onBlur={e => setValidation({ ...validation, memo: true })}
+            />
+            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
+            <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+
+          </Grid>
+        </Grid>
+
+        {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>Product Details</Typography>
@@ -706,8 +938,9 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <InputLabel>Product Category</InputLabel>
+                <InputLabel className={classes.labelPadding}>Product Category</InputLabel>
                 <Select
+                  className={classes.selectBox}
                   fullWidth={true}
                   id="productCategoryId"
                   label="Product Category"
@@ -724,7 +957,9 @@ function AddRideView() {
             </Grid>
             <Grid item xs={3}>
               <TextField
+                className={classes.labelBox}
                 fullWidth={true}
+                inputProps={{ className: classes.textBox }}
                 margin="dense"
                 id="productName"
                 label="Product name"
@@ -743,7 +978,9 @@ function AddRideView() {
             </Grid>
             <Grid item xs={3}>
               <TextField
+                className={classes.labelBox}
                 fullWidth={true}
+                inputProps={{ className: classes.textBox }}
                 margin="dense"
                 id="productQuantity"
                 label="Product quantity"
@@ -850,6 +1087,7 @@ function AddRideView() {
 
           </Grid>
         </Grid>
+        
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">

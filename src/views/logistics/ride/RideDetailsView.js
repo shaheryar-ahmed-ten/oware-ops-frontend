@@ -104,12 +104,17 @@ function RideDetailsView() {
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Customer.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Status :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.status || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vendor :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.Vendor.name || '-'}</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle Type :</Grid>
+                            <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Vehicle :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Vehicle.registrationNumber || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={3}>Driver :</Grid>
                             <Grid item xs={3} style={{ fontStyle: 'italic' }}>{selectedRide.Driver.name || '-'}</Grid>
                         </Grid>
                     </Grid>
+                    
 
                     <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
                         <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
@@ -144,14 +149,24 @@ function RideDetailsView() {
                             <Typography variant="h5" className={classes.pageSubHeading}>COST & PRICE</Typography>
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Price (Rs.) :</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Price (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.price || '-'}</Grid>
-                            <Grid style={{ fontWeight: 500 }} item xs={4}>Cost (Rs.) :</Grid>
+                            <Grid style={{ fontWeight: 500 }} item xs={4}>Vendor Cost (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.cost || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={4}>Customer Discount (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.customerDiscount || '-'}</Grid>
                             <Grid style={{ fontWeight: 500 }} item xs={4}>Driver Incentive (Rs.) :</Grid>
                             <Grid item xs={2} style={{ fontStyle: 'italic', transform: 'translateX(-50px)' }}>{selectedRide.driverIncentive || '-'}</Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
+                    <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Typography variant="h5" className={classes.pageSubHeading}>OTHER DETAILS</Typography>
+                        </Grid>
+                        <Grid container spacing={2}>
+                                <Grid style={{ fontWeight: 500 }} item xs={3}>Memo :</Grid>
+                                <Grid item xs={9} style={{ fontStyle: 'italic',paddingTop: 23 }}>{selectedRide.memo|| '-'}</Grid>
                         </Grid>
                     </Grid>
 
@@ -199,6 +214,7 @@ function RideDetailsView() {
                             </Table>
                         </TableContainer>
                     </Grid>
+                    
 
                 </Box>
             </Box>
@@ -235,6 +251,12 @@ function RideDetailsView() {
                                     STATUS
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
+                                    VENDOR
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
+                                    VEHICLE TYPE
+                                </TableCell>
+                                <TableCell className={classes.tableHeadText}>
                                     VEHICLE
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
@@ -249,6 +271,12 @@ function RideDetailsView() {
                                 </TableCell>
                                 <TableCell>
                                     {selectedRide.status || ''}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedRide.Driver.Vendor.name || ''}
+                                </TableCell>
+                                <TableCell>
+                                    {selectedRide.Vehicle.Car.CarMake.name +" "+selectedRide.Vehicle.Car.CarModel.name || ''}
                                 </TableCell>
                                 <TableCell>
                                     {selectedRide.Vehicle.registrationNumber || ''}
@@ -349,10 +377,10 @@ function RideDetailsView() {
                         <TableHead>
                             <TableRow>
                                 <TableCell className={classes.tableHeadText}>
-                                    PRICE (Rs.)
+                                    CUSTOMER PRICE (Rs.)
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
-                                    COST (Rs.)
+                                    VENDOR COST (Rs.)
                                 </TableCell>
                                 <TableCell className={classes.tableHeadText}>
                                     CUSTOMER DISCOUNT (Rs.)
@@ -378,6 +406,31 @@ function RideDetailsView() {
                                 </TableCell>
                             </TableRow>
                         </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <Grid container item xs={12} spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" className={classes.pageSubHeading}>Other Details</Typography>
+                    </Grid>
+                </Grid>
+                <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
+                    <Table stickyHeader aria-label="sticky table">
+                        <TableHead >
+                            <TableRow >
+                                <TableCell className={classes.tableHeadText}>
+                                    MEMO
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody >
+                            <TableRow className={classes.tableRow} className={classes.tableRow}>
+                                <TableCell>
+                                {selectedRide.memo}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+
                     </Table>
                 </TableContainer>
 
@@ -440,6 +493,7 @@ function RideDetailsView() {
                             : ''}
                     </Grid>
                 </Grid>
+
 
 
             </Grid>

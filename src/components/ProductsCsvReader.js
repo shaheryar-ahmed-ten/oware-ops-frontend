@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, FormControl } from '@material-ui/core'
 import * as XLSX from 'xlsx';
 
-function ProductsCsvReader({ bulkUpload }) {
+function ProductsCsvReader({ bulkUpload, selectedFile, setSelectedFile }) {
 
 
     const [columns, setColumns] = useState([]);
     const [data, setData] = useState([]);
+
+
+    useEffect(() => {
+        if (selectedFile)
+            handleFileUpload(selectedFile)
+    }, [selectedFile])
 
     // process CSV data
     const processData = dataString => {
@@ -73,19 +79,24 @@ function ProductsCsvReader({ bulkUpload }) {
 
 
     return (
-        <FormControl margin="dense" fullWidth={true} variant="outlined" style={{ width: 150, transform: 'translateY(-7px)' }}>
+        <FormControl fullWidth={true} variant="outlined">
             <Button
                 key={12}
                 variant="contained"
                 color="primary"
                 component="label"
-                size="small"
-                style={{ marginLeft: 5 }}
-            >Bulk Upload
+                style={{ marginRight: 5 }}
+            >Upload
                 <input
                     type="file"
                     hidden
-                    onChange={(e) => handleFileUpload(e)}
+                    onClick={(e) => {
+                        setSelectedFile(null)
+                        e.target.value = null
+                    }}
+                    onChange={(e) => {
+                        setSelectedFile(e)
+                    }}
                     accept=".csv,.xlsx,.xls"
                 />
             </Button>
