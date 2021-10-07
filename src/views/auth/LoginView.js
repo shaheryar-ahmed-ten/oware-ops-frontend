@@ -42,17 +42,14 @@ export default function LoginView({ }) {
   }
 
   useEffect(() => {
-    console.log("currentUser at useEffect", currentUser)
     if (currentUser) {
       navigate('/administration')
     }
   }, [currentUser])
 
   useEffect(async () => {
-    console.log("getUserToken at useEffect", getUserToken())
     if (getUserToken()) {
       const resTwo = await axios.get(getURL('user/me'))
-      console.log("resTwo", resTwo)
       if (resTwo) {
         setUser(resTwo.data.data);
         setCurrentUser(resTwo.data.data);
@@ -68,15 +65,14 @@ export default function LoginView({ }) {
         username,
         password
       })
-      console.log("resOne", resOne)
       if (resOne) {
-        console.log("1")
         setToken(resOne.data.token);
       }
-    } catch (error) {
-      console.log("error", error)
-      console.log("errorRespone", error.response)
-      console.log("errorStatus", error.status)
+    } catch (err) {
+      console.log("error", err)
+      let errorMsg;
+      errorMsg = err.response.data.message;
+      setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
     }
 
 

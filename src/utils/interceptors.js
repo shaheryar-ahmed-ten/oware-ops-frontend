@@ -4,7 +4,6 @@ const storedToken = getUserToken();
 
 export const setRequestInterceptor = (callback) => {
   return axios.interceptors.request.use(request => {
-    console.log("At interceptor", getUserToken())
     const token = getUserToken();
     if (token) {
       request.headers['authorization'] = `Bearer ${token}`;
