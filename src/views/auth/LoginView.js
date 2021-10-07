@@ -48,9 +48,14 @@ export default function LoginView({ }) {
       username,
       password
     })
-      .then(res => setToken(res.data.token))
-      .then(() => axios.get(getURL('user/me')))
       .then(res => {
+        console.log("than 1", res)
+        setToken(res.data.token)})
+      .then(() => {
+        axios.get(getURL('user/me'))
+      })
+      .then(res => {
+        console.log('than 3', res)
         setUser(res.data.data);
         return setCurrentUser(res.data.data);
       })
@@ -58,6 +63,9 @@ export default function LoginView({ }) {
         navigate('/administration')
       })
       .catch(err => {
+        console.log('err',err)
+        console.log('err.response',err.response)
+        console.log('err.status',err.status)
         let errorMsg;
         errorMsg = err.response.data.message;
         // if (err.status === 401 || err.status === 400) {
