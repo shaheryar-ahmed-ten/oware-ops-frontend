@@ -7,10 +7,10 @@ import {
   Box
 } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { getURL, SharedContext } from '../../utils/common';
-import { setUser, setUserToken } from '../../utils/auth';
+import { getUserToken, setUser, setUserToken } from '../../utils/auth';
 import Logo from '../../components/Logo';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ export default function LoginView({ }) {
   const [formErrors, setFormErrors] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { setAuthToken, setCurrentUser } = useContext(SharedContext);
+  const { setAuthToken, setCurrentUser, currentUser } = useContext(SharedContext);
   const navigate = useNavigate();
   const classes = useStyles();
 
@@ -41,32 +41,93 @@ export default function LoginView({ }) {
     return setAuthToken(token);
   }
 
-  const handleSubmit = e => {
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/administration')
+    }
+  }, [currentUser])
+
+  useEffect(async () => {
+    if (getUserToken()) {
+      const resTwo = await axios.get(getURL('user/me'))
+      if (resTwo) {
+        setUser(resTwo.data.data);
+        setCurrentUser(resTwo.data.data);
+      }
+    }
+  }, [getUserToken()])
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors(null);
-    axios.post(getURL('user/auth/login'), {
-      username,
-      password
-    })
-      .then(res => setToken(res.data.token))
-      .then(() => axios.get(getURL('user/me')))
-      .then(res => {
-        setUser(res.data.data);
-        return setCurrentUser(res.data.data);
+    try {
+      const resOne = await axios.post(getURL('user/auth/login'), {
+        username,
+        password
       })
-      .then(() => {
-        navigate('/administration')
-      })
-      .catch(err => {
-        let errorMsg;
-        errorMsg = err.response.data.message;
-        // if (err.status === 401 || err.status === 400) {
-        // }
-        // else {
-        //   errorMsg = "Something went wrong!";
-        // }
-        setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
-      })
+      if (resOne) {
+        setToken(resOne.data.token);
+      }
+    } catch (err) {
+      console.log("error", err)
+      let errorMsg;
+      errorMsg = err.response.data.message;
+      setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
+    }
+
+
+
+    // axios.post(getURL('user/auth/login'), {
+    //   username,
+    //   password
+    // })
+    //   .then((response) => {
+    //     console.log('1', response)
+    //     if (response.data) {
+    //       setToken(res.data.token);
+    //       if(res.data.token){
+
+    //         axios.get(getURL('user/me'))
+    //         .then((res) => {
+    //           console.log('than 3', res)
+    //           setUser(res.data.data);
+    //           setCurrentUser(res.data.data);
+    //         })
+    //         .then(() => {
+    //           if (currentUser && user) {
+    //             navigate('/administration')
+    //           }
+    //         })
+    //       }
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log('err', err)
+    //     console.log('err.response', err.response)
+    //     console.log('err.status', err.status)
+    //     let errorMsg;
+    //     errorMsg = err.response.data.message;
+    //     // if (err.status === 401 || err.status === 400) {
+    //     // }
+    //     // else {
+    //     //   errorMsg = "Something went wrong!";
+    //     // }
+    //     setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{errorMsg}</Alert>);
+    //   })
+    // .then(res => {
+    //   console.log("than 1", res)
+    //   setToken(res.data.token)})
+    // .then(() => {
+    //   axios.get(getURL('user/me'))
+    // })
+    // .then(res => {
+    //   console.log('than 3', res)
+    //   setUser(res.data.data);
+    //   return setCurrentUser(res.data.data);
+    // })
+    // .then(() => {
+    //   navigate('/administration')
+    // })
   }
   return (
     <form onSubmit={handleSubmit}>
