@@ -10,7 +10,7 @@ import { Alert } from '@material-ui/lab'
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { getURL, SharedContext } from '../../utils/common';
-import { setUser, setUserToken } from '../../utils/auth';
+import { getUserToken, setUser, setUserToken } from '../../utils/auth';
 import Logo from '../../components/Logo';
 import { useNavigate } from 'react-router-dom';
 
@@ -48,6 +48,18 @@ export default function LoginView({ }) {
     }
   }, [currentUser])
 
+  useEffect(async () => {
+    console.log("getUserToken at useEffect", getUserToken())
+    if (getUserToken()) {
+      const resTwo = await axios.get(getURL('user/me'))
+      console.log("resTwo", resTwo)
+      if (resTwo) {
+        setUser(resTwo.data.data);
+        setCurrentUser(resTwo.data.data);
+      }
+    }
+  }, [getUserToken()])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors(null);
@@ -58,13 +70,8 @@ export default function LoginView({ }) {
       })
       console.log("resOne", resOne)
       if (resOne) {
+        console.log("1")
         setToken(resOne.data.token);
-        const resTwo = await axios.get(getURL('user/me'))
-        console.log("resTwo", resTwo)
-        if (resTwo) {
-          setUser(resTwo.data.data);
-          setCurrentUser(resTwo.data.data);
-        }
       }
     } catch (error) {
       console.log("error", error)
