@@ -134,7 +134,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       const _loadedImageUrl = event.target.result;
       const image = document.createElement('img');
       image.src = _loadedImageUrl;
-      // image.addEventListener('load', () => {
+      image.addEventListener('load', () => {
         const { width, height } = image;
         if (image && width > 142 && height > 37) {
           setLogoDimension(true);
@@ -148,7 +148,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           // console.log(logoFile)
           setLogoImage(logoFile)
         }
-      // })
+      });
     })
   }
 
