@@ -148,7 +148,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           // console.log(logoFile)
           setLogoImage(logoFile)
         }
-      // })
+      // });
     })
   }
 
