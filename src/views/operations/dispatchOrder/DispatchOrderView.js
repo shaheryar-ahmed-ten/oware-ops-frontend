@@ -243,12 +243,18 @@ export default function DispatchOrderView() {
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null);
   const [formErrors, setFormErrors] = useState("");
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
+
   const [showMessage, setShowMessage] = useState(null);
+  const [messageType, setMessageType] = useState('green');
+
 
   const cancelDispatchOrder = (dispatchOrderId) => {
     axios
       .patch(getURL(`dispatch-order/cancel/${dispatchOrderId}`))
-      .then(async (response) => {
+      .then((response) => {
+        setShowMessage({
+          message: "The dispatch order has been deleted successfully."
+        })
         getDispatchOrders(page, searchKeyword);
       })
       .catch((error) => {
@@ -403,7 +409,7 @@ export default function DispatchOrderView() {
           />
         </Grid>
       </Grid>
-      <MessageSnackbar showMessage={showMessage} />
+      <MessageSnackbar showMessage={showMessage} type={messageType} />
     </Paper>
   );
 }
