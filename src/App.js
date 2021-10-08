@@ -27,6 +27,7 @@ const App = () => {
       setIsLoading(false);
       if (error.response && error.response.status == 401) {
         if (location.pathname.split('/').pop() != 'login') {
+          setCurrentUser(null);
           removeAuth();
           navigate('/login');
         }

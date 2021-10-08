@@ -42,6 +42,7 @@ export default function LoginView({ }) {
   }
 
   useEffect(() => {
+    console.log(currentUser)
     if (currentUser) {
       navigate('/administration')
     }
