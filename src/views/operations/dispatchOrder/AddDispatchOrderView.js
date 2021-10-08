@@ -355,7 +355,7 @@ export default function AddDispatchOrderView() {
           (isNaN(inventory.quantity)
             || !isRequired(inventory.quantity)
             || inventory.quantity > inventory.availableQuantity
-            // || inventory['lessThanError']
+            || inventory['lessThanError']
             // || inventory['greaterThanError']
           )
         )
@@ -421,8 +421,8 @@ export default function AddDispatchOrderView() {
             inventory[keyTobeEdit] = value
             inventory['remainingQuantity'] = inventory.availableQuantity - inventory['quantity']
             // enable validation error if user enters quantity less than dispatched quantity
-            inventory['lessThanError'] = inventory.dispatchedQuantity == value ? true : false
-            // enable validation error if user enters quantity grater than available quantity
+            inventory['lessThanError'] = inventory.dispatchedQuantity > value ? true : false
+            // enable validation error if user enters quantity grater than available quantity-8
             inventory['greaterThanError'] = inventory.availableQuantity == value ? true : false
           }
           return inventory
@@ -695,11 +695,11 @@ export default function AddDispatchOrderView() {
                         onChange={(e) => handleEdit(
                           e.target.value > dispatchGroup.availableQuantity ?
                             parseInt(dispatchGroup.availableQuantity)
+                            // :
+                            // e.target.value < dispatchGroup.dispatchedQuantity ?
+                            // parseInt(dispatchGroup.dispatchedQuantity)
                             :
-                            e.target.value < dispatchGroup.dispatchedQuantity ?
-                              parseInt(dispatchGroup.dispatchedQuantity)
-                              :
-                              parseInt(e.target.value)
+                            parseInt(e.target.value)
                           , 'quantity'
                           , dispatchGroup.id
                         )}
