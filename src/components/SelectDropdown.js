@@ -42,7 +42,7 @@ function SelectDropdown({ name, list, selectedType, setSelectedType, icon, reset
         <>
             <FormControl className={classes.formControl}>
                 <Select
-                    value={selectedType} git
+                    value={selectedType}
                     variant="outlined"
                     onChange={handleChange}
                     displayEmpty
