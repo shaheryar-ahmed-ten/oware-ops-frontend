@@ -39,24 +39,36 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const [logoSize, setLogoSize] = useState(false);
 
 
+  const [selectedCompanyTempLogoId, setSelectedCompanyTempLogoId] = useState(null)
+  const [explicitReRender, setExplicitReRender] = useState(false)
+
+  // const [currentFileName,setCurrentFileName] = useState(null);
+
   useEffect(() => {
     if (!!selectedCompany) {
+      // will work on edit
       setName(selectedCompany.name || '');
       setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
       setType(selectedCompany.type || '');
       setContactId(selectedCompany.contactId || '');
       setNotes(selectedCompany.notes || '');
       setActive(!!selectedCompany.isActive);
+      // selectedCompany.logoId = selectedCompany.logoId;
+      // console.log(getURL('preview', selectedCompany.logoId));
+      // setLogoImageSrc(getURL('preview', selectedCompany.logoId) || '')
+      selectedCompany.logoId = !selectedCompany.logoId ? selectedCompanyTempLogoId : selectedCompany.logoId
+      {selectedCompany && selectedCompany.logoId  ? setLogoImageSrc(getURL('preview', selectedCompany.logoId )) : setLogoImageSrc(null)}
+      console.log("logo Image on edit",selectedCompany.logoId);
     } else {
       setName('');
       setInternalIdForBusiness('');
       setType('');
       setContactId('');
       setNotes('');
-      setLogoImage(null);
+      setLogoImageSrc('');
       setActive(true);
     }
-  }, [selectedCompany]);
+  }, [selectedCompany,explicitReRender]);
 
   useEffect(() => {
     if (relationType == 'VENDOR') setType(null);
@@ -71,7 +83,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       type,
       contactEmail,
       contactPhone,
-      logoId: selectedCompany && selectedCompany.logoId,
+      logoId: selectedCompany && selectedCompany.logoId || logoImage || null ,
       notes,
       isActive
     }
@@ -93,15 +105,55 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
 
       // if (!isRequired(newCompany.logoId)) return
       // console.log(newCompany)
-
+      setSelectedCompanyTempLogoId(null);
       addCompany(newCompany);
     }
   }
+
+  const newValidateLogoImage = (event) => {
+    // console.log("1")
+    const checkFile = event.target.files[0];
+    // setCurrentFileName("C:\fakepath")
+    setLogoType(false);
+    setLogoSize(false);
+    setLogoDimension(false);
+    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      setLogoType(true);
+      return false;
+    }
+    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1; // < 1mb
+    if (checkFile && !isLt2M) {
+      setLogoSize(true);
+      return false;
+    }
+    const reader = new FileReader();
+    checkFile && reader.readAsDataURL(checkFile);
+    // console.log("2",checkFile)
+    reader.addEventListener('load', event => {
+    // console.log("3")
+      const _loadedImageUrl = event.target.result;
+      const image = document.createElement('img');
+      image.src = _loadedImageUrl;
+      image.addEventListener('load', () => {
+        const { width, height } = image;
+        if (image && width > 142 && height > 37) {
+          setLogoDimension(true);
+          setLogoImageSrc(null);
+          setLogoImage(null);
+          return false;
+        }
+        else {
+          setLogoImageSrc(_loadedImageUrl);
+          const logoFile = checkFile ? checkFile : null;
+          // console.log(logoFile)
+          setLogoImage(logoFile)
+        }
+      });
+    })
+  }
+
   const validateLogoImage = (event) => {
     const checkFile = event.target.files[0];
-    // setLogoImage(null);
-    // removeLogoId();
-    // setLogoImageSrc(null);
     setLogoType(false);
     setLogoSize(false);
     setLogoDimension(false);
@@ -142,10 +194,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
         else {
           // if (!logoImage) { removeLogoId(); setLogoImageSrc(null) }
           if(isEdit == true){removeLogoId();}
-          // removeLogoId();
           setLogoImageSrc(_loadedImageUrl);
           const logoFile = checkFile ? checkFile : null;
-          // console.log(logoFile)
           setLogoImage(logoFile)
 
         }
@@ -157,10 +207,13 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const removePreviewId = (event) => {
     setLogoImage(null);
     setLogoImageSrc(null);
+    // setCurrentFileName(null)
+    setSelectedCompanyTempLogoId(selectedCompany.logoId)
+    selectedCompany.logoId = null;
   }
-  useEffect(() => {
-    // console.log(logoImageSrc,"logoImageSrc",logoImage,"logoImage",selectedCompany);
-  }, [logoImageSrc, logoImage])
+  // useEffect(() => {
+  //   // console.log(logoImageSrc,"logoImageSrc",logoImage,"logoImage",selectedCompany);
+  // }, [logoImageSrc, logoImage])
   return (
     <div style={{ display: "inline" }}>
       <form>
@@ -271,17 +324,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       <Button
                         variant="contained"
                         component="label"
-                        color={((selectedCompany && selectedCompany.logoId) || logoImage) ? 'primary' : 'default'}
+                        color={( logoImageSrc) ? 'primary' : 'default'}
                         startIcon={<CloudUploadIcon />}
                       >
-                        {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {((selectedCompany && selectedCompany.logoId) || logoImage) ? 'Uploaded' : ''}
+                        {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {( logoImageSrc) ? 'Uploaded' : ''}
 
 
                         <input
                           type="file"
                           hidden
-                          onChange={(e) => validateLogoImage(e)}
-                          // onBlur={e => setValidation({ ...validation, logoImage: true })}
+                          value={(e)=>e.target.value+1}
+                          onChange={(e)=>newValidateLogoImage(e)}
                           accept=".jpg,.png,.jpeg"
                         />
                         {/* <img id="previewImage" src="#" alt="Company Logo" /> */}
@@ -296,8 +349,11 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
 
                       {!logoImageSrc ? '' :
                         <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon onClick={() => removePreviewId()} />
-                        </Grid>}
+                          <DeleteSharpIcon 
+                          onClick={() => removePreviewId()}
+                           />
+                        </Grid>
+                        }
                       {/* {logoImageSrc == null ? '' : */}
 
                       {
@@ -311,11 +367,13 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
 
                     {/* Remove Logo Trash Bin */}
 
-                    {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
+                    {/* {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
 
                       <Grid item xs={12} style={{ marginLeft: 380 }}>
                         {(selectedCompany && selectedCompany.logoId) ?
-                          <DeleteSharpIcon onClick={() => removeLogoId()} />
+                          <DeleteSharpIcon 
+                          // onClick={() => removeLogoId()}
+                           />
                           : ''}
                       </Grid>
                       : ''}
@@ -329,7 +387,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                           // <DeleteSharpIcon onClick={() => removeLogoId()} />
                           : ''}
                       </Grid>
-                      : ''}
+                      : ''} */}
 
                   </Grid>
 
@@ -351,7 +409,10 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={()=> {
+              setExplicitReRender(!explicitReRender);
+              handleClose()}
+              } color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
               {!selectedCompany ? `Add ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}` : `Update ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}`}
             </Button>

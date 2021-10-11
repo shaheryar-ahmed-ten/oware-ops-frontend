@@ -60,6 +60,7 @@ const TopBar = ({
   };
 
   const logout = () => {
+    setCurrentUser(null);
     removeAuth();
     navigate('/login');
   }

@@ -105,6 +105,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       isUsername(username) &&
       (!!selectedUser || isRequired(password)) &&
       isEmail(email)) {
+      if (portal != 'CUSTOMER') {
+        delete newUser.companyId;
+      }
       addUser(newUser);
     }
   }
