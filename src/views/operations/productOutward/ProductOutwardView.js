@@ -92,20 +92,27 @@ export default function ProductOutwardView() {
   //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
   //   // format: (value, entity, inventory) => inventory.Product.UOM.name
   // },
+  // {
+  //   id: 'DispatchOrder.receiverName',
+  //   label: 'RECEIVER NAME',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.receiverName
+  // },
+  // {
+  //   id: 'DispatchOrder.receiverPhone',
+  //   label: 'RECEIVER PHONE',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.receiverPhone
+  // },
   {
-    id: 'DispatchOrder.receiverName',
-    label: 'RECEIVER NAME',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.receiverName
-  },
-  {
-    id: 'DispatchOrder.receiverPhone',
-    label: 'RECEIVER PHONE',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.receiverPhone
-  },
+      id: 'DispatchOrder.internalIdForBusiness',
+      label: 'DISPATCH ORDER ID',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.DispatchOrder.internalIdForBusiness
+    },
   // {
   //   id: 'city',
   //   label: 'CITY',
