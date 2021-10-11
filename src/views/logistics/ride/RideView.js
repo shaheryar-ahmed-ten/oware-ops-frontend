@@ -30,6 +30,8 @@ import { useNavigate } from 'react-router';
 import fileDownload from 'js-file-download';
 import moment from 'moment';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import SelectDropdown from '../../../components/SelectDropdown';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -212,6 +214,26 @@ export default function RideView() {
   const [showMessage, setShowMessage] = useState(null);
   const [currentFilter, setCurrentFilter] = useState('ALL');
   const [stats, setStats] = useState([]);
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+
+  const resetFilters = () => {
+    setSelectedDay(null);
+  }
+
+
 
   const addRide = data => {
     let apiPromise = null;
@@ -262,17 +284,19 @@ export default function RideView() {
     setDeleteRideViewOpen(false);
   }
 
-  const _getRides = (page, searchKeyword, currentFilter) => {
+  const _getRides = (page, searchKeyword, currentFilter,selectedDay) => {
     getStats();
-    axios.get(getURL('ride'), { params: { page, search: searchKeyword, status: currentFilter } })
+    axios.get(getURL('ride'), { params: { page, search: searchKeyword, status: currentFilter, days: selectedDay} })
       .then(res => {
+        console.log(res)
         setPageCount(res.data.pages)
         setRides(res.data.data)
       });
   }
+  // console.log("selectedDay",selectedDay)
 
-  const getRides = useCallback(debounce((page, searchKeyword, currentFilter) => {
-    _getRides(page, searchKeyword, currentFilter);
+  const getRides = useCallback(debounce((page, searchKeyword, currentFilter, selectedDay) => {
+    _getRides(page, searchKeyword, currentFilter, selectedDay);
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
@@ -294,11 +318,11 @@ export default function RideView() {
   };
 
   useEffect(() => {
-    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
-  }, [page, searchKeyword, currentFilter]);
+    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter, selectedDay);
+  }, [page, searchKeyword, currentFilter, selectedDay]);
 
   useEffect(() => {
-    _getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
+    _getRides(page, selectedDay, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
   }, [currentFilter]);
 
   useEffect(() => {
@@ -336,10 +360,12 @@ export default function RideView() {
     </Select>
   </FormControl >
 
+  const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
+
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword },
+      params: { page, search: searchKeyword ,days:selectedDay},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -370,7 +396,7 @@ export default function RideView() {
   />
 
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [searchInput, exportButton];
+  const headerButtons = [daysSelect,searchInput, exportButton];
 
   return (
     <Paper className={classes.root}>
