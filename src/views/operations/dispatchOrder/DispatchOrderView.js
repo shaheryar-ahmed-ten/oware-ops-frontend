@@ -311,7 +311,7 @@ export default function DispatchOrderView() {
   };
 
   const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus) => {
-    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword, status: selectedFilterStatus } }).then((res) => {
+    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword.trim(), status: selectedFilterStatus } }).then((res) => {
       setPageCount(res.data.pages);
       setDispatchOrders(res.data.data);
     });
