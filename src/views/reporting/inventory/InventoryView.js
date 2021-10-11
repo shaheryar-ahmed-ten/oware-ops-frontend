@@ -10,11 +10,13 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  FormControl,
+  TextField
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader';
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { dividerDateFormatForFilter, getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
@@ -37,10 +39,18 @@ const useStyles = makeStyles(theme => ({
     border: '1px solid grey',
     borderRadius: 4,
     opacity: 0.6,
-    padding: '0px 8px',
+    padding: '18px 10px',
     marginRight: 7,
     height: 30,
   },
+  textFieldRange: {
+    padding: 0,
+    marginRight: 5,
+    transform: 'translateY(-9px)'
+  },
+  exportBtn: {
+    padding: '9px 10px'
+  }
 }));
 
 
@@ -90,6 +100,9 @@ export default function InventoryView() {
   const [inventories, setInventories] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [startDate, setStartDate] = useState(dividerDateFormatForFilter(Date.now()))
+  const [endDate, setEndDate] = useState(dividerDateFormatForFilter(Date.now()))
+
   const _getInventories = (page, searchKeyword) => {
     axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
@@ -105,7 +118,7 @@ export default function InventoryView() {
   const exportToExcel = () => {
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword },
+      params: { page, search: searchKeyword, startDate, endDate },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -131,9 +144,39 @@ export default function InventoryView() {
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => exportToExcel()
-    }> EXPORT TO EXCEL</Button >;
-  const headerButtons = [searchInput, exportButton];
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}> EXPORT TO EXCEL</Button >;
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+
+  const headerButtons = [searchInput, startDateRange, endDateRange, exportButton];
 
   return (
     <Paper className={classes.root}>
