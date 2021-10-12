@@ -195,19 +195,6 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
-                      {/* <InputLabel>Company Type*</InputLabel>
-                      <Select
-                        fullWidth={true}
-                        id="type"
-                        label={'Company Type'}
-                        variant="outlined"
-                        value={type}
-                        onChange={e => setType(e.target.value)}
-                        onBlur={e => setValidation({ ...validation, type: true })}
-                      >
-                        <MenuItem value="" disabled>Select a customer type</MenuItem>
-                        {customerTypes.map(customerType => <MenuItem key={customerType} value={customerType}>{customerType}</MenuItem>)}
-                      </Select> */}
                       <Autocomplete
                         id="customerTypes"
                         key={customerTypes}
