@@ -116,9 +116,11 @@ export default function InventoryView() {
   }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword, startDate, endDate },
+      params: { page, search: searchKeyword, startingDate, endingDate },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
