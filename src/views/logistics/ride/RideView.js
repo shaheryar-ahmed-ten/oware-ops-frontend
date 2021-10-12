@@ -14,10 +14,19 @@ import {
   FormControl,
   MenuItem,
   ListItemText,
+  TextField,
+  Modal,
+  Typography,
+  Box,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL, dateFormat, digitize } from '../../../utils/common';
+import { getURL, dateFormat, digitize,dividerDateFormatForFilter } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
@@ -31,8 +40,11 @@ import fileDownload from 'js-file-download';
 import moment from 'moment';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SelectDropdown from '../../../components/SelectDropdown';
+import SelectCustomDropdown from '../../../components/SelectCustomDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
-
+// import DialogContent from '@mui/material/DialogContent';
+// import DialogContentText from '@mui/material/DialogContentText';
+// import DialogTitle from '@mui/material/DialogTitle';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -68,6 +80,17 @@ const useStyles = makeStyles(theme => ({
   dropdownListItem: {
     fontSize: 12,
   },
+  buttonDate:{
+    color: "#FFFFFF",
+    backgroundColor:"blue",
+    "&:hover": {
+      color: "white",
+      backgroundColor:"blue",
+    }
+  },
+  filtered:{
+    display:'flex'
+  }
 }));
 
 
@@ -193,6 +216,12 @@ export default function RideView() {
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
   }];
+
+  const divStyle = {
+    display: 'inline-table',
+    paddingRight: 20
+  };
+
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [rides, setRides] = useState([]);
@@ -226,11 +255,18 @@ export default function RideView() {
   }, {
     id: 60,
     name: '60 days'
-  }])
+  }
+])
   const [selectedDay, setSelectedDay] = useState(null)
+  const [startDate, setStartDate] = useState(dividerDateFormatForFilter(null))
+  const [endDate, setEndDate] = useState(dividerDateFormatForFilter(null))
+  const [filteredCount, setFilteredCount] = useState();
+  const [totalProducts, setTotalProducts] = useState();
+  const [mounted, setMounted] = useState(false);
 
   const resetFilters = () => {
-    setSelectedDay(null);
+    setStartDate(null);
+    setEndDate(null);
   }
 
 
@@ -284,19 +320,18 @@ export default function RideView() {
     setDeleteRideViewOpen(false);
   }
 
-  const _getRides = (page, searchKeyword, currentFilter,selectedDay) => {
+  const _getRides = (page, searchKeyword, currentFilter,selectedDay,startDate, endDate) => {
     getStats();
-    axios.get(getURL('ride'), { params: { page, search: searchKeyword, status: currentFilter, days: selectedDay} })
+    axios.get(getURL('ride'), { params: { page, search: searchKeyword, status: currentFilter, days: selectedDay,start: startDate, end: endDate} })
       .then(res => {
-        console.log(res)
         setPageCount(res.data.pages)
         setRides(res.data.data)
+        setFilteredCount(res.data.count)
       });
   }
-  // console.log("selectedDay",selectedDay)
 
-  const getRides = useCallback(debounce((page, searchKeyword, currentFilter, selectedDay) => {
-    _getRides(page, searchKeyword, currentFilter, selectedDay);
+  const getRides = useCallback(debounce((page, searchKeyword, currentFilter, selectedDay, startDate, endDate) => {
+    _getRides(page, searchKeyword, currentFilter, selectedDay, startDate, endDate);
   }, DEBOUNCE_CONST), []);
 
   const getRelations = () => {
@@ -314,16 +349,19 @@ export default function RideView() {
 
   const getStats = () => {
     axios.get(getURL('ride/stats'))
-      .then(res => setStats(res.data.stats));
+      .then(res => {
+        setTotalProducts(res.data.stats[0].value)
+        setStats(res.data.stats)
+      });
   };
 
   useEffect(() => {
-    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter, selectedDay);
-  }, [page, searchKeyword, currentFilter, selectedDay]);
+    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter, selectedDay, startDate == '-'? '' :startDate, endDate== '-'? '':endDate);
+  }, [page, searchKeyword, currentFilter, selectedDay, mounted]);
 
   useEffect(() => {
-    _getRides(page, selectedDay, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
-  }, [currentFilter]);
+    _getRides(page, selectedDay, startDate == '-'? '' :startDate, endDate =='-' ? '' :endDate, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
+  }, [currentFilter,mounted]);
 
   useEffect(() => {
     getRelations();
@@ -343,7 +381,7 @@ export default function RideView() {
 
   const filters = { ALL: 'ALL', ...statuses };
 
-  const filterDropdown = <FormControl className={classes.formControl}>
+  const filterDropdown = <> <FormControl className={classes.formControl}>
     <Select
       value={currentFilter}
       onChange={(e) => { setCurrentFilter(e.target.value) }}
@@ -359,23 +397,53 @@ export default function RideView() {
       ))}
     </Select>
   </FormControl >
+  </>
+   const [open, setOpen] = useState(false);
 
-  const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
-
+  // const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
+  const daysSelect = <SelectCustomDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} open={open} setOpen={setOpen} setSelectedType={setSelectedDay} setPage={setPage} />
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword ,days:selectedDay},
+      params: { page, search: searchKeyword ,days:selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
 
+  const startDateRange = <TextField
+  id="date"
+  label="From"
+  type="date"
+  variant="outlined"
+  className={classes.textFieldRange}
+  InputLabelProps={{
+    shrink: true,
+  }}
+  defaultValue={startDate}
+  value={startDate}
+  onChange={(e) => setStartDate(e.target.value)}
+  margin="dense"
+/>
+const endDateRange = <TextField
+  id="date"
+  label="To"
+  type="date"
+  variant="outlined"
+  className={classes.textFieldRange}
+  InputLabelProps={{
+    shrink: true,
+  }}
+  defaultValue={endDate}
+  value={endDate}
+  onChange={(e) => setEndDate(e.target.value)}
+  margin="dense"
+/>
+
   const addRideButton = <Button
     variant="contained"
     color="primary"
     size="small"
-    // onClick={() => setAddRideViewOpen(true)}>ADD RIDE</Button>;
     onClick={() => navigate('/logistics/ride/create')}> ADD RIDE</Button >;
 
   const exportButton = <Button
@@ -395,14 +463,48 @@ export default function RideView() {
     title={"Ride"}
   />
 
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
+  const handleClose = () => {
+    setOpen(false);
+  };
+    const customOption = <><Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Date Range"}
+        </DialogTitle>
+        <DialogContent>
+        {startDateRange}
+        {endDateRange}
+        </DialogContent>
+        <DialogActions>
+          <Button 
+          onClick={()=>{
+            setMounted(!mounted)
+            handleClose()
+          }} 
+          autoFocus 
+          className={classes.buttonDate}>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+   
+  </>
+  const filterText =  selectedDay? <Typography style={divStyle} >Showing {filteredCount} filtered products out of {totalProducts} products</Typography>:''
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [daysSelect,searchInput, exportButton];
-
+  const headerButtons = [filterText,daysSelect,searchInput, exportButton];
+// console.log(startDate, endDate)
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Rides" buttons={topHeaderButtons} />
-        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} />
+        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter}/>
         <TableHeader title={currentFilter === 'ALL' ? filterDropdown : ''} buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -453,6 +555,7 @@ export default function RideView() {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} />
+      {customOption}
     </Paper>
   );
 }
