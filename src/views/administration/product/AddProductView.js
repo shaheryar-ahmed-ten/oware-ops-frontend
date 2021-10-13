@@ -199,19 +199,6 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    {/* <InputLabel>UoM</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="uomId"
-                      label="UoM"
-                      variant="outlined"
-                      value={uomId}
-                      onChange={e => setUomId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, uomId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a UoM</MenuItem>
-                      {uoms.map(uom => <MenuItem key={uom.id} value={uom.id}>{uom.name}</MenuItem>)}
-                    </Select> */}
                     <Autocomplete
                       id="uomId"
                       key={uomId}
