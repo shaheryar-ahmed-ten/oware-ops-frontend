@@ -267,6 +267,7 @@ export default function RideView() {
   const resetFilters = () => {
     setStartDate(null);
     setEndDate(null);
+    setSelectedDay(null);
   }
 
 
@@ -479,8 +480,14 @@ const endDateRange = <TextField
           {"Date Range"}
         </DialogTitle>
         <DialogContent>
-        {startDateRange}
-        {endDateRange}
+          <ListItemText>
+            {startDateRange}
+          </ListItemText>
+          <ListItemText>
+            {endDateRange}
+          </ListItemText>
+          {/* {startDateRange}
+          {endDateRange} */}
         </DialogContent>
         <DialogActions>
           <Button 
@@ -496,10 +503,13 @@ const endDateRange = <TextField
       </Dialog>
    
   </>
-  const filterText =  selectedDay? <Typography style={divStyle} >Showing {filteredCount} filtered products out of {totalProducts} products</Typography>:''
+  const allFilter = daysSelect.props.list.find((list)=> list.name=="All")
+  // console.log("days seleect", allFilter.name)
+  // console.log("selectedDay",selectedDay)
+  const filterText = selectedDay || startDate !== '-' || !allFilter ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton];
-// console.log(startDate, endDate)
+
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
