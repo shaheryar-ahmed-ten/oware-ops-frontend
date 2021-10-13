@@ -152,10 +152,10 @@ export default function InventoryView() {
     name: '60 days'
   }])
   const [selectedDay, setSelectedDay] = useState(null)
-  const [startDate, setStartDate] = useState(dividerDateFormatForFilter(Date.now()))
-  const [endDate, setEndDate] = useState(dividerDateFormatForFilter(Date.now()))
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedDateRange, setSelectedDateRange] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
 
   const _getInventories = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
     axios.get(getURL('inventory'), { params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startDate: selectedDateRange ? startDate : null, endDate: selectedDateRange ? endDate : null } })
@@ -189,6 +189,10 @@ export default function InventoryView() {
   }
 
   const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
     setPage(1)
     setSelectedDay(event.target.value);
   };
@@ -345,11 +349,13 @@ export default function InventoryView() {
           {endDateRange}
         </ListItem>
         <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
-          <Button variant="contained" color="primary" onClick={() => {
-            // TODO: call reRender
-            setSelectedDateRange(true)
-            setOpenDialog(false)
-          }}>
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              // TODO: call reRender
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+            }}>
             OK
           </Button>
         </ListItem>
