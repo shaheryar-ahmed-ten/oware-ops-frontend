@@ -357,11 +357,11 @@ export default function RideView() {
   };
 
   useEffect(() => {
-    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter, selectedDay, startDate == '-'? '' :startDate, endDate== '-'? '':endDate);
+    getRides(page, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter, selectedDay == 'custom'? '':selectedDay, startDate == '-'? '' :startDate, endDate== '-'? '':endDate);
   }, [page, searchKeyword, currentFilter, selectedDay, mounted]);
 
   useEffect(() => {
-    _getRides(page, selectedDay, startDate == '-'? '' :startDate, endDate =='-' ? '' :endDate, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
+    _getRides(page, selectedDay == 'custom'? '':selectedDay , startDate == '-'? '' :startDate, endDate =='-' ? '' :endDate, searchKeyword, currentFilter == 'ALL' ? '' : currentFilter);
   }, [currentFilter,mounted]);
 
   useEffect(() => {
@@ -406,7 +406,7 @@ export default function RideView() {
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword ,days:selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
+      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -504,9 +504,9 @@ const endDateRange = <TextField
    
   </>
   const allFilter = daysSelect.props.list.find((list)=> list.name=="All")
-  // console.log("days seleect", allFilter.name)
-  // console.log("selectedDay",selectedDay)
-  const filterText = selectedDay || startDate !== '-' || !allFilter ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
+  console.log("days seleect", allFilter.name)
+  console.log("selectedDay",selectedDay)
+  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton];
 

@@ -37,6 +37,7 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
     const handleChange = (event) => {
         // resetFilters()
         // if(event.target.value){
+            // setSelectedType('');
             setPage(1)
             resetFilters()
             setSelectedType(event.target.value);
@@ -80,7 +81,7 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
                             
                         })
                     }
-                    <MenuItem key={'index'} onClick={()=>setOpen(true)}>
+                    <MenuItem key={'custom'} value={'custom'} onClick={()=>setOpen(true)}>
                                     <span className={classes.dropdownListItem}>Custom</span>
                     </MenuItem>
                 </Select>
