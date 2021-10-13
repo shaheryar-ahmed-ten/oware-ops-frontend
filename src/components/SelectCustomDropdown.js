@@ -36,11 +36,11 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
 
     const handleChange = (event) => {
         // resetFilters()
-        if(event.target.value){
-            resetFilters()
+        // if(event.target.value){
             setPage(1)
+            resetFilters()
             setSelectedType(event.target.value);
-        }
+        // }
     };
 
     const handleOpen = () =>{

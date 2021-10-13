@@ -267,6 +267,7 @@ export default function RideView() {
   const resetFilters = () => {
     setStartDate(null);
     setEndDate(null);
+    setSelectedDay(null);
   }
 
 
@@ -496,10 +497,10 @@ const endDateRange = <TextField
       </Dialog>
    
   </>
-  const filterText =  selectedDay? <Typography style={divStyle} >Showing {filteredCount} filtered products out of {totalProducts} products</Typography>:''
+  const filterText = selectedDay || startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton];
-// console.log(startDate, endDate)
+
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
