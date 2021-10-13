@@ -181,7 +181,8 @@ export default function InventoryView() {
   }
 
   useEffect(() => {
-    getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+    if (selectedDay !== 'custom' && !selectedDateRange)
+      getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
   }, [page, searchKeyword, selectedDay, selectedDateRange]);
 
   const handleCloseDialog = () => {
@@ -197,7 +198,6 @@ export default function InventoryView() {
     setSelectedDay(event.target.value);
   };
 
-  // const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
   const daysSelect = <FormControl className={classes.formControl}>
     <Select
       value={selectedDay}
