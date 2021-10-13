@@ -185,24 +185,19 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                 </Grid>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Driver</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="driverId"
-                      label="Driver"
-                      variant="outlined"
-                      value={driverId}
-                      onChange={e => setDriverId(e.target.value)}
+                      key={driverId}
+                      options={drivers}
+                      defaultValue={!!selectedVehicle ? { name: selectedVehicle.Driver.name, id: selectedVehicle.Driver.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Driver" variant="outlined" />}
+                      getOptionLabel={(vendor) => vendor.name || ""}
                       onBlur={e => setValidation({ ...validation, driverId: true })}
-                    >
-                      {
-                        driverId && driverId !== "" ?
-                          <MenuItem value={driverId} disabled>{driverName}</MenuItem>
-                          :
-                          <MenuItem value={""} disabled>Select Driver</MenuItem>
-                      }
-                      {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setDriverId(newValue.id)
+                      }}
+                    />
                     {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
