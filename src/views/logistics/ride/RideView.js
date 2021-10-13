@@ -503,9 +503,7 @@ const endDateRange = <TextField
       </Dialog>
    
   </>
-  const allFilter = daysSelect.props.list.find((list)=> list.name=="All")
-  console.log("days seleect", allFilter.name)
-  console.log("selectedDay",selectedDay)
+
   const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton];
