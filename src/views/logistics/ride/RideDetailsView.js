@@ -480,15 +480,10 @@ function RideDetailsView(props) {
           </Grid> */}
         </Grid>
 
-        <Grid container item xs={12} spacing={3}>
+        <Grid container item xs={12} spacing={3} style={{ minHeight: 300 }}>
           <Grid item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
             <GoogleMap />
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} className={classes.root} justifyContent="center" alignItems="center">
-        <Grid container item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
-          <GoogleMap />
         </Grid>
       </Grid>
     </>
