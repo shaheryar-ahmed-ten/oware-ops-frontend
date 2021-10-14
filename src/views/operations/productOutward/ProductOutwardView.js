@@ -69,6 +69,13 @@ export default function ProductOutwardView() {
     format: (value, entity) => entity.internalIdForBusiness
   },
   {
+    id: 'DispatchOrder.internalIdForBusiness',
+    label: 'DISPATCH ORDER ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.DispatchOrder.internalIdForBusiness
+  },
+  {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
     minWidth: 'auto',
@@ -106,13 +113,7 @@ export default function ProductOutwardView() {
   //   className: '',
   //   format: (value, entity) => entity.DispatchOrder.receiverPhone
   // },
-  {
-      id: 'DispatchOrder.internalIdForBusiness',
-      label: 'DISPATCH ORDER ID',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.DispatchOrder.internalIdForBusiness
-    },
+  
   // {
   //   id: 'city',
   //   label: 'CITY',
