@@ -261,6 +261,7 @@ export default function InventoryView() {
     label="From"
     type="date"
     variant="outlined"
+    inputProps={{ max: dividerDateFormatForFilter(Date.now()) }}
     className={classes.textFieldRange}
     InputLabelProps={{
       shrink: true,
@@ -275,6 +276,7 @@ export default function InventoryView() {
     label="To"
     type="date"
     variant="outlined"
+    inputProps={{ min :startDate ,max: dividerDateFormatForFilter(Date.now()) }}
     className={classes.textFieldRange}
     InputLabelProps={{
       shrink: true,
