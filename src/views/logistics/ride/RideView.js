@@ -419,7 +419,7 @@ export default function RideView() {
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
+      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate,status:currentFilter == 'ALL' ? '' : currentFilter},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
