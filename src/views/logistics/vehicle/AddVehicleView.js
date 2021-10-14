@@ -16,6 +16,7 @@ import {
 import { isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { upload } from '../../../utils/upload';
+import { Autocomplete } from '@material-ui/lab';
 
 function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
   const [validation, setValidation] = useState({});
@@ -48,7 +49,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
   useEffect(() => {
     if (open)
       resetLocalStates()
-    if (selectedVehicle) {
+    if (!!selectedVehicle) {
       setVendorName(selectedVehicle.Vendor ? selectedVehicle.Vendor.name : '');
       setVendorId(selectedVehicle.Vendor ? selectedVehicle.Vendor.id : '');
       setDriverName(selectedVehicle.Driver ? selectedVehicle.Driver.name : '');
@@ -166,47 +167,37 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Vendor</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="vendorId"
-                      label="Vendor"
-                      variant="outlined"
-                      value={vendorId}
-                      onChange={e => setVendorId(e.target.value)}
+                      key={vendorId}
+                      options={companies}
+                      defaultValue={!!selectedVehicle ? { name: selectedVehicle.Vendor.name, id: selectedVehicle.Vendor.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
+                      getOptionLabel={(vendor) => vendor.name || ""}
                       onBlur={e => setValidation({ ...validation, vendorId: true })}
-                    >
-                      {
-                        vendorId && vendorId !== "" ?
-                          <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
-                          :
-                          <MenuItem value={""} disabled>Select Vendor</MenuItem>
-                      }
-                      {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setVendorId(newValue.id)
+                      }}
+                    />
                     {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Driver</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="driverId"
-                      label="Driver"
-                      variant="outlined"
-                      value={driverId}
-                      onChange={e => setDriverId(e.target.value)}
+                      key={driverId}
+                      options={drivers}
+                      defaultValue={!!selectedVehicle ? { name: selectedVehicle.Driver.name, id: selectedVehicle.Driver.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Driver" variant="outlined" />}
+                      getOptionLabel={(vendor) => vendor.name || ""}
                       onBlur={e => setValidation({ ...validation, driverId: true })}
-                    >
-                      {
-                        driverId && driverId !== "" ?
-                          <MenuItem value={driverId} disabled>{driverName}</MenuItem>
-                          :
-                          <MenuItem value={""} disabled>Select Driver</MenuItem>
-                      }
-                      {drivers.map(driver => <MenuItem key={driver.id} value={driver.id}>{driver.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setDriverId(newValue.id)
+                      }}
+                    />
                     {validation.driverId && !isRequired(driverId) ? <Typography color="error">Driver is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -234,24 +225,30 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Vehicle Type</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="modelId"
-                      label="Vehicle type"
-                      variant="outlined"
-                      value={carId}
-                      onChange={e => setCarId(e.target.value)}
+                    {!!selectedVehicle ? console.log(selectedVehicle.Car.CarMake.name, selectedVehicle.Car.CarModel.name) : ''}
+                    <Autocomplete
+                      id="carId"
+                      key={carId}
+                      options={cars}
+                      defaultValue={!!selectedVehicle ? { name: `${selectedVehicle.Car.CarMake.name} ${selectedVehicle.Car.CarModel.name}`, id: selectedVehicle.Car.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
+                      getOptionLabel={(car) => {
+                        return (
+                          car && car.name ?
+                            car.name
+                            :
+                            car && car.CarMake && car.CarModel ?
+                              `${car.CarMake.name} ${car.CarModel.name}`
+                              :
+                              ''
+                        )
+                      }}
                       onBlur={e => setValidation({ ...validation, modelId: true })}
-                    >
-                      {
-                        carId && carId !== "" ?
-                          <MenuItem value={carId} disabled>{carName}</MenuItem>
-                          :
-                          <MenuItem value={""} disabled>Select vehicle type</MenuItem>
-                      }
-                      {cars.map(car => <MenuItem key={car.id} value={car.id}> {`${car.CarMake.name} ${car.CarModel.name}`} </MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setCarId(newValue.id)
+                      }}
+                    />
                     {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle type is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
