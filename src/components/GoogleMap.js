@@ -21,7 +21,22 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     top: "80%",
-    left: "50%",
+    left: "30%",
+    [theme.breakpoints.up("md")]: {
+      width: "50%",
+    },
+    [theme.breakpoints.down("md")]: {
+      width: "80%",
+    },
+    transform: "translateX(-50%)",
+    fontSize: 12,
+    color: "black",
+  },
+  placeDropoffInputDiv: {
+    position: "absolute",
+    zIndex: 100,
+    top: "80%",
+    left: "95%",
     [theme.breakpoints.up("md")]: {
       width: "50%",
     },
@@ -33,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     color: "black",
   },
   placeInput: {
-    width: "100%",
+    width: "50%",
     borderRadius: "10px",
     padding: "10px 5px",
     border: 0,
@@ -50,6 +65,10 @@ function GoogleMap(props) {
     mapCenter: {
       lat: 24.8607,
       lng: 67.0011,
+    },
+    dropoffMarker: {
+      lat: 24.86071,
+      lng: 67.00112,
     },
     zoom: 14,
   });
@@ -83,17 +102,38 @@ function GoogleMap(props) {
     sharedContext.setSelectedMapLocation(state.mapCenter);
   }, [state.mapCenter]);
 
-  const handleChange = (address) => {
-    setState({ ...state, address });
+  const handleChangePickup = (pickupAddress) => {
+    setState({ ...state, pickupAddress });
   };
 
-  const handleSelect = (address) => {
-    geocodeByAddress(address)
+  const handleChangeDropoff = (dropoffAddress) => {
+    setState({ ...state, dropoffAddress });
+  };
+
+  const handlePickupSelect = (pickupAddress) => {
+    console.log("handlePickupSelect", handlePickupSelect);
+    geocodeByAddress(pickupAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
         setState({
           ...state,
           mapCenter: {
+            lat: latLng.lat,
+            lng: latLng.lng,
+          },
+          zoom: 17,
+        });
+      })
+      .catch((error) => console.error("Error", error));
+  };
+  const handleDropoffSelect = (dropoffAddress) => {
+    console.log(`dropoffAddress`, dropoffAddress);
+    geocodeByAddress(dropoffAddress)
+      .then((results) => getLatLng(results[0]))
+      .then((latLng) => {
+        setState({
+          ...state,
+          dropoffMarker: {
             lat: latLng.lat,
             lng: latLng.lng,
           },
@@ -124,12 +164,63 @@ function GoogleMap(props) {
         }}
         name={"Your position"}
       />
-      <PlacesAutocomplete value={state.address} onChange={handleChange} onSelect={handleSelect}>
+      {console.log(state.dropoffMarker)}
+      <Marker
+        position={{
+          lat: state.dropoffMarker.lat,
+          lng: state.dropoffMarker.lng,
+        }}
+        name={"Dropoff Location"}
+      />
+      <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div className={classes.placeInputDiv}>
             <input
               {...getInputProps({
-                placeholder: "Search Places ...",
+                placeholder: "Search Pickup Location...",
+                className: "location-search-input",
+              })}
+              className={classes.placeInput}
+            />
+            <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+              {loading && <div>Loading...</div>}
+              {suggestions.map((suggestion) => {
+                const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                // inline style for demonstration purpose
+                const style = suggestion.active
+                  ? {
+                      backgroundColor: "#fafafa",
+                      cursor: "pointer",
+                      borderBottom: "1px solid black",
+                      padding: "5px 5px",
+                    }
+                  : {
+                      backgroundColor: "#ffffff",
+                      cursor: "pointer",
+                      borderBottom: "1px solid black",
+                      padding: "5px 5px",
+                    };
+                return (
+                  <div
+                    {...getSuggestionItemProps(suggestion, {
+                      className,
+                      style,
+                    })}
+                  >
+                    <span>{suggestion.description}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
+      <PlacesAutocomplete value={state.dropoffAddress} onChange={handleChangeDropoff} onSelect={handleDropoffSelect}>
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          <div className={classes.placeDropoffInputDiv}>
+            <input
+              {...getInputProps({
+                placeholder: "Search Dropoff Location...",
                 className: "location-search-input",
               })}
               className={classes.placeInput}
