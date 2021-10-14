@@ -22,7 +22,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText
+  FormHelperText
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -219,6 +219,11 @@ export default function RideView() {
   const divStyle = {
     display: 'inline-table',
     paddingRight: 20
+  };
+  const textStyle={
+    textAlign: 'center',
+    marginRight: 65,
+    marginTop: 5
   };
 
   const [pageCount, setPageCount] = useState(1);
@@ -507,10 +512,13 @@ const endDateRange = <TextField
       </Dialog>
    
   </>
-
+  
+ console.log(startDate)
   const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
+  const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText,daysSelect,searchInput, exportButton];
+  const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
+  const customButtons = [customText];
 
   return (
     <Paper className={classes.root}>
