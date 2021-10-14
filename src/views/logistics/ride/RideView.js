@@ -219,12 +219,14 @@ export default function RideView() {
   }];
 
   const divStyle = {
-    marginRight: 65,
-    marginTop: 5,
-    fontSize:15
+    // // marginRight: 65,
+    // // marginTop: 5,
+    fontSize:15,
+    display: 'inline-table',
+    paddingRight: 20
   };
   const textStyle={
-    // textAlign: 'center',
+    textAlign: 'center',
     marginRight: 65,
     marginTop: 5
   };
@@ -358,7 +360,7 @@ export default function RideView() {
   const getStats = () => {
     axios.get(getURL('ride/stats'))
       .then(res => {
-        setTotalProducts(res.data.stats[0].value)
+        // setTotalProducts(res.data.stats[0].value)
         setStats(res.data.stats)
       });
   };
@@ -520,14 +522,14 @@ const endDateRange = <TextField
   const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <FormHelperText style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</FormHelperText>:''
   const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [daysSelect,searchInput, exportButton,customText,filterText];
-
+  const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
+console.log(stats,currentFilter)
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Rides" buttons={topHeaderButtons} />
-        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter}/>
-        <TableHeader title={currentFilter === 'ALL' ? filterDropdown : ''} buttons={headerButtons} />
+        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} setTotalProducts={setTotalProducts}/>
+        <TableHeader buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

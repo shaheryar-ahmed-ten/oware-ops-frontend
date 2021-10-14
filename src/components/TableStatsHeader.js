@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
-function TableStatsHeader({ stats, setCurrentFilter, currentFilter }) {
+function TableStatsHeader({ stats, setCurrentFilter, currentFilter,setTotalProducts }) {
     const classes = useStyles();
     return (
         <React.Fragment>
@@ -34,7 +34,8 @@ function TableStatsHeader({ stats, setCurrentFilter, currentFilter }) {
                             stats.map((stat, i) => {
                                 return (
                                     <Grid item key={stat.key}>
-                                        <Button key={stat.key} variant="contained" onClick={(e) => { setCurrentFilter(stat.key) }}
+                                        <Button key={stat.key} variant="contained" onClick={(e) => { setCurrentFilter(stat.key) 
+                                        setTotalProducts(stat.value) }}
                                             color={stat.key === currentFilter ? 'primary' : 'defualt'} >
                                             {stat.label}
                                             &nbsp;
