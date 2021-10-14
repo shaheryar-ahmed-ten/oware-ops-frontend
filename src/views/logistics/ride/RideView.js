@@ -72,12 +72,14 @@ const useStyles = makeStyles(theme => ({
   placeholderText: {
     color: "#CAC9C9",
     '& .MuiSelect-outlined': {
-      paddingTop: '7px',
-      paddingBottom: '6px',
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      // height: '10px',
     },
   },
   dropdownListItem: {
     fontSize: 12,
+    // paddingBottom: 10,
   },
   buttonDate:{
     color: "#FFFFFF",
@@ -217,11 +219,12 @@ export default function RideView() {
   }];
 
   const divStyle = {
-    display: 'inline-table',
-    paddingRight: 20
+    marginRight: 65,
+    marginTop: 5,
+    fontSize:15
   };
   const textStyle={
-    textAlign: 'center',
+    // textAlign: 'center',
     marginRight: 65,
     marginTop: 5
   };
@@ -396,7 +399,7 @@ export default function RideView() {
       onChange={(e) => { setCurrentFilter(e.target.value) }}
       variant="outlined"
       displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': 'Without label'}}
       className={classes.placeholderText}
     >
       {Object.keys(filters).map(key => (
@@ -513,12 +516,11 @@ const endDateRange = <TextField
    
   </>
   
- console.log(startDate)
-  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
+ 
+  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <FormHelperText style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</FormHelperText>:''
   const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
-  const customButtons = [customText];
+  const headerButtons = [daysSelect,searchInput, exportButton,customText,filterText];
 
   return (
     <Paper className={classes.root}>
