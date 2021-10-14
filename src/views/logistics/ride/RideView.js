@@ -72,12 +72,14 @@ const useStyles = makeStyles(theme => ({
   placeholderText: {
     color: "#CAC9C9",
     '& .MuiSelect-outlined': {
-      paddingTop: '7px',
-      paddingBottom: '6px',
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      // height: '10px',
     },
   },
   dropdownListItem: {
     fontSize: 12,
+    // paddingBottom: 10,
   },
   buttonDate:{
     color: "#FFFFFF",
@@ -217,6 +219,9 @@ export default function RideView() {
   }];
 
   const divStyle = {
+    // // marginRight: 65,
+    // // marginTop: 5,
+    fontSize:15,
     display: 'inline-table',
     paddingRight: 20
   };
@@ -355,7 +360,7 @@ export default function RideView() {
   const getStats = () => {
     axios.get(getURL('ride/stats'))
       .then(res => {
-        setTotalProducts(res.data.stats[0].value)
+        // setTotalProducts(res.data.stats[0].value)
         setStats(res.data.stats)
       });
   };
@@ -396,7 +401,7 @@ export default function RideView() {
       onChange={(e) => { setCurrentFilter(e.target.value) }}
       variant="outlined"
       displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': 'Without label'}}
       className={classes.placeholderText}
     >
       {Object.keys(filters).map(key => (
@@ -414,7 +419,7 @@ export default function RideView() {
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
+      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate,status:currentFilter == 'ALL' ? '' : currentFilter},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -513,19 +518,18 @@ const endDateRange = <TextField
    
   </>
   
- console.log(startDate)
-  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
+ 
+  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <FormHelperText style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</FormHelperText>:''
   const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
-  const customButtons = [customText];
-
+console.log(stats,currentFilter)
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Rides" buttons={topHeaderButtons} />
-        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter}/>
-        <TableHeader title={currentFilter === 'ALL' ? filterDropdown : ''} buttons={headerButtons} />
+        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} setTotalProducts={setTotalProducts}/>
+        <TableHeader buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
