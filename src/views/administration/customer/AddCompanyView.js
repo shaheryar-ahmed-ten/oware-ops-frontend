@@ -216,19 +216,29 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Contact*</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="contactId"
-                      label="Contact"
-                      variant="outlined"
-                      value={contactId}
-                      onChange={e => setContactId(e.target.value)}
+                      key={contactId}
+                      options={users}
+                      defaultValue={!!selectedCompany ? { name: `${selectedCompany.Contact.firstName} ${selectedCompany.Contact.lastName}`, id: selectedCompany.Contact.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Contact*" variant="outlined" />}
+                      getOptionLabel={(user) => {
+                        return (
+                          user && user.name ?
+                            user.name
+                            :
+                            user.firstName && user.lastName ?
+                              `${user.firstName} ${user.lastName}`
+                              :
+                              ''
+                        )
+                      }}
                       onBlur={e => setValidation({ ...validation, contactId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a contact</MenuItem>
-                      {users.map(user => <MenuItem key={user.id} value={user.id}>{user.firstName} {user.lastName} &lt;{user.email}&gt;</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setContactId(newValue.id)
+                      }}
+                    />
                     {validation.contactId && !isRequired(contactId) ? <Typography color="error">Contact is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
