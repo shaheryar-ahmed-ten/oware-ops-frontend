@@ -42,9 +42,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import SelectDropdown from '../../../components/SelectDropdown';
 import SelectCustomDropdown from '../../../components/SelectCustomDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
+import { gridColumnLookupSelector } from '@material-ui/data-grid';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -368,6 +367,10 @@ export default function RideView() {
     getRelations();
   }, []);
 
+  const validateDate =(event) =>{
+
+  }
+
   const searchInput = <InputBase
     placeholder="Search"
     className={classes.searchInput}
@@ -411,7 +414,6 @@ export default function RideView() {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
-
   const startDateRange = <TextField
   id="date"
   label="From"
@@ -421,6 +423,7 @@ export default function RideView() {
   InputLabelProps={{
     shrink: true,
   }}
+  inputProps={{ max: dividerDateFormatForFilter(Date.now()) }}
   defaultValue={startDate}
   value={startDate}
   onChange={(e) => setStartDate(e.target.value)}
@@ -435,6 +438,7 @@ const endDateRange = <TextField
   InputLabelProps={{
     shrink: true,
   }}
+  inputProps={{ min :startDate ,max: dividerDateFormatForFilter(Date.now()) }}
   defaultValue={endDate}
   value={endDate}
   onChange={(e) => setEndDate(e.target.value)}
