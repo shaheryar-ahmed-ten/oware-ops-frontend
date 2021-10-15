@@ -294,7 +294,7 @@ export default function InventoryView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Inventory" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (

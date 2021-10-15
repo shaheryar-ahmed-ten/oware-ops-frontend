@@ -298,7 +298,7 @@ export default function StockManagementView() {
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <TableHeader title="Stock Adjustment" buttons={headerButtons} />
-          <Table stickyHeader aria-label="sticky table" >
+          <Table aria-label="sticky table" >
             <TableHead>
               <TableRow>
                 {columns.map((column) => (

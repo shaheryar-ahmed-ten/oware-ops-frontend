@@ -531,7 +531,7 @@ const endDateRange = <TextField
         <TableHeader title="Rides" buttons={topHeaderButtons} />
         <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} setTotalProducts={setTotalProducts}/>
         <TableHeader buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
