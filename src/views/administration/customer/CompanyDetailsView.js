@@ -84,6 +84,8 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
+                                            multiline
+                                            rows={3}
                                             id="notes"
                                             label="Notes"
                                             type="text"
@@ -98,6 +100,8 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
+                                            multiline
+                                            rows={3}
                                             id="status"
                                             label="Status"
                                             type="text"

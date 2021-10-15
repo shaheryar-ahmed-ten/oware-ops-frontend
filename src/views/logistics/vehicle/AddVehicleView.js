@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -18,6 +19,17 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { upload } from '../../../utils/upload';
 import { Autocomplete } from '@material-ui/lab';
 
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
+
 function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
   const [validation, setValidation] = useState({});
   const [vendorName, setVendorName] = useState('')
@@ -30,6 +42,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
   const [runningPaperImage, setRunningPaperImage] = useState(null)
   const [routePermitImage, setRoutePermit] = useState(null)
   const [drivers, setDrivers] = useState([])
+  const classes = useStyles();
 
 
   cars.sort(function (a, b) {
@@ -206,6 +219,8 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                 <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="RegistrationNumber"
                     label="Registration Number"
