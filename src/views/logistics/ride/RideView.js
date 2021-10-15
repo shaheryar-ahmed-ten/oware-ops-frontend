@@ -360,7 +360,6 @@ export default function RideView() {
   const getStats = () => {
     axios.get(getURL('ride/stats'))
       .then(res => {
-        // setTotalProducts(res.data.stats[0].value)
         setStats(res.data.stats)
       });
   };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -16,6 +17,18 @@ import {
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import { Autocomplete } from '@material-ui/lab';
+// import { useStyles } from '@material-ui/pickers/views/Calendar/SlideTransition';
+
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
 
 export default function AddProductView({ addProduct, open, handleClose, selectedProduct, brands, uoms, categories, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -27,6 +40,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
   const [brandId, setBrandId] = useState('');
   const [uomId, setUomId] = useState('');
   const [isActive, setActive] = useState(true);
+  const classes = useStyles();
 
   useEffect(() => {
     if (!!selectedProduct) {
@@ -96,6 +110,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="name"
                   label="Name"
@@ -110,6 +126,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="description"
                   label="Description"
@@ -125,6 +143,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="dimensionsCBM"
                     label="Volume cm3"
@@ -142,6 +162,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="weight"
                     label="Weight in KGs"

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -21,11 +22,24 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { getURL } from '../../../utils/common';
 import { Autocomplete } from '@material-ui/lab';
 
+
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
+
 export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors, removeLogoId, isEdit }) {
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
   const [contactId, setContactId] = useState('');
+  const classes = useStyles();
 
   const [type, setType] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -163,6 +177,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="name"
                     label={relationType == 'CUSTOMER' ? ` Company Name*` : ` Vendor Name*`}
@@ -179,6 +195,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="internalIdForBusiness"
                     label={relationType == 'CUSTOMER' ? ` Company ID*` : ` Vendor ID*`}
@@ -246,15 +264,19 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <TextField
+                    multiline
                     fullWidth={true}
                     margin="dense"
+                    rows={6}
                     id="notes"
                     label="Notes"
                     type="text"
                     variant="outlined"
+                    InputProps={{ inputProps: { maxLength: 1000 } }}
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                   />
+                   <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
                 </Grid>
               </Grid>
 
