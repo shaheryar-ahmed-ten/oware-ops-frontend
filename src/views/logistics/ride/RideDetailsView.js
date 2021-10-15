@@ -209,6 +209,22 @@ function RideDetailsView(props) {
                 {dateFormat(selectedRide.dropoffDate) || "-"}
               </Grid>
             </Grid>
+            {console.log(
+              `selectedRide.pickupLocation && selectedRide.dropoffLocation`,
+              selectedRide.pickupLocation && selectedRide.dropoffLocation
+            )}
+            {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
+              <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
+                <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
+                  <GoogleMap
+                    pickupLocation={selectedRide.pickupLocation}
+                    dropoffLocation={selectedRide.dropoffLocation}
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              ""
+            )}
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
@@ -376,6 +392,16 @@ function RideDetailsView(props) {
           </Table>
         </TableContainer>
 
+        {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
+          <Grid container item xs={12} spacing={3} style={{ minHeight: 400, marginBottom: 20 }}>
+            <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
+              <GoogleMap pickupLocation={selectedRide.pickupLocation} dropoffLocation={selectedRide.dropoffLocation} />
+            </Grid>
+          </Grid>
+        ) : (
+          ""
+        )}
+
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>
@@ -478,12 +504,6 @@ function RideDetailsView(props) {
           {/* <Grid item xs={12}>
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
-        </Grid>
-
-        <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
-          <Grid item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
-            <GoogleMap pickupLocation={selectedRide.pickupLocation} dropoffLocation={selectedRide.dropoffLocation} />
-          </Grid>
         </Grid>
       </Grid>
     </>

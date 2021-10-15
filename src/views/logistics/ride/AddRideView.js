@@ -643,7 +643,7 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item sm={4}>
+          <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <InputLabel className={classes.labelPadding}>Pickup City</InputLabel>
               <Select
@@ -672,9 +672,7 @@ function AddRideView() {
               )}
             </FormControl>
           </Grid>
-        </Grid>
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
+          <Grid item sm={6}>
             <TextField
               className={classes.labelBox}
               inputProps={{ className: classes.textBox }}
@@ -694,9 +692,8 @@ function AddRideView() {
               ""
             )}
           </Grid>
-        </Grid>
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={4}>
+
+          <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
               <InputLabel className={classes.labelPadding}>Dropoff City</InputLabel>
               <Select
@@ -725,9 +722,7 @@ function AddRideView() {
               )}
             </FormControl>
           </Grid>
-        </Grid>
-        <Grid container item xs={12} spacing={3}>
-          <Grid item sm={12}>
+          <Grid item sm={6}>
             <TextField
               className={classes.labelBox}
               inputProps={{ className: classes.textBox }}
@@ -746,6 +741,10 @@ function AddRideView() {
             ) : (
               ""
             )}
+          </Grid>
+          <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
+            {console.log("rendering google map")}
+            <GoogleMap setDropOff={setDropOff} setPickUp={setPickUp} />
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -1110,12 +1109,6 @@ function AddRideView() {
                 </Button>
               </FormControl>
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
-          <Grid item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
-            {console.log("rendering google map")}
-            <GoogleMap setDropOff={setDropOff} setPickUp={setPickUp} />
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
