@@ -199,7 +199,7 @@ export default function WarehouseView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Warehouse" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (

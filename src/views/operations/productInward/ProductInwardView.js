@@ -205,7 +205,7 @@ export default function ProductInwardView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Inward" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (

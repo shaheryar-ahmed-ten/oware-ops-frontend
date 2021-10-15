@@ -261,7 +261,7 @@ export default function ProductOutwardView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Outward" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table" >
+        <Table aria-label="sticky table" >
           <TableHead>
             <TableRow>
               {columns.map((column) => (

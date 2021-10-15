@@ -286,7 +286,7 @@ export default function CompanyView({ relationType }) {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title={relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
