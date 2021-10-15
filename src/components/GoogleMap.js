@@ -1,4 +1,4 @@
-import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
+import { Map, Marker, GoogleApiWrapper, MarkerWithLabel } from "google-maps-react";
 import React, { useContext, useEffect, useState } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
@@ -74,6 +74,8 @@ function GoogleMap(props) {
     zoom: 14,
   });
 
+  const [pickupSearchBox, setpickupSearchBox] = useState();
+
   const sharedContext = useContext(SharedContext);
 
   useEffect(() => {
@@ -108,9 +110,14 @@ function GoogleMap(props) {
     sharedContext.setSelectedMapLocation(state.mapCenter);
   }, [state.mapCenter]);
 
+  useEffect(() => {
+    setpickupSearchBox(pickupSearchBox);
+  }, [pickupSearchBox]);
+
   const handleChangePickup = (pickupAddress) => {
-    console.log("handle change pickup");
+    console.log("handle change pickup on change", pickupAddress);
     setState({ ...state, pickupAddress });
+    setpickupSearchBox({ pickupAddress });
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
@@ -135,6 +142,7 @@ function GoogleMap(props) {
           lat: latLng.lat,
           lng: latLng.lng,
         });
+        setpickupSearchBox(pickupAddress);
       })
       .catch((error) => console.error("Error", error));
   };
@@ -178,7 +186,12 @@ function GoogleMap(props) {
           lat: state.mapCenter.lat,
           lng: state.mapCenter.lng,
         }}
-        name={"Your position"}
+        name={"Pickup Location"}
+        label={{
+          text: "P",
+          color: "white",
+        }}
+        title={"Pickup Location"}
       />
       {console.log(state.dropoffMarker)}
       <Marker
@@ -187,7 +200,19 @@ function GoogleMap(props) {
           lng: state.dropoffMarker.lng,
         }}
         name={"Dropoff Location"}
+        label={{
+          text: "D",
+          color: "white",
+        }}
+        title={"Dropoff Location"}
       />
+      {/* <MarkerWithLabel
+        position={{ lat: -34.397, lng: 150.644 }}
+        labelStyle={{ backgroundColor: "yellow", fontSize: "32px", padding: "16px" }}
+      >
+        <div>Hello There!</div>
+      </MarkerWithLabel> */}
+
       <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div className={classes.placeInputDiv}>
@@ -197,7 +222,9 @@ function GoogleMap(props) {
                 className: "location-search-input",
               })}
               className={classes.placeInput}
+              value={pickupSearchBox ? pickupSearchBox.pickupAddress : ""}
             />
+            {console.log("pickupSearchBox", pickupSearchBox)}
             <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
               {loading && <div>Loading...</div>}
               {suggestions.map((suggestion) => {
