@@ -60,15 +60,16 @@ const useStyles = makeStyles((theme) => ({
 
 function GoogleMap(props) {
   const classes = useStyles();
+  const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
 
   const [state, setState] = useState({
     mapCenter: {
-      lat: 24.8607,
-      lng: 67.0011,
+      lat: pickupLocation ? pickupLocation.lat : 24.8607,
+      lng: pickupLocation ? pickupLocation.lng : 67.0011,
     },
     dropoffMarker: {
-      lat: 24.86071,
-      lng: 67.00112,
+      lat: dropoffLocation ? dropoffLocation.lat : 24.86071,
+      lng: dropoffLocation ? dropoffLocation.lng : 67.00111,
     },
     zoom: 14,
   });
@@ -76,26 +77,31 @@ function GoogleMap(props) {
   const sharedContext = useContext(SharedContext);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setState({
+    pickupLocation
+      ? setState({
           ...state,
-          mapCenter: {
-            lat: position.coords.latitude || 24.8607,
-            lng: position.coords.longitude || 67.0011,
+          mapCenter: pickupLocation,
+        })
+      : navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setState({
+              ...state,
+              mapCenter: {
+                lat: position.coords.latitude || 24.8607,
+                lng: position.coords.longitude || 67.0011,
+              },
+            });
           },
-        });
-      },
-      () => {
-        setState({
-          ...state,
-          mapCenter: {
-            lat: 24.8607,
-            lng: 67.0011,
-          },
-        });
-      }
-    );
+          () => {
+            setState({
+              ...state,
+              mapCenter: {
+                lat: 24.8607,
+                lng: 67.0011,
+              },
+            });
+          }
+        );
   }, []);
 
   useEffect(() => {
@@ -103,15 +109,17 @@ function GoogleMap(props) {
   }, [state.mapCenter]);
 
   const handleChangePickup = (pickupAddress) => {
+    console.log("handle change pickup");
     setState({ ...state, pickupAddress });
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
+    console.log("handle change dropoff");
     setState({ ...state, dropoffAddress });
   };
 
   const handlePickupSelect = (pickupAddress) => {
-    console.log("handlePickupSelect", handlePickupSelect);
+    console.log("handlePickupSelect:pickupAddress:-", pickupAddress);
     geocodeByAddress(pickupAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
@@ -123,11 +131,15 @@ function GoogleMap(props) {
           },
           zoom: 17,
         });
+        setPickUp({
+          lat: latLng.lat,
+          lng: latLng.lng,
+        });
       })
       .catch((error) => console.error("Error", error));
   };
   const handleDropoffSelect = (dropoffAddress) => {
-    console.log(`dropoffAddress`, dropoffAddress);
+    console.log(`handleDropoffSelect:dropoffAddress:-`, dropoffAddress);
     geocodeByAddress(dropoffAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
@@ -138,6 +150,10 @@ function GoogleMap(props) {
             lng: latLng.lng,
           },
           zoom: 17,
+        });
+        setDropOff({
+          lat: latLng.lat,
+          lng: latLng.lng,
         });
       })
       .catch((error) => console.error("Error", error));

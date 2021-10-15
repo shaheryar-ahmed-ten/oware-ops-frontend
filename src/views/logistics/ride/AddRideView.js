@@ -24,8 +24,8 @@ import { upload } from "../../../utils/upload";
 import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import axios from "axios";
 import { Alert, Autocomplete } from "@material-ui/lab";
-import { isNumber } from "@material-ui/data-grid";
-import moment from "moment";
+import { Map, GoogleApiWrapper } from "google-maps-react";
+import GoogleMap from "../../../components/GoogleMap.js";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 5,
   },
 }));
+
 function AddRideView() {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ function AddRideView() {
   }, []);
 
   const addRide = (data) => {
+    console.log(`data on edit`, data);
     let apiPromise = null;
     if (!selectedRide) apiPromise = axios.post(getURL("ride"), data);
     else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
@@ -143,7 +145,9 @@ function AddRideView() {
   const [changeCar, setChangeCar] = useState();
   const [mounted, setMounted] = useState(false);
   const [vehicleType, setVehicleType] = useState([]);
-
+  const [pickUp, setPickUp] = useState({});
+  const [dropOff, setDropOff] = useState({});
+  console.log(pickUp, "pickUp", dropOff, "dropOff");
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
       setVehicles(res.data.vehicles);
@@ -276,6 +280,8 @@ function AddRideView() {
   }, [vehicleId]);
 
   const handleSubmit = async (e) => {
+    console.log("Pickup", pickUp);
+    console.log("dropOff", dropOff);
     let newRide = {
       status,
       vehicleId,
@@ -298,6 +304,8 @@ function AddRideView() {
       isActive,
       dropoffCityId,
       pickupCityId,
+      pickupLocation: pickUp,
+      dropoffLocation: dropOff,
     };
 
     setValidation({
@@ -321,6 +329,8 @@ function AddRideView() {
       isActive: true,
       dropoffCityId: true,
       pickupCityId: true,
+      pickupLocation: true,
+      dropoffLocation: true,
     });
 
     if (
@@ -342,6 +352,8 @@ function AddRideView() {
       isRequired(dropoffDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId)
+      // isRequired(pickupLocation) &&
+      // isRequired(dropoffLocation)
     ) {
       if (manifestImage) {
         const [manifestId] = await upload([manifestImage], "ride");
@@ -1100,7 +1112,12 @@ function AddRideView() {
             </Grid>
           </Grid>
         </Grid>
-
+        <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
+          <Grid item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
+            {console.log("rendering google map")}
+            <GoogleMap setDropOff={setDropOff} setPickUp={setPickUp} />
+          </Grid>
+        </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -1115,4 +1132,6 @@ function AddRideView() {
   );
 }
 
-export default AddRideView;
+export default GoogleApiWrapper({
+  apiKey: "AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU",
+})(AddRideView);

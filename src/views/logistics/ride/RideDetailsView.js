@@ -482,7 +482,7 @@ function RideDetailsView(props) {
 
         <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
           <Grid item xs={12} className={classes.locationMap} style={{ position: "relative" }}>
-            <GoogleMap />
+            <GoogleMap pickupLocation={selectedRide.pickupLocation} dropoffLocation={selectedRide.dropoffLocation} />
           </Grid>
         </Grid>
       </Grid>
