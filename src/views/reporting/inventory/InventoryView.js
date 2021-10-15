@@ -156,6 +156,7 @@ export default function InventoryView() {
   const [endDate, setEndDate] = useState(null)
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
 
   const _getInventories = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
     axios.get(getURL('inventory'), { params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startDate: selectedDateRange ? startDate : null, endDate: selectedDateRange ? endDate : null } })
@@ -172,18 +173,19 @@ export default function InventoryView() {
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
+
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword, startingDate, endingDate },
+      params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
 
   useEffect(() => {
-    if (selectedDay !== 'custom' && !selectedDateRange)
+    if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
       getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
-  }, [page, searchKeyword, selectedDay, selectedDateRange]);
+  }, [page, searchKeyword, selectedDay, selectedDateRange, reRender]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -275,6 +277,7 @@ export default function InventoryView() {
     label="To"
     type="date"
     variant="outlined"
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
     className={classes.textFieldRange}
     InputLabelProps={{
       shrink: true,
@@ -355,6 +358,7 @@ export default function InventoryView() {
               // TODO: call reRender
               setSelectedDateRange(true)
               setOpenDialog(false)
+              setReRender(!reRender)
             }}>
             OK
           </Button>

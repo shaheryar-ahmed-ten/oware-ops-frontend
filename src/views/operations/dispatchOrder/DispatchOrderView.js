@@ -396,7 +396,7 @@ export default function DispatchOrderView() {
                     background: "transparent",
                     fontWeight: "bolder",
                     fontSize: "12px",
-                    textAlign: "center",
+                    // textAlign: "center",
                   }}
                 >
                   {column.label}

@@ -22,7 +22,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText
+  FormHelperText
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -42,9 +42,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import SelectDropdown from '../../../components/SelectDropdown';
 import SelectCustomDropdown from '../../../components/SelectCustomDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
+import { gridColumnLookupSelector } from '@material-ui/data-grid';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -73,12 +72,14 @@ const useStyles = makeStyles(theme => ({
   placeholderText: {
     color: "#CAC9C9",
     '& .MuiSelect-outlined': {
-      paddingTop: '7px',
-      paddingBottom: '6px',
+      paddingTop: '0px',
+      paddingBottom: '0px',
+      // height: '10px',
     },
   },
   dropdownListItem: {
     fontSize: 12,
+    // paddingBottom: 10,
   },
   buttonDate:{
     color: "#FFFFFF",
@@ -218,8 +219,16 @@ export default function RideView() {
   }];
 
   const divStyle = {
+    // // marginRight: 65,
+    // // marginTop: 5,
+    fontSize:15,
     display: 'inline-table',
     paddingRight: 20
+  };
+  const textStyle={
+    textAlign: 'center',
+    marginRight: 65,
+    marginTop: 5
   };
 
   const [pageCount, setPageCount] = useState(1);
@@ -351,7 +360,7 @@ export default function RideView() {
   const getStats = () => {
     axios.get(getURL('ride/stats'))
       .then(res => {
-        setTotalProducts(res.data.stats[0].value)
+        // setTotalProducts(res.data.stats[0].value)
         setStats(res.data.stats)
       });
   };
@@ -367,6 +376,10 @@ export default function RideView() {
   useEffect(() => {
     getRelations();
   }, []);
+
+  const validateDate =(event) =>{
+
+  }
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -388,7 +401,7 @@ export default function RideView() {
       onChange={(e) => { setCurrentFilter(e.target.value) }}
       variant="outlined"
       displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
+      inputProps={{ 'aria-label': 'Without label'}}
       className={classes.placeholderText}
     >
       {Object.keys(filters).map(key => (
@@ -406,12 +419,11 @@ export default function RideView() {
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate},
+      params: { page, search: searchKeyword ,days:selectedDay == 'custom'? '':selectedDay ,start:startDate == '-'? '' :startDate, end:endDate == '-' ? '' : endDate,status:currentFilter == 'ALL' ? '' : currentFilter},
     }).then(response => {
       fileDownload(response.data, `Rides ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
-
   const startDateRange = <TextField
   id="date"
   label="From"
@@ -421,6 +433,7 @@ export default function RideView() {
   InputLabelProps={{
     shrink: true,
   }}
+  inputProps={{ max: dividerDateFormatForFilter(Date.now()) }}
   defaultValue={startDate}
   value={startDate}
   onChange={(e) => setStartDate(e.target.value)}
@@ -435,6 +448,7 @@ const endDateRange = <TextField
   InputLabelProps={{
     shrink: true,
   }}
+  inputProps={{ min :startDate ,max: dividerDateFormatForFilter(Date.now()) }}
   defaultValue={endDate}
   value={endDate}
   onChange={(e) => setEndDate(e.target.value)}
@@ -503,17 +517,19 @@ const endDateRange = <TextField
       </Dialog>
    
   </>
-
-  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <Typography style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</Typography>:''
+  
+ 
+  const filterText = selectedDay || selectedDay !== null && selectedDay !== undefined && startDate !== '-' ? <FormHelperText style={divStyle} >Showing {filteredCount} filtered rides out of {totalProducts} rides</FormHelperText>:''
+  const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText,daysSelect,searchInput, exportButton];
-
+  const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
+console.log(stats,currentFilter)
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Rides" buttons={topHeaderButtons} />
-        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter}/>
-        <TableHeader title={currentFilter === 'ALL' ? filterDropdown : ''} buttons={headerButtons} />
+        <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} setTotalProducts={setTotalProducts}/>
+        <TableHeader buttons={headerButtons} />
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
