@@ -377,9 +377,14 @@ export default function RideView() {
     getRelations();
   }, []);
 
-  const validateDate =(event) =>{
-
-  }
+  useEffect(()=>{
+    if(currentFilter == 'ALL'){
+      setTotalProducts(stats[0]?.value)
+    }
+    else{
+      <TableStatsHeader stats={stats} setCurrentFilter={setCurrentFilter} currentFilter={currentFilter} setTotalProducts={setTotalProducts}/>
+    }
+  })
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -414,7 +419,7 @@ export default function RideView() {
   </>
    const [open, setOpen] = useState(false);
 
-  // const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
+
   const daysSelect = <SelectCustomDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} open={open} setOpen={setOpen} setSelectedType={setSelectedDay} setPage={setPage} />
   const exportToExcel = () => {
     axios.get(getURL('ride/export'), {
@@ -478,9 +483,6 @@ const endDateRange = <TextField
     title={"Ride"}
   />
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
   const handleClose = () => {
     setOpen(false);
   };
@@ -523,7 +525,7 @@ const endDateRange = <TextField
   const customText = selectedDay == 'custom' && startDate !== '-' && startDate !== null && endDate !== null ? <FormHelperText style={textStyle} >From {startDate} to {endDate}</FormHelperText> : '';
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText,daysSelect,searchInput, exportButton,customText];
-console.log(stats,currentFilter)
+
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
