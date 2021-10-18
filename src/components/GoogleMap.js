@@ -183,55 +183,55 @@ function GoogleMap(props) {
         lng: state.pickupMarker.lng,
       }}
       center={{
-        lat: state.pickupMarker.lat,
-        lng: state.pickupMarker.lng,
+        lat: state.mapCenter.lat,
+        lng: state.mapCenter.lng,
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
     >
-      {state.pickupMarker.lat ? (
-        <Marker
-          position={{
-            lat: state.pickupMarker.lat,
-            lng: state.pickupMarker.lng,
-          }}
-          name={"Pickup Location"}
-          // label={{
-          //   text: "P",
-          //   color: "white",
-          // }}
-          title={"Pickup Location"}
-          icon={{
-            url: pickupIcon,
-          }}
-          draggable={true}
-          onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
-        />
-      ) : (
+      {/* {state.pickupMarker.lat ? ( */}
+      <Marker
+        position={{
+          lat: state.pickupMarker.lat,
+          lng: state.pickupMarker.lng,
+        }}
+        name={"Pickup Location"}
+        // label={{
+        //   text: "P",
+        //   color: "white",
+        // }}
+        title={"Pickup Location"}
+        icon={{
+          url: pickupIcon,
+        }}
+        draggable={true}
+        onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
+      />
+      {/* ) : (
         <div></div>
-      )}
+      )} */}
 
-      {state.dropoffMarker.lat ? (
-        <Marker
-          position={{
-            lat: state.dropoffMarker.lat,
-            lng: state.dropoffMarker.lng,
-          }}
-          name={"Dropoff Location"}
-          // label={{
-          //   text: "P",
-          //   color: "white",
-          // }}
-          title={"Dropoff Location"}
-          icon={{
-            url: dropoffIcon,
-          }}
-          draggable={true}
-          onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
-        />
-      ) : (
+      {/* {state.dropoffMarker.lat ? ( */}
+      <Marker
+        position={{
+          lat: state.dropoffMarker.lat,
+          lng: state.dropoffMarker.lng,
+        }}
+        name={"Dropoff Location"}
+        // label={{
+        //   text: "P",
+        //   color: "white",
+        // }}
+        title={"Dropoff Location"}
+        icon={{
+          url: dropoffIcon,
+        }}
+        draggable={true}
+        onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
+      />
+      {/* ) : (
         <div></div>
-      )}
+      )} */}
       <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div className={classes.placeInputDiv}>
