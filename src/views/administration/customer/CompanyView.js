@@ -103,12 +103,14 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
-  }, {
-    id: 'notes',
-    label: 'Notes',
-    minWidth: 'auto',
-    className: '',
-  }, {
+  }, 
+  // {
+  //   id: 'notes',
+  //   label: 'Notes',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+   {
     id: 'actions',
     label: '',
     minWidth: 'auto',
@@ -286,7 +288,7 @@ export default function CompanyView({ relationType }) {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title={relationType == 'CUSTOMER' ? ` Company` : ` Vendor`} buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (

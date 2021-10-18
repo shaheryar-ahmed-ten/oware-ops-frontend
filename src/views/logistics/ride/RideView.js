@@ -371,7 +371,6 @@ export default function RideView() {
 
   const getStats = () => {
     axios.get(getURL("ride/stats")).then((res) => {
-      // setTotalProducts(res.data.stats[0].value)
       setStats(res.data.stats);
     });
   };
@@ -402,7 +401,32 @@ export default function RideView() {
     getRelations();
   }, []);
 
-  const validateDate = (event) => {};
+  useEffect(() => {
+    if (currentFilter == "ALL") {
+      setTotalProducts(stats[0]?.value);
+    } else {
+      <TableStatsHeader
+        stats={stats}
+        setCurrentFilter={setCurrentFilter}
+        currentFilter={currentFilter}
+        setTotalProducts={setTotalProducts}
+      />;
+    }
+  });
+
+  const searchInput = (
+    <InputBase
+      placeholder="Search"
+      className={classes.searchInput}
+      id="search"
+      label="Search"
+      type="text"
+      variant="outlined"
+      value={searchKeyword}
+      key={1}
+      onChange={(e) => setSearchKeyword(e.target.value)}
+    />
+  );
 
   const searchInput = (
     <InputBase
@@ -445,7 +469,6 @@ export default function RideView() {
   );
   const [open, setOpen] = useState(false);
 
-  // const daysSelect = <SelectDropdown icon={<CalendarTodayOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Days" name="Select Days" list={[{ name: 'All' }, ...days]} selectedType={selectedDay} setSelectedType={setSelectedDay} setPage={setPage} />
   const daysSelect = (
     <SelectCustomDropdown
       icon={<CalendarTodayOutlinedIcon fontSize="small" />}
@@ -537,9 +560,6 @@ export default function RideView() {
     />
   );
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
   const handleClose = () => {
     setOpen(false);
   };
@@ -592,7 +612,7 @@ export default function RideView() {
     );
   const topHeaderButtons = [addRideButton, deleteRideModal];
   const headerButtons = [filterText, daysSelect, searchInput, exportButton, customText];
-  console.log(stats, currentFilter);
+
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
@@ -604,7 +624,7 @@ export default function RideView() {
           setTotalProducts={setTotalProducts}
         />
         <TableHeader buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (

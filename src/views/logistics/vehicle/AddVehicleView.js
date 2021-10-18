@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -18,6 +19,17 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { upload } from '../../../utils/upload';
 import { Autocomplete } from '@material-ui/lab';
 
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
+
 function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, companies, addVehicle, cars }) {
   const [validation, setValidation] = useState({});
   const [vendorName, setVendorName] = useState('')
@@ -30,6 +42,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
   const [runningPaperImage, setRunningPaperImage] = useState(null)
   const [routePermitImage, setRoutePermit] = useState(null)
   const [drivers, setDrivers] = useState([])
+  const classes = useStyles();
 
 
   cars.sort(function (a, b) {
@@ -169,7 +182,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="vendorId"
-                      key={vendorId}
+                      key={companies}
                       options={companies}
                       defaultValue={!!selectedVehicle ? { name: selectedVehicle.Vendor.name, id: selectedVehicle.Vendor.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
@@ -187,7 +200,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="driverId"
-                      key={driverId}
+                      key={drivers}
                       options={drivers}
                       defaultValue={!!selectedVehicle ? { name: selectedVehicle.Driver.name, id: selectedVehicle.Driver.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Driver" variant="outlined" />}
@@ -206,6 +219,8 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                 <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="RegistrationNumber"
                     label="Registration Number"
@@ -228,7 +243,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                     {!!selectedVehicle ? console.log(selectedVehicle.Car.CarMake.name, selectedVehicle.Car.CarModel.name) : ''}
                     <Autocomplete
                       id="carId"
-                      key={carId}
+                      key={cars}
                       options={cars}
                       defaultValue={!!selectedVehicle ? { name: `${selectedVehicle.Car.CarMake.name} ${selectedVehicle.Car.CarModel.name}`, id: selectedVehicle.Car.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
