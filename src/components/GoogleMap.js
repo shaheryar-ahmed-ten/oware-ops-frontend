@@ -77,12 +77,12 @@ function GoogleMap(props) {
 
   const [state, setState] = useState({
     mapCenter: {
-      lat: pickupLocation ? pickupLocation.lat : 24.8507,
-      lng: pickupLocation ? pickupLocation.lng : 67.0011,
+      lat: pickupLocation ? pickupLocation.lat : null,
+      lng: pickupLocation ? pickupLocation.lng : null,
     },
     dropoffMarker: {
-      lat: dropoffLocation ? dropoffLocation.lat : 24.86071,
-      lng: dropoffLocation ? dropoffLocation.lng : 67.00211,
+      lat: dropoffLocation ? dropoffLocation.lat : null,
+      lng: dropoffLocation ? dropoffLocation.lng : null,
     },
     zoom: 14,
   });
@@ -227,7 +227,7 @@ function GoogleMap(props) {
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
     >
-      {pickupLocation ? (
+      {state.mapCenter.lat ? (
         <Marker
           position={{
             lat: state.mapCenter.lat,
@@ -249,7 +249,7 @@ function GoogleMap(props) {
         <div></div>
       )}
 
-      {dropoffLocation ? (
+      {state.dropoffMarker.lat ? (
         <Marker
           position={{
             lat: state.dropoffMarker.lat,
