@@ -240,7 +240,6 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    {!!selectedVehicle ? console.log(selectedVehicle.Car.CarMake.name, selectedVehicle.Car.CarModel.name) : ''}
                     <Autocomplete
                       id="carId"
                       key={cars}
