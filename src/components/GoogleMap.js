@@ -61,17 +61,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function GoogleMap(props) {
-  // const state2 = {
-  //   markers: [
-  //     {
-  //       name: "Current position",
-  //       position: {
-  //         lat: 37.77,
-  //         lng: -122.42,
-  //       },
-  //     },
-  //   ],
-  // };
   const classes = useStyles();
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
 
@@ -91,34 +80,6 @@ function GoogleMap(props) {
 
   const sharedContext = useContext(SharedContext);
 
-  // useEffect(() => {
-  //   pickupLocation
-  //     ? setState({
-  //         ...state,
-  //         mapCenter: pickupLocation,
-  //       })
-  //     : navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           setState({
-  //             ...state,
-  //             mapCenter: {
-  //               lat: position.coords.latitude || 24.8607,
-  //               lng: position.coords.longitude || 67.0011,
-  //             },
-  //           });
-  //         },
-  //         () => {
-  //           setState({
-  //             ...state,
-  //             mapCenter: {
-  //               lat: 24.8607,
-  //               lng: 67.0011,
-  //             },
-  //           });
-  //         }
-  //       );
-  // }, []);
-
   useEffect(() => {
     sharedContext.setSelectedMapLocation(state.mapCenter);
   }, [state.mapCenter]);
@@ -128,18 +89,15 @@ function GoogleMap(props) {
   }, [pickupSearchBox]);
 
   const handleChangePickup = (pickupAddress) => {
-    console.log("handle change pickup on change", pickupAddress);
     setState({ ...state, pickupAddress });
     setpickupSearchBox({ pickupAddress });
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
-    console.log("handle change dropoff");
     setState({ ...state, dropoffAddress });
   };
 
   const handlePickupSelect = (pickupAddress) => {
-    console.log("handlePickupSelect:pickupAddress:-", pickupAddress);
     geocodeByAddress(pickupAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
@@ -270,15 +228,6 @@ function GoogleMap(props) {
       ) : (
         <div></div>
       )}
-
-      {console.log(state.dropoffMarker)}
-
-      {/* <MarkerWithLabel
-        position={{ lat: -34.397, lng: 150.644 }}
-        labelStyle={{ backgroundColor: "yellow", fontSize: "32px", padding: "16px" }}
-      >
-        <div>Hello There!</div>
-      </MarkerWithLabel> */}
       <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div className={classes.placeInputDiv}>
@@ -290,7 +239,6 @@ function GoogleMap(props) {
               className={classes.placeInput}
               value={pickupSearchBox ? pickupSearchBox.pickupAddress : ""}
             />
-            {console.log("pickupSearchBox", pickupSearchBox)}
             <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
               {loading && <div>Loading...</div>}
               {suggestions.map((suggestion) => {
