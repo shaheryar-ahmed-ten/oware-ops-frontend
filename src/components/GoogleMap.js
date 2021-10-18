@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
+import dropoffIcon from "./darkgreen_MarkerD.png";
+import pickupIcon from "./red_MarkerP.png";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -59,17 +61,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function GoogleMap(props) {
+  // const state2 = {
+  //   markers: [
+  //     {
+  //       name: "Current position",
+  //       position: {
+  //         lat: 37.77,
+  //         lng: -122.42,
+  //       },
+  //     },
+  //   ],
+  // };
   const classes = useStyles();
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
 
   const [state, setState] = useState({
     mapCenter: {
-      lat: pickupLocation ? pickupLocation.lat : 24.8607,
+      lat: pickupLocation ? pickupLocation.lat : 24.8507,
       lng: pickupLocation ? pickupLocation.lng : 67.0011,
     },
     dropoffMarker: {
       lat: dropoffLocation ? dropoffLocation.lat : 24.86071,
-      lng: dropoffLocation ? dropoffLocation.lng : 67.00111,
+      lng: dropoffLocation ? dropoffLocation.lng : 67.00211,
     },
     zoom: 14,
   });
@@ -78,33 +91,33 @@ function GoogleMap(props) {
 
   const sharedContext = useContext(SharedContext);
 
-  useEffect(() => {
-    pickupLocation
-      ? setState({
-          ...state,
-          mapCenter: pickupLocation,
-        })
-      : navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setState({
-              ...state,
-              mapCenter: {
-                lat: position.coords.latitude || 24.8607,
-                lng: position.coords.longitude || 67.0011,
-              },
-            });
-          },
-          () => {
-            setState({
-              ...state,
-              mapCenter: {
-                lat: 24.8607,
-                lng: 67.0011,
-              },
-            });
-          }
-        );
-  }, []);
+  // useEffect(() => {
+  //   pickupLocation
+  //     ? setState({
+  //         ...state,
+  //         mapCenter: pickupLocation,
+  //       })
+  //     : navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           setState({
+  //             ...state,
+  //             mapCenter: {
+  //               lat: position.coords.latitude || 24.8607,
+  //               lng: position.coords.longitude || 67.0011,
+  //             },
+  //           });
+  //         },
+  //         () => {
+  //           setState({
+  //             ...state,
+  //             mapCenter: {
+  //               lat: 24.8607,
+  //               lng: 67.0011,
+  //             },
+  //           });
+  //         }
+  //       );
+  // }, []);
 
   useEffect(() => {
     sharedContext.setSelectedMapLocation(state.mapCenter);
@@ -167,6 +180,40 @@ function GoogleMap(props) {
       .catch((error) => console.error("Error", error));
   };
 
+  const onPickupMarkerDragEnd = (coord) => {
+    const { latLng } = coord;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+    setState({
+      ...state,
+      mapCenter: {
+        lat,
+        lng,
+      },
+      zoom: 17,
+    });
+    setPickUp(state.mapCenter);
+    setDropOff(state.dropoffMarker);
+    return state.mapCenter;
+  };
+
+  const onDropoffMarkerDragEnd = (coord) => {
+    const { latLng } = coord;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+    setState({
+      ...state,
+      dropoffMarker: {
+        lat,
+        lng,
+      },
+      zoom: 17,
+    });
+    setPickUp(state.mapCenter);
+    setDropOff(state.dropoffMarker);
+    return state.dropoffMarker;
+  };
+
   return (
     <Map
       google={props.google}
@@ -181,38 +228,58 @@ function GoogleMap(props) {
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
     >
-      <Marker
-        position={{
-          lat: state.mapCenter.lat,
-          lng: state.mapCenter.lng,
-        }}
-        name={"Pickup Location"}
-        label={{
-          text: "P",
-          color: "white",
-        }}
-        title={"Pickup Location"}
-      />
+      {pickupLocation ? (
+        <Marker
+          position={{
+            lat: state.mapCenter.lat,
+            lng: state.mapCenter.lng,
+          }}
+          name={"Pickup Location"}
+          // label={{
+          //   text: "P",
+          //   color: "white",
+          // }}
+          title={"Pickup Location"}
+          icon={{
+            url: pickupIcon,
+          }}
+          draggable={true}
+          onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
+        />
+      ) : (
+        <div></div>
+      )}
+
+      {dropoffLocation ? (
+        <Marker
+          position={{
+            lat: state.dropoffMarker.lat,
+            lng: state.dropoffMarker.lng,
+          }}
+          name={"Dropoff Location"}
+          // label={{
+          //   text: "P",
+          //   color: "white",
+          // }}
+          title={"Dropoff Location"}
+          icon={{
+            url: dropoffIcon,
+          }}
+          draggable={true}
+          onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
+        />
+      ) : (
+        <div></div>
+      )}
+
       {console.log(state.dropoffMarker)}
-      <Marker
-        position={{
-          lat: state.dropoffMarker.lat,
-          lng: state.dropoffMarker.lng,
-        }}
-        name={"Dropoff Location"}
-        label={{
-          text: "D",
-          color: "white",
-        }}
-        title={"Dropoff Location"}
-      />
+
       {/* <MarkerWithLabel
         position={{ lat: -34.397, lng: 150.644 }}
         labelStyle={{ backgroundColor: "yellow", fontSize: "32px", padding: "16px" }}
       >
         <div>Hello There!</div>
       </MarkerWithLabel> */}
-
       <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div className={classes.placeInputDiv}>

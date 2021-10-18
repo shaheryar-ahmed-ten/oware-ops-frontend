@@ -742,9 +742,19 @@ function AddRideView() {
               ""
             )}
           </Grid>
-          <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
-            {console.log("rendering google map")}
-            <GoogleMap setDropOff={setDropOff} setPickUp={setPickUp} />
+          <Grid
+            item
+            sm={12}
+            className={classes.locationMap}
+            style={{ position: "relative", minHeight: 300, marginBottom: 30 }}
+          >
+            {console.log("selectedRide", selectedRide)}
+            <GoogleMap
+              setDropOff={setDropOff}
+              setPickUp={setPickUp}
+              pickupLocation={selectedRide ? selectedRide.pickupLocation : ""}
+              dropoffLocation={selectedRide ? selectedRide.dropoffLocation : ""}
+            />
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
