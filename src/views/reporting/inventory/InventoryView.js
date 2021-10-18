@@ -267,6 +267,7 @@ export default function InventoryView() {
     InputLabelProps={{
       shrink: true,
     }}
+    fullWidth
     defaultValue={startDate}
     value={startDate}
     onChange={(e) => setStartDate(e.target.value)}
@@ -274,7 +275,7 @@ export default function InventoryView() {
   />
   const endDateRange = <TextField
     id="date"
-    label="To"
+    label="From"
     type="date"
     variant="outlined"
     inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
@@ -282,6 +283,7 @@ export default function InventoryView() {
     InputLabelProps={{
       shrink: true,
     }}
+    fullWidth
     defaultValue={endDate}
     value={endDate}
     onChange={(e) => setEndDate(e.target.value)}
@@ -355,7 +357,6 @@ export default function InventoryView() {
           <Button variant="contained" color="primary"
             disabled={!startDate || !endDate}
             onClick={() => {
-              // TODO: call reRender
               setSelectedDateRange(true)
               setOpenDialog(false)
               setReRender(!reRender)
