@@ -160,7 +160,6 @@ function GoogleMap(props) {
       .catch((error) => console.error("Error", error));
   };
   const handleDropoffSelect = (dropoffAddress) => {
-    console.log(`handleDropoffSelect:dropoffAddress:-`, dropoffAddress);
     geocodeByAddress(dropoffAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
