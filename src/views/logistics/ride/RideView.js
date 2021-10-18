@@ -428,20 +428,6 @@ export default function RideView() {
     />
   );
 
-  const searchInput = (
-    <InputBase
-      placeholder="Search"
-      className={classes.searchInput}
-      id="search"
-      label="Search"
-      type="text"
-      variant="outlined"
-      value={searchKeyword}
-      key={1}
-      onChange={(e) => setSearchKeyword(e.target.value)}
-    />
-  );
-
   const filters = { ALL: "ALL", ...statuses };
 
   const filterDropdown = (

@@ -65,13 +65,17 @@ function GoogleMap(props) {
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
 
   const [state, setState] = useState({
-    mapCenter: {
+    pickupMarker: {
       lat: pickupLocation ? pickupLocation.lat : null,
       lng: pickupLocation ? pickupLocation.lng : null,
     },
     dropoffMarker: {
       lat: dropoffLocation ? dropoffLocation.lat : null,
       lng: dropoffLocation ? dropoffLocation.lng : null,
+    },
+    mapCenter: {
+      lat: 24.916,
+      lng: 67.023,
     },
     zoom: 14,
   });
@@ -81,8 +85,8 @@ function GoogleMap(props) {
   const sharedContext = useContext(SharedContext);
 
   useEffect(() => {
-    sharedContext.setSelectedMapLocation(state.mapCenter);
-  }, [state.mapCenter]);
+    sharedContext.setSelectedMapLocation(state.pickupMarker);
+  }, [state.pickupMarker]);
 
   useEffect(() => {
     setpickupSearchBox(pickupSearchBox);
@@ -103,7 +107,7 @@ function GoogleMap(props) {
       .then((latLng) => {
         setState({
           ...state,
-          mapCenter: {
+          pickupMarker: {
             lat: latLng.lat,
             lng: latLng.lng,
           },
@@ -143,15 +147,15 @@ function GoogleMap(props) {
     const lng = latLng.lng();
     setState({
       ...state,
-      mapCenter: {
+      pickupMarker: {
         lat,
         lng,
       },
       zoom: 17,
     });
-    setPickUp(state.mapCenter);
+    setPickUp(state.pickupMarker);
     setDropOff(state.dropoffMarker);
-    return state.mapCenter;
+    return state.pickupMarker;
   };
 
   const onDropoffMarkerDragEnd = (coord) => {
@@ -166,7 +170,7 @@ function GoogleMap(props) {
       },
       zoom: 17,
     });
-    setPickUp(state.mapCenter);
+    setPickUp(state.pickupMarker);
     setDropOff(state.dropoffMarker);
     return state.dropoffMarker;
   };
@@ -175,21 +179,21 @@ function GoogleMap(props) {
     <Map
       google={props.google}
       initialCenter={{
-        lat: state.mapCenter.lat,
-        lng: state.mapCenter.lng,
+        lat: state.pickupMarker.lat,
+        lng: state.pickupMarker.lng,
       }}
       center={{
-        lat: state.mapCenter.lat,
-        lng: state.mapCenter.lng,
+        lat: state.pickupMarker.lat,
+        lng: state.pickupMarker.lng,
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
     >
-      {state.mapCenter.lat ? (
+      {state.pickupMarker.lat ? (
         <Marker
           position={{
-            lat: state.mapCenter.lat,
-            lng: state.mapCenter.lng,
+            lat: state.pickupMarker.lat,
+            lng: state.pickupMarker.lng,
           }}
           name={"Pickup Location"}
           // label={{
