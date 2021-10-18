@@ -158,16 +158,16 @@ export default function InventoryView() {
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
   const [reRender, setReRender] = useState(false)
 
-  const _getInventories = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
-    axios.get(getURL('inventory'), { params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startDate: selectedDateRange ? startDate : null, endDate: selectedDateRange ? endDate : null } })
+  const _getInventories = (page, searchKeyword) => {
+    axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setInventories(res.data.data)
       });
   }
 
-  const getInventories = useCallback(debounce((page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
-    _getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+  const getInventories = useCallback(debounce((page, searchKeyword) => {
+    _getInventories(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
@@ -184,8 +184,8 @@ export default function InventoryView() {
 
   useEffect(() => {
     if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
-      getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
-  }, [page, searchKeyword, selectedDay, selectedDateRange, reRender]);
+      getInventories(page, searchKeyword);
+  }, [page, searchKeyword]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
