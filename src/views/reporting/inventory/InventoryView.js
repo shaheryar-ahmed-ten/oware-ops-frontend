@@ -158,16 +158,16 @@ export default function InventoryView() {
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
   const [reRender, setReRender] = useState(false)
 
-  const _getInventories = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
-    axios.get(getURL('inventory'), { params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startDate: selectedDateRange ? startDate : null, endDate: selectedDateRange ? endDate : null } })
+  const _getInventories = (page, searchKeyword) => {
+    axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
         setPageCount(res.data.pages)
         setInventories(res.data.data)
       });
   }
 
-  const getInventories = useCallback(debounce((page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
-    _getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+  const getInventories = useCallback(debounce((page, searchKeyword) => {
+    _getInventories(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
@@ -184,8 +184,8 @@ export default function InventoryView() {
 
   useEffect(() => {
     if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
-      getInventories(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
-  }, [page, searchKeyword, selectedDay, selectedDateRange, reRender]);
+      getInventories(page, searchKeyword);
+  }, [page, searchKeyword]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -267,6 +267,7 @@ export default function InventoryView() {
     InputLabelProps={{
       shrink: true,
     }}
+    fullWidth
     defaultValue={startDate}
     value={startDate}
     onChange={(e) => setStartDate(e.target.value)}
@@ -274,7 +275,7 @@ export default function InventoryView() {
   />
   const endDateRange = <TextField
     id="date"
-    label="To"
+    label="From"
     type="date"
     variant="outlined"
     inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
@@ -282,6 +283,7 @@ export default function InventoryView() {
     InputLabelProps={{
       shrink: true,
     }}
+    fullWidth
     defaultValue={endDate}
     value={endDate}
     onChange={(e) => setEndDate(e.target.value)}
@@ -355,7 +357,6 @@ export default function InventoryView() {
           <Button variant="contained" color="primary"
             disabled={!startDate || !endDate}
             onClick={() => {
-              // TODO: call reRender
               setSelectedDateRange(true)
               setOpenDialog(false)
               setReRender(!reRender)
