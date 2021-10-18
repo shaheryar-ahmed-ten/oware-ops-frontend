@@ -236,7 +236,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="contactId"
-                      key={contactId}
+                      key={users}
                       options={users}
                       defaultValue={!!selectedCompany ? { name: `${selectedCompany.Contact.firstName} ${selectedCompany.Contact.lastName}`, id: selectedCompany.Contact.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Contact*" variant="outlined" />}

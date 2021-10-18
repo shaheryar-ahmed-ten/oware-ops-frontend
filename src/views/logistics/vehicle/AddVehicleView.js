@@ -182,7 +182,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="vendorId"
-                      key={vendorId}
+                      key={companies}
                       options={companies}
                       defaultValue={!!selectedVehicle ? { name: selectedVehicle.Vendor.name, id: selectedVehicle.Vendor.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
@@ -200,7 +200,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="driverId"
-                      key={driverId}
+                      key={drivers}
                       options={drivers}
                       defaultValue={!!selectedVehicle ? { name: selectedVehicle.Driver.name, id: selectedVehicle.Driver.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Driver" variant="outlined" />}
@@ -243,7 +243,7 @@ function AddVehicleView({ selectedVehicle, formErrors, open, handleClose, compan
                     {!!selectedVehicle ? console.log(selectedVehicle.Car.CarMake.name, selectedVehicle.Car.CarModel.name) : ''}
                     <Autocomplete
                       id="carId"
-                      key={carId}
+                      key={cars}
                       options={cars}
                       defaultValue={!!selectedVehicle ? { name: `${selectedVehicle.Car.CarMake.name} ${selectedVehicle.Car.CarModel.name}`, id: selectedVehicle.Car.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}

@@ -184,7 +184,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="categoryId"
-                      key={categoryId}
+                      key={categories}
                       options={categories}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.Category.name, id: selectedProduct.Category.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
@@ -202,7 +202,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="brandId"
-                      key={brandId}
+                      key={brands}
                       options={brands}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.Brand.name, id: selectedProduct.Brand.id } : ''}
                       renderInput={(params) => <TextField {...params} label="Brand" variant="outlined" />}
@@ -223,7 +223,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <Autocomplete
                       id="uomId"
-                      key={uomId}
+                      key={uoms}
                       options={uoms}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.UOM.name, id: selectedProduct.UOM.id } : ''}
                       renderInput={(params) => <TextField {...params} label="UoM" variant="outlined" />}
