@@ -77,10 +77,11 @@ function GoogleMap(props) {
       lat: 24.916,
       lng: 67.023,
     },
-    zoom: 14,
+    zoom: 10,
   });
 
-  const [pickupSearchBox, setpickupSearchBox] = useState();
+  const [pickupSearchBox, setpickupSearchBox] = useState("");
+  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
 
   const sharedContext = useContext(SharedContext);
 
@@ -88,17 +89,14 @@ function GoogleMap(props) {
     sharedContext.setSelectedMapLocation(state.pickupMarker);
   }, [state.pickupMarker]);
 
-  useEffect(() => {
-    setpickupSearchBox(pickupSearchBox);
-  }, [pickupSearchBox]);
-
   const handleChangePickup = (pickupAddress) => {
     setState({ ...state, pickupAddress });
-    setpickupSearchBox({ pickupAddress });
+    setpickupSearchBox(pickupAddress);
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
     setState({ ...state, dropoffAddress });
+    setDropoffSearchBox(dropoffAddress);
   };
 
   const handlePickupSelect = (pickupAddress) => {
@@ -111,7 +109,7 @@ function GoogleMap(props) {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 17,
+          zoom: 10,
         });
         setPickUp({
           lat: latLng.lat,
@@ -131,49 +129,53 @@ function GoogleMap(props) {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 17,
+          zoom: 10,
         });
         setDropOff({
           lat: latLng.lat,
           lng: latLng.lng,
         });
-      })
-      .catch((error) => console.error("Error", error));
+      });
+    if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
 
   const onPickupMarkerDragEnd = (coord) => {
     const { latLng } = coord;
-    const lat = latLng.lat();
-    const lng = latLng.lng();
+    const updatedLat = latLng.lat();
+    const updatedLng = latLng.lng();
+
     setState({
       ...state,
       pickupMarker: {
-        lat,
-        lng,
+        lat: updatedLat,
+        lng: updatedLng,
       },
-      zoom: 17,
+      zoom: 10,
     });
-    setPickUp(state.pickupMarker);
-    setDropOff(state.dropoffMarker);
-    return state.pickupMarker;
+
+    console.log("state.pickupMarker OLD", state.pickupMarker, "new date", new Date());
+    return { lat: updatedLat, lng: updatedLng };
   };
 
   const onDropoffMarkerDragEnd = (coord) => {
     const { latLng } = coord;
-    const lat = latLng.lat();
-    const lng = latLng.lng();
+    const updatedLat = latLng.lat();
+    const updatedLng = latLng.lng();
     setState({
       ...state,
       dropoffMarker: {
-        lat,
-        lng,
+        lat: updatedLat,
+        lng: updatedLng,
       },
-      zoom: 17,
+      zoom: 10,
     });
-    setPickUp(state.pickupMarker);
-    setDropOff(state.dropoffMarker);
-    return state.dropoffMarker;
+    return { lat: updatedLat, lng: updatedLng };
   };
+
+  useEffect(() => {
+    if (setPickUp) setPickUp(state.pickupMarker);
+    if (setDropOff) setDropOff(state.dropoffMarker);
+  }, [state.pickupMarker, state.dropoffMarker]);
 
   return (
     <Map
@@ -189,7 +191,6 @@ function GoogleMap(props) {
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
     >
-      {/* {state.pickupMarker.lat ? ( */}
       <Marker
         position={{
           lat: state.pickupMarker.lat,
@@ -207,11 +208,6 @@ function GoogleMap(props) {
         draggable={true}
         onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
       />
-      {/* ) : (
-        <div></div>
-      )} */}
-
-      {/* {state.dropoffMarker.lat ? ( */}
       <Marker
         position={{
           lat: state.dropoffMarker.lat,
@@ -229,96 +225,100 @@ function GoogleMap(props) {
         draggable={true}
         onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
       />
-      {/* ) : (
+      {props.showMapSearchFields ? (
+        <div>
+          <PlacesAutocomplete value={pickupSearchBox} onChange={handleChangePickup} onSelect={handlePickupSelect}>
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div className={classes.placeInputDiv}>
+                <input
+                  {...getInputProps({
+                    placeholder: "Search Pickup Location...",
+                    className: "location-search-input",
+                  })}
+                  className={classes.placeInput}
+                  value={pickupSearchBox}
+                />
+                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion) => {
+                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                    // inline style for demonstration purpose
+                    const style = suggestion.active
+                      ? {
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
+                      : {
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
+                    return (
+                      <div
+                        {...getSuggestionItemProps(suggestion, {
+                          className,
+                          style,
+                        })}
+                      >
+                        <span>{suggestion.description}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </PlacesAutocomplete>
+          <PlacesAutocomplete value={dropoffSearchBox} onChange={handleChangeDropoff} onSelect={handleDropoffSelect}>
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div className={classes.placeDropoffInputDiv}>
+                <input
+                  {...getInputProps({
+                    placeholder: "Search Dropoff Location...",
+                    className: "location-search-input",
+                  })}
+                  className={classes.placeInput}
+                  value={dropoffSearchBox}
+                />
+                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion) => {
+                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                    // inline style for demonstration purpose
+                    const style = suggestion.active
+                      ? {
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
+                      : {
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
+                    return (
+                      <div
+                        {...getSuggestionItemProps(suggestion, {
+                          className,
+                          style,
+                        })}
+                      >
+                        <span>{suggestion.description}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </PlacesAutocomplete>
+        </div>
+      ) : (
         <div></div>
-      )} */}
-      <PlacesAutocomplete value={state.pickupAddress} onChange={handleChangePickup} onSelect={handlePickupSelect}>
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div className={classes.placeInputDiv}>
-            <input
-              {...getInputProps({
-                placeholder: "Search Pickup Location...",
-                className: "location-search-input",
-              })}
-              className={classes.placeInput}
-              value={pickupSearchBox ? pickupSearchBox.pickupAddress : ""}
-            />
-            <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
-              {loading && <div>Loading...</div>}
-              {suggestions.map((suggestion) => {
-                const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
-                // inline style for demonstration purpose
-                const style = suggestion.active
-                  ? {
-                      backgroundColor: "#fafafa",
-                      cursor: "pointer",
-                      borderBottom: "1px solid black",
-                      padding: "5px 5px",
-                    }
-                  : {
-                      backgroundColor: "#ffffff",
-                      cursor: "pointer",
-                      borderBottom: "1px solid black",
-                      padding: "5px 5px",
-                    };
-                return (
-                  <div
-                    {...getSuggestionItemProps(suggestion, {
-                      className,
-                      style,
-                    })}
-                  >
-                    <span>{suggestion.description}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </PlacesAutocomplete>
-      <PlacesAutocomplete value={state.dropoffAddress} onChange={handleChangeDropoff} onSelect={handleDropoffSelect}>
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div className={classes.placeDropoffInputDiv}>
-            <input
-              {...getInputProps({
-                placeholder: "Search Dropoff Location...",
-                className: "location-search-input",
-              })}
-              className={classes.placeInput}
-            />
-            <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
-              {loading && <div>Loading...</div>}
-              {suggestions.map((suggestion) => {
-                const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
-                // inline style for demonstration purpose
-                const style = suggestion.active
-                  ? {
-                      backgroundColor: "#fafafa",
-                      cursor: "pointer",
-                      borderBottom: "1px solid black",
-                      padding: "5px 5px",
-                    }
-                  : {
-                      backgroundColor: "#ffffff",
-                      cursor: "pointer",
-                      borderBottom: "1px solid black",
-                      padding: "5px 5px",
-                    };
-                return (
-                  <div
-                    {...getSuggestionItemProps(suggestion, {
-                      className,
-                      style,
-                    })}
-                  >
-                    <span>{suggestion.description}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </PlacesAutocomplete>
+      )}
     </Map>
   );
 }

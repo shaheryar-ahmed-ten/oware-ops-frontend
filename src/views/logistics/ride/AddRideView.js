@@ -83,7 +83,7 @@ function AddRideView() {
   }, []);
 
   const addRide = (data) => {
-    console.log(`data on edit`, data);
+    // console.log(`data on edit`, data);
     let apiPromise = null;
     if (!selectedRide) apiPromise = axios.post(getURL("ride"), data);
     else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
@@ -147,7 +147,7 @@ function AddRideView() {
   const [vehicleType, setVehicleType] = useState([]);
   const [pickUp, setPickUp] = useState({});
   const [dropOff, setDropOff] = useState({});
-  console.log(pickUp, "pickUp", dropOff, "dropOff");
+  // console.log(pickUp, "pickUp", dropOff, "dropOff");
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
       setVehicles(res.data.vehicles);
@@ -250,7 +250,7 @@ function AddRideView() {
         // if(selectedRide) {setVehicleId(carVehicle.id)}
         // setVehicleId(carVehicle.id)
         getVehicles(carId, vendorId);
-        console.log("carVehicleTemp", filterCarArray);
+        // console.log("carVehicleTemp", filterCarArray);
       }
     }
   }, [carId]);
@@ -280,8 +280,8 @@ function AddRideView() {
   }, [vehicleId]);
 
   const handleSubmit = async (e) => {
-    console.log("Pickup", pickUp);
-    console.log("dropOff", dropOff);
+    // console.log("Pickup", pickUp);
+    // console.log("dropOff", dropOff);
     let newRide = {
       status,
       vehicleId,
@@ -748,12 +748,13 @@ function AddRideView() {
             className={classes.locationMap}
             style={{ position: "relative", minHeight: 300, marginBottom: 30 }}
           >
-            {console.log("selectedRide", selectedRide)}
+            {/* {console.log("selectedRide", selectedRide)} */}
             <GoogleMap
               setDropOff={setDropOff}
               setPickUp={setPickUp}
               pickupLocation={selectedRide ? selectedRide.pickupLocation : ""}
               dropoffLocation={selectedRide ? selectedRide.dropoffLocation : ""}
+              showMapSearchFields={true}
             />
           </Grid>
         </Grid>

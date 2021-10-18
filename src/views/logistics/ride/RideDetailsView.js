@@ -395,7 +395,11 @@ function RideDetailsView(props) {
         {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
           <Grid container item xs={12} spacing={3} style={{ minHeight: 400, marginBottom: 20 }}>
             <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
-              <GoogleMap pickupLocation={selectedRide.pickupLocation} dropoffLocation={selectedRide.dropoffLocation} />
+              <GoogleMap
+                pickupLocation={selectedRide.pickupLocation}
+                dropoffLocation={selectedRide.dropoffLocation}
+                showMapSearchFields={false}
+              />
             </Grid>
           </Grid>
         ) : (
