@@ -103,12 +103,14 @@ export default function CompanyView({ relationType }) {
     minWidth: 'auto',
     className: value => value ? classes.active : '',
     format: value => value ? 'Active' : 'In-Active',
-  }, {
-    id: 'notes',
-    label: 'Notes',
-    minWidth: 'auto',
-    className: '',
-  }, {
+  }, 
+  // {
+  //   id: 'notes',
+  //   label: 'Notes',
+  //   minWidth: 'auto',
+  //   className: '',
+  // },
+   {
     id: 'actions',
     label: '',
     minWidth: 'auto',
