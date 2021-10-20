@@ -28,7 +28,7 @@ import { dividerDateFormatForFilter, getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { DEBOUNCE_CONST } from '../../../Config';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
@@ -176,7 +176,11 @@ export default function InventoryView() {
 
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null },
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -186,6 +190,7 @@ export default function InventoryView() {
     if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
       getInventories(page, searchKeyword);
   }, [page, searchKeyword]);
+
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
