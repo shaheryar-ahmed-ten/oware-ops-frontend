@@ -170,8 +170,8 @@ function BulkUpload() {
                             <Grid item xs={12} alignItems="center" className={classes.guidelines}>
                                 <Alert severity="info" className={classes.guideLine}>Maximum of 1000 products are allowed to be included for upload in a single file.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The Brand, Category and UoM values used for product rows in upload should already be added in the system before upload. Non exisiting values will result in a validation error.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>Few dummy products are added to the file, please remove them before adding your products.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The Brand, Category & UoM values must exist in the system before being used in bulk upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample value for product rows which must be replaced with actual values before upload.</Alert>
                             </Grid>
                         </>
                 }
