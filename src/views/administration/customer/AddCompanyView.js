@@ -166,7 +166,10 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={()=>{
+          setValidation('')
+          console.log("I was called");
+        }}>
           <DialogTitle>
             {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
           </DialogTitle>
@@ -378,6 +381,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           <DialogActions>
             <Button onClick={() => {
               setExplicitReRender(!explicitReRender);
+              setValidation('')
               handleClose()
             }
             } color="default" variant="contained">Cancel</Button>
