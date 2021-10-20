@@ -268,6 +268,7 @@ export default function InventoryView() {
       shrink: true,
     }}
     fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
     defaultValue={startDate}
     value={startDate}
     onChange={(e) => setStartDate(e.target.value)}
@@ -278,12 +279,12 @@ export default function InventoryView() {
     label="To"
     type="date"
     variant="outlined"
-    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
     className={classes.textFieldRange}
     InputLabelProps={{
       shrink: true,
     }}
     fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
     defaultValue={endDate}
     value={endDate}
     onChange={(e) => setEndDate(e.target.value)}
