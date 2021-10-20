@@ -63,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
 function GoogleMap(props) {
   const classes = useStyles();
   const input = useRef(Map);
+  console.log("input", input);
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
-  console.log("dropoffLocation", dropoffLocation);
   const [state, setState] = useState({
     pickupMarker: {
       lat: pickupLocation ? pickupLocation.lat : null,
@@ -101,11 +101,6 @@ function GoogleMap(props) {
   };
 
   const calcZoomAndMapCenter = (pickup, dropoff) => {
-    console.log("pickup", pickup);
-    console.log("dropoff", dropoff);
-    console.log(`pickup.lat - dropoff.lat`, pickup.lat - dropoff.lat);
-    console.log(`pickup.lng - dropoff.lng`, pickup.lng - dropoff.lng);
-
     let zoom = null;
     if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
       zoom = 1;
@@ -155,7 +150,6 @@ function GoogleMap(props) {
           zoom = calc.zoom;
           mapCenter = calc.mapCenter;
         }
-        console.log(`zoom,mapCenter`, zoom, mapCenter);
         setState({
           ...state,
           pickupMarker: {
@@ -234,7 +228,6 @@ function GoogleMap(props) {
       zoom: 14,
     });
 
-    console.log("state.pickupMarker OLD", state.pickupMarker, "new date", new Date());
     return { lat: updatedLat, lng: updatedLng };
   };
 
@@ -263,15 +256,8 @@ function GoogleMap(props) {
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
 
-  const handleApiLoaded = (map, maps) => {
-    console.log("map", map, "maps", maps);
-  };
-
   return (
     <Map
-      bootstrapURLKeys={{ key: "AIzaSyC3T1GyCUwIoVxeQYrrC_SLGck_weIh8ts" }}
-      yesIWantToUseGoogleMapApiInternals
-      onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
       google={props.google}
       initialCenter={{
         lat: state.pickupMarker.lat,
