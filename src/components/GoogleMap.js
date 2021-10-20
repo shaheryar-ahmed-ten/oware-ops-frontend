@@ -1,5 +1,5 @@
-import { Map, Marker, GoogleApiWrapper, MarkerWithLabel } from "google-maps-react";
-import React, { useContext, useEffect, useState } from "react";
+import { Map, Marker, GoogleApiWrapper, fitBounds } from "google-maps-react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 
 function GoogleMap(props) {
   const classes = useStyles();
+  const input = useRef(Map);
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
 
   const [state, setState] = useState({
@@ -74,11 +75,15 @@ function GoogleMap(props) {
       lng: dropoffLocation ? dropoffLocation.lng : null,
     },
     mapCenter: {
-      lat: 24.916,
-      lng: 67.023,
+      lat: 30.2919928,
+      lng: 64.8560693,
     },
-    zoom: 10,
+    zoom: 5.5,
   });
+  const bounds = new props.google.maps.LatLngBounds();
+  const bounds2 = new props.google.maps.LatLngBounds();
+  bounds.extend(new props.google.maps.LatLng(state.pickupMarker.lat, state.pickupMarker.lng));
+  bounds2.extend(new props.google.maps.LatLng(state.pickupMarker.lat, state.pickupMarker.lng));
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
   const [dropoffSearchBox, setDropoffSearchBox] = useState("");
@@ -109,7 +114,9 @@ function GoogleMap(props) {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 10,
+          mapCenter: { lat: latLng.lat, lng: latLng.lng },
+          zoom: 14,
+          bounds: { bounds },
         });
         setPickUp({
           lat: latLng.lat,
@@ -119,18 +126,33 @@ function GoogleMap(props) {
       })
       .catch((error) => console.error("Error", error));
   };
+
+  const calcZoomAndMapCenter = (pickup, dropoff) => {
+    const midPointLat = (pickup.lat + dropoff.lat) / 2;
+    const midPointLng = (pickup.lng + dropoff.lng) / 2;
+    const zoom = { lat: midPointLat, lng: midPointLng };
+    return { zoom, center: null };
+  };
   const handleDropoffSelect = (dropoffAddress) => {
     geocodeByAddress(dropoffAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
+        const { zoom, center } = calcZoomAndMapCenter(state.pickupMarker, state.dropoffMarker);
+        console.log("zoom, center", zoom, center);
         setState({
           ...state,
           dropoffMarker: {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 10,
+          mapCenter: {
+            lat: 30.2919928,
+            lng: 64.8560693,
+          },
+          bounds: { bounds2 },
+          zoom: 14,
         });
+
         setDropOff({
           lat: latLng.lat,
           lng: latLng.lng,
@@ -150,7 +172,7 @@ function GoogleMap(props) {
         lat: updatedLat,
         lng: updatedLng,
       },
-      zoom: 10,
+      zoom: 14,
     });
 
     console.log("state.pickupMarker OLD", state.pickupMarker, "new date", new Date());
@@ -167,7 +189,7 @@ function GoogleMap(props) {
         lat: updatedLat,
         lng: updatedLng,
       },
-      zoom: 10,
+      zoom: 14,
     });
     return { lat: updatedLat, lng: updatedLng };
   };
@@ -190,6 +212,7 @@ function GoogleMap(props) {
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
+      ref={input}
     >
       <Marker
         position={{

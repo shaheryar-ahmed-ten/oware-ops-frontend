@@ -536,29 +536,6 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6} style={{ paddingTop: 4 }}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              {/* <InputLabel className={classes.labelPadding}>Vehicle Type</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="carName"
-                label="Vehicle Type"
-                variant="outlined"
-                value={carId}
-                onChange={(e) => setCarId(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, carId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a Vehicle Type
-                </MenuItem>
-                {vehicleType.map((vehicle, idx) => {
-                  return (
-                    <MenuItem key={idx} value={vehicle.Car.id}>
-                      {`${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`}
-                    </MenuItem>
-                  );
-                })}
-                )
-              </Select> */}
               <Autocomplete
                 id="carId"
                 key={vehicleType}
@@ -590,25 +567,6 @@ function AddRideView() {
                 ""
               )}
             </FormControl>
-            {/* <FormControl margin="dense" fullWidth={true} variant="outlined"> */}
-            {/* <Autocomplete
-              id="carId"
-              key={vehicleType}
-              // ListboxProps={{ style: { maxHeight: '15' } }}
-              // options={vendorId ? vendors.find(vendor => vendor.id == vendorId).Vehicles : [] }
-              options={vehicleType}
-              defaultValue={selectedRide ? { name: selectedRide.Vehicle.Car.CarMake.name+" "+selectedRide.Vehicle.Car.CarModel.name, id: selectedRide.Vehicle.Car.id} :  changeCar}
-              getOptionLabel={(car) => car.Car?.CarMake?.name+" "+ car.Car?.CarModel?.name || ""}
-              onChange={(event,newValue) => {
-                if (newValue)
-                  setCarId(newValue.id)
-              }
-            }
-              renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
-            onBlur={e => setValidation({ ...validation, carId: true })}
-            />
-            {validation.carId && !isRequired(carId) ? <Typography color="error">Vehicle Type is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
-            {/* </FormControl> */}
           </Grid>
         </Grid>
         {/* Car and Vendor Addition Ends */}
@@ -808,7 +766,7 @@ function AddRideView() {
             item
             sm={12}
             className={classes.locationMap}
-            style={{ position: "relative", minHeight: 300, marginBottom: 30 }}
+            style={{ position: "relative", minHeight: 500, marginBottom: 30, minWidth: "100%" }}
           >
             <GoogleMap
               setDropOff={setDropOff}
