@@ -496,7 +496,7 @@ export default function RideView() {
       InputLabelProps={{
         shrink: true,
       }}
-      inputProps={{ max: dividerDateFormatForFilter(Date.now()) }}
+      inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
       defaultValue={startDate}
       value={startDate}
       onChange={(e) => setStartDate(e.target.value)}
