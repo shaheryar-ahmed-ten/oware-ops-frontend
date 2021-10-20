@@ -275,7 +275,7 @@ export default function InventoryView() {
   />
   const endDateRange = <TextField
     id="date"
-    label="From"
+    label="To"
     type="date"
     variant="outlined"
     inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
