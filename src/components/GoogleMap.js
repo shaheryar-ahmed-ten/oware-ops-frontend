@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
-import dropoffIcon from "./darkgreen_MarkerD.png";
-import pickupIcon from "./red_MarkerP.png";
+import dropoffIcon from "../assets/mapicon/darkgreen_MarkerD.png";
+import pickupIcon from "../assets/mapicon/red_MarkerP.png";
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
