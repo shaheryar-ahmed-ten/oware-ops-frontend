@@ -63,43 +63,6 @@ const useStyles = makeStyles((theme) => ({
 function GoogleMap(props) {
   const classes = useStyles();
   const input = useRef(Map);
-  console.log("input", input);
-  const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
-  const [state, setState] = useState({
-    pickupMarker: {
-      lat: pickupLocation ? pickupLocation.lat : null,
-      lng: pickupLocation ? pickupLocation.lng : null,
-    },
-    dropoffMarker: {
-      lat: dropoffLocation ? dropoffLocation.lat : null,
-      lng: dropoffLocation ? dropoffLocation.lng : null,
-    },
-    mapCenter: {
-      lat: 30.2919928,
-      lng: 64.8560693,
-    },
-    zoom: 5.5,
-  });
-
-  const [pickupSearchBox, setpickupSearchBox] = useState("");
-  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
-
-  const sharedContext = useContext(SharedContext);
-
-  useEffect(() => {
-    sharedContext.setSelectedMapLocation(state.pickupMarker);
-  }, [state.pickupMarker]);
-
-  const handleChangePickup = (pickupAddress) => {
-    setState({ ...state, pickupAddress });
-    setpickupSearchBox(pickupAddress);
-  };
-
-  const handleChangeDropoff = (dropoffAddress) => {
-    setState({ ...state, dropoffAddress });
-    setDropoffSearchBox(dropoffAddress);
-  };
-
   const calcZoomAndMapCenter = (pickup, dropoff) => {
     let zoom = null;
     if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
@@ -134,6 +97,50 @@ function GoogleMap(props) {
     const mapCenter = { lat: midPointLat, lng: midPointLng };
     return { mapCenter, zoom };
   };
+  const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
+  let zoom, mapCenter;
+  if (pickupLocation.lat && dropoffLocation.lat) {
+    const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
+    zoom = calc.zoom;
+    mapCenter = calc.mapCenter;
+  }
+  const [state, setState] = useState({
+    pickupMarker: {
+      lat: pickupLocation ? pickupLocation.lat : null,
+      lng: pickupLocation ? pickupLocation.lng : null,
+    },
+    dropoffMarker: {
+      lat: dropoffLocation ? dropoffLocation.lat : null,
+      lng: dropoffLocation ? dropoffLocation.lng : null,
+    },
+    mapCenter: mapCenter
+      ? mapCenter
+      : {
+          lat: 30.2919928,
+          lng: 64.8560693,
+        },
+    zoom: zoom ? zoom : 5.5,
+  });
+
+  const [pickupSearchBox, setpickupSearchBox] = useState("");
+  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
+
+  const sharedContext = useContext(SharedContext);
+
+  useEffect(() => {
+    sharedContext.setSelectedMapLocation(state.pickupMarker);
+  }, [state.pickupMarker]);
+
+  const handleChangePickup = (pickupAddress) => {
+    setState({ ...state, pickupAddress });
+    setpickupSearchBox(pickupAddress);
+  };
+
+  const handleChangeDropoff = (dropoffAddress) => {
+    setState({ ...state, dropoffAddress });
+    setDropoffSearchBox(dropoffAddress);
+  };
+
   const handlePickupSelect = (pickupAddress) => {
     geocodeByAddress(pickupAddress)
       .then((results) => getLatLng(results[0]))
