@@ -263,6 +263,10 @@ function GoogleMap(props) {
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
 
+  const searchOptions = {
+    componentRestrictions: { country: ['pk'] }
+  }
+
   return (
     <Map
       google={props.google}
@@ -324,6 +328,7 @@ function GoogleMap(props) {
       {props.showMapSearchFields ? (
         <div>
           <PlacesAutocomplete
+            searchOptions={searchOptions}
             value={pickupSearchBox}
             onChange={handleChangePickup}
             onSelect={handlePickupSelect}
@@ -373,6 +378,7 @@ function GoogleMap(props) {
             )}
           </PlacesAutocomplete>
           <PlacesAutocomplete
+             searchOptions={searchOptions}
             value={dropoffSearchBox}
             onChange={handleChangeDropoff}
             onSelect={handleDropoffSelect}
