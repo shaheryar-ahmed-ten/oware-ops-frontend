@@ -1,5 +1,5 @@
-import { Map, Marker, GoogleApiWrapper, MarkerWithLabel } from "google-maps-react";
-import React, { useContext, useEffect, useState } from "react";
+import { Map, Marker, GoogleApiWrapper, fitBounds } from "google-maps-react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
@@ -62,8 +62,9 @@ const useStyles = makeStyles((theme) => ({
 
 function GoogleMap(props) {
   const classes = useStyles();
+  const input = useRef(Map);
+  console.log("input", input);
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
-
   const [state, setState] = useState({
     pickupMarker: {
       lat: pickupLocation ? pickupLocation.lat : null,
@@ -74,10 +75,10 @@ function GoogleMap(props) {
       lng: dropoffLocation ? dropoffLocation.lng : null,
     },
     mapCenter: {
-      lat: 24.916,
-      lng: 67.023,
+      lat: 30.2919928,
+      lng: 64.8560693,
     },
-    zoom: 10,
+    zoom: 5.5,
   });
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
@@ -99,17 +100,69 @@ function GoogleMap(props) {
     setDropoffSearchBox(dropoffAddress);
   };
 
+  const calcZoomAndMapCenter = (pickup, dropoff) => {
+    let zoom = null;
+    if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
+      zoom = 1;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 14 || Math.abs(pickup.lng - dropoff.lng) > 14) {
+      zoom = 2;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 11.8 || Math.abs(pickup.lng - dropoff.lng) > 11.8) {
+      zoom = 4;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 8 || Math.abs(pickup.lng - dropoff.lng) > 8) {
+      zoom = 4;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 4 || Math.abs(pickup.lng - dropoff.lng) > 4) {
+      zoom = 6;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 3 || Math.abs(pickup.lng - dropoff.lng) > 3) {
+      zoom = 7;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 2 || Math.abs(pickup.lng - dropoff.lng) > 2) {
+      zoom = 8;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.5 || Math.abs(pickup.lng - dropoff.lng) > 0.5) {
+      zoom = 8;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.1 || Math.abs(pickup.lng - dropoff.lng) > 0.1) {
+      zoom = 10;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.06 || Math.abs(pickup.lng - dropoff.lng) > 0.06) {
+      zoom = 11;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.04 || Math.abs(pickup.lng - dropoff.lng) > 0.04) {
+      zoom = 12;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.025 || Math.abs(pickup.lng - dropoff.lng) > 0.025) {
+      zoom = 13;
+    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.01 || Math.abs(pickup.lng - dropoff.lng) > 0.01) {
+      zoom = 14;
+    }
+    const midPointLat = (pickup.lat + dropoff.lat) / 2;
+    const midPointLng = (pickup.lng + dropoff.lng) / 2;
+    const mapCenter = { lat: midPointLat, lng: midPointLng };
+    return { mapCenter, zoom };
+  };
   const handlePickupSelect = (pickupAddress) => {
     geocodeByAddress(pickupAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
+        let zoom, mapCenter;
+        if (state.dropoffMarker.lat && state.dropoffMarker.lng) {
+          let calc = calcZoomAndMapCenter(
+            {
+              lat: latLng.lat,
+              lng: latLng.lng,
+            },
+            state.dropoffMarker
+          );
+          zoom = calc.zoom;
+          mapCenter = calc.mapCenter;
+        }
         setState({
           ...state,
           pickupMarker: {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 10,
+          mapCenter: mapCenter
+            ? mapCenter
+            : {
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
+          zoom: zoom ? zoom : 14,
         });
         setPickUp({
           lat: latLng.lat,
@@ -119,18 +172,36 @@ function GoogleMap(props) {
       })
       .catch((error) => console.error("Error", error));
   };
+
   const handleDropoffSelect = (dropoffAddress) => {
     geocodeByAddress(dropoffAddress)
       .then((results) => getLatLng(results[0]))
       .then((latLng) => {
+        let zoom, mapCenter;
+        if (state.pickupMarker.lat && state.pickupMarker.lng) {
+          let calc = calcZoomAndMapCenter(state.pickupMarker, {
+            lat: latLng.lat,
+            lng: latLng.lng,
+          });
+          zoom = calc.zoom;
+          mapCenter = calc.mapCenter;
+        }
+
         setState({
           ...state,
           dropoffMarker: {
             lat: latLng.lat,
             lng: latLng.lng,
           },
-          zoom: 10,
+          mapCenter: mapCenter
+            ? mapCenter
+            : {
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
+          zoom: zoom ? zoom : 14,
         });
+
         setDropOff({
           lat: latLng.lat,
           lng: latLng.lng,
@@ -150,15 +221,19 @@ function GoogleMap(props) {
         lat: updatedLat,
         lng: updatedLng,
       },
-      zoom: 10,
+      mapCenter: {
+        lat: updatedLat,
+        lng: updatedLng,
+      },
+      zoom: 14,
     });
 
-    console.log("state.pickupMarker OLD", state.pickupMarker, "new date", new Date());
     return { lat: updatedLat, lng: updatedLng };
   };
 
   const onDropoffMarkerDragEnd = (coord) => {
     const { latLng } = coord;
+    console.log("PlacesAutocomplete", PlacesAutocomplete);
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
     setState({
@@ -167,7 +242,11 @@ function GoogleMap(props) {
         lat: updatedLat,
         lng: updatedLng,
       },
-      zoom: 10,
+      mapCenter: {
+        lat: updatedLat,
+        lng: updatedLng,
+      },
+      zoom: 14,
     });
     return { lat: updatedLat, lng: updatedLng };
   };
@@ -190,41 +269,51 @@ function GoogleMap(props) {
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
+      ref={input}
     >
-      <Marker
-        position={{
-          lat: state.pickupMarker.lat,
-          lng: state.pickupMarker.lng,
-        }}
-        name={"Pickup Location"}
-        // label={{
-        //   text: "P",
-        //   color: "white",
-        // }}
-        title={"Pickup Location"}
-        icon={{
-          url: pickupIcon,
-        }}
-        draggable={true}
-        onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
-      />
-      <Marker
-        position={{
-          lat: state.dropoffMarker.lat,
-          lng: state.dropoffMarker.lng,
-        }}
-        name={"Dropoff Location"}
-        // label={{
-        //   text: "P",
-        //   color: "white",
-        // }}
-        title={"Dropoff Location"}
-        icon={{
-          url: dropoffIcon,
-        }}
-        draggable={true}
-        onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
-      />
+      {state.pickupMarker.lat && state.pickupMarker.lng ? (
+        <Marker
+          position={{
+            lat: state.pickupMarker.lat,
+            lng: state.pickupMarker.lng,
+          }}
+          name={"Pickup Location"}
+          // label={{
+          //   text: "P",
+          //   color: "white",
+          // }}
+          title={"Pickup Location"}
+          icon={{
+            url: pickupIcon,
+          }}
+          draggable={true}
+          onDragend={(t, map, coord) => onPickupMarkerDragEnd(coord)}
+        />
+      ) : (
+        <div></div>
+      )}
+
+      {state.dropoffMarker.lat && state.dropoffMarker.lng ? (
+        <Marker
+          position={{
+            lat: state.dropoffMarker.lat,
+            lng: state.dropoffMarker.lng,
+          }}
+          name={"Dropoff Location"}
+          // label={{
+          //   text: "P",
+          //   color: "white",
+          // }}
+          title={"Dropoff Location"}
+          icon={{
+            url: dropoffIcon,
+          }}
+          draggable={true}
+          onDragend={(t, map, coord) => onDropoffMarkerDragEnd(coord)}
+        />
+      ) : (
+        <div></div>
+      )}
       {props.showMapSearchFields ? (
         <div>
           <PlacesAutocomplete value={pickupSearchBox} onChange={handleChangePickup} onSelect={handlePickupSelect}>
