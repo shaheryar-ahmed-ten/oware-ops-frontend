@@ -99,7 +99,7 @@ function GoogleMap(props) {
   };
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
   let zoom, mapCenter;
-  if (pickupLocation.lat && dropoffLocation.lat) {
+  if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
     const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
     zoom = calc.zoom;
     mapCenter = calc.mapCenter;
