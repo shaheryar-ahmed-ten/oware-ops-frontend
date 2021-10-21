@@ -385,26 +385,6 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              {/* <InputLabel className={classes.labelPadding}>Company</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="customerId"
-                label="Company"
-                variant="outlined"
-                value={customerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, customerId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a company
-                </MenuItem>
-                {companies.map((customer) => (
-                  <MenuItem key={customer.id} value={customer.id}>
-                    {customer.name}
-                  </MenuItem>
-                ))}
-              </Select> */}
               <Autocomplete
                 id="vendorId"
                 key={companies}
@@ -426,26 +406,6 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              {/* <InputLabel className={classes.labelPadding}>Status</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="status"
-                label="Status"
-                variant="outlined"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, status: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a status
-                </MenuItem>
-                {Object.keys(statuses).map((status) => (
-                  <MenuItem key={status} value={status}>
-                    {statuses[status]}
-                  </MenuItem>
-                ))}
-              </Select> */}
               <Autocomplete
                 id="status"
                 key={statuses}
@@ -543,9 +503,9 @@ function AddRideView() {
                 defaultValue={
                   !!selectedRide
                     ? {
-                        name: `${selectedRide.Vehicle.Car.CarMake.name} ${selectedRide.Vehicle.Car.CarModel.name}`,
-                        id: selectedRide.Vehicle.Car.id,
-                      }
+                      name: `${selectedRide.Vehicle.Car.CarMake.name} ${selectedRide.Vehicle.Car.CarModel.name}`,
+                      id: selectedRide.Vehicle.Car.id,
+                    }
                     : ""
                 }
                 renderInput={(params) => <TextField {...params} label="Vehicle Type" variant="outlined" />}
@@ -553,8 +513,8 @@ function AddRideView() {
                   return vehicle && vehicle.name
                     ? vehicle.name
                     : vehicle.Car && vehicle.Car.CarMake && vehicle.Car.CarModel
-                    ? `${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`
-                    : "";
+                      ? `${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`
+                      : "";
                 }}
                 onBlur={(e) => setValidation({ ...validation, carId: true })}
                 onChange={(event, newValue) => {
@@ -573,27 +533,7 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel className={classes.labelPadding}>Vehicle</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="vehicleId"
-                label="Vehicle"
-                variant="outlined"
-                value={vehicleId}
-                onChange={(e) => setVehicleId(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, vehicleId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a vehicle
-                </MenuItem>
-                {vehicles.map((vehicle) => (
-                  <MenuItem key={vehicle.id} value={vehicle.id}>
-                    {vehicle.registrationNumber}
-                  </MenuItem>
-                ))}
-              </Select>
-              {/* <Autocomplete
+              <Autocomplete
                 id="vehicleId"
                 key={vehicles}
                 options={vehicles}
@@ -605,7 +545,7 @@ function AddRideView() {
                   if (newValue)
                     setVehicleId(newValue.id)
                 }}
-              /> */}
+              />
               {validation.vehicleId && !isRequired(vehicleId) ? (
                 <Typography color="error">Vehicle is required!</Typography>
               ) : (
@@ -615,26 +555,6 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              {/* <InputLabel className={classes.labelPadding}>Driver</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="driverId"
-                label="Driver"
-                variant="outlined"
-                value={driverId}
-                onChange={(e) => setDriverId(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, driverId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a Driver
-                </MenuItem>
-                {selectedVendor?.Drivers.map((driver) => (
-                  <MenuItem key={driver.id} value={driver.id}>
-                    {driver.name}
-                  </MenuItem>
-                ))}
-              </Select> */}
               <Autocomplete
                 id="driverId"
                 key={selectedVendor?.Drivers}
@@ -945,7 +865,7 @@ function AddRideView() {
               InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
-              // onBlur={e => setValidation({ ...validation, memo: true })}
+            // onBlur={e => setValidation({ ...validation, memo: true })}
             />
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
             <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>

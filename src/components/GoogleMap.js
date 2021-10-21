@@ -5,6 +5,18 @@ import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
 import dropoffIcon from "../assets/mapicon/darkgreen_MarkerD.png";
 import pickupIcon from "../assets/mapicon/red_MarkerP.png";
+import Geocode from "react-geocode";
+
+// set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
+Geocode.setApiKey("AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU");
+
+// set response language. Defaults to english.
+Geocode.setLanguage("en");
+
+// set response region. Its optional.
+// A Geocoding request with region=es (Spain) will return the Spanish city.
+Geocode.setRegion("pk");
+Geocode.enableDebug();
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -61,6 +73,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function GoogleMap(props) {
+  const reverseGeocoding = async (latlng) => {
+    const response = await Geocode.fromLatLng(latlng.lat, latlng.lng);
+    const address = response.results[0].formatted_address;
+    return address;
+  };
   const classes = useStyles();
   const input = useRef(Map);
   const calcZoomAndMapCenter = (pickup, dropoff) => {
@@ -99,7 +116,7 @@ function GoogleMap(props) {
   };
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
   let zoom, mapCenter;
-  if (pickupLocation.lat && dropoffLocation.lat) {
+  if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
     const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
     zoom = calc.zoom;
     mapCenter = calc.mapCenter;
@@ -217,10 +234,12 @@ function GoogleMap(props) {
     if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
 
-  const onPickupMarkerDragEnd = (coord) => {
+  const onPickupMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
+    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    setpickupSearchBox(addr);
 
     setState({
       ...state,
@@ -238,11 +257,13 @@ function GoogleMap(props) {
     return { lat: updatedLat, lng: updatedLng };
   };
 
-  const onDropoffMarkerDragEnd = (coord) => {
+  const onDropoffMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     console.log("PlacesAutocomplete", PlacesAutocomplete);
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
+    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    setDropoffSearchBox(addr);
     setState({
       ...state,
       dropoffMarker: {
