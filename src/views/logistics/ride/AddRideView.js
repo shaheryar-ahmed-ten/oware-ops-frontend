@@ -533,29 +533,6 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              {/* <InputLabel className={classes.labelPadding}>Vehicle</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="vehicleId"
-                label="Vehicle"
-                variant="outlined"
-                value={vehicleId}
-                onChange={(e) => {
-                  console.log(e.target.value)
-                  setVehicleId(e.target.value)
-                }}
-                onBlur={(e) => setValidation({ ...validation, vehicleId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a vehicle
-                </MenuItem>
-                {vehicles.map((vehicle) => (
-                  <MenuItem key={vehicle.id} value={vehicle.id}>
-                    {vehicle.registrationNumber}
-                  </MenuItem>
-                ))}
-              </Select> */}
               <Autocomplete
                 id="vehicleId"
                 key={vehicles}
@@ -565,7 +542,6 @@ function AddRideView() {
                 getOptionLabel={(vehicle) => vehicle.registrationNumber || ""}
                 onBlur={e => setValidation({ ...validation, status: true })}
                 onChange={(event, newValue) => {
-                  console.log(newValue.id)
                   if (newValue)
                     setVehicleId(newValue.id)
                 }}
