@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     top: "80%",
-    left: "30%",
+    left: "20%",
     [theme.breakpoints.up("md")]: {
-      width: "50%",
+      width: "25%",
     },
     [theme.breakpoints.down("md")]: {
-      width: "80%",
+      width: "40%",
     },
     transform: "translateX(-50%)",
     fontSize: 12,
@@ -38,19 +38,19 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     zIndex: 100,
     top: "80%",
-    left: "95%",
+    left: "80%",
     [theme.breakpoints.up("md")]: {
-      width: "50%",
+      width: "25%",
     },
     [theme.breakpoints.down("md")]: {
-      width: "80%",
+      width: "40%",
     },
     transform: "translateX(-50%)",
     fontSize: 12,
     color: "black",
   },
   placeInput: {
-    width: "50%",
+    width: "100%",
     borderRadius: "10px",
     padding: "10px 5px",
     border: 0,
@@ -316,7 +316,12 @@ function GoogleMap(props) {
       )}
       {props.showMapSearchFields ? (
         <div>
-          <PlacesAutocomplete value={pickupSearchBox} onChange={handleChangePickup} onSelect={handlePickupSelect}>
+          <PlacesAutocomplete
+            value={pickupSearchBox}
+            onChange={handleChangePickup}
+            onSelect={handlePickupSelect}
+            style={{ width: "50%" }}
+          >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
               <div className={classes.placeInputDiv}>
                 <input
@@ -360,7 +365,12 @@ function GoogleMap(props) {
               </div>
             )}
           </PlacesAutocomplete>
-          <PlacesAutocomplete value={dropoffSearchBox} onChange={handleChangeDropoff} onSelect={handleDropoffSelect}>
+          <PlacesAutocomplete
+            value={dropoffSearchBox}
+            onChange={handleChangeDropoff}
+            onSelect={handleDropoffSelect}
+            style={{ width: "50%" }}
+          >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
               <div className={classes.placeDropoffInputDiv}>
                 <input
