@@ -48,6 +48,20 @@ const useStyles = makeStyles((theme) => ({
     backBtn: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    subHeadingGuideline: {
+        fontWeight: 'normal',
+        boxSizing: 'border-box',
+        padding: 20,
+        fontSize: 18,
+        paddingBottom: 0
+    },
+    guidelines: {
+        boxSizing: 'border-box',
+        padding: 20
+    },
+    guideLine: {
+        marginTop: 5
     }
 }))
 
@@ -149,7 +163,17 @@ function BulkUpload() {
                             </Grid>
                         </>
                         :
-                        ''
+                        <>
+                            <Grid item xs={12} alignItems="center">
+                                <Typography component="div" className={classes.subHeadingGuideline}>Bulk Upload Guidelines</Typography>
+                            </Grid>
+                            <Grid item xs={12} alignItems="center" className={classes.guidelines}>
+                                <Alert severity="info" className={classes.guideLine}>Maximum of 1000 products are allowed to be included for upload in a single file.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The Brand, Category & UoM values must exist in the system before being used in bulk upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample value for product rows which must be replaced with actual values before upload.</Alert>
+                            </Grid>
+                        </>
                 }
             </Grid>
         </>

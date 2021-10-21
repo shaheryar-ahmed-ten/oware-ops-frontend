@@ -69,6 +69,13 @@ export default function ProductOutwardView() {
     format: (value, entity) => entity.internalIdForBusiness
   },
   {
+    id: 'DispatchOrder.internalIdForBusiness',
+    label: 'DISPATCH ORDER ID',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => entity.DispatchOrder.internalIdForBusiness
+  },
+  {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
     minWidth: 'auto',
@@ -92,20 +99,21 @@ export default function ProductOutwardView() {
   //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
   //   // format: (value, entity, inventory) => inventory.Product.UOM.name
   // },
-  {
-    id: 'DispatchOrder.receiverName',
-    label: 'RECEIVER NAME',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.receiverName
-  },
-  {
-    id: 'DispatchOrder.receiverPhone',
-    label: 'RECEIVER PHONE',
-    minWidth: 'auto',
-    className: '',
-    format: (value, entity) => entity.DispatchOrder.receiverPhone
-  },
+  // {
+  //   id: 'DispatchOrder.receiverName',
+  //   label: 'RECEIVER NAME',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.receiverName
+  // },
+  // {
+  //   id: 'DispatchOrder.receiverPhone',
+  //   label: 'RECEIVER PHONE',
+  //   minWidth: 'auto',
+  //   className: '',
+  //   format: (value, entity) => entity.DispatchOrder.receiverPhone
+  // },
+  
   // {
   //   id: 'city',
   //   label: 'CITY',
@@ -253,7 +261,7 @@ export default function ProductOutwardView() {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Outward" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table" >
+        <Table aria-label="sticky table" >
           <TableHead>
             <TableRow>
               {columns.map((column) => (
