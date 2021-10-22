@@ -301,6 +301,7 @@ function GoogleMap(props) {
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
+      streetViewControl={false}
       ref={input}
     >
       {state.pickupMarker.lat && state.pickupMarker.lng ? (
