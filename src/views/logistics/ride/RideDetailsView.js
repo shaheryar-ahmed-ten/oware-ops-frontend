@@ -235,15 +235,53 @@ function RideDetailsView(props) {
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
                 {dateFormat(selectedRide.dropoffDate) || "-"}
               </Grid>
+              {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
+            <Grid container spacing={2}>
+              <Grid item style={{ fontWeight: 500 }} xs={3}>
+                Map Pickup Pin Address :
+              </Grid>
+              <Grid item xs={3} style={{ fontStyle: "italic" }}>
+                {mapPickupAddress}
+              </Grid>
+              <Grid item style={{ fontWeight: 500 }} xs={3}>
+                Map Dropoff Pin Address :
+              </Grid>
+              <Grid item xs={3} style={{ fontStyle: "italic" }}>
+                {mapDropoffAddress}
+              </Grid>
             </Grid>
+            ) : (
+              ""
+            )}
+            </Grid>
+            {/* {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
+            <Grid container spacing={2}>
+              <Grid item style={{ fontWeight: 500 }} xs={3}>
+                Map PickupAddress :
+              </Grid>
+              <Grid item xs={3} style={{ fontStyle: "italic" }}>
+                {mapPickupAddress}
+              </Grid>
+              <Grid item style={{ fontWeight: 500 }} xs={3}>
+                Map DropoffAddress :
+              </Grid>
+              <Grid item xs={3} style={{ fontStyle: "italic" }}>
+                {mapDropoffAddress}
+              </Grid>
+            </Grid>
+            ) : (
+              ""
+            )} */}
+
+
             {console.log(
               `selectedRide.pickupLocation && selectedRide.dropoffLocation`,
               selectedRide.pickupLocation && selectedRide.dropoffLocation
             )}
-            {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
+            {/* {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
               <Grid container item xs={12} spacing={3}>
                 <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
-                  {mapPickupAddress}
+                  <Typography>{mapPickupAddress}</Typography>
                   {console.log("mapPickupAddress:-", mapPickupAddress)}
                 </Grid>
                 <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
@@ -253,7 +291,7 @@ function RideDetailsView(props) {
               </Grid>
             ) : (
               ""
-            )}
+            )} */}
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
