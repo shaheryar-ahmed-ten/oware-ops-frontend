@@ -83,15 +83,15 @@ function GoogleMap(props) {
   const calcZoomAndMapCenter = (pickup, dropoff) => {
     let zoom = null;
     if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
-      zoom = 1;
+      zoom = 1.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 14 || Math.abs(pickup.lng - dropoff.lng) > 14) {
-      zoom = 2;
+      zoom = 2.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 11.8 || Math.abs(pickup.lng - dropoff.lng) > 11.8) {
-      zoom = 4;
+      zoom = 4.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 8 || Math.abs(pickup.lng - dropoff.lng) > 8) {
-      zoom = 4;
+      zoom = 4.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 4 || Math.abs(pickup.lng - dropoff.lng) > 4) {
-      zoom = 6;
+      zoom = 5.25;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 3 || Math.abs(pickup.lng - dropoff.lng) > 3) {
       zoom = 7;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 2 || Math.abs(pickup.lng - dropoff.lng) > 2) {

@@ -686,7 +686,7 @@ function AddRideView() {
             item
             sm={12}
             className={classes.locationMap}
-            style={{ position: "relative", minHeight: 500, marginBottom: 30, minWidth: "100%" }}
+            style={{ position: "relative", minHeight: 400, marginBottom: 30, minWidth: "100%" }}
           >
             <GoogleMap
               setDropOff={setDropOff}
