@@ -20,7 +20,18 @@ import { useReactToPrint } from "react-to-print";
 import PrintIcon from "@material-ui/icons/Print";
 import { Map, GoogleApiWrapper } from "google-maps-react";
 import GoogleMap from "../../../components/GoogleMap.js";
+import Geocode from "react-geocode";
 
+// set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
+Geocode.setApiKey("AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU");
+
+// set response language. Defaults to english.
+Geocode.setLanguage("en");
+
+// set response region. Its optional.
+// A Geocoding request with region=es (Spain) will return the Spanish city.
+Geocode.setRegion("pk");
+Geocode.enableDebug();
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
     // boxSizing: "border-box",
@@ -69,6 +80,9 @@ function RideDetailsView(props) {
   const navigate = useNavigate();
   const [selectedRide, setSelectedRide] = useState(null);
   const [productManifestPreview, setProductManifestPreview] = useState("");
+  const [mapPickupAddress, setMapPickupAddress] = useState("");
+  const [mapDropoffAddress, setMapDropoffAddress] = useState("");
+
   const { uid } = useParams();
 
   useEffect(() => {
@@ -80,10 +94,23 @@ function RideDetailsView(props) {
   const fetchSelectedRide = () => {
     _getSelectedRide();
   };
-  const _getSelectedRide = () => {
+  const _getSelectedRide = async () => {
     axios.get(getURL(`ride/single/${uid}`)).then((res) => {
-      // console.log(res.data.data)
+      console.log(`res.data.data`, res.data.data);
       setSelectedRide(res.data.data);
+      const { pickupLocation, dropoffLocation } = res.data.data;
+      if (pickupLocation && dropoffLocation) {
+        Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
+          .then((addresses) => addresses.results[0].formatted_address)
+          .then((result) => {
+            setMapPickupAddress(result);
+          });
+        Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
+          .then((addresses) => addresses.results[0].formatted_address)
+          .then((result) => {
+            setMapDropoffAddress(result);
+          });
+      }
     });
     axios
       .get(getURL(`ride/preview/7`))
@@ -214,12 +241,14 @@ function RideDetailsView(props) {
               selectedRide.pickupLocation && selectedRide.dropoffLocation
             )}
             {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-              <Grid container item xs={12} spacing={3} style={{ minHeight: 400 }}>
+              <Grid container item xs={12} spacing={3}>
                 <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
-                  <GoogleMap
-                    pickupLocation={selectedRide.pickupLocation}
-                    dropoffLocation={selectedRide.dropoffLocation}
-                  />
+                  {mapPickupAddress}
+                  {console.log("mapPickupAddress:-", mapPickupAddress)}
+                </Grid>
+                <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
+                  {mapDropoffAddress}
+                  {console.log("mapDropoffAddress:-", mapDropoffAddress)}
                 </Grid>
               </Grid>
             ) : (
