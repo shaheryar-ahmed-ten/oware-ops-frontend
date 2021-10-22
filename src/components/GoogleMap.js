@@ -5,6 +5,18 @@ import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
 import dropoffIcon from "../assets/mapicon/darkgreen_MarkerD.png";
 import pickupIcon from "../assets/mapicon/red_MarkerP.png";
+import Geocode from "react-geocode";
+
+// set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
+Geocode.setApiKey("AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU");
+
+// set response language. Defaults to english.
+Geocode.setLanguage("en");
+
+// set response region. Its optional.
+// A Geocoding request with region=es (Spain) will return the Spanish city.
+Geocode.setRegion("pk");
+Geocode.enableDebug();
 
 const useStyles = makeStyles((theme) => ({
   "@global": {
@@ -61,20 +73,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function GoogleMap(props) {
+  const reverseGeocoding = async (latlng) => {
+    const response = await Geocode.fromLatLng(latlng.lat, latlng.lng);
+    const address = response.results[0].formatted_address;
+    return address;
+  };
   const classes = useStyles();
   const input = useRef(Map);
   const calcZoomAndMapCenter = (pickup, dropoff) => {
     let zoom = null;
     if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
-      zoom = 1;
+      zoom = 1.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 14 || Math.abs(pickup.lng - dropoff.lng) > 14) {
-      zoom = 2;
+      zoom = 2.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 11.8 || Math.abs(pickup.lng - dropoff.lng) > 11.8) {
-      zoom = 4;
+      zoom = 4.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 8 || Math.abs(pickup.lng - dropoff.lng) > 8) {
-      zoom = 4;
+      zoom = 4.5;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 4 || Math.abs(pickup.lng - dropoff.lng) > 4) {
-      zoom = 6;
+      zoom = 5.25;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 3 || Math.abs(pickup.lng - dropoff.lng) > 3) {
       zoom = 7;
     } else if (Math.abs(pickup.lat - dropoff.lat) > 2 || Math.abs(pickup.lng - dropoff.lng) > 2) {
@@ -98,11 +115,26 @@ function GoogleMap(props) {
     return { mapCenter, zoom };
   };
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
+
+  const [pickupSearchBox, setpickupSearchBox] = useState("");
+  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
+
   let zoom, mapCenter;
-  if (pickupLocation.lat && dropoffLocation.lat) {
+  if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
     const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
     zoom = calc.zoom;
     mapCenter = calc.mapCenter;
+
+    Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
+      .then((addresses) => addresses.results[0].formatted_address)
+      .then((result) => {
+        setpickupSearchBox(result);
+      });
+    Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
+      .then((addresses) => addresses.results[0].formatted_address)
+      .then((result) => {
+        setDropoffSearchBox(result);
+      });
   }
   const [state, setState] = useState({
     pickupMarker: {
@@ -121,9 +153,6 @@ function GoogleMap(props) {
         },
     zoom: zoom ? zoom : 5.5,
   });
-
-  const [pickupSearchBox, setpickupSearchBox] = useState("");
-  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
 
   const sharedContext = useContext(SharedContext);
 
@@ -217,10 +246,12 @@ function GoogleMap(props) {
     if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
 
-  const onPickupMarkerDragEnd = (coord) => {
+  const onPickupMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
+    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    setpickupSearchBox(addr);
 
     setState({
       ...state,
@@ -238,11 +269,13 @@ function GoogleMap(props) {
     return { lat: updatedLat, lng: updatedLng };
   };
 
-  const onDropoffMarkerDragEnd = (coord) => {
+  const onDropoffMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     console.log("PlacesAutocomplete", PlacesAutocomplete);
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
+    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    setDropoffSearchBox(addr);
     setState({
       ...state,
       dropoffMarker: {
@@ -263,6 +296,10 @@ function GoogleMap(props) {
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
 
+  const searchOptions = {
+    componentRestrictions: { country: ["pk"] },
+  };
+
   return (
     <Map
       google={props.google}
@@ -276,6 +313,7 @@ function GoogleMap(props) {
       }}
       zoom={state.zoom}
       style={{ position: "relative", height: "100%" }}
+      streetViewControl={false}
       ref={input}
     >
       {state.pickupMarker.lat && state.pickupMarker.lng ? (
@@ -324,6 +362,7 @@ function GoogleMap(props) {
       {props.showMapSearchFields ? (
         <div>
           <PlacesAutocomplete
+            searchOptions={searchOptions}
             value={pickupSearchBox}
             onChange={handleChangePickup}
             onSelect={handlePickupSelect}
@@ -373,6 +412,7 @@ function GoogleMap(props) {
             )}
           </PlacesAutocomplete>
           <PlacesAutocomplete
+            searchOptions={searchOptions}
             value={dropoffSearchBox}
             onChange={handleChangeDropoff}
             onSelect={handleDropoffSelect}
