@@ -232,15 +232,9 @@ export default function InventoryView() {
         })
       }
       <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
-        <span className={classes.dropdownListItem}>Custom</span>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
       </MenuItem>
     </Select>
-    {
-      selectedDateRange ?
-        <FormHelperText>From {startDate} to {endDate}</FormHelperText>
-        :
-        ''
-    }
   </FormControl>
 
   const searchInput = <InputBase
