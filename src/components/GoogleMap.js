@@ -115,11 +115,26 @@ function GoogleMap(props) {
     return { mapCenter, zoom };
   };
   const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
+
+  const [pickupSearchBox, setpickupSearchBox] = useState("");
+  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
+
   let zoom, mapCenter;
   if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
     const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
     zoom = calc.zoom;
     mapCenter = calc.mapCenter;
+
+    Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
+      .then((addresses) => addresses.results[0].formatted_address)
+      .then((result) => {
+        setpickupSearchBox(result);
+      });
+    Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
+      .then((addresses) => addresses.results[0].formatted_address)
+      .then((result) => {
+        setDropoffSearchBox(result);
+      });
   }
   const [state, setState] = useState({
     pickupMarker: {
@@ -138,9 +153,6 @@ function GoogleMap(props) {
         },
     zoom: zoom ? zoom : 5.5,
   });
-
-  const [pickupSearchBox, setpickupSearchBox] = useState("");
-  const [dropoffSearchBox, setDropoffSearchBox] = useState("");
 
   const sharedContext = useContext(SharedContext);
 
@@ -285,8 +297,8 @@ function GoogleMap(props) {
   }, [state.pickupMarker, state.dropoffMarker]);
 
   const searchOptions = {
-    componentRestrictions: { country: ['pk'] }
-  }
+    componentRestrictions: { country: ["pk"] },
+  };
 
   return (
     <Map
@@ -400,7 +412,7 @@ function GoogleMap(props) {
             )}
           </PlacesAutocomplete>
           <PlacesAutocomplete
-             searchOptions={searchOptions}
+            searchOptions={searchOptions}
             value={dropoffSearchBox}
             onChange={handleChangeDropoff}
             onSelect={handleDropoffSelect}
