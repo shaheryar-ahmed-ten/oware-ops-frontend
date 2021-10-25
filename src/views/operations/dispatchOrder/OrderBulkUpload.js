@@ -111,11 +111,11 @@ function OrderBulkUpload() {
     }
 
     const downloadTemplate = () => {
-        let apiPromise = axios.get(getURL('product/bulk-template'), {
+        let apiPromise = axios.get(getURL('dispatch-order/bulk-template'), {
             responseType: 'blob',
         })
         apiPromise.then((response) => {
-            fileDownload(response.data, `Products ${moment().format('DD-MM-yyyy')}.xlsx`);
+            fileDownload(response.data, `Dispatch Orders ${moment().format('DD-MM-yyyy')}.xlsx`);
         })
 
     }
@@ -168,10 +168,11 @@ function OrderBulkUpload() {
                                 <Typography component="div" className={classes.subHeadingGuideline}>Bulk Upload Guidelines</Typography>
                             </Grid>
                             <Grid item xs={12} alignItems="center" className={classes.guidelines}>
-                                <Alert severity="info" className={classes.guideLine}>Maximum of 1000 products are allowed to be included for upload in a single file.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The Brand, Category and UoM values used for product rows in upload should already be added in the system before upload. Non exisiting values will result in a validation error.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>Few dummy products are added to the file, please remove them before adding your products.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>Maximum of 1000 orders are allowed to be included for upload in a single file.</Alert>
+                                {/* <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert> */}
+                                <Alert severity="info" className={classes.guideLine}>The Company and Warehouse values used for product rows in upload should already be added in the system before upload. Non exisiting values will result in a validation error.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The products must be present in the selected company & warehouse.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload.</Alert>
                             </Grid>
                         </>
                 }
