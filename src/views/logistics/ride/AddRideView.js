@@ -354,8 +354,9 @@ function AddRideView() {
       pickupCityId,
       pickupLocation: pickUp,
       dropoffLocation: dropOff,
-      builtyId: selectedRide && selectedRide.builtyId,
-      eirId: selectedRide && selectedRide.eirId,
+      eirId: selectedRide && selectedRide.eirId || eirImage || null,
+      builtyId: selectedRide && selectedRide.builtyId || builtyImage || null
+      
     };
 
     setValidation({
@@ -422,12 +423,12 @@ function AddRideView() {
         newRide.manifestId = manifestId;
       }
       if (eirImage) {
-        [newRide.eirId] = await upload([eirImage], "ride");
-        // newRide.eirId = eirId;
+        const [eirId] = await upload([eirImage], "ride");
+        newRide.eirId = eirId;
       }
       if (builtyImage) {
-        [newRide.builtyId] = await upload([builtyImage], "ride");
-        // newRide.builtyId = builtyId;
+        const [builtyId] = await upload([builtyImage], "ride");
+        newRide.builtyId = builtyId;
       }
       addRide(newRide);
     }
@@ -439,17 +440,17 @@ function AddRideView() {
   const removePreviewId = (event) => {
     setManifestImage(null);
     setManifestImageSrc(null);
-    selectedRide.manifestId = null;
+    if(selectedRide){selectedRide.manifestId = null};
   }
   const removeEIRPreviewId = (event) => {
     setEIRImage(null);
     setEIRImageSrc(null);
-    selectedRide.eirId = null;
+    if(selectedRide){ selectedRide.eirId = null};
   }
   const removeBuiltyPreviewId = (event) => {
     setBuiltyImage(null);
     setBuiltyImageSrc(null);
-    selectedRide.builtyId = null;
+    if(selectedRide){selectedRide.builtyId = null};
   }
   const newManifestValidateLogoImage = (event) => {
     const checkFile = event.target.files[0];
@@ -481,28 +482,28 @@ function AddRideView() {
   })
   }
   const newEIRValidateLogoImage = (event) => {
-    const checkFile = event.target.files[0];
+    const checkEIRFile = event.target.files[0];
     setEIRType(false);
     setEIRSize(false);
-    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+    if (checkEIRFile && !checkEIRFile.name.match(/\.(jpg|jpeg|png)$/)) {
       setEIRType(true);
       return false;
     }
-    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1; // < 1mb
-    if (checkFile && !isLt2M) {
+    const isLtt2M = checkEIRFile && checkEIRFile.size / 1024 / 1024 < 1; // < 1mb
+    if (checkEIRFile && !isLtt2M) {
       setEIRSize(true);
       return false;
     }
-    const reader = new FileReader();
-    checkFile && reader.readAsDataURL(checkFile);
-    reader.addEventListener('load', event => {
-      const _loadedImageUrl = event.target.result;
-      const image = document.createElement('img');
-      image.src = _loadedImageUrl;
-      image.addEventListener('load', () => {
-      setEIRImageSrc(_loadedImageUrl);
-      const logoFile = checkFile ? checkFile : null;
-      setEIRImage(logoFile)
+    const eirReader = new FileReader();
+    checkEIRFile && eirReader.readAsDataURL(checkEIRFile);
+    eirReader.addEventListener('load', event => {
+      const _loadedEIRImageUrl = event.target.result;
+      const eirImage = document.createElement('img');
+      eirImage.src = _loadedEIRImageUrl;
+      eirImage.addEventListener('load', () => {
+      setEIRImageSrc(_loadedEIRImageUrl);
+      const eirFile = checkEIRFile ? checkEIRFile : null;
+      setEIRImage(eirFile)
     });
     // setManifestImageSrc()
     // const logoFile = checkFile ? checkFile : null;
@@ -511,35 +512,34 @@ function AddRideView() {
   }
 
   const newBuiltyValidateLogoImage = (event) => {
-    const checkFile = event.target.files[0];
+    const checkBuiltyFile = event.target.files[0];
     setBuiltyType(false);
     setBuiltySize(false);
-    if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+    if (checkBuiltyFile && !checkBuiltyFile.name.match(/\.(jpg|jpeg|png)$/)) {
       setBuiltyType(true);
       return false;
     }
-    const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1; // < 1mb
-    if (checkFile && !isLt2M) {
+    const isLttt2M = checkBuiltyFile && checkBuiltyFile.size / 1024 / 1024 < 1; // < 1mb
+    if (checkBuiltyFile && !isLttt2M) {
       setBuiltySize(true);
       return false;
     }
-    const reader = new FileReader();
-    checkFile && reader.readAsDataURL(checkFile);
-    reader.addEventListener('load', event => {
-      const _loadedImageUrl = event.target.result;
-      const image = document.createElement('img');
-      image.src = _loadedImageUrl;
-      image.addEventListener('load', () => {
-      setBuiltyImageSrc(_loadedImageUrl);
-      const logoFile = checkFile ? checkFile : null;
-      setBuiltyImage(logoFile)
+    const Builtyreader = new FileReader();
+    checkBuiltyFile && Builtyreader.readAsDataURL(checkBuiltyFile);
+    Builtyreader.addEventListener('load', event => {
+      const _loadedBuiltyImageUrl = event.target.result;
+      const BuiltyImage = document.createElement('img');
+      BuiltyImage.src = _loadedBuiltyImageUrl;
+      BuiltyImage.addEventListener('load', () => {
+      setBuiltyImageSrc(_loadedBuiltyImageUrl);
+      const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
+      setBuiltyImage(builtyFile)
     });
     // setManifestImageSrc()
     // const logoFile = checkFile ? checkFile : null;
     // setManifestImage(logoFile)
   })
   }
-
   return (
     <>
       {formErrors}
@@ -1405,7 +1405,7 @@ function AddRideView() {
                       }
                      
                       {
-                        builtyImageSrc ?
+                        eirImageSrc ?
                           <img id="previewImage" src={eirImageSrc} /> :
                           null
                       }
@@ -1423,7 +1423,7 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    value={(e) => e.target.value + 1}
+                    value={(e) => e.target.value + 2}
                     onChange={(e) => {
                       newBuiltyValidateLogoImage(e)
                       // setBuiltyImage(e.target.files[0]);
@@ -1470,7 +1470,7 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    value={(e) => e.target.value + 1}
+                    value={(e) => e.target.value + 3}
                     onChange={(e) => {
                       newManifestValidateLogoImage(e)
                       // setManifestImage(e.target.files[0]);
