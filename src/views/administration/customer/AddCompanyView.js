@@ -119,7 +119,6 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       if (logoImage) [newCompany.logoId] = await upload([logoImage], 'customer');
 
       setSelectedCompanyTempLogoId(null);
-      console.log(newCompany)
       addCompany(newCompany);
     }
   }
