@@ -1,4 +1,4 @@
-import { FormControl, InputAdornment, makeStyles, MenuItem, Select } from '@material-ui/core'
+import { Button, FormControl, InputAdornment, makeStyles, MenuItem, Select, TextField } from '@material-ui/core'
 import React from 'react'
 
 const useStyles = makeStyles((theme) => ({
@@ -30,14 +30,26 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-function SelectDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage }) {
+function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage, open, setOpen }) {
     const classes = useStyles();
+    // console.log(list[4].name)
 
     const handleChange = (event) => {
-        setPage(1)
         // resetFilters()
-        setSelectedType(event.target.value);
+        // if(event.target.value){
+            // setSelectedType('');
+            setPage(1)
+            resetFilters()
+            setSelectedType(event.target.value);
+        // }
     };
+
+    const handleOpen = () =>{
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+      };
     return (
         <>
             <FormControl className={classes.formControl}>
@@ -64,16 +76,18 @@ function SelectDropdown({ name, list, selectedType, setSelectedType, icon, reset
                             return (
                                 <MenuItem key={index} value={item.id}>
                                     <span className={classes.dropdownListItem}>{item.name || ''}</span>
-
-                                    {/* <ListItemText primary={item.name || ''} classes={{ root: classes.dropdownListItem }} /> */}
                                 </MenuItem>
                             )
+                            
                         })
                     }
+                    <MenuItem key={'custom'} value={'custom'} onClick={()=>setOpen(true)}>
+                                    <span className={classes.dropdownListItem}>Custom</span>
+                    </MenuItem>
                 </Select>
             </FormControl>
         </>
     )
 }
 
-export default SelectDropdown
+export default SelectCustomDropdown

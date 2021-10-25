@@ -10,16 +10,29 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  FormControl,
+  TextField,
+  InputLabel,
+  Select,
+  InputAdornment,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  ListItem,
+  FormHelperText
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader';
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { dividerDateFormatForFilter, getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { DEBOUNCE_CONST } from '../../../Config';
+import SelectDropdown from '../../../components/SelectDropdown';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,10 +50,45 @@ const useStyles = makeStyles(theme => ({
     border: '1px solid grey',
     borderRadius: 4,
     opacity: 0.6,
-    padding: '0px 8px',
+    padding: '12px 10px',
     marginRight: 7,
     height: 30,
   },
+  textFieldRange: {
+    padding: 0,
+    marginRight: 5,
+    // transform: 'translateY(-9px)'
+  },
+  exportBtn: {
+    // padding: '9px 10px'
+  },
+  formControl: {
+    minWidth: 160,
+    boxSizing: 'border-box',
+    marginRight: 10
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    '& .MuiSelect-outlined': {
+      paddingTop: '7px',
+      paddingBottom: '6px',
+    },
+  },
+  dropdownListItem: {
+    fontSize: 14,
+  },
+  inputAdronmentStyle: {
+    '& .MuiInputAdornment-positionStart': {
+      margin: '0',
+      padding: '0',
+      backgroundColor: 'green'
+    },
+    '& .MuiInputAdornment-root': {
+      margin: '0',
+      padding: '0',
+      backgroundColor: 'green'
+    }
+  }
 }));
 
 
@@ -90,6 +138,26 @@ export default function InventoryView() {
   const [inventories, setInventories] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
+
   const _getInventories = (page, searchKeyword) => {
     axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
       .then(res => {
@@ -103,17 +171,77 @@ export default function InventoryView() {
   }, DEBOUNCE_CONST), []);
 
   const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword },
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
 
   useEffect(() => {
-    getInventories(page, searchKeyword);
+    if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
+      getInventories(page, searchKeyword);
   }, [page, searchKeyword]);
+
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  }
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
+    setPage(1)
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = <FormControl className={classes.formControl}>
+    <Select
+      value={selectedDay}
+      variant="outlined"
+      onChange={handleChange}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      className={classes.placeholderText}
+      startAdornment={
+        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
+          <CalendarTodayOutlinedIcon fontSize="small" />
+        </InputAdornment>
+      }
+    >
+      <MenuItem value={null} disabled>
+        <span className={classes.dropdownListItem}>Select Days</span>
+      </MenuItem>
+      {
+        [{ name: 'All' }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+            </MenuItem>
+          )
+        })
+      }
+      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
+        <span className={classes.dropdownListItem}>Custom</span>
+      </MenuItem>
+    </Select>
+    {
+      selectedDateRange ?
+        <FormHelperText>From {startDate} to {endDate}</FormHelperText>
+        :
+        ''
+    }
+  </FormControl>
 
   const searchInput = <InputBase
     placeholder="Product / Company /Warehouse"
@@ -126,20 +254,55 @@ export default function InventoryView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const exportButton = <Button
     key={2}
     variant="contained"
     color="primary"
     size="small"
-    onClick={() => exportToExcel()
-    }> EXPORT TO EXCEL</Button >;
-  const headerButtons = [searchInput, exportButton];
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}> EXPORT TO EXCEL</Button >;
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+
+  const headerButtons = [searchInput, daysSelect, exportButton];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Inventory" buttons={headerButtons} />
-        <Table stickyHeader aria-label="sticky table">
+        <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -187,6 +350,27 @@ export default function InventoryView() {
           />
         </Grid>
       </Grid>
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={'startDate'}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={'startDate'}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+              setReRender(!reRender)
+            }}>
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
     </Paper>
   );
 }

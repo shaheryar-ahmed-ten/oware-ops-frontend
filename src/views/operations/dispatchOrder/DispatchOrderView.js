@@ -27,6 +27,9 @@ import { useNavigate } from "react-router";
 import clsx from "clsx";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
+import SelectDropdown from '../../../components/SelectDropdown';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -247,6 +250,26 @@ export default function DispatchOrderView() {
   const [showMessage, setShowMessage] = useState(null);
   const [messageType, setMessageType] = useState('green');
 
+  // filters
+  const [filterStatus, setFilterStatus] = useState([
+    {
+      id: 2,
+      name: 'Fulfilled'
+    },
+    {
+      id: 1,
+      name: 'Partially Fulfilled'
+    },
+    {
+      id: 0,
+      name: 'Pending'
+    },
+    {
+      id: 3,
+      name: 'Canceled'
+    },
+  ])
+  const [selectedFilterStatus, setSelectedFilterStatus] = useState(null)
 
   const cancelDispatchOrder = (dispatchOrderId) => {
     axios
@@ -287,23 +310,25 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   };
 
-  const _getDispatchOrders = (page, searchKeyword) => {
-    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword } }).then((res) => {
+  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus) => {
+    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword.trim(), status: selectedFilterStatus } }).then((res) => {
       setPageCount(res.data.pages);
       setDispatchOrders(res.data.data);
     });
   };
 
   const getDispatchOrders = useCallback(
-    debounce((page, searchKeyword) => {
-      _getDispatchOrders(page, searchKeyword);
+    debounce((page, searchKeyword, selectedFilterStatus) => {
+      _getDispatchOrders(page, searchKeyword, selectedFilterStatus);
     }, DEBOUNCE_CONST),
     []
   );
 
   useEffect(() => {
-    getDispatchOrders(page, searchKeyword);
-  }, [page, searchKeyword]);
+    if (selectedFilterStatus)
+      setSearchKeyword('')
+    getDispatchOrders(page, searchKeyword, selectedFilterStatus);
+  }, [page, searchKeyword, selectedFilterStatus]);
 
   const searchInput = (
     <InputBase
@@ -315,7 +340,10 @@ export default function DispatchOrderView() {
       variant="outlined"
       value={searchKeyword}
       key={1}
-      onChange={(e) => setSearchKeyword(e.target.value)}
+      onChange={(e) => {
+        resetFilters()
+        setSearchKeyword(e.target.value)
+      }}
     />
   );
 
@@ -343,7 +371,14 @@ export default function DispatchOrderView() {
     />
   );
 
-  const headerButtons = [searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
+  const resetFilters = () => {
+    setSelectedFilterStatus(null);
+  }
+
+  // status filter
+  const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
+
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
 
   return (
     <Paper className={classes.root}>
@@ -361,7 +396,7 @@ export default function DispatchOrderView() {
                     background: "transparent",
                     fontWeight: "bolder",
                     fontSize: "12px",
-                    textAlign: "center",
+                    // textAlign: "center",
                   }}
                 >
                   {column.label}

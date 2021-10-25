@@ -57,9 +57,12 @@ function ViewProductOutwardDetails() {
     _getProductOutwards()
   }
   const _getProductOutwards = () => {
-    axios.get(getURL('product-outward'))
+    axios.get(getURL(`product-outward/${uid}`))
       .then(res => {
-        setSelectedProductOutward(res.data.data.find((outwardOrder) => outwardOrder.id == uid));
+        if (!res.data.data.success) {
+          setSelectedProductOutward(null)
+        }
+        setSelectedProductOutward(res.data.data)
       });
   }
 

@@ -3,6 +3,7 @@ import moment from "moment";
 
 // export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://3.225.149.130" : "") + "/api/v1";
 export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "") + "/api/v1";
+// export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://192.168.18.172:3000" : "") + "/api/v1";
 
 export const getURL = (...args) => {
   return [apiBaseURL, ...Array.from(args)].join("/");
@@ -22,6 +23,8 @@ export const dateToPickerFormat = (value) => (value ? moment(value).format("yyyy
 
 export const dividerDateFormat = value => value ? moment(value).format('DD-MM-yyyy') : "-";
 export const dividerTimeFormat = value => value ? moment(value).format('hh:mm A') : "-";
+
+export const dividerDateFormatForFilter = value => value ? moment(value).format('yyyy-MM-DD') : "-";
 
 export const SharedContext = createContext(null);
 

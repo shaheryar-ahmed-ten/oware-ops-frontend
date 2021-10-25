@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -15,6 +16,19 @@ import {
   Typography
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
+import { Autocomplete } from '@material-ui/lab';
+// import { useStyles } from '@material-ui/pickers/views/Calendar/SlideTransition';
+
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
 
 export default function AddProductView({ addProduct, open, handleClose, selectedProduct, brands, uoms, categories, formErrors }) {
   const [validation, setValidation] = useState({});
@@ -26,6 +40,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
   const [brandId, setBrandId] = useState('');
   const [uomId, setUomId] = useState('');
   const [isActive, setActive] = useState(true);
+  const classes = useStyles();
 
   useEffect(() => {
     if (!!selectedProduct) {
@@ -95,6 +110,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="name"
                   label="Name"
@@ -109,6 +126,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid item sm={12}>
                 <TextField
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="description"
                   label="Description"
@@ -124,6 +143,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="dimensionsCBM"
                     label="Volume cm3"
@@ -141,6 +162,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="weight"
                     label="Weight in KGs"
@@ -159,37 +182,37 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Category</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="categoryId"
-                      label="Category"
-                      variant="outlined"
-                      value={categoryId}
-                      onChange={e => setCategoryId(e.target.value)}
+                      key={categories}
+                      options={categories}
+                      defaultValue={!!selectedProduct ? { name: selectedProduct.Category.name, id: selectedProduct.Category.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
+                      getOptionLabel={(category) => category.name || ""}
                       onBlur={e => setValidation({ ...validation, categoryId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a category</MenuItem>
-                      {categories.map(category => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setCategoryId(newValue.id)
+                      }}
+                    />
                     {validation.categoryId && !isRequired(categoryId) ? <Typography color="error">Category is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Brand</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="brandId"
-                      label="Brand"
-                      variant="outlined"
-                      value={brandId}
-                      onChange={e => setBrandId(e.target.value)}
+                      key={brands}
+                      options={brands}
+                      defaultValue={!!selectedProduct ? { name: selectedProduct.Brand.name, id: selectedProduct.Brand.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="Brand" variant="outlined" />}
+                      getOptionLabel={(brand) => brand.name || ""}
                       onBlur={e => setValidation({ ...validation, brandId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a brand</MenuItem>
-                      {brands.map(brand => <MenuItem key={brand.id} value={brand.id}>{brand.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setBrandId(newValue.id)
+                      }}
+                    />
                     {validation.brandId && !isRequired(brandId) ? <Typography color="error">Brand is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -198,19 +221,19 @@ export default function AddProductView({ addProduct, open, handleClose, selected
               <Grid container spacing={2}>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>UoM</InputLabel>
-                    <Select
-                      fullWidth={true}
+                    <Autocomplete
                       id="uomId"
-                      label="UoM"
-                      variant="outlined"
-                      value={uomId}
-                      onChange={e => setUomId(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, uomId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a UoM</MenuItem>
-                      {uoms.map(uom => <MenuItem key={uom.id} value={uom.id}>{uom.name}</MenuItem>)}
-                    </Select>
+                      key={uoms}
+                      options={uoms}
+                      defaultValue={!!selectedProduct ? { name: selectedProduct.UOM.name, id: selectedProduct.UOM.id } : ''}
+                      renderInput={(params) => <TextField {...params} label="UoM" variant="outlined" />}
+                      getOptionLabel={(uom) => uom.name || ""}
+                      onBlur={e => setValidation({ ...validation, categoryId: true })}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setUomId(newValue.id)
+                      }}
+                    />
                     {validation.uomId && !isRequired(uomId) ? <Typography color="error">UoM is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
