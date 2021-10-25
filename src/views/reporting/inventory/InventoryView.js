@@ -28,7 +28,7 @@ import { dividerDateFormatForFilter, getURL } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import FileDownload from 'js-file-download';
 import { debounce } from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { DEBOUNCE_CONST } from '../../../Config';
 import SelectDropdown from '../../../components/SelectDropdown';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
@@ -176,7 +176,11 @@ export default function InventoryView() {
 
     axios.get(getURL('inventory/export'), {
       responseType: 'blob',
-      params: { page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null },
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
     }).then(response => {
       FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
@@ -186,6 +190,7 @@ export default function InventoryView() {
     if ((selectedDay !== 'custom' && !selectedDateRange) || selectedDay === 'custom' && !!selectedDateRange)
       getInventories(page, searchKeyword);
   }, [page, searchKeyword]);
+
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -227,15 +232,9 @@ export default function InventoryView() {
         })
       }
       <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
-        <span className={classes.dropdownListItem}>Custom</span>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
       </MenuItem>
     </Select>
-    {
-      selectedDateRange ?
-        <FormHelperText>From {startDate} to {endDate}</FormHelperText>
-        :
-        ''
-    }
   </FormControl>
 
   const searchInput = <InputBase

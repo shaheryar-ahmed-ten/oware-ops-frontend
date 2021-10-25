@@ -467,6 +467,8 @@ export default function RideView() {
       setOpen={setOpen}
       setSelectedType={setSelectedDay}
       setPage={setPage}
+      startDate={startDate}
+      endDate={endDate}
     />
   );
   const exportToExcel = () => {
@@ -588,16 +590,16 @@ export default function RideView() {
     ) : (
       ""
     );
-  const customText =
-    selectedDay == "custom" && startDate !== "-" && startDate !== null && endDate !== null ? (
-      <FormHelperText style={textStyle}>
-        From {startDate} to {endDate}
-      </FormHelperText>
-    ) : (
-      ""
-    );
+  // const customText =
+  //   selectedDay == "custom" && startDate !== "-" && startDate !== null && endDate !== null ? (
+  //     <FormHelperText style={textStyle}>
+  //       From {startDate} to {endDate}
+  //     </FormHelperText>
+  //   ) : (
+  //     ""
+  //   );
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText, daysSelect, searchInput, exportButton, customText];
+  const headerButtons = [filterText, daysSelect, searchInput, exportButton];
 
   return (
     <Paper className={classes.root}>

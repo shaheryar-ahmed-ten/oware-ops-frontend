@@ -1,6 +1,6 @@
 import { Button, FormControl, InputAdornment, makeStyles, MenuItem, Select, TextField } from '@material-ui/core'
 import React from 'react'
-
+import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
     formControl: {
         minWidth: 160,
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage, open, setOpen }) {
+function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage, open, setOpen ,startDate, endDate}) {
     const classes = useStyles();
     // console.log(list[4].name)
 
@@ -82,7 +82,7 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
                         })
                     }
                     <MenuItem key={'custom'} value={'custom'} onClick={()=>setOpen(true)}>
-                                    <span className={classes.dropdownListItem}>Custom</span>
+                                    <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
                     </MenuItem>
                 </Select>
             </FormControl>
