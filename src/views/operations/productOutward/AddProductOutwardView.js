@@ -171,6 +171,7 @@ export default function AddProductOutwardView({ }) {
   // Done: add reference id in sending obj
   // Done: add vehicleNumber and vehicle0
   const handleSubmit = e => {
+    setDisableSubmitButton(true)
     const newProductOutward = {
       dispatchOrderId,
       // quantity,
@@ -192,6 +193,9 @@ export default function AddProductOutwardView({ }) {
       && checkForZeroQuantityInArray(Object.values(inventoryQuantities))) {
       setDisableSubmitButton(true)
       addProductOutward(newProductOutward);
+    }
+    else {
+      setDisableSubmitButton(false)
     }
   }
 
