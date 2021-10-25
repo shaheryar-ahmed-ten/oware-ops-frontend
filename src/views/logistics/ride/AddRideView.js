@@ -1063,7 +1063,7 @@ function AddRideView() {
                 // guide={true}
                 // showMask={true}
                 variant="outlined"
-                name="phone"
+                name="pocNumber"
                 mask={phoneNumberMask}
                 label="POC Number(e.g 032*-*******)"
                 id="pocNumber"
