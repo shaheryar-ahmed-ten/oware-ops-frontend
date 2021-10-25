@@ -370,6 +370,18 @@ export default function DispatchOrderView() {
       title={"DispatchOrder"}
     />
   );
+  const addBulkProductsButton = (
+    <Button
+      key={4}
+      variant="contained"
+      color="primary"
+      size="small"
+      style={{ width: 150, transform: "translateX(7px)" }}
+      onClick={() => navigate("bulk-upload")}
+    >
+      Bulk Upload
+    </Button>
+  );
 
   const resetFilters = () => {
     setSelectedFilterStatus(null);
@@ -378,7 +390,7 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton,deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>
