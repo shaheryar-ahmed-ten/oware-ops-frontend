@@ -77,6 +77,9 @@ function AddRideView() {
   const [manifestImage, setManifestImage] = useState(null);
   const [vendors, setVendors] = useState([]);
   const [cars, setCars] = useState([]);
+  const [eirImage, setEIRImage] = useState(null);
+  const [builtyImage, setBuiltyImage] = useState(null);
+
 
   useEffect(() => {
     getRelations();
@@ -124,6 +127,12 @@ function AddRideView() {
   const [cancellationReason, setCancellationReason] = useState("");
   const [cancellationComment, setCancellationComment] = useState("");
 
+  const [weightCargo, setWeightCargo] = useState("");
+  const [pocName, setPOCName] = useState("");
+  const [pocNumber, setPOCNumber] = useState("");
+  const [eta, setETA] = useState("");
+  const [completionTime, setCompletionTime] = useState("");
+
   const [productCategoryId, setProductCategoryId] = useState("");
   const [productName, setProductName] = useState("");
   const [productQuantity, setProductQuantity] = useState("");
@@ -139,12 +148,11 @@ function AddRideView() {
   const [isActive, setActive] = useState(true);
 
   const [selectedVendor, setSelectedVendor] = useState(null);
-  const [nullCar, setNullCar] = useState([]);
-  const [changeCar, setChangeCar] = useState();
   const [mounted, setMounted] = useState(false);
   const [vehicleType, setVehicleType] = useState([]);
   const [pickUp, setPickUp] = useState({});
   const [dropOff, setDropOff] = useState({});
+
   // console.log(pickUp, "pickUp", dropOff, "dropOff");
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
@@ -205,6 +213,11 @@ function AddRideView() {
       setCustomerDiscount(selectedRide.customerDiscount || "");
       setDriverIncentive(selectedRide.driverIncentive || "");
       setMemo(selectedRide.memo || "");
+      setWeightCargo(selectedRide.weightCargo || "");
+      setPOCName(selectedRide.pocName || "");
+      setPOCNumber(selectedRide.pocNumber || "");
+      setETA(selectedRide.eta || "");
+      setCompletionTime(selectedRide.completionTime || "");
     }
   }, [selectedRide, vendors]);
 
@@ -350,6 +363,14 @@ function AddRideView() {
         const [manifestId] = await upload([manifestImage], "ride");
         newRide.manifestId = manifestId;
       }
+      if (eirImage) {
+        const [eirId] = await upload([eirImage], "ride");
+        newRide.eirId = eirId;
+      }
+      if (builtyImage) {
+        const [builtyId] = await upload([builtyImage], "ride");
+        newRide.builtyId = builtyId;
+      }
       addRide(newRide);
     }
   };
@@ -431,6 +452,7 @@ function AddRideView() {
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.textBox }}
+                className={classes.labelBox}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationReason"
@@ -450,6 +472,7 @@ function AddRideView() {
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.textBox }}
+                className={classes.labelBox}
                 fullWidth={true}
                 margin="dense"
                 id="cancellationComment"
