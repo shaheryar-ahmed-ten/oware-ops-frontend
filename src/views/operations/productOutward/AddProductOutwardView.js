@@ -18,7 +18,7 @@ import {
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
-import { dateFormat, getURL } from '../../../utils/common';
+import { checkForZeroQuantityInArray, dateFormat, getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
 import { useLocation, useNavigate } from 'react-router';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -174,17 +174,17 @@ export default function AddProductOutwardView({ }) {
       inventories: Object.values(inventoryQuantities),
       internalIdForBusiness
     }
-    // console.log(Object.values(inventoryQuantities));
-    // console.log(isNotEmptyArray(Object.values(inventoryQuantities)));
-    // console.log(isRequired(dispatchOrderId), isRequired(vehicleId));
+
     setValidation({
       // quantity: true,
       dispatchOrderId: true,
       vehicleId: true
     });
+
     if (isRequired(dispatchOrderId)
       && isRequired(vehicleId)
-      && isNotEmptyArray(Object.values(inventoryQuantities))) {
+      && isNotEmptyArray(Object.values(inventoryQuantities))
+      && checkForZeroQuantityInArray(Object.values(inventoryQuantities))) {
       addProductOutward(newProductOutward);
     }
   }
@@ -301,7 +301,6 @@ export default function AddProductOutwardView({ }) {
                     {warehouse}
                   </TableCell>
                   <TableCell>
-                    {console.log(selectedDispatchOrder.ProductOutwards.length)}
                     {selectedDispatchOrder.ProductOutwards ?
                       selectedDispatchOrder.ProductOutwards.length || '0' :
                       '-'}
@@ -346,10 +345,10 @@ export default function AddProductOutwardView({ }) {
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Ordered Quantity
                     </TableCell>
-                    {/* <TableCell
+                    <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Available Quantity
-                    </TableCell> */}
+                      Remaining Quantity
+                    </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Actual Quantity To Dispatch
@@ -359,12 +358,13 @@ export default function AddProductOutwardView({ }) {
                 <TableBody>
                   {selectedDispatchOrder.Inventories.map((inventory, idx) => {
                     let remainingQt = 0
-                    selectedDispatchOrder.ProductOutwards.forEach((po) => {
+                    let outwardQt = 0
+                    for (let po of selectedDispatchOrder.ProductOutwards) {
                       const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
                       if (targetedPoInv)
-                        remainingQt += targetedPoInv.OutwardGroup.quantity
-                    })
-                    remainingQt = inventory.OrderGroup.quantity - remainingQt
+                        outwardQt += targetedPoInv.OutwardGroup.quantity
+                    }
+                    remainingQt = inventory.OrderGroup.quantity - outwardQt
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -376,9 +376,9 @@ export default function AddProductOutwardView({ }) {
                         <TableCell>
                           {inventory.OrderGroup.quantity}
                         </TableCell>
-                        {/* <TableCell>
+                        <TableCell>
                           {remainingQt}
-                        </TableCell> */}
+                        </TableCell>
                         <TableCell>
                           <TextField
                             fullWidth={true}
