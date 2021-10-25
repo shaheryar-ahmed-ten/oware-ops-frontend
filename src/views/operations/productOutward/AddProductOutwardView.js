@@ -301,7 +301,10 @@ export default function AddProductOutwardView({ }) {
                     {warehouse}
                   </TableCell>
                   <TableCell>
-                    {selectedDispatchOrder.productOutwardsCount || '-'}
+                    {console.log(selectedDispatchOrder.ProductOutwards.length)}
+                    {selectedDispatchOrder.ProductOutwards ?
+                      selectedDispatchOrder.ProductOutwards.length || '0' :
+                      '-'}
                   </TableCell>
                   <TableCell>
                     {dateFormat(shipmentDate)}
