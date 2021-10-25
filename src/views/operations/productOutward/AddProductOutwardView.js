@@ -18,7 +18,7 @@ import {
 import { isRequired, isNotEmptyArray } from '../../../utils/validators';
 import { Alert, Autocomplete } from '@material-ui/lab';
 import axios from 'axios';
-import { dateFormat, getURL } from '../../../utils/common';
+import { checkForZeroQuantityInArray, dateFormat, getURL } from '../../../utils/common';
 import { TableBody } from '@material-ui/core';
 import { useLocation, useNavigate } from 'react-router';
 import MessageSnackbar from '../../../components/MessageSnackbar';
@@ -63,6 +63,8 @@ export default function AddProductOutwardView({ }) {
   const [vehicles, setVehicles] = useState([]); // will be used instead vehicle types, numbers etc
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null); // used in details table, selected from dropdown
   const [showMessage, setShowMessage] = useState(null);
+
+  const [disableSubmitButton, setDisableSubmitButton] = useState(false)
 
   useEffect(() => {
     getRelations();
@@ -147,6 +149,7 @@ export default function AddProductOutwardView({ }) {
     else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
+        setDisableSubmitButton(false)
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
@@ -156,9 +159,11 @@ export default function AddProductOutwardView({ }) {
       setTimeout(() => {
         navigate('/operations/product-outward')
       }, 2000);
+
     })
       .catch((err) => {
         console.log(err)
+        setDisableSubmitButton(false)
       });
   };
 
@@ -166,6 +171,7 @@ export default function AddProductOutwardView({ }) {
   // Done: add reference id in sending obj
   // Done: add vehicleNumber and vehicle0
   const handleSubmit = e => {
+    setDisableSubmitButton(true)
     const newProductOutward = {
       dispatchOrderId,
       // quantity,
@@ -174,18 +180,22 @@ export default function AddProductOutwardView({ }) {
       inventories: Object.values(inventoryQuantities),
       internalIdForBusiness
     }
-    // console.log(Object.values(inventoryQuantities));
-    // console.log(isNotEmptyArray(Object.values(inventoryQuantities)));
-    // console.log(isRequired(dispatchOrderId), isRequired(vehicleId));
+
     setValidation({
       // quantity: true,
       dispatchOrderId: true,
       vehicleId: true
     });
+
     if (isRequired(dispatchOrderId)
       && isRequired(vehicleId)
-      && isNotEmptyArray(Object.values(inventoryQuantities))) {
+      && isNotEmptyArray(Object.values(inventoryQuantities))
+      && checkForZeroQuantityInArray(Object.values(inventoryQuantities))) {
+      setDisableSubmitButton(true)
       addProductOutward(newProductOutward);
+    }
+    else {
+      setDisableSubmitButton(false)
     }
   }
 
@@ -301,7 +311,9 @@ export default function AddProductOutwardView({ }) {
                     {warehouse}
                   </TableCell>
                   <TableCell>
-                    {selectedDispatchOrder.productOutwardsCount || '-'}
+                    {selectedDispatchOrder.ProductOutwards ?
+                      selectedDispatchOrder.ProductOutwards.length || '0' :
+                      '-'}
                   </TableCell>
                   <TableCell>
                     {dateFormat(shipmentDate)}
@@ -343,10 +355,10 @@ export default function AddProductOutwardView({ }) {
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Ordered Quantity
                     </TableCell>
-                    {/* <TableCell
+                    <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
-                      Available Quantity
-                    </TableCell> */}
+                      Remaining Quantity
+                    </TableCell>
                     <TableCell
                       style={{ background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}>
                       Actual Quantity To Dispatch
@@ -356,12 +368,13 @@ export default function AddProductOutwardView({ }) {
                 <TableBody>
                   {selectedDispatchOrder.Inventories.map((inventory, idx) => {
                     let remainingQt = 0
-                    selectedDispatchOrder.ProductOutwards.forEach((po) => {
+                    let outwardQt = 0
+                    for (let po of selectedDispatchOrder.ProductOutwards) {
                       const targetedPoInv = po.Inventories.find((inv) => inv.OutwardGroup.inventoryId === inventory.OrderGroup.inventoryId)
                       if (targetedPoInv)
-                        remainingQt += targetedPoInv.OutwardGroup.quantity
-                    })
-                    remainingQt = inventory.OrderGroup.quantity - remainingQt
+                        outwardQt += targetedPoInv.OutwardGroup.quantity
+                    }
+                    remainingQt = inventory.OrderGroup.quantity - outwardQt
                     return (
                       <TableRow hover role="checkbox" key={idx}>
                         <TableCell>
@@ -373,9 +386,9 @@ export default function AddProductOutwardView({ }) {
                         <TableCell>
                           {inventory.OrderGroup.quantity}
                         </TableCell>
-                        {/* <TableCell>
+                        <TableCell>
                           {remainingQt}
-                        </TableCell> */}
+                        </TableCell>
                         <TableCell>
                           <TextField
                             fullWidth={true}
@@ -399,7 +412,8 @@ export default function AddProductOutwardView({ }) {
             <Grid container className={classes.parentContainer} spacing={3}>
               <Grid item xs={3}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <Button onClick={handleSubmit} color="primary" variant="contained">
+                  <Button onClick={handleSubmit} color="primary" variant="contained"
+                    disabled={disableSubmitButton}>
                     {!selectedProductOutward ? 'Add Product Outward' : 'Update Product Outward'}
                   </Button>
                 </FormControl>

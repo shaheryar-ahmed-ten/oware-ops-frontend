@@ -16,11 +16,13 @@ import {
   Typography
 } from '@material-ui/core'
 import DeleteSharpIcon from '@material-ui/icons/DeleteSharp';
-import { isChar, isRequired } from '../../../utils/validators';
+import { isChar, isPhone, isRequired } from '../../../utils/validators';
 import { upload } from '../../../utils/upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { getURL } from '../../../utils/common';
 import { Autocomplete } from '@material-ui/lab';
+import MaskedInput from 'react-text-mask';
+import clsx from 'clsx';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +58,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const [selectedCompanyTempLogoId, setSelectedCompanyTempLogoId] = useState(null)
   const [explicitReRender, setExplicitReRender] = useState(false)
 
+  const [companyPhone, setCompanyPhone] = useState('')
 
   useEffect(() => {
     if (!!selectedCompany) {
@@ -66,7 +69,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       setContactId(selectedCompany.contactId || '');
       setNotes(selectedCompany.notes || '');
       setActive(!!selectedCompany.isActive);
-
+      setCompanyPhone(selectedCompany.phone || '')
       selectedCompany.logoId = !selectedCompany.logoId ? selectedCompanyTempLogoId : selectedCompany.logoId
       { selectedCompany && selectedCompany.logoId ? setLogoImageSrc(getURL('preview', selectedCompany.logoId)) : setLogoImageSrc(null) }
     } else {
@@ -95,6 +98,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       contactPhone,
       logoId: selectedCompany && selectedCompany.logoId || logoImage || null,
       notes,
+      phone: companyPhone.replace(/-/g, ''),
       isActive
     }
     setValidation({
@@ -103,7 +107,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       contactId: true,
       relationType: true,
       // logoImage: true,
-      type: relationType == 'CUSTOMER'
+      type: relationType == 'CUSTOMER',
+      companyPhone: true
     });
     if (isRequired(name)
       && isRequired(internalIdForBusiness)
@@ -163,12 +168,26 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     selectedCompany.logoId = null;
   }
 
+  const phoneNumberMask = [
+    /[0-9]/,
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/
+  ];
+
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={()=>{
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
           setValidation('')
-          console.log("I was called");
         }}>
           <DialogTitle>
             {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
@@ -210,6 +229,28 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
                   />
                   {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
+                </Grid>
+                <Grid item sm={12}>
+                  <MaskedInput
+                    className={clsx({ ["mask-text"]: true })}
+                    guide={true}
+                    showMask={true}
+                    variant="outlined"
+                    name="phone"
+                    mask={phoneNumberMask}
+                    label="Company Phone"
+                    id="companyPhone"
+                    type="text"
+                    value={companyPhone}
+                    placeholder="Reciever Phone(e.g 032*-*******)"
+                    onChange={e => {
+                      setCompanyPhone(e.target.value)
+                    }}
+                    style={{ padding: '22px 10px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
+                  // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+                  />
+                  {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                  {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
                 </Grid>
               </Grid>
               {relationType == 'CUSTOMER' ?
@@ -279,7 +320,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                   />
-                   <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+                  <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
                 </Grid>
               </Grid>
 
