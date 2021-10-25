@@ -64,6 +64,8 @@ export default function AddProductOutwardView({ }) {
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(null); // used in details table, selected from dropdown
   const [showMessage, setShowMessage] = useState(null);
 
+  const [disableSubmitButton, setDisableSubmitButton] = useState(false)
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -147,6 +149,7 @@ export default function AddProductOutwardView({ }) {
     else apiPromise = axios.put(getURL(`product-outward/${selectedProductOutward.id}`), data);
     apiPromise.then(res => {
       if (!res.data.success) {
+        setDisableSubmitButton(false)
         setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
         return
       }
@@ -156,9 +159,11 @@ export default function AddProductOutwardView({ }) {
       setTimeout(() => {
         navigate('/operations/product-outward')
       }, 2000);
+
     })
       .catch((err) => {
         console.log(err)
+        setDisableSubmitButton(false)
       });
   };
 
@@ -185,6 +190,7 @@ export default function AddProductOutwardView({ }) {
       && isRequired(vehicleId)
       && isNotEmptyArray(Object.values(inventoryQuantities))
       && checkForZeroQuantityInArray(Object.values(inventoryQuantities))) {
+      setDisableSubmitButton(true)
       addProductOutward(newProductOutward);
     }
   }
@@ -402,7 +408,8 @@ export default function AddProductOutwardView({ }) {
             <Grid container className={classes.parentContainer} spacing={3}>
               <Grid item xs={3}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <Button onClick={handleSubmit} color="primary" variant="contained">
+                  <Button onClick={handleSubmit} color="primary" variant="contained"
+                    disabled={disableSubmitButton}>
                     {!selectedProductOutward ? 'Add Product Outward' : 'Update Product Outward'}
                   </Button>
                 </FormControl>
