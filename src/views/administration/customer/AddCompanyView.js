@@ -230,11 +230,12 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   />
                   {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
                 </Grid>
+                {relationType == 'CUSTOMER' ?
                 <Grid item sm={12}>
                   <MaskedInput
                     className={clsx({ ["mask-text"]: true })}
-                    guide={true}
-                    showMask={true}
+                    // guide={true}
+                    // showMask={true}
                     variant="outlined"
                     name="phone"
                     mask={phoneNumberMask}
@@ -242,7 +243,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     id="companyPhone"
                     type="text"
                     value={companyPhone}
-                    placeholder="Reciever Phone(e.g 032*-*******)"
+                    placeholder="Company Phone(e.g 032*-*******)"
                     onChange={e => {
                       setCompanyPhone(e.target.value)
                     }}
@@ -252,6 +253,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
                   {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
                 </Grid>
+                :""}
               </Grid>
               {relationType == 'CUSTOMER' ?
                 <Grid container spacing={2}>
