@@ -15,6 +15,9 @@ import {
   FormControl,
   Select,
   FormHelperText,
+  Tooltip,
+  Typography
+
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -66,22 +69,47 @@ export default function ProductOutwardView() {
     label: 'OUTWARD ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.internalIdForBusiness
+    format: (value, entity) => {
+      return (
+      <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+      <Typography>
+        {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+      </Typography>
+    </Tooltip>
+      )
+    }
   },
   {
     id: 'DispatchOrder.internalIdForBusiness',
     label: 'DISPATCH ORDER ID',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.internalIdForBusiness
+    format: (value, entity) => {
+      return (
+        <Tooltip title={`${entity.DispatchOrder.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+        <Typography>
+          {entity.DispatchOrder.internalIdForBusiness.length > 20 ? `${entity.DispatchOrder.internalIdForBusiness.substring(0, 20)}...` : entity.DispatchOrder.internalIdForBusiness}
+        </Typography>
+      </Tooltip>
+        )
+    }
   },
   {
     id: 'Inventory.Company.name',
     label: 'COMPANY',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) => entity.DispatchOrder.Inventory.Company.name
+    format: (value, entity) =>{
+      return (
+        <Tooltip title={`${entity.DispatchOrder.Inventory.Company.name}`} classes={{ tooltip: classes.customWidth }}>
+        <Typography>
+          {entity.DispatchOrder.Inventory.Company.name.length > 20 ? `${entity.DispatchOrder.Inventory.Company.name.substring(0, 20)}...` : entity.DispatchOrder.Inventory.Company.name}
+        </Typography>
+      </Tooltip>
+        )
+    }
     // format: (value, entity, inventory) => inventory.Company.name
+    
   },
   {
     id: 'Inventory.Warehouse.name',
