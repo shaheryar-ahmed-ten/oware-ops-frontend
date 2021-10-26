@@ -227,7 +227,7 @@ function AddRideView() {
       });
     }
   };
-
+console.log("selectedRide.eirId",selectedRide.eirId)
   useEffect(() => {
     if (!!selectedRide && vendors.length > 0) {
       setVendorId(selectedRide.Vehicle.Vendor.id || "");
@@ -256,11 +256,19 @@ function AddRideView() {
       setETA(selectedRide.eta || "");
       setCompletionTime(selectedRide.completionTime || "");
       setCurrentLocation(selectedRide.currentLocation || "");
+      // setBuiltyImage(getURL('preview', selectedRide.builtyId));
+      // setEIRImage(getURL('preview', selectedRide.eirId));
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
       selectedRide && selectedRide.builtyId ? setBuiltyImageSrc(getURL('preview', selectedRide.builtyId)) : setBuiltyImageSrc(null);
+      // selectedRide && selectedRide.eirId ? setEIRImage(eirImageSrc) : setEIRImage(null)
+      // selectedRide && selectedRide.builtyId ? setBuiltyImage(builtyImageSrc) : setBuiltyImage(null)
+
     }
   }, [selectedRide, vendors]);
+  console.log("eirImage",eirImage)
+
+
 
   useEffect(() => {
     setProductName("");
@@ -395,7 +403,8 @@ function AddRideView() {
       eirImage:true,
       builtyImage:true
     });
-
+console.log("console 1")
+console.log(eirImage,builtyImage)
     if (
       isRequired(vehicleId) &&
       (status === "UNASSIGNED" || isRequired(driverId)) &&
@@ -416,32 +425,24 @@ function AddRideView() {
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
       isRequired(weightCargo)&&
-      (status != "ASSIGNED" ||isRequired(pocName)) &&
-      (status != "ASSIGNED" || isRequired(pocNumber)) &&
-      (status != "INPROGRESS" || isRequired(eta)) &&
-      (status != "INPROGRESS" || isRequired(currentLocation)) &&
-      (status != "COMPLETED" || isRequired(completionTime))&&
-      (status != "COMPLETED" || isRequired(eirImage))&&
-      (status != "COMPLETED" || isRequired(builtyImage))
-      // isRequired(pickupLocation) &&
-      // isRequired(dropoffLocation)
+      (status === "ASSIGNED" && isRequired(pocName)) &&  isRequired(pocNumber) ||
+      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation) )||
+      (status === "COMPLETED" && isRequired(completionTime) && isRequired(eirImage) && isRequired(builtyImage)) 
+
     ) {
+      console.log("console 2")
       if (manifestImage) {
         const [manifestId] = await upload([manifestImage], "ride");
         newRide.manifestId = manifestId;
       }
-      if (eirImage) {
-        const [eirId] = await upload([eirImage], "ride");
-        newRide.eirId = eirId;
-        // (status != "COMPLETED" || isRequired(eirId))
-      }
-      if (builtyImage) {
-        const [builtyId] = await upload([builtyImage], "ride");
-        newRide.builtyId = builtyId;
-        // (status != "COMPLETED" || isRequired(builtyId))
-      }
-      // if ((status != "COMPLETED" || isRequired(newRide.builtyId)) || (status != "COMPLETED" || isRequired(newRide.eirId))) return
+      if (eirImage) [newRide.eirId] = await upload([eirImage], "ride");
+      
+      if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
+        
+      console.log(newRide.builtyId,newRide.eirId)
+      
       if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId)) ) return
+      // if (!isRequired(newRide.builtyId) || !isRequired(newRide.eirId)) return
       addRide(newRide);
     }
   };
@@ -453,16 +454,19 @@ function AddRideView() {
     setManifestImage(null);
     setManifestImageSrc(null);
     if(selectedRide){selectedRide.manifestId = null};
+    // selectedRide.manifestId = null
   }
   const removeEIRPreviewId = (event) => {
     setEIRImage(null);
     setEIRImageSrc(null);
     if(selectedRide){ selectedRide.eirId = null};
+    // selectedRide.eirId = null
   }
   const removeBuiltyPreviewId = (event) => {
     setBuiltyImage(null);
     setBuiltyImageSrc(null);
     if(selectedRide){selectedRide.builtyId = null};
+    // selectedRide.builtyId = null
   }
   const newManifestValidateLogoImage = (event) => {
     const checkFile = event.target.files[0];
@@ -488,9 +492,7 @@ function AddRideView() {
       const logoFile = checkFile ? checkFile : null;
       setManifestImage(logoFile)
     });
-    // setManifestImageSrc()
-    // const logoFile = checkFile ? checkFile : null;
-    // setManifestImage(logoFile)
+   
   })
   }
   const newEIRValidateLogoImage = (event) => {
@@ -506,21 +508,20 @@ function AddRideView() {
       setEIRSize(true);
       return false;
     }
-    const eirReader = new FileReader();
-    checkEIRFile && eirReader.readAsDataURL(checkEIRFile);
-    eirReader.addEventListener('load', event => {
-      const _loadedEIRImageUrl = event.target.result;
-      const eirImage = document.createElement('img');
-      eirImage.src = _loadedEIRImageUrl;
-      eirImage.addEventListener('load', () => {
-      setEIRImageSrc(_loadedEIRImageUrl);
+    // const eirReader = new FileReader();
+    // checkEIRFile && eirReader.readAsDataURL(checkEIRFile);
+    // // eirReader.addEventListener('load', event => {
+    //   const _loadedEIRImageUrl = event.target.result;
+    //   const eirImage = document.createElement('img');
+    //   eirImage.src = _loadedEIRImageUrl;
+      // eirImage.addEventListener('load', () => {
+      // setEIRImageSrc(_loadedEIRImageUrl);
       const eirFile = checkEIRFile ? checkEIRFile : null;
+      setEIRImageSrc(eirFile);
       setEIRImage(eirFile)
-    });
-    // setManifestImageSrc()
-    // const logoFile = checkFile ? checkFile : null;
-    // setManifestImage(logoFile)
-  })
+    // })
+   
+  // })
   }
 
   const newBuiltyValidateLogoImage = (event) => {
@@ -536,21 +537,19 @@ function AddRideView() {
       setBuiltySize(true);
       return false;
     }
-    const Builtyreader = new FileReader();
-    checkBuiltyFile && Builtyreader.readAsDataURL(checkBuiltyFile);
-    Builtyreader.addEventListener('load', event => {
-      const _loadedBuiltyImageUrl = event.target.result;
-      const BuiltyImage = document.createElement('img');
-      BuiltyImage.src = _loadedBuiltyImageUrl;
-      BuiltyImage.addEventListener('load', () => {
-      setBuiltyImageSrc(_loadedBuiltyImageUrl);
+    // const Builtyreader = new FileReader();
+    // checkBuiltyFile && Builtyreader.readAsDataURL(checkBuiltyFile);
+    // Builtyreader.addEventListener('load', event => {
+    //   const _loadedBuiltyImageUrl = event.target.result;
+    //   const BuiltyImage = document.createElement('img');
+    //   BuiltyImage.src = _loadedBuiltyImageUrl;
+    //   BuiltyImage.addEventListener('load', () => {
+      // setBuiltyImageSrc(_loadedBuiltyImageUrl);
       const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
+      setBuiltyImageSrc(builtyFile);
       setBuiltyImage(builtyFile)
-    });
-    // setManifestImageSrc()
-    // const logoFile = checkFile ? checkFile : null;
-    // setManifestImage(logoFile)
-  })
+    // });
+  // })
   }
   return (
     <>
@@ -1167,11 +1166,11 @@ function AddRideView() {
               id="weightCargo"
               label="Weight of Cargo (Kg)"
               placeholder="Weight of Cargo (Kg)"
-              type="number"
+              type="text"
               variant="outlined"
-              value={!!weightCargo && weightCargo}
+              value={weightCargo}
               minuteStep={15}
-              onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              onChange={(e) => setWeightCargo(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
             />
             {validation.weightCargo && !isRequired(weightCargo) ? (
@@ -1373,7 +1372,7 @@ function AddRideView() {
             </Grid>
           </Grid>
           {/* Builty EIR Addition Starts */}
-         
+         {/* {console.log("eirId",selectedRide.eirId)} */}
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -1387,7 +1386,7 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    value={(e) => e.target.value + 1}
+                    // value={(e) => e.target.value + 1}
                     onChange={(e) => {
                       newEIRValidateLogoImage(e)
                       // setEIRImage(e.target.files[0]);
@@ -1433,7 +1432,7 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    value={(e) => e.target.value + 2}
+                    // value={(e) => e.target.value + 2}
                     onChange={(e) => {
                       newBuiltyValidateLogoImage(e)
                       // setBuiltyImage(e.target.files[0]);
