@@ -139,7 +139,7 @@ function OrderBulkUpload() {
             tempTwo.push(order)
             count++
         }
-        console.log("Sending")
+        console.log("Sending API HIT")
         // let apiPromise = axios.post(getURL('product/bulk'), data)
         // apiPromise.then((res) => {
         //     if (!res.data.success) {
