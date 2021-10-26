@@ -68,11 +68,11 @@ export default function ProductView() {
       minWidth: "auto",
       className: classes.tableCellStyle,
       format: (value) => {
-        const test = digitize(value, 6);
+        const productId = digitize(value, 6);
         return (
-          <Tooltip title={`${test}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${productId}`} classes={{ tooltip: classes.customWidth }}>
             <Typography>
-              {test.length > 20 ? `${test.substring(0, 20)}...` : test}
+              {productId.length > 20 ? `${productId.substring(0, 20)}...` : productId}
             </Typography>
           </Tooltip>
         )
