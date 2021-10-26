@@ -113,7 +113,7 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.internalIdForBusiness}`}>
           <Typography>
             {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
           </Typography>
@@ -128,7 +128,7 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.Inventory.Company.name}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.Inventory.Company.name}`} >
           <Typography>
             {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
           </Typography>
@@ -177,7 +177,7 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.referenceId}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.referenceId}`}>
           <Typography>
             {entity.referenceId > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId}
           </Typography>
