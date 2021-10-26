@@ -11,6 +11,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
+  Typography,
+
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
@@ -46,6 +49,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 7,
     height: 30,
   },
+  tableCellStyle: {
+    width: 200,
+    maxWidth: 200,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+
+  },
 }));
 
 export default function ProductView() {
@@ -55,20 +66,49 @@ export default function ProductView() {
       id: "id",
       label: "PRODUCT ID",
       minWidth: "auto",
-      className: "",
-      format: (value) => digitize(value, 6),
+      className: classes.tableCellStyle,
+      format: (value) => {
+        const test = digitize(value, 6);
+        return (
+          <Tooltip title={`${test}`} classes={{ tooltip: classes.customWidth }}>
+            <Typography>
+              {test.length > 20 ? `${test.substring(0, 20)}...` : test}
+            </Typography>
+          </Tooltip>
+        )
+
+      }
     },
     {
       id: "name",
       label: "Name",
       minWidth: "auto",
-      className: "",
+      className: classes.tableCellStyle,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.name}`} classes={{ tooltip: classes.customWidth }}>
+            <Typography>
+              {entity.name.length > 20 ? `${entity.name.substring(0, 20)}...` || '-' : entity.name || '-'}
+            </Typography>
+          </Tooltip>
+        )
+      }
     },
     {
       id: "description",
       label: "Description",
-      minWidth: "auto",
-      className: "",
+      className: classes.tableCellStyle,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.description}`} classes={{ tooltip: classes.customWidth }}>
+            <Typography>
+              {entity.description.length > 20 ? `${entity.description.substring(0, 20)}...` || '-' : entity.description || '-'}
+            </Typography>
+          </Tooltip>
+        )
+
+      }
+
     },
     {
       id: "dimensionsCBM",
@@ -91,7 +131,7 @@ export default function ProductView() {
       label: "Category",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.Category.name,
+      format: (value, entity) => entity.Category.name
     },
     {
       id: "Brand.name",
@@ -376,7 +416,7 @@ export default function ProductView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
+          // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
