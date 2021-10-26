@@ -1180,7 +1180,7 @@ function AddRideView() {
           {/* <Grid item sm={6}>
               &nbsp;
           </Grid> */}
-
+          {status == "UNASSIGNED" ? (
           <Grid item sm={12}>
             <TextField
               multiline
@@ -1199,8 +1199,11 @@ function AddRideView() {
             />
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
             <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
-          </Grid>    
+          </Grid>  
+          ):("")
+          }  
         </Grid>
+          
 
         {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
