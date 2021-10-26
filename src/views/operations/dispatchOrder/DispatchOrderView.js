@@ -13,6 +13,8 @@ import {
   TableRow,
   Backdrop,
   Typography,
+  Tooltip,
+
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
@@ -109,14 +111,30 @@ export default function DispatchOrderView() {
       label: "DISPATCH ORDER ID",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.internalIdForBusiness,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+          <Typography>
+            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+          </Typography>
+        </Tooltip>
+          )
+      }
     },
     {
       id: "Inventory.Company.name",
       label: "COMPANY",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.Inventory.Company.name,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.Inventory.Company.name}`} classes={{ tooltip: classes.customWidth }}>
+          <Typography>
+            {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
+          </Typography>
+        </Tooltip>
+          )
+      }
     },
     {
       id: "Inventory.Warehouse.name",
@@ -157,7 +175,15 @@ export default function DispatchOrderView() {
       label: "REFERENCE ID",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.referenceId,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.referenceId}`} classes={{ tooltip: classes.customWidth }}>
+          <Typography>
+            {entity.referenceId > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId}
+          </Typography>
+        </Tooltip>
+          )
+      }
     },
     {
       id: "status",
