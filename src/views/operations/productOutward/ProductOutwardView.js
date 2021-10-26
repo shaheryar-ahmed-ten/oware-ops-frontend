@@ -71,7 +71,7 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) => {
       return (
-      <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+      <Tooltip title={`${entity.internalIdForBusiness}`}>
       <Typography>
         {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
       </Typography>
@@ -86,7 +86,7 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) => {
       return (
-        <Tooltip title={`${entity.DispatchOrder.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+        <Tooltip title={`${entity.DispatchOrder.internalIdForBusiness}`}>
         <Typography>
           {entity.DispatchOrder.internalIdForBusiness.length > 20 ? `${entity.DispatchOrder.internalIdForBusiness.substring(0, 20)}...` : entity.DispatchOrder.internalIdForBusiness}
         </Typography>
@@ -101,7 +101,7 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) =>{
       return (
-        <Tooltip title={`${entity.DispatchOrder.Inventory.Company.name}`} classes={{ tooltip: classes.customWidth }}>
+        <Tooltip title={`${entity.DispatchOrder.Inventory.Company.name}`}>
         <Typography>
           {entity.DispatchOrder.Inventory.Company.name.length > 20 ? `${entity.DispatchOrder.Inventory.Company.name.substring(0, 20)}...` : entity.DispatchOrder.Inventory.Company.name}
         </Typography>

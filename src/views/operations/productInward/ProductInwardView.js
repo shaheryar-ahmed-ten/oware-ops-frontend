@@ -79,7 +79,7 @@ export default function ProductInwardView() {
       className: '',
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.Company.name}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.Company.name}`}>
           <Typography>
             {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
           </Typography>

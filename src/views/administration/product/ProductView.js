@@ -70,7 +70,7 @@ export default function ProductView() {
       format: (value) => {
         const productId = digitize(value, 6);
         return (
-          <Tooltip title={`${productId}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${productId}`}>
             <Typography>
               {productId.length > 20 ? `${productId.substring(0, 20)}...` : productId}
             </Typography>
@@ -86,7 +86,7 @@ export default function ProductView() {
       className: classes.tableCellStyle,
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.name}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.name}`}>
             <Typography>
               {entity.name.length > 20 ? `${entity.name.substring(0, 20)}...` || '-' : entity.name || '-'}
             </Typography>
@@ -100,7 +100,7 @@ export default function ProductView() {
       className: classes.tableCellStyle,
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.description}`} classes={{ tooltip: classes.customWidth }}>
+          <Tooltip title={`${entity.description}`}>
             <Typography>
               {entity.description.length > 20 ? `${entity.description.substring(0, 20)}...` || '-' : entity.description || '-'}
             </Typography>
