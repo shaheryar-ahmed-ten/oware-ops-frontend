@@ -37,7 +37,7 @@ import { Select } from "@material-ui/core";
 import TableStatsHeader from "../../../components/TableStatsHeader";
 import { useNavigate } from "react-router";
 import fileDownload from "js-file-download";
-import moment from "moment";
+import moment from "moment-timezone";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import SelectDropdown from "../../../components/SelectDropdown";
 import SelectCustomDropdown from "../../../components/SelectCustomDropdown";
@@ -482,6 +482,7 @@ export default function RideView() {
           start: startDate == "-" ? "" : startDate,
           end: endDate == "-" ? "" : endDate,
           status: currentFilter == "ALL" ? "" : currentFilter,
+          client_Tz: moment.tz.guess()
         },
       })
       .then((response) => {
