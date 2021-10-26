@@ -87,7 +87,7 @@ function OrderBulkUpload() {
         }
         let temp = [] // for same product in same order number.
         let tempTwo = [] // for same product in same order number.
-        let count = 1 // to keep index count of loop
+        let count = 2 // to keep index count of loop
         // stop duplicate products for each order
         for (let order of data.orders) {
             if (temp.includes(`${order.orderNumber}${order.product}`)) {
