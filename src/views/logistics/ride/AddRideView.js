@@ -440,7 +440,8 @@ function AddRideView() {
         newRide.builtyId = builtyId;
         // (status != "COMPLETED" || isRequired(builtyId))
       }
-      if ((status != "COMPLETED" || isRequired(newRide.builtyId)) || (status != "COMPLETED" || isRequired(newRide.eirId))) return
+      // if ((status != "COMPLETED" || isRequired(newRide.builtyId)) || (status != "COMPLETED" || isRequired(newRide.eirId))) return
+      if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId)) ) return
       addRide(newRide);
     }
   };
