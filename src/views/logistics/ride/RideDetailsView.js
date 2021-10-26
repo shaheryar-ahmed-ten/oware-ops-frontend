@@ -341,8 +341,7 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.weightCargo || "-"}
               </Grid>
-              {selectedRide.status == "ASSIGNED" ? (
-              <>
+             
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 POC Name:
               </Grid>
@@ -355,22 +354,18 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.pocNumber || "-"}
               </Grid>
-              </>
-              ):("")}
+             
 
-            {selectedRide.status == "COMPLETED" ? (
-              <>
+          
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Trip Completion Time:
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.completionTime || "-"}
               </Grid>
-              </>
-            ):("")}
+            
 
-              {selectedRide.status == "INPROGRESS" ? (
-              <>
+             
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Current Location:
               </Grid>
@@ -383,10 +378,9 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.eta || "-"}
               </Grid>
-              </>
-              ):("")}
+          
             </Grid>
-            {selectedRide.status == "UNASSIGNED" ? (
+            
             <Grid container spacing={2} style={{ paddingTop: 15 }}>
               <Grid style={{ fontWeight: 500 }} item xs={3}>
                 Memo :
@@ -395,8 +389,7 @@ function RideDetailsView(props) {
                 {selectedRide.memo || "-"}
               </Grid>
             </Grid>
-            ):("")
-            }
+           
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
@@ -568,26 +561,26 @@ function RideDetailsView(props) {
             <TableHead>
               <TableRow>
                 <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
-                {selectedRide.status == "ASSIGNED" ? <TableCell className={classes.tableHeadText}>POC NAME</TableCell>:""}
-                {selectedRide.status == "ASSIGNED" ?<TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>:""}
-                {selectedRide.status == "COMPLETED" ?<TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME</TableCell>:""}
-               {selectedRide.status == "INPROGRESS" ?<TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>: ""}
-               {selectedRide.status == "INPROGRESS" ?<TableCell className={classes.tableHeadText}>ETA</TableCell>:""}
+                <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
+                <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
+                <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME</TableCell>
+               <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
+               <TableCell className={classes.tableHeadText}>ETA</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
                 <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
-                {selectedRide.status == "ASSIGNED" ? <TableCell>{selectedRide.pocName || "-"}</TableCell>:""}
-                {selectedRide.status == "ASSIGNED" ?<TableCell>{selectedRide.pocNumber || "-"}</TableCell>:""}
-                {selectedRide.status == "COMPLETED" ?<TableCell>{selectedRide.completionTime || "-"}</TableCell>:""}
-                {selectedRide.status == "INPROGRESS" ?<TableCell>{selectedRide.currentLocation || "-"}</TableCell>:""}
-                {selectedRide.status == "INPROGRESS" ?<TableCell>{selectedRide.eta || "-"}</TableCell>:""}
+                <TableCell>{selectedRide.pocName || "-"}</TableCell>
+                <TableCell>{selectedRide.pocNumber || "-"}</TableCell>
+                <TableCell>{selectedRide.completionTime || "-"}</TableCell>
+                <TableCell>{selectedRide.currentLocation || "-"}</TableCell>
+                <TableCell>{selectedRide.eta || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
-        {selectedRide.status == "UNASSIGNED" ? (
+    
         <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -602,7 +595,6 @@ function RideDetailsView(props) {
             </TableBody>
           </Table>
         </TableContainer>
-        ):("")}
 
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
@@ -634,7 +626,7 @@ function RideDetailsView(props) {
           </Table>
         </TableContainer>
 
-        {selectedRide.status == "COMPLETED" ? (
+        
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             {selectedRide && selectedRide.eirId !== null ? (
@@ -661,9 +653,9 @@ function RideDetailsView(props) {
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
         </Grid>
-        ):("")}
+       
 
-        {selectedRide.status == "COMPLETED" ? (
+      
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             {selectedRide && selectedRide.builtyId !== null ? (
@@ -690,8 +682,7 @@ function RideDetailsView(props) {
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
         </Grid>
-        ):("")
-        }
+       
 
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>

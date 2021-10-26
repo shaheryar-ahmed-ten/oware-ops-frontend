@@ -52,6 +52,10 @@ const useStyles = makeStyles((theme) => ({
     // }
     // height: 34
   },
+  pocBox: {
+    height: 34,
+    width:"102%",
+  },
   weightBox:{
     // height:34,
     display: "none"
@@ -388,6 +392,8 @@ function AddRideView() {
       pickupCityId: true,
       pickupLocation: true,
       dropoffLocation: true,
+      eirImage:true,
+      builtyImage:true
     });
 
     if (
@@ -414,7 +420,9 @@ function AddRideView() {
       (status != "ASSIGNED" || isRequired(pocNumber)) &&
       (status != "INPROGRESS" || isRequired(eta)) &&
       (status != "INPROGRESS" || isRequired(currentLocation)) &&
-      (status != "COMPLETED" || isRequired(completionTime))
+      (status != "COMPLETED" || isRequired(completionTime))&&
+      (status != "COMPLETED" || isRequired(eirImage))&&
+      (status != "COMPLETED" || isRequired(builtyImage))
       // isRequired(pickupLocation) &&
       // isRequired(dropoffLocation)
     ) {
@@ -425,11 +433,14 @@ function AddRideView() {
       if (eirImage) {
         const [eirId] = await upload([eirImage], "ride");
         newRide.eirId = eirId;
+        // (status != "COMPLETED" || isRequired(eirId))
       }
       if (builtyImage) {
         const [builtyId] = await upload([builtyImage], "ride");
         newRide.builtyId = builtyId;
+        // (status != "COMPLETED" || isRequired(builtyId))
       }
+      if ((status != "COMPLETED" || isRequired(newRide.builtyId)) || (status != "COMPLETED" || isRequired(newRide.eirId))) return
       addRide(newRide);
     }
   };
@@ -1035,11 +1046,10 @@ function AddRideView() {
               Other Details
             </Typography>
           </Grid>
-          {status == "ASSIGNED" ? (
-          <Grid container item xs={12} spacing={3}>
+          <Grid container item xs={12} spacing={3} style={{paddingBottom:0}}>
             <Grid item sm={6}>
               <TextField
-                inputProps={{ className: classes.textBox }}
+                inputProps={{ className: classes.pocBox }}
                 className={classes.labelBox}
                 fullWidth={true}
                 margin="dense"
@@ -1051,7 +1061,7 @@ function AddRideView() {
                 onChange={(e) => setPOCName(e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, pocName: true })}
               />
-              {validation.pocName && !isRequired(pocName) ? (
+              {validation.pocName && !isRequired(pocName) && status == "ASSIGNED"? (
                 <Typography color="error">POC Name is required!</Typography>
               ) : (
                 ""
@@ -1073,21 +1083,20 @@ function AddRideView() {
                 onChange={e => {
                   setPOCNumber(e.target.value)
                 }}
-                style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
+                style={{height: "17%",width:"97%", marginLeft:14, marginTop:6,borderColor:"#c4c4c4"}}
+                // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
-              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-              {validation.pocNumber && !isRequired(pocNumber) ? <Typography color="error">POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" style={{marginLeft: 15}}>Incorrect phone number!</Typography> : ''}
+              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED"? <Typography color="error" style={{marginLeft: 15}}>POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </Grid>
           </Grid>
-        ) : (
-          ""
-        )}
-        {status == "INPROGRESS" ? (
-          <Grid container item xs={12} spacing={3}>
+       
+          {/* <Grid container item xs={12} spacing={3}> */}
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.textBox }}
+                // style={{width:"102%"}}
                 className={classes.labelBox}
                 fullWidth={true}
                 margin="dense"
@@ -1099,7 +1108,7 @@ function AddRideView() {
                 onChange={(e) => setETA(e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, eta: true })}
               />
-              {validation.eta && !isRequired(eta) ? (
+              {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
                 <Typography color="error">ETA is required!</Typography>
               ) : (
                 ""
@@ -1119,17 +1128,14 @@ function AddRideView() {
                 onChange={(e) => setCurrentLocation(e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, currentLocation: true })}
               />
-              {validation.currentLocation && !isRequired(currentLocation) ? (
+              {validation.currentLocation && !isRequired(currentLocation) && status == "INPROGRESS" ? (
                 <Typography color="error">Current Location is required!</Typography>
               ) : (
                 ""
               )}
             </Grid>
-          </Grid>
-        ) : (
-          ""
-        )}
-        {status == "COMPLETED" ? (
+          {/* </Grid> */}
+        
           <Grid item sm={6}>
             <TextField
               className={classes.labelBox}
@@ -1145,42 +1151,36 @@ function AddRideView() {
               onChange={(e) => setCompletionTime(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
-            {validation.completionTime && !isRequired(completionTime) ? (
+            {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED"? (
               <Typography color="error">Trip Completion Time is required!</Typography>
             ) : (
               ""
             )}
           </Grid>
-          ):(
-            ""
-          )}
-            <Grid item sm={6}>
-              <TextField
-                className={classes.labelBox}
-                fullWidth={true}
-                inputProps={{ className: classes.textBox }}
-                margin="dense"
-                id="weightCargo"
-                label="Weight of Cargo (Kg)"
-                placeholder="Weight of Cargo (Kg)"
-                type="number"
-                variant="outlined"
-                value={!!weightCargo && weightCargo}
-                minuteStep={15}
-                onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
-              />
-              {validation.weightCargo && !isRequired(weightCargo) ? (
-                <Typography color="error">Weight Of Cargo is required!</Typography>
-              ) : (
-                ""
-              )}
+          <Grid item sm={6}>
+            <TextField
+              className={classes.labelBox}
+              fullWidth={true}
+              inputProps={{ className: classes.textBox }}
+              margin="dense"
+              id="weightCargo"
+              label="Weight of Cargo (Kg)"
+              placeholder="Weight of Cargo (Kg)"
+              type="number"
+              variant="outlined"
+              value={!!weightCargo && weightCargo}
+              minuteStep={15}
+              onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
+            />
+            {validation.weightCargo && !isRequired(weightCargo) ? (
+              <Typography color="error">Weight Of Cargo is required!</Typography>
+            ) : (
+              ""
+            )}
             
           </Grid>
-          {/* <Grid item sm={6}>
-              &nbsp;
-          </Grid> */}
-          {status == "UNASSIGNED" ? (
+
           <Grid item sm={12}>
             <TextField
               multiline
@@ -1198,10 +1198,10 @@ function AddRideView() {
             // onBlur={e => setValidation({ ...validation, memo: true })}
             />
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
-            <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+            {validation.memo && !isRequired(memo) && status == "UNASSIGNED" ?
+            (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
+            :("")}
           </Grid>  
-          ):("")
-          }  
         </Grid>
           
 
@@ -1372,7 +1372,7 @@ function AddRideView() {
             </Grid>
           </Grid>
           {/* Builty EIR Addition Starts */}
-          {status == "COMPLETED" ? (
+         
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -1391,11 +1391,17 @@ function AddRideView() {
                       newEIRValidateLogoImage(e)
                       // setEIRImage(e.target.files[0]);
                     }}
+                    onBlur={(e) => setValidation({ ...validation, eirImage: true })}
                     accept=".jpg,.png,.jpeg"
                   />
                 </Button>
                 {(eirSize == true) ? <Typography color="error">EIR size should be less than 1 MB</Typography> : ''}
                 {(eirType == true) ? <Typography color="error">EIR image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+                {validation.eirImage && !isRequired(eirImage) && status == "COMPLETED"? (
+                <Typography color="error">EIR Image is required!</Typography>
+              ) : (
+                ""
+              )}
               </FormControl>
                 <Grid style={{ textAlign: 'center' }}>
 
@@ -1431,11 +1437,17 @@ function AddRideView() {
                       newBuiltyValidateLogoImage(e)
                       // setBuiltyImage(e.target.files[0]);
                     }}
+                    onBlur={(e) => setValidation({ ...validation, builtyImage: true })}
                     accept=".jpg,.png,.jpeg"
                   />
                 </Button>
                 {(builtySize == true) ? <Typography color="error">Builty size should be less than 1 MB</Typography> : ''}
                 {(builtyType == true) ? <Typography color="error">Builty image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+                { validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED"? (
+                <Typography color="error">Builty Image is required!</Typography>
+              ) : (
+                ""
+              )}
               </FormControl>
                 <Grid style={{ textAlign: 'center' }}>
 
@@ -1455,9 +1467,7 @@ function AddRideView() {
                 </Grid>
             </Grid>
           </Grid>
-        ) : (
-          ""
-        )}
+       
           {/* Builty EIR Ends  */}
           
           <Grid container item xs={12} spacing={3}>
