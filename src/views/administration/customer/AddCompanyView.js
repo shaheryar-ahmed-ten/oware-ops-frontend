@@ -365,40 +365,12 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                           />
                         </Grid>
                       }
-                      {/* {logoImageSrc == null ? '' : */}
-
                       {
                         logoImageSrc ?
                           <img id="previewImage" src={logoImageSrc} /> :
                           null
                       }
-
-                      {/* } */}
                     </Grid>
-
-                    {/* Remove Logo Trash Bin */}
-
-                    {/* {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
-
-                      <Grid item xs={12} style={{ marginLeft: 380 }}>
-                        {(selectedCompany && selectedCompany.logoId) ?
-                          <DeleteSharpIcon 
-                          // onClick={() => removeLogoId()}
-                           />
-                          : ''}
-                      </Grid>
-                      : ''}
-
-                    {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
-                      <Grid item xs={12} style={{ textAlign: 'center' }}>
-                        {(selectedCompany && selectedCompany.logoId) ?
-                          <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>
-                            <img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" />
-                          </a>
-                          // <DeleteSharpIcon onClick={() => removeLogoId()} />
-                          : ''}
-                      </Grid>
-                      : ''} */}
 
                   </Grid>
 
