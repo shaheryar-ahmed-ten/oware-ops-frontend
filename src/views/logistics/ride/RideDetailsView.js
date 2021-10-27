@@ -634,7 +634,7 @@ function RideDetailsView(props) {
                 <Grid container item xs={12} spacing={3}>
                   <Grid item xs={12}>
                     <Typography variant="h5" className={classes.pageSubHeading}>
-                      EIR (PORT SHIPMENT)
+                      EIR (Port Shipment)
                     </Typography>
                   </Grid>
                 </Grid>
