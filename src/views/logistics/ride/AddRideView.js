@@ -375,15 +375,17 @@ function AddRideView() {
       status: true,
       vehicleId: true,
       driverId: true,
-      pickupAddress: true,
-      dropoffAddress: true,
+      vendorId: true,
+      carId: true,
+      // pickupAddress: true,
+      // dropoffAddress: true,
       customerId: true,
       cancellationReason: true,
       cancellationComment: true,
       price: true,
       cost: true,
-      customerDiscount: true,
-      driverIncentive: true,
+      // customerDiscount: true,
+      // driverIncentive: true,
       products: true,
       pickupDate: true,
       dropoffDate: true,
@@ -401,26 +403,29 @@ function AddRideView() {
       pickupLocation: true,
       dropoffLocation: true,
       eirImage:true,
-      builtyImage:true
+      builtyImage:true,
+      productCategoryId: true,
+      productName: true,
+      productQuantity: true,
     });
 
     if (
       isRequired(vehicleId) &&
       (status === "UNASSIGNED" || isRequired(driverId)) &&
-      isRequired(pickupAddress) &&
-      isRequired(dropoffAddress) &&
+      // isRequired(pickupAddress) &&
+      // isRequired(dropoffAddress) &&
       isRequired(customerId) &&
       (status != "CANCELLED" || isRequired(cancellationReason)) &&
       (status != "CANCELLED" || isRequired(cancellationComment)) &&
       isRequired(price) &&
       isRequired(cost) &&
-      isRequired(customerDiscount) &&
-      isRequired(driverIncentive) &&
+      // isRequired(customerDiscount) &&
+      // isRequired(driverIncentive) &&
       isNotEmptyArray(products) &&
       isRequired(carId) &&
       isRequired(vendorId) &&
       isRequired(pickupDate) &&
-      isRequired(dropoffDate) &&
+      // isRequired(dropoffDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
       isRequired(weightCargo)||
@@ -824,11 +829,11 @@ function AddRideView() {
               onChange={(e) => setPickupAddress(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, pickupAddress: true })}
             />
-            {validation.pickupAddress && !isRequired(pickupAddress) ? (
+            {/* {validation.pickupAddress && !isRequired(pickupAddress) ? (
               <Typography color="error">Pickup address is required!</Typography>
             ) : (
               ""
-            )}
+            )} */}
           </Grid>
 
           <Grid item sm={6}>
@@ -874,11 +879,11 @@ function AddRideView() {
               onChange={(e) => setDropoffAddress(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, dropoffAddress: true })}
             />
-            {validation.dropoffAddress && !isRequired(dropoffAddress) ? (
+            {/* {validation.dropoffAddress && !isRequired(dropoffAddress) ? (
               <Typography color="error">Dropoff address is required!</Typography>
             ) : (
               ""
-            )}
+            )} */}
           </Grid>
           <Grid
             item
@@ -1013,11 +1018,11 @@ function AddRideView() {
               onChange={(e) => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
             />
-            {validation.customerDiscount && !isRequired(customerDiscount) ? (
+            {/* {validation.customerDiscount && !isRequired(customerDiscount) ? (
               <Typography color="error">Customer Discount is required!</Typography>
             ) : (
               ""
-            )}
+            )} */}
           </Grid>
           <Grid item sm={6}>
             <TextField
@@ -1034,11 +1039,11 @@ function AddRideView() {
               onChange={(e) => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
             />
-            {validation.driverIncentive && !isRequired(driverIncentive) ? (
+            {/* {validation.driverIncentive && !isRequired(driverIncentive) ? (
               <Typography color="error">Driver Incentive is required!</Typography>
             ) : (
               ""
-            )}
+            )} */}
           </Grid>
         </Grid>
 
@@ -1364,7 +1369,7 @@ function AddRideView() {
               </Table>
             </TableContainer>
           </Grid>
-          <Grid container item xs={12} spacing={3}>
+          {/* <Grid container item xs={12} spacing={3}>
             <Grid item xs={12}>
               {selectedRide && selectedRide.Manifest ? (
                 <a target="_blank" href={getURL("preview", selectedRide.Manifest.id)}>
@@ -1374,7 +1379,7 @@ function AddRideView() {
                 ""
               )}
             </Grid>
-          </Grid>
+          </Grid> */}
           {/* Builty EIR Addition Starts */}
 
           <Grid container item xs={12} spacing={3}>
