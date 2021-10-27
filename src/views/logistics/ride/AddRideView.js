@@ -192,7 +192,7 @@ function AddRideView() {
 
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
-      setVehicles(res.data.vehicles);
+      vendorId ? setVehicles(res.data.vehicles):setVehicles([]);
       setDrivers(res.data.drivers);
       setStatuses(res.data.statuses);
       setCities(res.data.cities);
