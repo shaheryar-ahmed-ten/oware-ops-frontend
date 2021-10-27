@@ -190,7 +190,6 @@ function AddRideView() {
     /\d/
   ];
 
-  // console.log(pickUp, "pickUp", dropOff, "dropOff");
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
       setVehicles(res.data.vehicles);
@@ -227,7 +226,7 @@ function AddRideView() {
       });
     }
   };
-console.log("selectedRide.eirId",selectedRide.eirId)
+
   useEffect(() => {
     if (!!selectedRide && vendors.length > 0) {
       setVendorId(selectedRide.Vehicle.Vendor.id || "");
@@ -266,7 +265,7 @@ console.log("selectedRide.eirId",selectedRide.eirId)
 
     }
   }, [selectedRide, vendors]);
-  console.log("eirImage",eirImage)
+
 
 
 
@@ -305,7 +304,7 @@ console.log("selectedRide.eirId",selectedRide.eirId)
         const filterCarArray = removeCarDuplicate(carVehicleTemp);
         setVehicleType(filterCarArray);
         getVehicles(carId, vendorId);
-        // console.log("carVehicleTemp", filterCarArray);
+  
       }
     }
   }, [carId]);
@@ -403,8 +402,7 @@ console.log("selectedRide.eirId",selectedRide.eirId)
       eirImage:true,
       builtyImage:true
     });
-console.log("console 1")
-console.log(eirImage,builtyImage)
+
     if (
       isRequired(vehicleId) &&
       (status === "UNASSIGNED" || isRequired(driverId)) &&
@@ -424,13 +422,13 @@ console.log(eirImage,builtyImage)
       isRequired(dropoffDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
-      isRequired(weightCargo)&&
+      isRequired(weightCargo)||
       (status === "ASSIGNED" && isRequired(pocName)) &&  isRequired(pocNumber) ||
       (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation) )||
-      (status === "COMPLETED" && isRequired(completionTime) && isRequired(eirImage) && isRequired(builtyImage)) 
+      (status === "COMPLETED" && isRequired(completionTime) ) 
 
     ) {
-      console.log("console 2")
+     
       if (manifestImage) {
         const [manifestId] = await upload([manifestImage], "ride");
         newRide.manifestId = manifestId;
@@ -438,11 +436,9 @@ console.log(eirImage,builtyImage)
       if (eirImage) [newRide.eirId] = await upload([eirImage], "ride");
       
       if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
-        
-      console.log(newRide.builtyId,newRide.eirId)
       
       if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId)) ) return
-      // if (!isRequired(newRide.builtyId) || !isRequired(newRide.eirId)) return
+    
       addRide(newRide);
     }
   };
@@ -1372,7 +1368,7 @@ console.log(eirImage,builtyImage)
             </Grid>
           </Grid>
           {/* Builty EIR Addition Starts */}
-         {/* {console.log("eirId",selectedRide.eirId)} */}
+
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -1397,7 +1393,7 @@ console.log(eirImage,builtyImage)
                 </Button>
                 {(eirSize == true) ? <Typography color="error">EIR size should be less than 1 MB</Typography> : ''}
                 {(eirType == true) ? <Typography color="error">EIR image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                {validation.eirImage && !isRequired(eirImage) && status == "COMPLETED"? (
+                {!(selectedRide && selectedRide.eirId) && validation.eirImage && !isRequired(eirImage) && status == "COMPLETED"? (
                 <Typography color="error">EIR Image is required!</Typography>
               ) : (
                 ""
@@ -1443,7 +1439,7 @@ console.log(eirImage,builtyImage)
                 </Button>
                 {(builtySize == true) ? <Typography color="error">Builty size should be less than 1 MB</Typography> : ''}
                 {(builtyType == true) ? <Typography color="error">Builty image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                { validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED"? (
+                { !(selectedRide && selectedRide.builtyId) && validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED"? (
                 <Typography color="error">Builty Image is required!</Typography>
               ) : (
                 ""
