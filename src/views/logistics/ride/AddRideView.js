@@ -366,7 +366,8 @@ function AddRideView() {
       pickupLocation: pickUp,
       dropoffLocation: dropOff,
       eirId: selectedRide && selectedRide.eirId || eirImage || null,
-      builtyId: selectedRide && selectedRide.builtyId || builtyImage || null
+      builtyId: selectedRide && selectedRide.builtyId || builtyImage || null,
+      currentLocation,
       
     };
 
@@ -423,9 +424,9 @@ function AddRideView() {
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
       isRequired(weightCargo)||
-      (status === "ASSIGNED" && isRequired(pocName)) &&  isRequired(pocNumber) ||
-      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation) )||
-      (status === "COMPLETED" && isRequired(completionTime) ) 
+      (status === "ASSIGNED" && isRequired(pocName) &&  isRequired(pocNumber)) ||
+      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation))||
+      (status === "COMPLETED" && isRequired(completionTime)) 
 
     ) {
      
@@ -469,11 +470,13 @@ function AddRideView() {
     setManifestType(false);
     setManifestSize(false);
     if (checkFile && !checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      setManifestImage(null);
       setManifestType(true);
       return false;
     }
     const isLt2M = checkFile && checkFile.size / 1024 / 1024 < 1; // < 1mb
     if (checkFile && !isLt2M) {
+      setManifestImage(null);
       setManifestSize(true);
       return false;
     }
@@ -496,11 +499,13 @@ function AddRideView() {
     setEIRType(false);
     setEIRSize(false);
     if (checkEIRFile && !checkEIRFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      setEIRImage(null);
       setEIRType(true);
       return false;
     }
     const isLtt2M = checkEIRFile && checkEIRFile.size / 1024 / 1024 < 1; // < 1mb
     if (checkEIRFile && !isLtt2M) {
+      setEIRImage(null);
       setEIRSize(true);
       return false;
     }
@@ -525,11 +530,13 @@ function AddRideView() {
     setBuiltyType(false);
     setBuiltySize(false);
     if (checkBuiltyFile && !checkBuiltyFile.name.match(/\.(jpg|jpeg|png)$/)) {
+      setBuiltyImage(null);
       setBuiltyType(true);
       return false;
     }
     const isLttt2M = checkBuiltyFile && checkBuiltyFile.size / 1024 / 1024 < 1; // < 1mb
     if (checkBuiltyFile && !isLttt2M) {
+      setBuiltyImage(null);
       setBuiltySize(true);
       return false;
     }
@@ -1110,6 +1117,7 @@ function AddRideView() {
                 ""
               )}
             </Grid>
+            {console.log(selectedRide.currentLocation)}
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.textBox }}
