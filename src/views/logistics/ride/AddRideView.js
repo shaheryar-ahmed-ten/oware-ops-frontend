@@ -1117,7 +1117,7 @@ function AddRideView() {
                 ""
               )}
             </Grid>
-            {console.log(selectedRide.currentLocation)}
+            
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.textBox }}
