@@ -99,7 +99,7 @@ function RideDetailsView(props) {
       console.log(`res.data.data`, res.data.data);
       setSelectedRide(res.data.data);
       const { pickupLocation, dropoffLocation } = res.data.data;
-      if (pickupLocation && dropoffLocation) {
+      if (pickupLocation && pickupLocation.lat && dropoffLocation) {
         Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
           .then((addresses) => addresses.results[0].formatted_address)
           .then((result) => {

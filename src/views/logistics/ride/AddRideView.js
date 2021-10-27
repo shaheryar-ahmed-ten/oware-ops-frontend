@@ -373,6 +373,7 @@ function AddRideView() {
 
     setValidation({
       status: true,
+      customerId:true,
       vehicleId: true,
       driverId: true,
       vendorId: true,
