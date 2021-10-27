@@ -139,22 +139,21 @@ function OrderBulkUpload() {
             tempTwo.push(order)
             count++
         }
-        console.log("Sending API HIT")
-        // let apiPromise = axios.post(getURL('product/bulk'), data)
-        // apiPromise.then((res) => {
-        //     if (!res.data.success) {
-        //         setSelectedFile(null)
-        //         setErrorAlerts(res.data.message)
-        //         return
-        //     }
-        //     setErrorAlerts([])
-        //     setSuccessAlerts([`${ res.data.message } `])
-        // })
-        //     .catch((err) => {
-        //         setSelectedFile(null)
-        //         setSuccessAlerts([])
-        //         setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk products"])
-        //     })
+        let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
+        apiPromise.then((res) => {
+            if (!res.data.success) {
+                setSelectedFile(null)
+                setErrorAlerts(res.data.message)
+                return
+            }
+            setErrorAlerts([])
+            setSuccessAlerts([`${res.data.message} `])
+        })
+            .catch((err) => {
+                setSelectedFile(null)
+                setSuccessAlerts([])
+                setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk products"])
+            })
     }
 
     const downloadTemplate = () => {
