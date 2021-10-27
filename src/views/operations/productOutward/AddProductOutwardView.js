@@ -231,26 +231,19 @@ export default function AddProductOutwardView({ }) {
         </Grid>
         <Grid item sm={6}>
           <FormControl fullWidth={true} variant="outlined">
-            <InputLabel>Vehicle</InputLabel>
-            <Select
-              fullWidth={true}
-              displayEmpty
-              id="vehicle"
-              label="Vehicle Number"
-              variant="outlined"
-              value={vehicleId}
-              onChange={e => setVehicleId(e.target.value)}
-              onBlur={e => setValidation({ ...validation, vehicleId: true })}
-              margin="normal"
-            >
-              {
-                vehicleId == '' ?
-                  <MenuItem value=""></MenuItem>
-                  :
-                  <MenuItem value={vehicleId} disable> {vehicleId} </MenuItem>
-              }
-              {vehicles.map((vehicle, index) => <MenuItem key={index} value={vehicle.id}>{vehicle.registrationNumber}</MenuItem>)}
-            </Select>
+            <Autocomplete
+              id="vehicles"
+              key={vehicles}
+              options={vehicles}
+              // defaultValue={city ? city : ''}
+              renderInput={(params) => <TextField {...params} label="Vehicle" variant="outlined" />}
+              getOptionLabel={(vehicle) => vehicle.registrationNumber}
+              onBlur={e => setValidation({ ...validation, city: true })}
+              onChange={(event, newValue) => {
+                if (newValue)
+                  setVehicleId(newValue.id)
+              }}
+            />
             {validation.vehicleId && !isRequired(vehicleId) ? <Typography color="error">Vehicle number is required!</Typography> : ''}
           </FormControl>
         </Grid>
