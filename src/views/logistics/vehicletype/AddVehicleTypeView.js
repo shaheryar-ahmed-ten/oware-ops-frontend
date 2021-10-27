@@ -15,20 +15,10 @@ import {
     Typography
 } from '@material-ui/core';
 import React, { useState, useCallback, useEffect } from 'react'
-import TableHeader from '../../../components/TableHeader';
-import { Alert, Pagination } from '@material-ui/lab';
-import MessageSnackbar from '../../../components/MessageSnackbar';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import axios from 'axios';
-import { getURL } from '../../../utils/common';
-import { debounce, set } from 'lodash';
-import { DEBOUNCE_CONST } from '../../../Config';
 import { isRequired } from '../../../utils/validators';
 // import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 // import { upload } from '../../../utils/upload';
 import { useNavigate,useLocation } from 'react-router';
-// import { isRequired } from '../../../utils/validators';
 
 
 

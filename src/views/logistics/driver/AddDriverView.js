@@ -10,14 +10,21 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  makeStyles
 } from '@material-ui/core'
 import { isChar, isPhone, isRequired } from '../../../utils/validators';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
+import { Autocomplete } from '@material-ui/lab';
+
+const useStyles = makeStyles((theme) => ({
+
+}))
 
 function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
+  const classes = useStyles();
   const [driverName, setDriverName] = useState('')
   const [driverPhone, setDriverPhone] = useState('')
   const [validation, setValidation] = useState({});
@@ -97,29 +104,29 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
     // let dimentions
     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Driving lisence image must be only image file!")
-     return false;
+      return false;
     }
     const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
       alert("Driving lisence image must smaller than 1MB!");
       return false;
-    }  
-    setDrivingLicenseImage(checkFile)  
-}
+    }
+    setDrivingLicenseImage(checkFile)
+  }
 
- const validateCnicImage  = (event) => {
-    const checkFile =  event.target.files[0];
+  const validateCnicImage = (event) => {
+    const checkFile = event.target.files[0];
     if (!checkFile.name.match(/\.(jpg|jpeg|png)$/)) {
       alert("Driving lisence image must be only image file!")
-     return false;
+      return false;
     }
     const isLt2M = checkFile.size / 1024 / 1024 < 1;
     if (!isLt2M) {
       alert("Driving licence image must smaller than 1MB!");
       return false;
-    } 
+    }
     setCNICImage(checkFile)
- }
+  }
 
   return (
     <div style={{ display: "inline" }}>
@@ -164,44 +171,41 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel>Vendor</InputLabel>
-                    <Select
-                      fullWidth={true}
-                      id="vendorId"
-                      label="Vendor"
-                      variant="outlined"
-                      value={vendorId}
-                      onChange={e => setVendorId(e.target.value)}
+                  <FormControl margin="normal" fullWidth={true} variant="outlined">
+                    <Autocomplete
+                      id="companies"
+                      key={companies}
+                      options={companies}
+                      defaultValue={selectedDriver ? selectedDriver.Vendor : ''}
+                      renderInput={(params) => <TextField {...params} label="Vendor" variant="outlined" />}
+                      getOptionLabel={(vendor) => vendor.name}
                       onBlur={e => setValidation({ ...validation, vendorId: true })}
-                    >
-                      {
-                        vendorId && vendorId !== "" ?
-                          <MenuItem value={vendorId} disabled>{vendorName}</MenuItem>
-                          :
-                          <MenuItem value={""} disabled>Select Vendor</MenuItem>
-                      }
-                      {companies.map(vendor => <MenuItem key={vendor.id} value={vendor.id}>{vendor.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setVendorId(newValue.id)
+                      }}
+                    />
                     {validation.vendorId && !isRequired(vendorId) ? <Typography color="error">Vendor is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    margin="dense"
-                    id="driverPhone"
-                    label="Phone"
-                    type="tel"
-                    variant="outlined"
-                    value={driverPhone}
-                    placeholder="0346xxxxxx8"
-                    onChange={e => setDriverPhone(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, driverPhone: true })}
-                  />
-                  {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Phone number is required!</Typography> : ''}
-                  {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
-                  {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Format: 0343XXXXX79</Typography> : ''}
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <TextField
+                      fullWidth={true}
+                      margin="dense"
+                      id="driverPhone"
+                      label="Phone"
+                      type="tel"
+                      variant="outlined"
+                      value={driverPhone}
+                      placeholder="0346xxxxxx8"
+                      onChange={e => setDriverPhone(e.target.value)}
+                      onBlur={e => setValidation({ ...validation, driverPhone: true })}
+                    />
+                    {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Phone number is required!</Typography> : ''}
+                    {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
+                    {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Format: 0343XXXXX79</Typography> : ''}
+                  </FormControl>
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
@@ -255,7 +259,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                       <input
                         type="file"
                         hidden
-                        onChange={(e) => validateCnicImage(e) }
+                        onChange={(e) => validateCnicImage(e)}
                         accept=".jpg,.png,.jpeg"
                       />
                     </Button>

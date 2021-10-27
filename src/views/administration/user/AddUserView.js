@@ -19,6 +19,7 @@ import { SharedContext } from '../../../utils/common';
 import { checkPermission } from '../../../utils/auth';
 import { isRequired, isEmail, isUsername, isPhone, isChar } from '../../../utils/validators';
 import MaskedInput from 'react-text-mask';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   textBox: {
@@ -244,21 +245,30 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Portal</InputLabel>
-                    <Select
-                    className={classes.selectBox}
-                      required
-                      fullWidth={true}
+                    <Autocomplete
                       id="portal"
-                      label="Portal"
-                      variant="outlined"
-                      value={portal}
-                      onChange={e => changePortal(e.target.value)}
+                      key={portals}
+                      options={portals}
+                      defaultValue={portal ? portal : ''}
+                      renderInput={(params) => <TextField {...params} label="Portal" variant="outlined" />}
+                      getOptionLabel={(portal) => {
+                        return (
+                          portal.label ?
+                            portal.label || ""
+                            :
+                            portal ?
+                              portal
+                              :
+                              ''
+                        )
+
+                      }}
                       onBlur={e => setValidation({ ...validation, portal: true })}
-                    >
-                      <MenuItem value="" disabled>Select a portal</MenuItem>
-                      {portals.map(portal => <MenuItem key={portal.id} value={portal.id}>{portal.label}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          changePortal(newValue.id)
+                      }}
+                    />
                     {validation.portal && !isRequired(portal) ? <Typography color="error">Please select a portal!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -266,21 +276,27 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Role</InputLabel>
-                    <Select
-                      className={classes.selectBox}
-                      required
-                      fullWidth={true}
-                      id="roleId"
-                      label="Role"
-                      variant="outlined"
-                      value={roleId}
-                      onChange={e => setRoleId(e.target.value)}
+                    <Autocomplete
+                      id="portal"
+                      key={filteredRoles}
+                      options={filteredRoles}
+                      defaultValue={selectedUser ? selectedUser.Role : ''}
+                      renderInput={(params) => <TextField {...params} label="Role" variant="outlined" />}
+                      getOptionLabel={(role) => {
+                        return (
+                          role && role.name ?
+                            role.name || ""
+                            :
+                            ''
+                        )
+
+                      }}
                       onBlur={e => setValidation({ ...validation, roleId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a role</MenuItem>
-                      {filteredRoles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setRoleId(newValue.id)
+                      }}
+                    />
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -288,9 +304,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple"className={classes.labelPadding}>Company</InputLabel>
+                    <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Company</InputLabel>
                     <Select
-                     className={classes.selectBox}
+                      className={classes.selectBox}
                       required
                       fullWidth={true}
                       id="companyId"

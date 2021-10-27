@@ -15,6 +15,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { isChar, isRequired } from '../../../utils/validators';
+import { Autocomplete } from '@material-ui/lab';
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const cities = ['Karachi', 'Lahore'];
@@ -113,19 +114,19 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
               </Grid>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
-                  <InputLabel>City</InputLabel>
-                  <Select
-                    fullWidth={true}
-                    id="city"
-                    label="Category"
-                    variant="outlined"
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
+                  <Autocomplete
+                    id="cities"
+                    key={cities}
+                    options={cities}
+                    defaultValue={city ? city : ''}
+                    renderInput={(params) => <TextField {...params} label="City" variant="outlined" />}
+                    getOptionLabel={(city) => city}
                     onBlur={e => setValidation({ ...validation, city: true })}
-                  >
-                    <MenuItem value="" disabled>Select a city</MenuItem>
-                    {cities.map(city => <MenuItem key={city} value={city}>{city}</MenuItem>)}
-                  </Select>
+                    onChange={(event, newValue) => {
+                      if (newValue)
+                        setCity(newValue)
+                    }}
+                  />
                   {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ''}
                 </FormControl>
               </Grid>
@@ -136,7 +137,7 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   color="primary"
                   inputProps={{ 'aria-label': 'secondary checkbox' }}
                 />
-                  Active
+                Active
               </Grid>
             </Grid>
           </DialogContent>
