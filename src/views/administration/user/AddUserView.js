@@ -336,6 +336,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     setPhone(e.target.value)
                   }}
                   onBlur={e => setValidation({ ...validation, phone: true })}
+                  style={{ padding: '22px 10px', color: '#2f2727',fontWeight:500, borderColor: 'rgba(0,0,0,0.3)',marginTop:10 }}
                 />
                 {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
                 {/* {validation.phone && !isRequired(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''} */}

@@ -1086,7 +1086,7 @@ function AddRideView() {
                 onChange={e => {
                   setPOCNumber(e.target.value)
                 }}
-                style={{height: "17%",width:"97%", marginLeft:14, marginTop:6,borderColor:"#c4c4c4"}}
+                style={{height: "17%",width:"97%", marginLeft:14, marginTop:6,borderColor:"#c4c4c4",color:"#2f2727",fontWeight:500,}}
                 // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
