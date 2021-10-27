@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import {
+  makeStyles,
   Grid,
   Button,
   TextField,
@@ -18,6 +19,24 @@ import { SharedContext } from '../../../utils/common';
 import { checkPermission } from '../../../utils/auth';
 import { isRequired, isEmail, isUsername, isPhone, isChar } from '../../../utils/validators';
 import MaskedInput from 'react-text-mask';
+import { Autocomplete } from '@material-ui/lab';
+
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  },
+  labelPadding: {
+    paddingTop: 5,
+  },
+  selectBox: {
+    height: 55,
+  }
+}));
 
 export default function AddUserView({ addUser, roles, customers, portals, open, handleClose, selectedUser, formErrors }) {
   const [filteredRoles, setFilteredRoles] = useState([]);
@@ -30,6 +49,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   const [portal, setPortal] = useState('');
   const [roleId, setRoleId] = useState('');
   const [companyId, setCompanyId] = useState('');
+  const classes = useStyles();
 
   const [password, setPassword] = useState('');
   const [isActive, setActive] = useState(false);
@@ -130,7 +150,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
+          setValidation('')
+        }}>
           <DialogTitle>
             {!selectedUser ? 'Add User' : 'Edit User'}
           </DialogTitle>
@@ -141,6 +163,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     autoFocus
                     margin="dense"
                     id="firstName"
@@ -161,6 +185,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="lastName"
                     label="Last Name"
@@ -182,6 +208,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 <TextField
                   required
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="username"
                   disabled={!!selectedUser}
@@ -199,6 +227,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 <TextField
                   required
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   disabled={!!selectedUser}
                   id="email"
@@ -215,20 +245,30 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple">Portal</InputLabel>
-                    <Select
-                      required
-                      fullWidth={true}
+                    <Autocomplete
                       id="portal"
-                      label="Portal"
-                      variant="outlined"
-                      value={portal}
-                      onChange={e => changePortal(e.target.value)}
+                      key={portals}
+                      options={portals}
+                      defaultValue={portal ? portal : ''}
+                      renderInput={(params) => <TextField {...params} label="Portal" variant="outlined" />}
+                      getOptionLabel={(portal) => {
+                        return (
+                          portal.label ?
+                            portal.label || ""
+                            :
+                            portal ?
+                              portal
+                              :
+                              ''
+                        )
+
+                      }}
                       onBlur={e => setValidation({ ...validation, portal: true })}
-                    >
-                      <MenuItem value="" disabled>Select a portal</MenuItem>
-                      {portals.map(portal => <MenuItem key={portal.id} value={portal.id}>{portal.label}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          changePortal(newValue.id)
+                      }}
+                    />
                     {validation.portal && !isRequired(portal) ? <Typography color="error">Please select a portal!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -236,20 +276,27 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {!isCurrentUser() ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple">Role</InputLabel>
-                    <Select
-                      required
-                      fullWidth={true}
-                      id="roleId"
-                      label="Role"
-                      variant="outlined"
-                      value={roleId}
-                      onChange={e => setRoleId(e.target.value)}
+                    <Autocomplete
+                      id="portal"
+                      key={filteredRoles}
+                      options={filteredRoles}
+                      defaultValue={selectedUser ? selectedUser.Role : ''}
+                      renderInput={(params) => <TextField {...params} label="Role" variant="outlined" />}
+                      getOptionLabel={(role) => {
+                        return (
+                          role && role.name ?
+                            role.name || ""
+                            :
+                            ''
+                        )
+
+                      }}
                       onBlur={e => setValidation({ ...validation, roleId: true })}
-                    >
-                      <MenuItem value="" disabled>Select a role</MenuItem>
-                      {filteredRoles.map(role => <MenuItem key={role.id} value={role.id}>{role.name}</MenuItem>)}
-                    </Select>
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setRoleId(newValue.id)
+                      }}
+                    />
                     {validation.roleId && !isRequired(roleId) ? <Typography color="error">Role is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
@@ -257,8 +304,9 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple">Company</InputLabel>
+                    <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Company</InputLabel>
                     <Select
+                      className={classes.selectBox}
                       required
                       fullWidth={true}
                       id="companyId"
@@ -304,6 +352,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     setPhone(e.target.value)
                   }}
                   onBlur={e => setValidation({ ...validation, phone: true })}
+                  style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)',marginTop:10 }}
                 />
                 {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
                 {/* {validation.phone && !isRequired(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''} */}
@@ -312,6 +361,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 <TextField
                   required
                   fullWidth={true}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   margin="dense"
                   id="password"
                   label={(selectedUser ? 'Change ' : '') + 'Password'}
@@ -337,7 +388,12 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={() => {
+              // setExplicitReRender(!explicitReRender);
+              setValidation('')
+              handleClose()
+            }
+            } color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
               {!selectedUser ? 'Add User' : 'Update User'}
             </Button>

@@ -230,11 +230,12 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   />
                   {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
                 </Grid>
+                {relationType == 'CUSTOMER' ?
                 <Grid item sm={12}>
                   <MaskedInput
                     className={clsx({ ["mask-text"]: true })}
-                    guide={true}
-                    showMask={true}
+                    // guide={true}
+                    // showMask={true}
                     variant="outlined"
                     name="phone"
                     mask={phoneNumberMask}
@@ -242,16 +243,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     id="companyPhone"
                     type="text"
                     value={companyPhone}
-                    placeholder="Reciever Phone(e.g 032*-*******)"
+                    placeholder="Company Phone(e.g 032*-*******)"
                     onChange={e => {
                       setCompanyPhone(e.target.value)
                     }}
-                    style={{ padding: '22px 10px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
+                    style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)' }}
                   // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
                   />
                   {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
                   {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
                 </Grid>
+                :""}
               </Grid>
               {relationType == 'CUSTOMER' ?
                 <Grid container spacing={2}>
@@ -365,40 +367,12 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                           />
                         </Grid>
                       }
-                      {/* {logoImageSrc == null ? '' : */}
-
                       {
                         logoImageSrc ?
                           <img id="previewImage" src={logoImageSrc} /> :
                           null
                       }
-
-                      {/* } */}
                     </Grid>
-
-                    {/* Remove Logo Trash Bin */}
-
-                    {/* {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
-
-                      <Grid item xs={12} style={{ marginLeft: 380 }}>
-                        {(selectedCompany && selectedCompany.logoId) ?
-                          <DeleteSharpIcon 
-                          // onClick={() => removeLogoId()}
-                           />
-                          : ''}
-                      </Grid>
-                      : ''}
-
-                    {(selectedCompany && !logoImageSrc && selectedCompany.logoId) ?
-                      <Grid item xs={12} style={{ textAlign: 'center' }}>
-                        {(selectedCompany && selectedCompany.logoId) ?
-                          <a target="_blank" href={getURL('preview', selectedCompany.logoId)}>
-                            <img src={getURL('preview', selectedCompany.logoId)} alt="oware logo" />
-                          </a>
-                          // <DeleteSharpIcon onClick={() => removeLogoId()} />
-                          : ''}
-                      </Grid>
-                      : ''} */}
 
                   </Grid>
 

@@ -516,8 +516,8 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <MaskedInput
             className={clsx({ ["mask-text"]: true })}
-            guide={true}
-            showMask={true}
+            // guide={true}
+            // showMask={true}
             variant="outlined"
             name="phone"
             mask={phoneNumberMask}
@@ -525,7 +525,7 @@ export default function AddDispatchOrderView() {
             id="receiverPhone"
             type="text"
             value={receiverPhone}
-            placeholder="Reciever Phone(e.g 032*-*******)"
+            placeholder="Receiver Phone(e.g 032*-*******)"
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
@@ -728,14 +728,14 @@ export default function AddDispatchOrderView() {
                         <TableCell>
                           {dispatchGroup.remainingQuantity || 0}
                           {<PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />}
-                          {
+                          {/* {
                             dispatchGroup['greaterThanError'] ?
                               <Typography variant="body" color="error" component="p">
                                 Requested qty can't be greater than available qty.
                               </Typography>
                               :
                               ''
-                          }
+                          } */}
                         </TableCell>
                       </>
                       :

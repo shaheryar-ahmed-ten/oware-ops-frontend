@@ -82,7 +82,7 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
                         })
                     }
                     <MenuItem key={'custom'} value={'custom'} onClick={()=>setOpen(true)}>
-                                    <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+                         <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
                     </MenuItem>
                 </Select>
             </FormControl>

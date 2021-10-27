@@ -10,7 +10,9 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip,
+  Typography
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
@@ -60,14 +62,31 @@ export default function ProductInwardView() {
       label: 'INWARD ID',
       minWidth: 'auto',
       className: '',
-      format: (value, entity) => entity.internalIdForBusiness,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
+          <Typography>
+            {entity.internalIdForBusiness.length > 20 ? `${test.substring(0, 20)}...` : entity.internalIdForBusiness}
+          </Typography>
+        </Tooltip>
+        )
+      },
     },
     {
       id: 'Customer.name',
       label: 'COMPANY',
       minWidth: 'auto',
       className: '',
-      format: (value, entity) => entity.Company.name,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.Company.name}`}>
+          <Typography>
+            {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
+          </Typography>
+        </Tooltip>
+        )
+      },
+      
     },
     {
       id: 'Warehouse.name',
