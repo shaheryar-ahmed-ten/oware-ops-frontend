@@ -516,8 +516,8 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <MaskedInput
             className={clsx({ ["mask-text"]: true })}
-            guide={true}
-            showMask={true}
+            // guide={true}
+            // showMask={true}
             variant="outlined"
             name="phone"
             mask={phoneNumberMask}
