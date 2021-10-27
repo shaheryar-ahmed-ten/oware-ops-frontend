@@ -728,14 +728,14 @@ export default function AddDispatchOrderView() {
                         <TableCell>
                           {dispatchGroup.remainingQuantity || 0}
                           {<PriorityHighOutlinedIcon style={{ transform: 'translateY(5px)translateX(0px)', color: 'red' }} />}
-                          {
+                          {/* {
                             dispatchGroup['greaterThanError'] ?
                               <Typography variant="body" color="error" component="p">
                                 Requested qty can't be greater than available qty.
                               </Typography>
                               :
                               ''
-                          }
+                          } */}
                         </TableCell>
                       </>
                       :
