@@ -247,7 +247,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onChange={e => {
                       setCompanyPhone(e.target.value)
                     }}
-                    style={{ padding: '22px 10px', color: '#2f2727',fontWeight:500, borderColor: 'rgba(0,0,0,0.3)' }}
+                    style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)' }}
                   // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
                   />
                   {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
