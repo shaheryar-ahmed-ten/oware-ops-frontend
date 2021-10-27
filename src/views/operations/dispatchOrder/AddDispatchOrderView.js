@@ -525,7 +525,7 @@ export default function AddDispatchOrderView() {
             id="receiverPhone"
             type="text"
             value={receiverPhone}
-            placeholder="Reciever Phone(e.g 032*-*******)"
+            placeholder="Receiver Phone(e.g 032*-*******)"
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
