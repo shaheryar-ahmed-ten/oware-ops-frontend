@@ -274,7 +274,7 @@ export default function AddProductInwardView() {
         <Grid item sm={12}>
           <TextField
             fullWidth={true}
-            margin="dense"
+            margin="normal"
             id="referenceId"
             label="Reference Id"
             type="text"

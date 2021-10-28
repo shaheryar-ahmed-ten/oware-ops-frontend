@@ -529,7 +529,7 @@ export default function AddDispatchOrderView() {
             onChange={e => {
               setReceiverPhone(e.target.value)
             }}
-            style={{ padding: '22px 10px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
+            style={{ padding: '22px 10px', color: 'black', borderColor: 'rgba(0,0,0,0.3)'}}
           // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
           />
           {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
