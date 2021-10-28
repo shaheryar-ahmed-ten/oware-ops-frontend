@@ -538,7 +538,7 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <TextField
             fullWidth={true}
-            margin="dense"
+            margin="normal"
             id="shipmentDate"
             label="Shipment Date"
             inputProps={{ min: new Date().toISOString().slice(0, 16) }}
@@ -557,7 +557,7 @@ export default function AddDispatchOrderView() {
         <Grid item sm={6}>
           <TextField
             fullWidth={true}
-            margin="dense"
+            margin="normal"
             id="referenceId"
             label="Reference Id"
             type="text"
