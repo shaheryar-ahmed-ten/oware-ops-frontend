@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subContainer: {
     boxSizing: 'border-box',
-    padding: "14px 14px",
+    padding: "20px 14px",
   }
 }));
 export default function AddProductInwardView() {
@@ -236,7 +236,11 @@ export default function AddProductInwardView() {
           </Grid>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
+          <FormControl 
+          // margin="dense" 
+          fullWidth={true} 
+          variant="outlined"
+          >
             <Autocomplete
               id="customer"
               defaultValue={selectedProductInward ? { name: selectedProductInward.Company.name, id: selectedProductInward.Company.id } : ''}
@@ -253,7 +257,11 @@ export default function AddProductInwardView() {
           </FormControl>
         </Grid>
         <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
+          <FormControl
+          //  margin="dense" 
+           fullWidth={true} 
+           variant="outlined"
+           >
             <Autocomplete
               id="warehouse"
               defaultValue={selectedProductInward ? { name: selectedProductInward.Warehouse.name, id: selectedProductInward.Warehouse.id } : ''}
@@ -274,7 +282,7 @@ export default function AddProductInwardView() {
         <Grid item sm={12}>
           <TextField
             fullWidth={true}
-            margin="dense"
+            // margin="normal"
             id="referenceId"
             label="Reference Id"
             type="text"
@@ -288,12 +296,16 @@ export default function AddProductInwardView() {
           {validation.referenceId && !isRequired(referenceId) ? <Typography color="error">ReferenceId is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
         </Grid>
         <Grid container alignItems="center" spacing={2} className={classes.subContainer} >
           <Grid item xs={6}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <FormControl 
+            // margin="dense" 
+            fullWidth={true} 
+            variant="outlined"
+            >
               <Autocomplete
                 id="Product"
                 key={productGroups}
@@ -312,7 +324,7 @@ export default function AddProductInwardView() {
           <Grid item xs={2}>
             <TextField
               fullWidth={true}
-              margin="dense"
+              // margin="dense"
               id="quantity"
               label="Quantity"
               type="number"
@@ -322,26 +334,28 @@ export default function AddProductInwardView() {
               onChange={e => setQuantity(e.target.value < 0 ? e.target.value == 0 : parseInt(Math.round(e.target.value)))}
               // onBlur={e => setValidation({ ...validation, quantity: true })}
               InputProps={{ inputProps: { min: 1 } }}
-              margin="normal"
+              // margin="normal"
             />
             {validation.quantity && !isRequired(quantity) ? <Typography color="error">Quantity is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item xs={2}>
             <TextField
               fullWidth={true}
-              margin="dense"
+              // margin="dense"
               id="uom"
               label="UOM"
               type="text"
               variant="filled"
               value={uom}
               disabled
-              margin="normal"
+              // margin="normal"
             />
             {<Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </Grid>
           <Grid item xs={2} className={classes.parentContainer}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+            <FormControl 
+            // margin="dense" 
+            fullWidth={true} variant="outlined">
               <Button variant="contained" onClick={updateProductsTable} color="primary" variant="contained">Add Product</Button>
             </FormControl>
           </Grid>
@@ -365,7 +379,7 @@ export default function AddProductInwardView() {
                 className={classes.tableHeadText}>
                 Quantity
               </TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell className={classes.tableHeadText}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
