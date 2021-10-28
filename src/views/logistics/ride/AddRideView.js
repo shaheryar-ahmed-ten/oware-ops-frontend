@@ -54,9 +54,9 @@ const useStyles = makeStyles((theme) => ({
   },
   pocBox: {
     height: 34,
-    width:"102%",
+    width: "102%",
   },
-  weightBox:{
+  weightBox: {
     // height:34,
     display: "none"
   },
@@ -187,7 +187,7 @@ function AddRideView() {
 
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
-      vendorId ? setVehicles(res.data.vehicles):setVehicles([]);
+      vendorId ? setVehicles(res.data.vehicles) : setVehicles([]);
       setDrivers(res.data.drivers);
       setStatuses(res.data.statuses);
       setCities(res.data.cities);
@@ -294,7 +294,7 @@ function AddRideView() {
         const filterCarArray = removeCarDuplicate(carVehicleTemp);
         setVehicleType(filterCarArray);
         getVehicles(carId, vendorId);
-  
+
       }
     }
   }, [carId]);
@@ -347,7 +347,7 @@ function AddRideView() {
       pocName,
       pocNumber: strPocNumber,
       eta,
-      completionTime, 
+      completionTime,
       isActive,
       dropoffCityId,
       pickupCityId,
@@ -356,12 +356,12 @@ function AddRideView() {
       eirId: selectedRide && selectedRide.eirId || eirImage || null,
       builtyId: selectedRide && selectedRide.builtyId || builtyImage || null,
       currentLocation,
-      
+
     };
 
     setValidation({
       status: true,
-      customerId:true,
+      customerId: true,
       vehicleId: true,
       driverId: true,
       vendorId: true,
@@ -378,18 +378,18 @@ function AddRideView() {
       pocName: true,
       pocNumber: true,
       eta: true,
-      completionTime: true, 
+      completionTime: true,
       currentLocation: true,
       isActive: true,
       dropoffCityId: true,
       pickupCityId: true,
       pickupLocation: true,
       dropoffLocation: true,
-      eirImage:true,
-      builtyImage:true,
-      productCategoryId: true,
-      productName: true,
-      productQuantity: true,
+      eirImage: true,
+      builtyImage: true,
+      productCategoryId: products.length > 0 ? false : true,
+      productName: products.length > 0 ? false : true,
+      productQuantity: products.length > 0 ? false : true,
     });
 
     if (
@@ -406,24 +406,24 @@ function AddRideView() {
       isRequired(pickupDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
-      isRequired(weightCargo)||
-      (status === "ASSIGNED" && isRequired(pocName) &&  isRequired(pocNumber)) ||
-      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation))||
-      (status === "COMPLETED" && isRequired(completionTime)) 
+      isRequired(weightCargo) ||
+      (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber)) ||
+      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
+      (status === "COMPLETED" && isRequired(completionTime))
 
     ) {
-     
+
       if (manifestImage) {
         const [manifestId] = await upload([manifestImage], "ride");
         newRide.manifestId = manifestId;
       }
       if (eirImage) [newRide.eirId] = await upload([eirImage], "ride");
-      
-      if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
-      
-      if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
 
-      if  (!isNotEmptyArray(products) ) return
+      if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
+
+      if ((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
+
+      if (!isNotEmptyArray(products)) return
 
       addRide(newRide);
     }
@@ -435,19 +435,19 @@ function AddRideView() {
   const removePreviewId = (event) => {
     setManifestImage(null);
     setManifestImageSrc(null);
-    if(selectedRide){selectedRide.manifestId = null};
+    if (selectedRide) { selectedRide.manifestId = null };
     // selectedRide.manifestId = null
   }
   const removeEIRPreviewId = (event) => {
     setEIRImage(null);
     setEIRImageSrc(null);
-    if(selectedRide){ selectedRide.eirId = null};
+    if (selectedRide) { selectedRide.eirId = null };
     // selectedRide.eirId = null
   }
   const removeBuiltyPreviewId = (event) => {
     setBuiltyImage(null);
     setBuiltyImageSrc(null);
-    if(selectedRide){selectedRide.builtyId = null};
+    if (selectedRide) { selectedRide.builtyId = null };
     // selectedRide.builtyId = null
   }
   const newManifestValidateLogoImage = (event) => {
@@ -472,12 +472,12 @@ function AddRideView() {
       const image = document.createElement('img');
       image.src = _loadedImageUrl;
       image.addEventListener('load', () => {
-      setManifestImageSrc(_loadedImageUrl);
-      const logoFile = checkFile ? checkFile : null;
-      setManifestImage(logoFile)
-    });
-   
-  })
+        setManifestImageSrc(_loadedImageUrl);
+        const logoFile = checkFile ? checkFile : null;
+        setManifestImage(logoFile)
+      });
+
+    })
   }
   const newEIRValidateLogoImage = (event) => {
     const checkEIRFile = event.target.files[0];
@@ -500,14 +500,14 @@ function AddRideView() {
     //   const _loadedEIRImageUrl = event.target.result;
     //   const eirImage = document.createElement('img');
     //   eirImage.src = _loadedEIRImageUrl;
-      // eirImage.addEventListener('load', () => {
-      // setEIRImageSrc(_loadedEIRImageUrl);
-      const eirFile = checkEIRFile ? checkEIRFile : null;
-      setEIRImageSrc(eirFile);
-      setEIRImage(eirFile)
+    // eirImage.addEventListener('load', () => {
+    // setEIRImageSrc(_loadedEIRImageUrl);
+    const eirFile = checkEIRFile ? checkEIRFile : null;
+    setEIRImageSrc(eirFile);
+    setEIRImage(eirFile)
     // })
-   
-  // })
+
+    // })
   }
 
   const newBuiltyValidateLogoImage = (event) => {
@@ -532,12 +532,12 @@ function AddRideView() {
     //   const BuiltyImage = document.createElement('img');
     //   BuiltyImage.src = _loadedBuiltyImageUrl;
     //   BuiltyImage.addEventListener('load', () => {
-      // setBuiltyImageSrc(_loadedBuiltyImageUrl);
-      const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
-      setBuiltyImageSrc(builtyFile);
-      setBuiltyImage(builtyFile)
+    // setBuiltyImageSrc(_loadedBuiltyImageUrl);
+    const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
+    setBuiltyImageSrc(builtyFile);
+    setBuiltyImage(builtyFile)
     // });
-  // })
+    // })
   }
   return (
     <>
@@ -641,7 +641,7 @@ function AddRideView() {
                 variant="outlined"
                 value={cancellationComment}
                 onChange={(e) => setCancellationComment(e.target.value)}
-                // onBlur={(e) => setValidation({ ...validation, cancellationComment: true })}
+              // onBlur={(e) => setValidation({ ...validation, cancellationComment: true })}
               />
               {/* {validation.cancellationComment && !isRequired(cancellationComment) ? (
                 <Typography color="error">Cancellation comment is required!</Typography>
@@ -768,26 +768,18 @@ function AddRideView() {
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel className={classes.labelPadding}>Pickup City</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
-                id="pickupAreaId"
-                label="Pickup Area"
-                variant="outlined"
-                value={pickupCityId}
-                onChange={(e) => setPickupCityId(e.target.value)}
+              <Autocomplete
+                id="cities"
+                key={cities}
+                options={cities}
+                defaultValue={!!selectedRide ? selectedRide.pickupCity : ""}
+                renderInput={(params) => <TextField {...params} label="Pickup City" variant="outlined" />}
+                getOptionLabel={(city) => city.name || ""}
                 onBlur={(e) => setValidation({ ...validation, pickupCityId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a PickupCity
-                </MenuItem>
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
+                onChange={(event, newValue) => {
+                  if (newValue) setPickupCityId(newValue.id);
+                }}
+              />
               {validation.pickupCityId && !isRequired(pickupCityId) ? (
                 <Typography color="error">Pickup City is required!</Typography>
               ) : (
@@ -818,26 +810,18 @@ function AddRideView() {
 
           <Grid item sm={6}>
             <FormControl margin="dense" fullWidth={true} variant="outlined">
-              <InputLabel className={classes.labelPadding}>Dropoff City</InputLabel>
-              <Select
-                className={classes.selectBox}
-                fullWidth={true}
+              <Autocomplete
                 id="dropoffCityId"
-                label="Drop-off City"
-                variant="outlined"
-                value={dropoffCityId}
-                onChange={(e) => setDropoffCityId(e.target.value)}
+                key={cities}
+                options={cities}
+                defaultValue={!!selectedRide ? selectedRide.dropoffCity : ""}
+                renderInput={(params) => <TextField {...params} label="Dropoff City" variant="outlined" />}
+                getOptionLabel={(city) => city.name || ""}
                 onBlur={(e) => setValidation({ ...validation, dropoffCityId: true })}
-              >
-                <MenuItem value="" disabled>
-                  Select a DropoffCity
-                </MenuItem>
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
+                onChange={(event, newValue) => {
+                  if (newValue) setDropoffCityId(newValue.id);
+                }}
+              />
               {validation.dropoffCityId && !isRequired(dropoffCityId) ? (
                 <Typography color="error">Dropoff City is required!</Typography>
               ) : (
@@ -996,7 +980,7 @@ function AddRideView() {
               value={!!customerDiscount && customerDiscount}
               minuteStep={15}
               onChange={(e) => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              // onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
+            // onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
             />
             {/* {validation.customerDiscount && !isRequired(customerDiscount) ? (
               <Typography color="error">Customer Discount is required!</Typography>
@@ -1017,7 +1001,7 @@ function AddRideView() {
               variant="outlined"
               value={!!driverIncentive && driverIncentive}
               onChange={(e) => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              // onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
+            // onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
             />
             {/* {validation.driverIncentive && !isRequired(driverIncentive) ? (
               <Typography color="error">Driver Incentive is required!</Typography>
@@ -1034,7 +1018,7 @@ function AddRideView() {
               Other Details
             </Typography>
           </Grid>
-          <Grid container item xs={12} spacing={3} style={{paddingBottom:0}}>
+          <Grid container item xs={12} spacing={3} style={{ paddingBottom: 0 }}>
             <Grid item sm={6}>
               <TextField
                 inputProps={{ className: classes.pocBox }}
@@ -1048,20 +1032,19 @@ function AddRideView() {
                 value={pocName}
                 onChange={e => {
                   const regex = /^[a-zA-Z]*$/
-                      if (regex.test(e.target.value))
-                      {setPOCName(e.target.value)}
-                    }}
+                  if (regex.test(e.target.value)) { setPOCName(e.target.value) }
+                }}
                 onBlur={(e) => setValidation({ ...validation, pocName: true })}
               />
-              {validation.pocName && !isRequired(pocName) && status == "ASSIGNED"? (
+              {validation.pocName && !isRequired(pocName) && status == "ASSIGNED" ? (
                 <Typography color="error">POC Name is required!</Typography>
               ) : (
                 ""
               )}
             </Grid>
             <Grid item sm={6}>
-                <MaskedInput
-                className={clsx({ ["mask-text"]: true },{["mask-text:focus"]:true})}
+              <MaskedInput
+                className={clsx({ ["mask-text"]: true }, { ["mask-text:focus"]: true })}
                 // guide={true}
                 // showMask={true}
                 variant="outlined"
@@ -1075,60 +1058,60 @@ function AddRideView() {
                 onChange={e => {
                   setPOCNumber(e.target.value)
                 }}
-                style={{height: "17%",width:"97%", marginLeft:14, marginTop:6,borderColor:"#c4c4c4",color:"#2f2727",fontWeight:600,}}
+                style={{ height: "17%", width: "97%", marginLeft: 14, marginTop: 6, borderColor: "#c4c4c4", color: "#2f2727", fontWeight: 600, }}
                 // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
-              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" style={{marginLeft: 15}}>Incorrect phone number!</Typography> : ''}
-              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED"? <Typography color="error" style={{marginLeft: 15}}>POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" style={{ marginLeft: 15 }}>Incorrect phone number!</Typography> : ''}
+              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED" ? <Typography color="error" style={{ marginLeft: 15 }}>POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </Grid>
           </Grid>
-       
+
           {/* <Grid container item xs={12} spacing={3}> */}
-            <Grid item sm={6}>
-              <TextField
-                inputProps={{ className: classes.textBox }}
-                // style={{width:"102%"}}
-                className={classes.labelBox}
-                fullWidth={true}
-                margin="dense"
-                id="eta"
-                label="ETA"
-                // type="text"
-                variant="outlined"
-                value={eta}
-                onChange={(e) => setETA(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, eta: true })}
-              />
-              {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
-                <Typography color="error">ETA is required!</Typography>
-              ) : (
-                ""
-              )}
-            </Grid>
-            
-            <Grid item sm={6}>
-              <TextField
-                inputProps={{ className: classes.textBox }}
-                className={classes.labelBox}
-                fullWidth={true}
-                margin="dense"
-                id="currentLocation"
-                label="Current Location"
-                // type="text"
-                variant="outlined"
-                value={currentLocation}
-                onChange={(e) => setCurrentLocation(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, currentLocation: true })}
-              />
-              {validation.currentLocation && !isRequired(currentLocation) && status == "INPROGRESS" ? (
-                <Typography color="error">Current Location is required!</Typography>
-              ) : (
-                ""
-              )}
-            </Grid>
+          <Grid item sm={6}>
+            <TextField
+              inputProps={{ className: classes.textBox }}
+              // style={{width:"102%"}}
+              className={classes.labelBox}
+              fullWidth={true}
+              margin="dense"
+              id="eta"
+              label="ETA"
+              // type="text"
+              variant="outlined"
+              value={eta}
+              onChange={(e) => setETA(e.target.value)}
+              onBlur={(e) => setValidation({ ...validation, eta: true })}
+            />
+            {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
+              <Typography color="error">ETA is required!</Typography>
+            ) : (
+              ""
+            )}
+          </Grid>
+
+          <Grid item sm={6}>
+            <TextField
+              inputProps={{ className: classes.textBox }}
+              className={classes.labelBox}
+              fullWidth={true}
+              margin="dense"
+              id="currentLocation"
+              label="Current Location"
+              // type="text"
+              variant="outlined"
+              value={currentLocation}
+              onChange={(e) => setCurrentLocation(e.target.value)}
+              onBlur={(e) => setValidation({ ...validation, currentLocation: true })}
+            />
+            {validation.currentLocation && !isRequired(currentLocation) && status == "INPROGRESS" ? (
+              <Typography color="error">Current Location is required!</Typography>
+            ) : (
+              ""
+            )}
+          </Grid>
           {/* </Grid> */}
-        
+
           <Grid item sm={6}>
             <TextField
               className={classes.labelBox}
@@ -1144,7 +1127,7 @@ function AddRideView() {
               onChange={(e) => setCompletionTime(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
-            {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED"? (
+            {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
               <Typography color="error">Trip Completion Time is required!</Typography>
             ) : (
               ""
@@ -1171,7 +1154,7 @@ function AddRideView() {
             ) : (
               ""
             )}
-            
+
           </Grid>
 
           <Grid item sm={12}>
@@ -1192,11 +1175,11 @@ function AddRideView() {
             />
             {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
             {validation.memo && !isRequired(memo) && status == "UNASSIGNED" ?
-            (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
-            :("")}
-          </Grid>  
+              (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
+              : ("")}
+          </Grid>
         </Grid>
-          
+
 
         {/* Memo Addition Ends */}
         <Grid container item xs={12} spacing={3}>
@@ -1208,26 +1191,18 @@ function AddRideView() {
           <Grid container item xs={12} spacing={3}>
             <Grid item xs={3}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <InputLabel className={classes.labelPadding}>Product Category</InputLabel>
-                <Select
-                  className={classes.selectBox}
-                  fullWidth={true}
-                  id="productCategoryId"
-                  label="Product Category"
-                  variant="outlined"
-                  value={productCategoryId}
-                  onChange={(e) => setProductCategoryId(e.target.value)}
+                <Autocomplete
+                  id="productCategories"
+                  key={productCategories}
+                  options={productCategories}
+                  // defaultValue={!!selectedRide ? selectedRide.dropoffCity : ""}
+                  renderInput={(params) => <TextField {...params} label="Product Category" variant="outlined" />}
+                  getOptionLabel={(productCategory) => productCategory.name || ""}
                   onBlur={(e) => setValidation({ ...validation, productCategoryId: true })}
-                >
-                  <MenuItem value="" disabled>
-                    Select a product category
-                  </MenuItem>
-                  {productCategories.map((productCategory) => (
-                    <MenuItem key={productCategory.id} value={productCategory.id}>
-                      {productCategory.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  onChange={(event, newValue) => {
+                    if (newValue) setProductCategoryId(newValue.id);
+                  }}
+                />
                 {!(selectedRide && selectedRide.RideProducts) && validation.productCategoryId && !isRequired(productCategoryId) ? (
                   <Typography color="error">Product Category is required!</Typography>
                 ) : (
@@ -1357,7 +1332,7 @@ function AddRideView() {
 
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button
                   variant="contained"
                   component="label"
@@ -1379,31 +1354,31 @@ function AddRideView() {
                 </Button>
                 {(eirSize == true) ? <Typography color="error">EIR size should be less than 1 MB</Typography> : ''}
                 {(eirType == true) ? <Typography color="error">EIR image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                {!(selectedRide && selectedRide.eirId) && validation.eirImage && !isRequired(eirImage) && status == "COMPLETED"? (
-                <Typography color="error">EIR Image is required!</Typography>
-              ) : (
-                ""
-              )}
+                {!(selectedRide && selectedRide.eirId) && validation.eirImage && !isRequired(eirImage) && status == "COMPLETED" ? (
+                  <Typography color="error">EIR Image is required!</Typography>
+                ) : (
+                  ""
+                )}
               </FormControl>
-                <Grid style={{ textAlign: 'center' }}>
+              <Grid style={{ textAlign: 'center' }}>
 
-                      {!eirImageSrc ? '' :
-                        <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon
-                            onClick={() => removeEIRPreviewId()}
-                          />
-                        </Grid>
-                      }
-                     
-                      {
-                        eirImageSrc ?
-                          <img id="previewImage" src={eirImageSrc} /> :
-                          null
-                      }
-                </Grid>
+                {!eirImageSrc ? '' :
+                  <Grid item xs={12} style={{ marginLeft: 380 }}>
+                    <DeleteSharpIcon
+                      onClick={() => removeEIRPreviewId()}
+                    />
+                  </Grid>
+                }
+
+                {
+                  eirImageSrc ?
+                    <img id="previewImage" src={eirImageSrc} /> :
+                    null
+                }
+              </Grid>
             </Grid>
             <Grid item sm={12}>
-            <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Button
                   variant="contained"
                   component="label"
@@ -1425,33 +1400,33 @@ function AddRideView() {
                 </Button>
                 {(builtySize == true) ? <Typography color="error">Builty size should be less than 1 MB</Typography> : ''}
                 {(builtyType == true) ? <Typography color="error">Builty image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                { !(selectedRide && selectedRide.builtyId) && validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED"? (
-                <Typography color="error">Builty Image is required!</Typography>
-              ) : (
-                ""
-              )}
+                {!(selectedRide && selectedRide.builtyId) && validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED" ? (
+                  <Typography color="error">Builty Image is required!</Typography>
+                ) : (
+                  ""
+                )}
               </FormControl>
-                <Grid style={{ textAlign: 'center' }}>
+              <Grid style={{ textAlign: 'center' }}>
 
-                      {!builtyImageSrc ? '' :
-                        <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon
-                            onClick={() => removeBuiltyPreviewId()}
-                          />
-                        </Grid>
-                      }
-                     
-                      {
-                        builtyImageSrc ?
-                          <img id="previewImage" src={builtyImageSrc} /> :
-                          null
-                      }
-                </Grid>
+                {!builtyImageSrc ? '' :
+                  <Grid item xs={12} style={{ marginLeft: 380 }}>
+                    <DeleteSharpIcon
+                      onClick={() => removeBuiltyPreviewId()}
+                    />
+                  </Grid>
+                }
+
+                {
+                  builtyImageSrc ?
+                    <img id="previewImage" src={builtyImageSrc} /> :
+                    null
+                }
+              </Grid>
             </Grid>
           </Grid>
-       
+
           {/* Builty EIR Ends  */}
-          
+
           <Grid container item xs={12} spacing={3}>
             <Grid item sm={12}>
               <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -1476,22 +1451,22 @@ function AddRideView() {
                 {(manifestSize == true) ? <Typography color="error">Manifest  size should be less than 1 MB</Typography> : ''}
                 {(manifestType == true) ? <Typography color="error">Manifest image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
               </FormControl>
-                <Grid style={{ textAlign: 'center' }}>
+              <Grid style={{ textAlign: 'center' }}>
 
-                      {!manifestImageSrc ? '' :
-                        <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon
-                            onClick={() => removePreviewId()}
-                          />
-                        </Grid>
-                      }
-                     
-                      {
-                        manifestImageSrc ?
-                          <img id="previewImage" src={manifestImageSrc} /> :
-                          null
-                      }
-                </Grid>
+                {!manifestImageSrc ? '' :
+                  <Grid item xs={12} style={{ marginLeft: 380 }}>
+                    <DeleteSharpIcon
+                      onClick={() => removePreviewId()}
+                    />
+                  </Grid>
+                }
+
+                {
+                  manifestImageSrc ?
+                    <img id="previewImage" src={manifestImageSrc} /> :
+                    null
+                }
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
