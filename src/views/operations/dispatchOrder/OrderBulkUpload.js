@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router'
 import fileDownload from 'js-file-download'
 import moment from 'moment'
 import OrdersCsvReader from '../../../components/OrdersCsvReader'
+import { isPhone } from '../../../utils/validators'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -87,56 +88,61 @@ function OrderBulkUpload() {
         }
         let temp = [] // for same product in same order number.
         let tempTwo = [] // for same product in same order number.
-        let count = 2 // to keep index count of loop
+        let count = 2 // to keep index count of loop.
+        let errorsArray = [] // to add all the errors in a single fine.
         // stop duplicate products for each order
         for (let order of data.orders) {
             if (temp.includes(`${order.orderNumber}${order.product}`)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts(["Can not upload file having duplicate products in same order number."])
+                // setErrorAlerts(["Can not upload file having duplicate products in same order number."])
+                errorsArray = [...errorsArray, "Can not upload file having duplicate products in same order number."]
                 return
             }
             temp.push(`${order.orderNumber}${order.product}`)
         }
-        // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
         for (let order of data.orders) {
+            // verify receiver phone format
+            if (!isPhone(`0${order.receiverPhone}`)) {
+                errorsArray = [...errorsArray, `Row ${count} : have in valid phone number.`]
+            }
+            // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
             if (tempTwo.find(el => el.orderNumber === order.orderNumber && el.company !== order.company)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different company in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different company in same order number.`]
             }
-            else if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.warehouse !== order.warehouse)) {
+            if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.warehouse !== order.warehouse)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different warehouse in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different warehouse in same order number.`]
             }
-            else if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.referenceId !== order.referenceId)) {
+            if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.referenceId !== order.referenceId)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different referenceId in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different referenceId in same order number.`]
             }
-            else if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.shipmentDate !== order.shipmentDate)) {
+            if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.shipmentDate !== order.shipmentDate)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different shipmentDate in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different shipmentDate in same order number.`]
             }
-            else if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverName !== order.receiverName)) {
+            if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverName !== order.receiverName)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different receiverName in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different receiverName in same order number.`]
             }
-            else if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverPhone !== order.receiverPhone)) {
+            if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverPhone !== order.receiverPhone)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts([`Row ${count} : can not upload file having different receiverPhone in same order number.`])
-                return
+                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different receiverPhone in same order number.`]
             }
-            tempTwo.push(order)
+
+            errorsArray.length > 0 ?
+                setErrorAlerts(errorsArray)
+                :
+                tempTwo.push(order)
+
             count++
         }
         let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
