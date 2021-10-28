@@ -387,9 +387,9 @@ function AddRideView() {
       dropoffLocation: true,
       eirImage: true,
       builtyImage: true,
-      productCategoryId: true,
-      productName: true,
-      productQuantity: true,
+      productCategoryId: products.length > 0 ? false : true,
+      productName: products.length > 0 ? false : true,
+      productQuantity: products.length > 0 ? false : true,
     });
 
     if (
