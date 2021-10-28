@@ -120,11 +120,6 @@ function AddRideView() {
         return;
       }
       navigate("/logistics/ride");
-      // setShowMessage({
-      //     message: "New ride has been created."
-      // })
-      // closeAddRideView(false);
-      // getRides();
     });
   };
   const productCategoriesMap = productCategories.reduce((acc, category) => ({ ...acc, [category.id]: category }), {});
@@ -255,14 +250,9 @@ function AddRideView() {
       setETA(selectedRide.eta || "");
       setCompletionTime(selectedRide.completionTime || "");
       setCurrentLocation(selectedRide.currentLocation || "");
-      // setBuiltyImage(getURL('preview', selectedRide.builtyId));
-      // setEIRImage(getURL('preview', selectedRide.eirId));
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
       selectedRide && selectedRide.builtyId ? setBuiltyImageSrc(getURL('preview', selectedRide.builtyId)) : setBuiltyImageSrc(null);
-      // selectedRide && selectedRide.eirId ? setEIRImage(eirImageSrc) : setEIRImage(null)
-      // selectedRide && selectedRide.builtyId ? setBuiltyImage(builtyImageSrc) : setBuiltyImage(null)
-
     }
   }, [selectedRide, vendors]);
 
@@ -358,8 +348,6 @@ function AddRideView() {
       pocNumber: strPocNumber,
       eta,
       completionTime, 
-      // carId,
-      // vendorId,
       isActive,
       dropoffCityId,
       pickupCityId,
@@ -378,20 +366,14 @@ function AddRideView() {
       driverId: true,
       vendorId: true,
       carId: true,
-      // pickupAddress: true,
-      // dropoffAddress: true,
       customerId: true,
       cancellationReason: true,
       cancellationComment: true,
       price: true,
       cost: true,
-      // customerDiscount: true,
-      // driverIncentive: true,
       products: true,
       pickupDate: true,
       dropoffDate: true,
-      // carId: true,
-      // vendorId: true,
       weightCargo: true,
       pocName: true,
       pocNumber: true,
@@ -413,22 +395,21 @@ function AddRideView() {
     if (
       isRequired(vehicleId) &&
       (status === "UNASSIGNED" || isRequired(driverId)) &&
-      // isRequired(pickupAddress) &&
-      // isRequired(dropoffAddress) &&
       isRequired(customerId) &&
       (status != "CANCELLED" || isRequired(cancellationReason)) &&
       // (status != "CANCELLED" || isRequired(cancellationComment)) &&
       isRequired(price) &&
       isRequired(cost) &&
-      // isRequired(customerDiscount) &&
-      // isRequired(driverIncentive) &&
       isNotEmptyArray(products) &&
+      // isRequired(products) &&
       isRequired(carId) &&
       isRequired(vendorId) &&
       isRequired(pickupDate) &&
-      // isRequired(dropoffDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
+      // isRequired(productCategoryId) &&
+      // isRequired(productName) &&
+      // isRequired(productQuantity) &&
       isRequired(weightCargo)||
       (status === "ASSIGNED" && isRequired(pocName) &&  isRequired(pocNumber)) ||
       (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation))||
@@ -444,8 +425,10 @@ function AddRideView() {
       
       if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
       
-      if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId)) ) return
-    
+      if((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
+
+      if  (!isNotEmptyArray(products) ) return
+
       addRide(newRide);
     }
   };
@@ -1017,7 +1000,7 @@ function AddRideView() {
               value={!!customerDiscount && customerDiscount}
               minuteStep={15}
               onChange={(e) => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
+              // onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
             />
             {/* {validation.customerDiscount && !isRequired(customerDiscount) ? (
               <Typography color="error">Customer Discount is required!</Typography>
@@ -1038,7 +1021,7 @@ function AddRideView() {
               variant="outlined"
               value={!!driverIncentive && driverIncentive}
               onChange={(e) => setDriverIncentive(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
+              // onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
             />
             {/* {validation.driverIncentive && !isRequired(driverIncentive) ? (
               <Typography color="error">Driver Incentive is required!</Typography>
@@ -1249,7 +1232,7 @@ function AddRideView() {
                     </MenuItem>
                   ))}
                 </Select>
-                {validation.productCategoryId && !isRequired(productCategoryId) ? (
+                {!(selectedRide && selectedRide.RideProducts) && validation.productCategoryId && !isRequired(productCategoryId) ? (
                   <Typography color="error">Product Category is required!</Typography>
                 ) : (
                   ""
@@ -1274,7 +1257,7 @@ function AddRideView() {
                 }}
                 onBlur={(e) => setValidation({ ...validation, productName: true })}
               />
-              {validation.productName && !isRequired(productName) ? (
+              {!(selectedRide && selectedRide.RideProducts) && validation.productName && !isRequired(productName) ? (
                 <Typography color="error">Product name is required!</Typography>
               ) : (
                 ""
@@ -1295,7 +1278,7 @@ function AddRideView() {
                 onChange={(e) => setProductQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, productQuantity: true })}
               />
-              {validation.productQuantity && !isRequired(productQuantity) ? (
+              {!(selectedRide && selectedRide.RideProducts) && validation.productQuantity && !isRequired(productQuantity) ? (
                 <Typography color="error">Product quantity is required!</Typography>
               ) : (
                 ""
@@ -1374,17 +1357,6 @@ function AddRideView() {
               </Table>
             </TableContainer>
           </Grid>
-          {/* <Grid container item xs={12} spacing={3}>
-            <Grid item xs={12}>
-              {selectedRide && selectedRide.Manifest ? (
-                <a target="_blank" href={getURL("preview", selectedRide.Manifest.id)}>
-                  Product Manifest Image
-                </a>
-              ) : (
-                ""
-              )}
-            </Grid>
-          </Grid> */}
           {/* Builty EIR Addition Starts */}
 
           <Grid container item xs={12} spacing={3}>
