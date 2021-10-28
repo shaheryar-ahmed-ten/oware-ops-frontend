@@ -79,6 +79,21 @@ function OrderBulkUpload() {
 
     const bulkUpload = data => {
         setfileUploaded(true)
+        // data sanitization 
+        for (let order of data.orders) {
+            if (!order['company'] ||
+                !order['orderNumber'] ||
+                !order['warehouse'] ||
+                !order['receiverName'] ||
+                !order['receiverPhone'] ||
+                !order['shipmentDate'] ||
+                !order['referenceId'] ||
+                !order['product'] ||
+                !order['quantity']) {
+                setErrorAlerts(["Wrong fields added."])
+                return
+            }
+        }
         // restricting empty file upload.
         if (!(Array.isArray(data.orders) && data.orders.length > 0)) {
             setSelectedFile(null)
