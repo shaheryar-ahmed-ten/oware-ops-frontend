@@ -500,7 +500,7 @@ export default function AddDispatchOrderView() {
           }
 
         </Grid>
-        <Grid item sm={6}>
+        <Grid item sm={6} style = {{marginTop:17}}>
           <TextField
             fullWidth={true}
             id="receiverName"
@@ -513,7 +513,7 @@ export default function AddDispatchOrderView() {
           />
           {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
-        <Grid item sm={6}>
+        <Grid item sm={6} style = {{marginTop:17}}>
           <MaskedInput
             className={clsx({ ["mask-text"]: true })}
             // guide={true}
