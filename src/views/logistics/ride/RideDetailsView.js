@@ -241,13 +241,13 @@ function RideDetailsView(props) {
                 Map Pickup Pin Address :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapPickupAddress}
+                {mapPickupAddress || "-"}
               </Grid>
               <Grid item style={{ fontWeight: 500 }} xs={3}>
                 Map Dropoff Pin Address :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapDropoffAddress}
+                {mapDropoffAddress || "-"}
               </Grid>
             </>
             ) : (
