@@ -90,7 +90,7 @@ function OrderBulkUpload() {
         let tempTwo = [] // for same product in same order number.
         let count = 2 // to keep index count of loop.
         let errorsArray = [] // to add all the errors in a single fine.
-
+        // validations
         for (let order of data.orders) {
             // stop duplicate products for each order
             if (temp.includes(`${order.orderNumber}${order.product}`)) {
@@ -107,6 +107,19 @@ function OrderBulkUpload() {
                 errorsArray = [...errorsArray, {
                     row: count,
                     message: `Row ${count} : Invalid phone number.`
+                }]
+            }
+            // verify date format
+            if (
+                !moment(new Date(order.shipmentDate)).isValid()
+                ||
+                (!order.shipmentDate.includes("AM") && !order.shipmentDate.includes("PM"))
+                ||
+                (new Date().getTime() > new Date(order.shipmentDate).getTime())
+            ) {
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Invalid shipment date.`
                 }]
             }
             // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
@@ -181,7 +194,6 @@ function OrderBulkUpload() {
             .catch((err) => {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                console.log(err.response.data.message)
                 if (Array.isArray(err.response.data.message)) {
                     displayErrors([...errorsArray, ...err.response.data.message])
                 }
