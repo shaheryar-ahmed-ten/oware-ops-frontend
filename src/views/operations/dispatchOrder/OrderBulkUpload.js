@@ -104,7 +104,7 @@ function OrderBulkUpload() {
         for (let order of data.orders) {
             // verify receiver phone format
             if (!isPhone(`0${order.receiverPhone}`)) {
-                errorsArray = [...errorsArray, `Row ${count} : have in valid phone number.`]
+                errorsArray = [...errorsArray, `Row ${count} : Invalid phone number.`]
             }
             // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
             if (tempTwo.find(el => el.orderNumber === order.orderNumber && el.company !== order.company)) {
@@ -145,6 +145,9 @@ function OrderBulkUpload() {
 
             count++
         }
+        // if (errorsArray.length > 0) {
+        //     return
+        // }
         let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
         apiPromise.then((res) => {
             if (!res.data.success) {
@@ -158,7 +161,7 @@ function OrderBulkUpload() {
             .catch((err) => {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk products"])
+                setErrorAlerts(Array.isArray(err.response.data.message) ? [...errorsArray, ...err.response.data.message] : ["Failed to upload bulk orders"])
             })
     }
 
