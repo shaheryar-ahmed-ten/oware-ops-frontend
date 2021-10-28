@@ -445,8 +445,8 @@ export default function AddDispatchOrderView() {
             </Button>
           </Grid>
         </Grid>
-        <Grid item sm={6}>
-          <FormControl margin="dense" fullWidth={true} variant="outlined">
+        <Grid item sm={6} style = {{paddingTop:0}}>
+          <FormControl fullWidth={true} variant="outlined">
             <Autocomplete
               id="customer"
               key={selectedDispatchOrder} // for reRendering the autocomplete after dispatch order is selected.
@@ -464,10 +464,10 @@ export default function AddDispatchOrderView() {
             {validation.customerId && !isRequired(customerId) ? <Typography color="error">Company is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
           </FormControl>
         </Grid>
-        <Grid item sm={6}>
+        <Grid item sm={6} style = {{paddingTop:0}}>
           {
             !!selectedDispatchOrder ?
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <FormControl fullWidth={true} variant="outlined">
                 <TextField
                   fullWidth={true}
                   key={warehouses}
@@ -480,7 +480,7 @@ export default function AddDispatchOrderView() {
                 />
               </FormControl>
               :
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
+              <FormControl  fullWidth={true} variant="outlined">
                 <Autocomplete
                   id="warehouse"
                   key={warehouses}
@@ -500,7 +500,7 @@ export default function AddDispatchOrderView() {
           }
 
         </Grid>
-        <Grid item sm={6} style = {{marginTop:17}}>
+        <Grid item sm={6} style = {{paddingTop:12}}>
           <TextField
             fullWidth={true}
             id="receiverName"
@@ -513,7 +513,7 @@ export default function AddDispatchOrderView() {
           />
           {validation.receiverName && !isRequired(receiverName) ? <Typography color="error">Receiver name is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
-        <Grid item sm={6} style = {{marginTop:17}}>
+        <Grid item sm={6} style = {{paddingTop:12}}>
           <MaskedInput
             className={clsx({ ["mask-text"]: true })}
             // guide={true}
@@ -535,10 +535,11 @@ export default function AddDispatchOrderView() {
           {validation.receiverPhone && isRequired(receiverPhone) && !isPhone(receiverPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
           {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
-        <Grid item sm={6}>
-          <TextField
+        <Grid item sm={6} style = {{paddingTop:0}}>
+          <TextField  
+            
             fullWidth={true}
-            margin="normal"
+            // margin="normal"
             id="shipmentDate"
             label="Shipment Date"
             inputProps={{ min: new Date().toISOString().slice(0, 16) }}
@@ -554,10 +555,10 @@ export default function AddDispatchOrderView() {
           />
           {validation.shipmentDate && !isRequired(shipmentDate) ? <Typography color="error">Shipment date is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
         </Grid>
-        <Grid item sm={6}>
+        <Grid item sm={6} style = {{paddingTop:0}}>
           <TextField
             fullWidth={true}
-            margin="normal"
+            // margin="normal"
             id="referenceId"
             label="Reference Id"
             type="text"
@@ -569,7 +570,7 @@ export default function AddDispatchOrderView() {
 
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           <Typography variant="h4" className={classes.heading}>Product Details</Typography>
         </Grid>
         <Grid container item xs={12} alignItems="center" spacing={1}>
