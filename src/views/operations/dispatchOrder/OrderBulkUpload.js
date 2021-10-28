@@ -90,52 +90,73 @@ function OrderBulkUpload() {
         let tempTwo = [] // for same product in same order number.
         let count = 2 // to keep index count of loop.
         let errorsArray = [] // to add all the errors in a single fine.
-        // stop duplicate products for each order
+
         for (let order of data.orders) {
+            // stop duplicate products for each order
             if (temp.includes(`${order.orderNumber}${order.product}`)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                // setErrorAlerts(["Can not upload file having duplicate products in same order number."])
-                errorsArray = [...errorsArray, "Can not upload file having duplicate products in same order number."]
-                return
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having duplicate products in same order number.`
+                }]
             }
             temp.push(`${order.orderNumber}${order.product}`)
-        }
-        for (let order of data.orders) {
             // verify receiver phone format
             if (!isPhone(`0${order.receiverPhone}`)) {
-                errorsArray = [...errorsArray, `Row ${count} : Invalid phone number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Invalid phone number.`
+                }]
             }
             // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
             if (tempTwo.find(el => el.orderNumber === order.orderNumber && el.company !== order.company)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different company in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different company in same order number.`
+                }]
             }
             if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.warehouse !== order.warehouse)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different warehouse in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different warehouse in same order number.`
+                }]
             }
             if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.referenceId !== order.referenceId)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different referenceId in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different referenceId in same order number.`
+                }]
             }
             if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.shipmentDate !== order.shipmentDate)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different shipmentDate in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different shipmentDate in same order number.`
+                }]
             }
             if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverName !== order.receiverName)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different receiverName in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different receiverName in same order number.`
+                }]
             }
             if (tempTwo.find(el => (el.orderNumber === order.orderNumber) && el.receiverPhone !== order.receiverPhone)) {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                errorsArray = [...errorsArray, `Row ${count} : can not upload file having different receiverPhone in same order number.`]
+                errorsArray = [...errorsArray, {
+                    row: count,
+                    message: `Row ${count} : Can not upload file having different receiverPhone in same order number.`
+                }]
             }
 
             errorsArray.length > 0 ?
@@ -145,14 +166,13 @@ function OrderBulkUpload() {
 
             count++
         }
-        // if (errorsArray.length > 0) {
-        //     return
-        // }
+
         let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
         apiPromise.then((res) => {
             if (!res.data.success) {
                 setSelectedFile(null)
-                setErrorAlerts(res.data.message)
+                setErrorAlerts()
+                displayErrors([...errorsArray, ...res.data.message])
                 return
             }
             setErrorAlerts([])
@@ -161,8 +181,28 @@ function OrderBulkUpload() {
             .catch((err) => {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts(Array.isArray(err.response.data.message) ? [...errorsArray, ...err.response.data.message] : ["Failed to upload bulk orders"])
+                console.log(err.response.data.message)
+                if (Array.isArray(err.response.data.message)) {
+                    displayErrors([...errorsArray, ...err.response.data.message])
+                }
+                else {
+                    setErrorAlerts([...errorsArray, "Failed to upload bulk orders."])
+                }
             })
+    }
+
+    const displayErrors = (jointArray) => {
+        const sortedMsgs = jointArray.sort(function (a, b) {
+            var rowA = a.row;
+            var rowB = b.row;
+            if (rowA < rowB) {
+                return -1;
+            }
+            if (rowA > rowB) {
+                return 1;
+            }
+        });
+        setErrorAlerts([...sortedMsgs])
     }
 
     const downloadTemplate = () => {
@@ -203,7 +243,7 @@ function OrderBulkUpload() {
                                 {
                                     errorAlerts?.map((alert) => {
                                         return (
-                                            <Alert severity="error" className={classes.systemAlert}> {alert} </Alert>
+                                            <Alert severity="error" className={classes.systemAlert}> {alert.message ? alert.message : alert} </Alert>
                                         )
                                     })
                                 }
