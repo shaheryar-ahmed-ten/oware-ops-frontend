@@ -90,7 +90,7 @@ function OrderBulkUpload() {
                 !order['referenceId'] ||
                 !order['product'] ||
                 !order['quantity']) {
-                setErrorAlerts(["Wrong fields added."])
+                setErrorAlerts(["Wrong field(s) added."])
                 return
             }
         }
