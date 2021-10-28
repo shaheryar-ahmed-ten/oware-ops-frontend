@@ -417,7 +417,7 @@ function AddRideView() {
       // isRequired(dropoffAddress) &&
       isRequired(customerId) &&
       (status != "CANCELLED" || isRequired(cancellationReason)) &&
-      (status != "CANCELLED" || isRequired(cancellationComment)) &&
+      // (status != "CANCELLED" || isRequired(cancellationComment)) &&
       isRequired(price) &&
       isRequired(cost) &&
       // isRequired(customerDiscount) &&
@@ -662,13 +662,13 @@ function AddRideView() {
                 variant="outlined"
                 value={cancellationComment}
                 onChange={(e) => setCancellationComment(e.target.value)}
-                onBlur={(e) => setValidation({ ...validation, cancellationComment: true })}
+                // onBlur={(e) => setValidation({ ...validation, cancellationComment: true })}
               />
-              {validation.cancellationComment && !isRequired(cancellationComment) ? (
+              {/* {validation.cancellationComment && !isRequired(cancellationComment) ? (
                 <Typography color="error">Cancellation comment is required!</Typography>
               ) : (
                 ""
-              )}
+              )} */}
             </Grid>
           </Grid>
         ) : (
