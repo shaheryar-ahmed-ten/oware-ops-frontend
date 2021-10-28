@@ -1078,7 +1078,7 @@ function AddRideView() {
             </Grid>
             <Grid item sm={6}>
                 <MaskedInput
-                className={clsx({ ["mask-text"]: true })}
+                className={clsx({ ["mask-text"]: true },{["mask-text:focus"]:true})}
                 // guide={true}
                 // showMask={true}
                 variant="outlined"

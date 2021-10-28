@@ -236,20 +236,20 @@ function RideDetailsView(props) {
                 {dateFormat(selectedRide.dropoffDate) || "-"}
               </Grid>
               {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-            <Grid container spacing={2}>
+            <>
               <Grid item style={{ fontWeight: 500 }} xs={3}>
                 Map Pickup Pin Address :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapPickupAddress}
+                {mapPickupAddress || "-"}
               </Grid>
               <Grid item style={{ fontWeight: 500 }} xs={3}>
                 Map Dropoff Pin Address :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapDropoffAddress}
+                {mapDropoffAddress || "-"}
               </Grid>
-            </Grid>
+            </>
             ) : (
               ""
             )}
@@ -382,10 +382,10 @@ function RideDetailsView(props) {
             </Grid>
             
             <Grid container spacing={2} style={{ paddingTop: 15 }}>
-              <Grid style={{ fontWeight: 500 }} item xs={3}>
+              <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Memo :
               </Grid>
-              <Grid item xs={9} style={{ fontStyle: "italic", paddingTop: 23 }}>
+              <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)"}}>
                 {selectedRide.memo || "-"}
               </Grid>
             </Grid>

@@ -337,8 +337,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                 /> */}
                 <MaskedInput
                   className="mask-text"
-                  guide={false}
-                  showMask={true}
+                  // guide={false}
+                  // showMask={true}
                   margin="dense"
                   variant="outlined"
                   name="phone"
