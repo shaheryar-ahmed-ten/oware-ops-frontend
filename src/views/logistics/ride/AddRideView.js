@@ -1282,7 +1282,7 @@ function AddRideView() {
               {/* {validation.productQuantity && !isNumber(productQuantity) ? <Typography color="error">Product quantity is only numbers!</Typography> : ''} */}
             </Grid>
             <Grid item xs={3}>
-              <FormControl margin="dense" variant="outlined">
+              <FormControl margin="normal" variant="outlined">
                 <Button
                   variant="contained"
                   onClick={() =>
