@@ -1067,7 +1067,11 @@ function AddRideView() {
                 // type="text"
                 variant="outlined"
                 value={pocName}
-                onChange={(e) => setPOCName(e.target.value)}
+                onChange={e => {
+                  const regex = /^[a-zA-Z]*$/
+                      if (regex.test(e.target.value))
+                      {setPOCName(e.target.value)}
+                    }}
                 onBlur={(e) => setValidation({ ...validation, pocName: true })}
               />
               {validation.pocName && !isRequired(pocName) && status == "ASSIGNED"? (
@@ -1176,7 +1180,7 @@ function AddRideView() {
               id="weightCargo"
               label="Weight of Cargo (Kg)"
               placeholder="Weight of Cargo (Kg)"
-              type="text"
+              type="number"
               variant="outlined"
               value={weightCargo}
               minuteStep={15}
