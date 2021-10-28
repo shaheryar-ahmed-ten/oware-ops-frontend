@@ -1182,9 +1182,9 @@ function AddRideView() {
               placeholder="Weight of Cargo (Kg)"
               type="number"
               variant="outlined"
-              value={weightCargo}
+              value={!!weightCargo && weightCargo}
               minuteStep={15}
-              onChange={(e) => setWeightCargo(e.target.value)}
+              onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
             />
             {validation.weightCargo && !isRequired(weightCargo) ? (
