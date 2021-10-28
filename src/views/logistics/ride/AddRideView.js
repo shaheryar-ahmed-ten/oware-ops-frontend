@@ -401,15 +401,11 @@ function AddRideView() {
       isRequired(price) &&
       isRequired(cost) &&
       isNotEmptyArray(products) &&
-      // isRequired(products) &&
       isRequired(carId) &&
       isRequired(vendorId) &&
       isRequired(pickupDate) &&
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
-      // isRequired(productCategoryId) &&
-      // isRequired(productName) &&
-      // isRequired(productQuantity) &&
       isRequired(weightCargo)||
       (status === "ASSIGNED" && isRequired(pocName) &&  isRequired(pocNumber)) ||
       (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation))||
