@@ -46,18 +46,12 @@ const useStyles = makeStyles((theme) => ({
   },
   textBox: {
     height: 34,
-    // paddingTop:15
-    // "& label": {
-    //   paddingTop:5,
-    // }
-    // height: 34
   },
   pocBox: {
     height: 34,
     width: "102%",
   },
   weightBox: {
-    // height:34,
     display: "none"
   },
   labelBox: {
@@ -99,7 +93,6 @@ function AddRideView() {
   const [builtyImageSrc, setBuiltyImageSrc] = useState(null);
   const [builtyType, setBuiltyType] = useState(false);
   const [builtySize, setBuiltySize] = useState(false);
-  // const [logoDimension, setLogoDimension] = useState(false);
 
 
   useEffect(() => {
@@ -394,22 +387,22 @@ function AddRideView() {
 
     if (
       isRequired(vehicleId) &&
-      (status === "UNASSIGNED" || isRequired(driverId)) &&
-      isRequired(customerId) &&
-      (status != "CANCELLED" || isRequired(cancellationReason)) &&
-      // (status != "CANCELLED" || isRequired(cancellationComment)) &&
-      isRequired(price) &&
-      pocNumber ?isPhone(pocNumber.replace(/-/g, '')) : true &&
-      isRequired(cost) &&
-      isNotEmptyArray(products) &&
-      isRequired(carId) &&
-      isRequired(vendorId) &&
-      isRequired(pickupDate) &&
-      isRequired(pickupCityId) &&
-      isRequired(dropoffCityId) &&
-      isRequired(weightCargo) ||
-      (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber) && isPhone(pocNumber.replace(/-/g, ''))) ||
-      (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
+        (status === "UNASSIGNED" || isRequired(driverId)) &&
+        isRequired(customerId) &&
+        (status != "CANCELLED" || isRequired(cancellationReason)) &&
+        // (status != "CANCELLED" || isRequired(cancellationComment)) &&
+        isRequired(price) &&
+        pocNumber ? isPhone(pocNumber.replace(/-/g, '')) : true &&
+        isRequired(cost) &&
+        isNotEmptyArray(products) &&
+        isRequired(carId) &&
+        isRequired(vendorId) &&
+        isRequired(pickupDate) &&
+        isRequired(pickupCityId) &&
+        isRequired(dropoffCityId) &&
+        isRequired(weightCargo) ||
+        (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber) && isPhone(pocNumber.replace(/-/g, ''))) ||
+        (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
       (status === "COMPLETED" && isRequired(completionTime))
 
     ) {
@@ -427,7 +420,7 @@ function AddRideView() {
       if (!isNotEmptyArray(products)) return
 
       if ((status === "ASSIGNED" && !isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, ''))) || (status === "ASSIGNED" && !isRequired(pocName))) return
-      console.log(!isRequired(pocNumber),!isPhone(pocNumber.replace(/-/g, '')))
+      console.log(!isRequired(pocNumber), !isPhone(pocNumber.replace(/-/g, '')))
       addRide(newRide);
     }
   };
@@ -497,20 +490,10 @@ function AddRideView() {
       setEIRSize(true);
       return false;
     }
-    // const eirReader = new FileReader();
-    // checkEIRFile && eirReader.readAsDataURL(checkEIRFile);
-    // // eirReader.addEventListener('load', event => {
-    //   const _loadedEIRImageUrl = event.target.result;
-    //   const eirImage = document.createElement('img');
-    //   eirImage.src = _loadedEIRImageUrl;
-    // eirImage.addEventListener('load', () => {
-    // setEIRImageSrc(_loadedEIRImageUrl);
+
     const eirFile = checkEIRFile ? checkEIRFile : null;
     setEIRImageSrc(eirFile);
     setEIRImage(eirFile)
-    // })
-
-    // })
   }
 
   const newBuiltyValidateLogoImage = (event) => {
@@ -528,19 +511,10 @@ function AddRideView() {
       setBuiltySize(true);
       return false;
     }
-    // const Builtyreader = new FileReader();
-    // checkBuiltyFile && Builtyreader.readAsDataURL(checkBuiltyFile);
-    // Builtyreader.addEventListener('load', event => {
-    //   const _loadedBuiltyImageUrl = event.target.result;
-    //   const BuiltyImage = document.createElement('img');
-    //   BuiltyImage.src = _loadedBuiltyImageUrl;
-    //   BuiltyImage.addEventListener('load', () => {
-    // setBuiltyImageSrc(_loadedBuiltyImageUrl);
+
     const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
     setBuiltyImageSrc(builtyFile);
     setBuiltyImage(builtyFile)
-    // });
-    // })
   }
   return (
     <>
@@ -644,13 +618,7 @@ function AddRideView() {
                 variant="outlined"
                 value={cancellationComment}
                 onChange={(e) => setCancellationComment(e.target.value)}
-              // onBlur={(e) => setValidation({ ...validation, cancellationComment: true })}
               />
-              {/* {validation.cancellationComment && !isRequired(cancellationComment) ? (
-                <Typography color="error">Cancellation comment is required!</Typography>
-              ) : (
-                ""
-              )} */}
             </Grid>
           </Grid>
         ) : (
@@ -856,7 +824,7 @@ function AddRideView() {
             item
             sm={12}
             className={classes.locationMap}
-            style={{ position: "relative", minHeight: 400, marginBottom: 30, minWidth: "100%" }}
+            style={{ position: "relative", minHeight: 350, marginBottom: 30, maxWidth: "98%" }}
           >
             <GoogleMap
               setDropOff={setDropOff}
@@ -895,12 +863,10 @@ function AddRideView() {
           </Grid>
           <Grid item sm={6}>
             <TextField
-              // className={classes.textBox}
               fullWidth={true}
               margin="dense"
               id="dropoffDate"
               label="Dropoff Date & Time"
-              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
               inputProps={{ min: pickupDate, className: classes.dateBox }}
               placeholder="Dropoff Date & Time"
               type="datetime-local"
@@ -983,13 +949,7 @@ function AddRideView() {
               value={!!customerDiscount && customerDiscount}
               minuteStep={15}
               onChange={(e) => setCustomerDiscount(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-            // onBlur={(e) => setValidation({ ...validation, customerDiscount: true })}
             />
-            {/* {validation.customerDiscount && !isRequired(customerDiscount) ? (
-              <Typography color="error">Customer Discount is required!</Typography>
-            ) : (
-              ""
-            )} */}
           </Grid>
           <Grid item sm={6}>
             <TextField
@@ -1070,11 +1030,9 @@ function AddRideView() {
             </Grid>
           </Grid>
 
-          {/* <Grid container item xs={12} spacing={3}> */}
           <Grid item sm={6}>
             <TextField
               inputProps={{ className: classes.textBox }}
-              // style={{width:"102%"}}
               className={classes.labelBox}
               fullWidth={true}
               margin="dense"
@@ -1101,7 +1059,6 @@ function AddRideView() {
               margin="dense"
               id="currentLocation"
               label="Current Location"
-              // type="text"
               variant="outlined"
               value={currentLocation}
               onChange={(e) => setCurrentLocation(e.target.value)}
@@ -1164,7 +1121,6 @@ function AddRideView() {
             <TextField
               multiline
               fullWidth={true}
-              // inputProps={{className:classes.textBox}}
               margin="dense"
               rows={6}
               id="memo"
@@ -1174,9 +1130,7 @@ function AddRideView() {
               InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
               value={memo}
               onChange={(e) => setMemo(e.target.value)}
-            // onBlur={e => setValidation({ ...validation, memo: true })}
             />
-            {/* { !!{inputProps: { maxLength: 1000 }} && memo.length >=1000 ? <Typography color="error">Length should be less than 1000 words.</Typography> : ''} */}
             {validation.memo && !isRequired(memo) && status == "UNASSIGNED" ?
               (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
               : ("")}
@@ -1198,7 +1152,6 @@ function AddRideView() {
                   id="productCategories"
                   key={productCategories}
                   options={productCategories}
-                  // defaultValue={!!selectedRide ? selectedRide.dropoffCity : ""}
                   renderInput={(params) => <TextField {...params} label="Product Category" variant="outlined" />}
                   getOptionLabel={(productCategory) => productCategory.name || ""}
                   onBlur={(e) => setValidation({ ...validation, productCategoryId: true })}
@@ -1225,8 +1178,6 @@ function AddRideView() {
                 variant="outlined"
                 value={productName}
                 onChange={(e) => {
-                  // const regex = /^[a-zA-Z1-9]*$/
-                  // if (regex.test(e.target.value))
                   setProductName(e.target.value);
                 }}
                 onBlur={(e) => setValidation({ ...validation, productName: true })}
@@ -1346,10 +1297,8 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    // value={(e) => e.target.value + 1}
                     onChange={(e) => {
                       newEIRValidateLogoImage(e)
-                      // setEIRImage(e.target.files[0]);
                     }}
                     onBlur={(e) => setValidation({ ...validation, eirImage: true })}
                     accept=".jpg,.png,.jpeg"
@@ -1392,10 +1341,8 @@ function AddRideView() {
                   <input
                     type="file"
                     hidden
-                    // value={(e) => e.target.value + 2}
                     onChange={(e) => {
                       newBuiltyValidateLogoImage(e)
-                      // setBuiltyImage(e.target.files[0]);
                     }}
                     onBlur={(e) => setValidation({ ...validation, builtyImage: true })}
                     accept=".jpg,.png,.jpeg"
@@ -1446,7 +1393,6 @@ function AddRideView() {
                     value={(e) => e.target.value + 3}
                     onChange={(e) => {
                       newManifestValidateLogoImage(e)
-                      // setManifestImage(e.target.files[0]);
                     }}
                     accept=".jpg,.png,.jpeg"
                   />
