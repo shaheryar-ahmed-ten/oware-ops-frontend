@@ -399,6 +399,7 @@ function AddRideView() {
       (status != "CANCELLED" || isRequired(cancellationReason)) &&
       // (status != "CANCELLED" || isRequired(cancellationComment)) &&
       isRequired(price) &&
+      pocNumber ?isPhone(pocNumber.replace(/-/g, '')) : true &&
       isRequired(cost) &&
       isNotEmptyArray(products) &&
       isRequired(carId) &&
@@ -407,7 +408,7 @@ function AddRideView() {
       isRequired(pickupCityId) &&
       isRequired(dropoffCityId) &&
       isRequired(weightCargo) ||
-      (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber)) ||
+      (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber) && isPhone(pocNumber.replace(/-/g, ''))) ||
       (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
       (status === "COMPLETED" && isRequired(completionTime))
 
@@ -425,6 +426,8 @@ function AddRideView() {
 
       if (!isNotEmptyArray(products)) return
 
+      if ((status === "ASSIGNED" && !isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, ''))) || (status === "ASSIGNED" && !isRequired(pocName))) return
+      console.log(!isRequired(pocNumber),!isPhone(pocNumber.replace(/-/g, '')))
       addRide(newRide);
     }
   };
