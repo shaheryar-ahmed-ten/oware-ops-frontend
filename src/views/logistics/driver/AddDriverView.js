@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
+
   const classes = useStyles();
+  
   const [driverName, setDriverName] = useState('')
   const [driverPhone, setDriverPhone] = useState('')
   const [validation, setValidation] = useState({});
