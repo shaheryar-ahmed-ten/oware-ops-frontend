@@ -80,20 +80,13 @@ function OrderBulkUpload() {
     const bulkUpload = data => {
         setfileUploaded(true)
         // data sanitization 
-        for (let order of data.orders) {
-            if (!order['company'] ||
-                !order['orderNumber'] ||
-                !order['warehouse'] ||
-                !order['receiverName'] ||
-                !order['receiverPhone'] ||
-                !order['shipmentDate'] ||
-                !order['referenceId'] ||
-                !order['product'] ||
-                !order['quantity']) {
-                setErrorAlerts(["Wrong field(s) added."])
-                return
-            }
+        const sanitizationArray = dataSanitization(data.orders);
+
+        if (sanitizationArray.length > 0) {
+            setErrorAlerts(sanitizationArray)
+            return
         }
+
         // restricting empty file upload.
         if (!(Array.isArray(data.orders) && data.orders.length > 0)) {
             setSelectedFile(null)
@@ -216,6 +209,70 @@ function OrderBulkUpload() {
                     setErrorAlerts([...errorsArray, "Failed to upload bulk orders."])
                 }
             })
+    }
+
+    const dataSanitization = (data) => {
+        let count = 2;
+        let sanitizationArray = [];
+        for (let order of data) {
+            if (!order['company']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Company is not provided.`
+                }]
+            }
+            if (!order['orderNumber']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Order number is not provided.`
+                }]
+            }
+            if (!order['warehouse']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Warehouse is not provided.`
+                }]
+            }
+            if (!order['receiverName']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Receiver name is not provided.`
+                }]
+            }
+            if (!order['shipmentDate']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Shipment date is not provided.`
+                }]
+            }
+            if (!order['referenceId']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : ReferenceId is not provided.`
+                }]
+            }
+            if (!order['product']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Product is not provided.`
+                }]
+            }
+            if (!order['quantity']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Quantity is not provided.`
+                }]
+            }
+            if (order['quantity'] && Number.isInteger(order['quantity'])) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Quantity is not valid.`
+                }]
+            }
+
+            count++
+        }
+        return sanitizationArray
     }
 
     const displayErrors = (jointArray) => {
