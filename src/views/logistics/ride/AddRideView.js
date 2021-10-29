@@ -1077,10 +1077,10 @@ function AddRideView() {
               margin="dense"
               id="eta"
               label="ETA"
-              // type="text"
+              type="number"
               variant="outlined"
-              value={eta}
-              onChange={(e) => setETA(e.target.value)}
+              value={!!eta && eta}
+              onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, eta: true })}
             />
             {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
@@ -1121,10 +1121,10 @@ function AddRideView() {
               id="completionTime"
               label="Trip Completion Time"
               placeholder="Trip Completion Time"
-              // type="number"
+              type="number"
               variant="outlined"
-              value={completionTime}
-              onChange={(e) => setCompletionTime(e.target.value)}
+              value={!!completionTime && completionTime}
+              onChange={(e) => setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
             {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
