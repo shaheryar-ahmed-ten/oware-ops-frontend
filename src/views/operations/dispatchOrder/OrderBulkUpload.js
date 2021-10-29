@@ -245,6 +245,12 @@ function OrderBulkUpload() {
                     message: `Row ${count} : Shipment date is not provided.`
                 }]
             }
+            if (order['shipmentDate'] && (!order['shipmentDate'].includes("PM") && !order['shipmentDate'].includes("AM"))) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Shipment time is not provided.`
+                }]
+            }
             if (!order['referenceId']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
