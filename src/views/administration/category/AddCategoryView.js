@@ -10,11 +10,26 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
-  Typography
+  Typography,
+  makeStyles
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
+
 export default function AddCategoryView({ addCategory, open, handleClose, selectedCategory, formErrors }) {
+
+  const classes = useStyles();
+
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [isActive, setActive] = useState(true);
@@ -62,6 +77,8 @@ export default function AddCategoryView({ addCategory, open, handleClose, select
                   type="text"
                   variant="outlined"
                   value={name}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   onChange={e => setName(e.target.value)}
                   onBlur={e => setValidation({ ...validation, name: true })}
                 />
