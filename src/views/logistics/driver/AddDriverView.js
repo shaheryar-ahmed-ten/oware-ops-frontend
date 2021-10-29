@@ -19,9 +19,19 @@ import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
 import { Autocomplete } from '@material-ui/lab';
 
-const useStyles = makeStyles((theme) => ({
+// const useStyles = makeStyles((theme) => ({
 
-}))
+// }))
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
 
 function AddDriverView({ selectedDriver, companies, formErrors, open, handleClose, addDriver }) {
   const classes = useStyles();
@@ -142,6 +152,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="selectedDriver"
                     label="Driver Name"
@@ -157,6 +169,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                 <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="driverliceneNumber"
                     label="Driving License Number"
@@ -192,6 +206,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
                     <TextField
                       fullWidth={true}
+                      inputProps={{ className: classes.textBox }}
+                      className={classes.labelBox}
                       margin="dense"
                       id="driverPhone"
                       label="Phone"
@@ -212,6 +228,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                 <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
+                    inputProps={{ className: classes.textBox }}
+                    className={classes.labelBox}
                     margin="dense"
                     id="cnic"
                     label="CNIC"
