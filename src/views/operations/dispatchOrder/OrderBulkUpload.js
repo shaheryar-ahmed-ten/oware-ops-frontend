@@ -269,7 +269,7 @@ function OrderBulkUpload() {
                     message: `Row ${count} : Quantity is not provided.`
                 }]
             }
-            if (order['quantity'] && Number.isInteger(order['quantity'])) {
+            if (order['quantity'] && Number.isInteger(order['quantity']) && order['quantity'] > 0) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
                     message: `Row ${count} : Quantity is not valid.`
