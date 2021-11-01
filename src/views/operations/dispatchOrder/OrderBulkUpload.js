@@ -244,7 +244,7 @@ function OrderBulkUpload() {
                     message: `Row ${count} : phone number is not provided.`
                 }]
             }
-            if (order['receiverPhone'] && !isPhone(order['receiverPhone'])) {
+            if (order['receiverPhone'] && !isPhone(`0${order['receiverPhone']}`)) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
                     message: `Row ${count} : Invalid phone number.`
