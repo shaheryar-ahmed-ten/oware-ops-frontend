@@ -76,7 +76,6 @@ function OrderBulkUpload() {
     const [errorAlerts, setErrorAlerts] = useState([])
     const [successAlerts, setSuccessAlerts] = useState([])
 
-
     const bulkUpload = data => {
         setfileUploaded(true)
         // data sanitization 
@@ -239,6 +238,18 @@ function OrderBulkUpload() {
                     message: `Row ${count} : Receiver name is not provided.`
                 }]
             }
+            if (!order['receiverPhone']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : phone number is not provided.`
+                }]
+            }
+            if (order['receiverPhone'] && !isPhone(order['receiverPhone'])) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Invalid phone number.`
+                }]
+            }
             if (!order['shipmentDate']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
@@ -248,7 +259,7 @@ function OrderBulkUpload() {
             if (order['shipmentDate'] && (!order['shipmentDate'].includes("PM") && !order['shipmentDate'].includes("AM"))) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Shipment time is not provided.`
+                    message: `Row ${count} : Invalid shipment time format.`
                 }]
             }
             if (!order['referenceId']) {
@@ -304,6 +315,7 @@ function OrderBulkUpload() {
         })
 
     }
+
     return (
         <>
             <Grid container className={classes.root}>
