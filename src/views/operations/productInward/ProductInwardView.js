@@ -66,7 +66,7 @@ export default function ProductInwardView() {
         return (
           <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
           <Typography>
-            {entity.internalIdForBusiness.length > 20 ? `${test.substring(0, 20)}...` : entity.internalIdForBusiness}
+            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
           </Typography>
         </Tooltip>
         )
