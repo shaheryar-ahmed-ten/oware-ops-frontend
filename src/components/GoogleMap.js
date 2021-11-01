@@ -120,22 +120,27 @@ function GoogleMap(props) {
   const [dropoffSearchBox, setDropoffSearchBox] = useState("");
 
   let zoom, mapCenter;
-  if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
-    const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
-    zoom = calc.zoom;
-    mapCenter = calc.mapCenter;
 
-    Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
-      .then((addresses) => addresses.results[0].formatted_address)
-      .then((result) => {
-        setpickupSearchBox(result);
-      });
-    Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
-      .then((addresses) => addresses.results[0].formatted_address)
-      .then((result) => {
-        setDropoffSearchBox(result);
-      });
-  }
+  useEffect(() => {
+    if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
+      const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
+      zoom = calc.zoom;
+      mapCenter = calc.mapCenter;
+      setState({ ...state, zoom, mapCenter })
+
+      Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
+        .then((addresses) => addresses.results[0].formatted_address)
+        .then((result) => {
+          setpickupSearchBox(result);
+        });
+      Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
+        .then((addresses) => addresses.results[0].formatted_address)
+        .then((result) => {
+          setDropoffSearchBox(result);
+        });
+    }
+  }, [])
+
   const [state, setState] = useState({
     pickupMarker: {
       lat: pickupLocation ? pickupLocation.lat : null,
@@ -148,9 +153,9 @@ function GoogleMap(props) {
     mapCenter: mapCenter
       ? mapCenter
       : {
-          lat: 30.2919928,
-          lng: 64.8560693,
-        },
+        lat: 30.2919928,
+        lng: 64.8560693,
+      },
     zoom: zoom ? zoom : 5.5,
   });
 
@@ -195,9 +200,9 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-                lat: latLng.lat,
-                lng: latLng.lng,
-              },
+              lat: latLng.lat,
+              lng: latLng.lng,
+            },
           zoom: zoom ? zoom : 14,
         });
         setPickUp({
@@ -232,9 +237,9 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-                lat: latLng.lat,
-                lng: latLng.lng,
-              },
+              lat: latLng.lat,
+              lng: latLng.lng,
+            },
           zoom: zoom ? zoom : 14,
         });
 
@@ -271,7 +276,6 @@ function GoogleMap(props) {
 
   const onDropoffMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
-    console.log("PlacesAutocomplete", PlacesAutocomplete);
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
     const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
@@ -385,17 +389,17 @@ function GoogleMap(props) {
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                          backgroundColor: "#fafafa",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        }
+                        backgroundColor: "#fafafa",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      }
                       : {
-                          backgroundColor: "#ffffff",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        };
+                        backgroundColor: "#ffffff",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {
@@ -435,17 +439,17 @@ function GoogleMap(props) {
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                          backgroundColor: "#fafafa",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        }
+                        backgroundColor: "#fafafa",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      }
                       : {
-                          backgroundColor: "#ffffff",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        };
+                        backgroundColor: "#ffffff",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {

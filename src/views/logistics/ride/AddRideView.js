@@ -330,8 +330,8 @@ function AddRideView() {
       cancellationComment,
       price,
       cost,
-      customerDiscount,
-      driverIncentive,
+      customerDiscount: customerDiscount === '' ? null: customerDiscount ,
+      driverIncentive: driverIncentive === '' ? null: driverIncentive,
       products,
       pickupDate: new Date(pickupDate),
       dropoffDate: new Date(dropoffDate),
@@ -420,7 +420,6 @@ function AddRideView() {
       if (!isNotEmptyArray(products)) return
 
       if ((status === "ASSIGNED" && !isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, ''))) || (status === "ASSIGNED" && !isRequired(pocName))) return
-      console.log(!isRequired(pocNumber), !isPhone(pocNumber.replace(/-/g, '')))
       addRide(newRide);
     }
   };
