@@ -179,7 +179,8 @@ export default function DispatchOrderView() {
         return (
           <Tooltip title={`${entity.referenceId}`}>
           <Typography>
-            {entity.referenceId > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId}
+
+            {entity.referenceId && entity.referenceId.length > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId || ''}
           </Typography>
         </Tooltip>
           )

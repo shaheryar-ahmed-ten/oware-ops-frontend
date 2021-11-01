@@ -427,7 +427,6 @@ function AddRideView() {
       if (!isNotEmptyArray(products)) return
 
       if ((status === "ASSIGNED" && !isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, ''))) || (status === "ASSIGNED" && !isRequired(pocName))) return
-      console.log(!isRequired(pocNumber), !isPhone(pocNumber.replace(/-/g, '')))
       addRide(newRide);
     }
   };

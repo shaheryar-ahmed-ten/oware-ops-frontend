@@ -76,7 +76,6 @@ function OrderBulkUpload() {
     const [errorAlerts, setErrorAlerts] = useState([])
     const [successAlerts, setSuccessAlerts] = useState([])
 
-
     const bulkUpload = data => {
         setfileUploaded(true)
         // data sanitization 
@@ -187,6 +186,10 @@ function OrderBulkUpload() {
 
             count++
         }
+        // change shipmentDate into date object
+        for (let order of data.orders) {
+            order.shipmentDate = new Date(order.shipmentDate)
+        }
 
         let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
         apiPromise.then((res) => {
@@ -239,6 +242,18 @@ function OrderBulkUpload() {
                     message: `Row ${count} : Receiver name is not provided.`
                 }]
             }
+            if (!order['receiverPhone']) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : phone number is not provided.`
+                }]
+            }
+            if (order['receiverPhone'] && !isPhone(`0${order['receiverPhone']}`)) {
+                sanitizationArray = [...sanitizationArray, {
+                    row: count,
+                    message: `Row ${count} : Invalid phone number.`
+                }]
+            }
             if (!order['shipmentDate']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
@@ -248,7 +263,7 @@ function OrderBulkUpload() {
             if (order['shipmentDate'] && (!order['shipmentDate'].includes("PM") && !order['shipmentDate'].includes("AM"))) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Shipment time is not provided.`
+                    message: `Row ${count} : Invalid shipment time format.`
                 }]
             }
             if (!order['referenceId']) {
@@ -304,6 +319,7 @@ function OrderBulkUpload() {
         })
 
     }
+
     return (
         <>
             <Grid container className={classes.root}>
@@ -355,9 +371,11 @@ function OrderBulkUpload() {
                             <Grid item xs={12} alignItems="center" className={classes.guidelines}>
                                 <Alert severity="info" className={classes.guideLine}>Maximum of 1000 orders are allowed to be included for upload in a single file.</Alert>
                                 {/* <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert> */}
-                                <Alert severity="info" className={classes.guideLine}>The Company and Warehouse values used for product rows in upload should already be added in the system before upload. Non exisiting values will result in a validation error.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The products must be present in the selected company & warehouse.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The Company, Warehouse & Product values must exist in the system before being used in bulk upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The provided product inventory levels must be present in the selected company & warehouse.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>Same order number must used to associate multiple products to the same dispatch order.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>A different order number should be used for each dispatch order. Same order numbers cannot be used across multiple dispatch orders.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload. (edited)</Alert>
                             </Grid>
                         </>
                 }
