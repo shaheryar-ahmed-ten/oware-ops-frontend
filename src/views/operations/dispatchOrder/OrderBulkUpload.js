@@ -186,6 +186,10 @@ function OrderBulkUpload() {
 
             count++
         }
+        // change shipmentDate into date object
+        for (let order of data.orders) {
+            order.shipmentDate = new Date(order.shipmentDate)
+        }
 
         let apiPromise = axios.post(getURL('dispatch-order/bulk'), data)
         apiPromise.then((res) => {
