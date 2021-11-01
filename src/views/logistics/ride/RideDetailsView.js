@@ -96,7 +96,6 @@ function RideDetailsView(props) {
   };
   const _getSelectedRide = async () => {
     axios.get(getURL(`ride/single/${uid}`)).then((res) => {
-      console.log(`res.data.data`, res.data.data);
       setSelectedRide(res.data.data);
       const { pickupLocation, dropoffLocation } = res.data.data;
       if (pickupLocation && pickupLocation.lat && dropoffLocation) {
