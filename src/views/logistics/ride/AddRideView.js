@@ -29,6 +29,13 @@ import { Map, GoogleApiWrapper } from "google-maps-react";
 import GoogleMap from "../../../components/GoogleMap.js";
 import MaskedInput from "react-text-mask";
 import clsx from 'clsx';
+import moment from "moment-timezone";
+// import * as React from 'react';
+// import TextField from '@mui/material/TextField';
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+// import LocalizationProvider from '@mui/lab/LocalizationProvider';
+// import TimePicker from '@mui/lab/TimePicker';
+// import Stack from '@mui/material/Stack';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -1037,11 +1044,11 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="eta"
-              label="ETA"
-              type="number"
+              label="ETA (hh:mm:ss)"
+              type="datetime"
               variant="outlined"
-              value={!!eta && eta}
-              onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              value={eta}
+              onChange={(e) => setETA(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, eta: true })}
             />
             {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
@@ -1079,12 +1086,12 @@ function AddRideView() {
               inputProps={{ className: classes.textBox }}
               margin="dense"
               id="completionTime"
-              label="Trip Completion Time"
-              placeholder="Trip Completion Time"
-              type="number"
+              label="Trip Completion Time (hh:mm:ss)"
+              // placeholder="Trip Completion Time (hh:mm:ss)"
+              type="datetime"
               variant="outlined"
-              value={!!completionTime && completionTime}
-              onChange={(e) => setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              value={completionTime}
+              onChange={(e) => setCompletionTime(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
             {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
