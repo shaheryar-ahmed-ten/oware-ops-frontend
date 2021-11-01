@@ -355,9 +355,11 @@ function OrderBulkUpload() {
                             <Grid item xs={12} alignItems="center" className={classes.guidelines}>
                                 <Alert severity="info" className={classes.guideLine}>Maximum of 1000 orders are allowed to be included for upload in a single file.</Alert>
                                 {/* <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert> */}
-                                <Alert severity="info" className={classes.guideLine}>The Company and Warehouse values used for product rows in upload should already be added in the system before upload. Non exisiting values will result in a validation error.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The products must be present in the selected company & warehouse.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The Company, Warehouse & Product values must exist in the system before being used in bulk upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The provided product inventory levels must be present in the selected company & warehouse.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>Same order number must used to associate multiple products to the same dispatch order.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>A different order number should be used for each dispatch order. Same order numbers cannot be used across multiple dispatch orders.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload. (edited)</Alert>
                             </Grid>
                         </>
                 }
