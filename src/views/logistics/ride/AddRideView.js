@@ -497,9 +497,19 @@ function AddRideView() {
       return false;
     }
 
-    const eirFile = checkEIRFile ? checkEIRFile : null;
-    setEIRImageSrc(eirFile);
-    setEIRImage(eirFile)
+    const readerEIR = new FileReader();
+    checkEIRFile && readerEIR.readAsDataURL(checkEIRFile);
+    readerEIR.addEventListener('load', event => {
+      const _loadedEIRImageUrl = event.target.result;
+      const imageEIR = document.createElement('img');
+      imageEIR.src = _loadedEIRImageUrl;
+      imageEIR.addEventListener('load', () => {
+        setEIRImageSrc(_loadedEIRImageUrl);
+        const eirFile = checkEIRFile ? checkEIRFile : null;
+        setEIRImage(eirFile)
+      });
+
+    })
   }
 
   const newBuiltyValidateLogoImage = (event) => {
@@ -518,9 +528,19 @@ function AddRideView() {
       return false;
     }
 
-    const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
-    setBuiltyImageSrc(builtyFile);
-    setBuiltyImage(builtyFile)
+    const readerBuilty = new FileReader();
+    checkBuiltyFile && readerBuilty.readAsDataURL(checkBuiltyFile);
+    readerBuilty.addEventListener('load', event => {
+      const _loadedBuiltyImageUrl = event.target.result;
+      const imageBuilty = document.createElement('img');
+      imageBuilty.src = _loadedBuiltyImageUrl;
+      imageBuilty.addEventListener('load', () => {
+        setBuiltyImageSrc(_loadedBuiltyImageUrl);
+        const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
+        setBuiltyImage(builtyFile)
+      });
+
+    })
   }
   return (
     <>
@@ -1288,6 +1308,49 @@ function AddRideView() {
               </Table>
             </TableContainer>
           </Grid>
+
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={12}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button
+                  variant="contained"
+                  component="label"
+                  color={(selectedRide && selectedRide.manifestId) || manifestImage ? "primary" : "default"}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Product Manifest {(selectedRide && selectedRide.manifestId) || manifestImage ? "Uploaded" : ""}
+                  <input
+                    type="file"
+                    hidden
+                    value={(e) => e.target.value + 3}
+                    onChange={(e) => {
+                      newManifestValidateLogoImage(e)
+                    }}
+                    accept=".jpg,.png,.jpeg"
+                  />
+                </Button>
+                {(manifestSize == true) ? <Typography color="error">Manifest  size should be less than 1 MB</Typography> : ''}
+                {(manifestType == true) ? <Typography color="error">Manifest image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+              </FormControl>
+              <Grid style={{ textAlign: 'center' }}>
+
+                {!manifestImageSrc ? '' :
+                  <Grid item xs={12} style={{ marginLeft: 380 }}>
+                    <DeleteSharpIcon
+                      onClick={() => removePreviewId()}
+                    />
+                  </Grid>
+                }
+
+                {
+                  manifestImageSrc ?
+                    <img id="previewImage" src={manifestImageSrc} /> :
+                    null
+                }
+              </Grid>
+            </Grid>
+          </Grid>
+          
           {/* Builty EIR Addition Starts */}
 
           <Grid container item xs={12} spacing={3}>
@@ -1383,47 +1446,6 @@ function AddRideView() {
 
           {/* Builty EIR Ends  */}
 
-          <Grid container item xs={12} spacing={3}>
-            <Grid item sm={12}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button
-                  variant="contained"
-                  component="label"
-                  color={(selectedRide && selectedRide.manifestId) || manifestImage ? "primary" : "default"}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Product Manifest {(selectedRide && selectedRide.manifestId) || manifestImage ? "Uploaded" : ""}
-                  <input
-                    type="file"
-                    hidden
-                    value={(e) => e.target.value + 3}
-                    onChange={(e) => {
-                      newManifestValidateLogoImage(e)
-                    }}
-                    accept=".jpg,.png,.jpeg"
-                  />
-                </Button>
-                {(manifestSize == true) ? <Typography color="error">Manifest  size should be less than 1 MB</Typography> : ''}
-                {(manifestType == true) ? <Typography color="error">Manifest image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-              </FormControl>
-              <Grid style={{ textAlign: 'center' }}>
-
-                {!manifestImageSrc ? '' :
-                  <Grid item xs={12} style={{ marginLeft: 380 }}>
-                    <DeleteSharpIcon
-                      onClick={() => removePreviewId()}
-                    />
-                  </Grid>
-                }
-
-                {
-                  manifestImageSrc ?
-                    <img id="previewImage" src={manifestImageSrc} /> :
-                    null
-                }
-              </Grid>
-            </Grid>
-          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
