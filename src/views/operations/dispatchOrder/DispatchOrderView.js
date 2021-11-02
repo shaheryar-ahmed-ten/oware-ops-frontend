@@ -114,11 +114,11 @@ export default function DispatchOrderView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.internalIdForBusiness}`}>
-          <Typography>
-            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
-          </Typography>
-        </Tooltip>
-          )
+            <Typography>
+              {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+            </Typography>
+          </Tooltip>
+        )
       }
     },
     {
@@ -129,11 +129,11 @@ export default function DispatchOrderView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.Inventory.Company.name}`} >
-          <Typography>
-            {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
-          </Typography>
-        </Tooltip>
-          )
+            <Typography>
+              {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
+            </Typography>
+          </Tooltip>
+        )
       }
     },
     {
@@ -150,19 +150,13 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => entity.Inventories.length,
     },
-    ,
     // {
-    //   id: 'receiverName',
-    //   label: 'RECEIVER NAME',
-    //   minWidth: 'auto',
-    //   className: '',
+    //   id: "creator",
+    //   label: "CREATOR NAME",
+    //   minWidth: "auto",
+    //   className: "",
+    //   format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
     // },
-    // {
-    //   id: 'receiverPhone',
-    //   label: 'RECEIVER PHONE',
-    //   minWidth: 'auto',
-    //   className: '',
-    // }
     {
       id: "shipmentDate",
       label: "SHIPMENT DATE",
@@ -178,12 +172,12 @@ export default function DispatchOrderView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.referenceId}`}>
-          <Typography>
+            <Typography>
 
-            {entity.referenceId && entity.referenceId.length > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId || ''}
-          </Typography>
-        </Tooltip>
-          )
+              {entity.referenceId && entity.referenceId.length > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId || ''}
+            </Typography>
+          </Tooltip>
+        )
       }
     },
     {
@@ -417,7 +411,7 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton,deleteDispatchOrderModal,];
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>
