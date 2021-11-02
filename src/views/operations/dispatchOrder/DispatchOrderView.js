@@ -150,13 +150,13 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => entity.Inventories.length,
     },
-    // {
-    //   id: "creator",
-    //   label: "CREATOR NAME",
-    //   minWidth: "auto",
-    //   className: "",
-    //   format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
-    // },
+    {
+      id: "creator",
+      label: "CREATOR NAME",
+      minWidth: "auto",
+      className: "",
+      format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
+    },
     {
       id: "shipmentDate",
       label: "SHIPMENT DATE",
