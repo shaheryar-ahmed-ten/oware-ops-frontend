@@ -375,7 +375,7 @@ function OrderBulkUpload() {
                                 <Alert severity="info" className={classes.guideLine}>The provided product inventory levels must be present in the selected company & warehouse.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>Same order number must used to associate multiple products to the same dispatch order.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>A different order number should be used for each dispatch order. Same order numbers cannot be used across multiple dispatch orders.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload. (edited)</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload.</Alert>
                             </Grid>
                         </>
                 }
