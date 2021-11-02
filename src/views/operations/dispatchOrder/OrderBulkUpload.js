@@ -221,31 +221,31 @@ function OrderBulkUpload() {
             if (!order['company']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Company is not provided.`
+                    message: `Row ${count} : Company cannot be empty.`
                 }]
             }
             if (!order['orderNumber']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Order number is not provided.`
+                    message: `Row ${count} : Order number cannot be empty.`
                 }]
             }
             if (!order['warehouse']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Warehouse is not provided.`
+                    message: `Row ${count} : Warehouse cannot be empty.`
                 }]
             }
             if (!order['receiverName']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Receiver name is not provided.`
+                    message: `Row ${count} : Receiver name cannot be empty.`
                 }]
             }
             if (!order['receiverPhone']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : phone number is not provided.`
+                    message: `Row ${count} : phone number cannot be empty.`
                 }]
             }
             if (order['receiverPhone'] && !isPhone(`0${order['receiverPhone']}`)) {
@@ -257,7 +257,7 @@ function OrderBulkUpload() {
             if (!order['shipmentDate']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Shipment date is not provided.`
+                    message: `Row ${count} : Shipment date cannot be empty.`
                 }]
             }
             if (order['shipmentDate'] && (!order['shipmentDate'].includes("PM") && !order['shipmentDate'].includes("AM"))) {
@@ -269,19 +269,19 @@ function OrderBulkUpload() {
             if (!order['referenceId']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : ReferenceId is not provided.`
+                    message: `Row ${count} : ReferenceId cannot be empty.`
                 }]
             }
             if (!order['product']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Product is not provided.`
+                    message: `Row ${count} : Product cannot be empty.`
                 }]
             }
             if (!order['quantity']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Quantity is not provided.`
+                    message: `Row ${count} : Quantity cannot be empty.`
                 }]
             }
             if (order['quantity'] && Number.isInteger(order['quantity']) && order['quantity'] > 0) {
