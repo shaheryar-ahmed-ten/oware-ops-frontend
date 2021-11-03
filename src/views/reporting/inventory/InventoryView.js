@@ -157,6 +157,7 @@ export default function InventoryView() {
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
   const [reRender, setReRender] = useState(false)
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
 
   const _getInventories = (page, searchKeyword) => {
     axios.get(getURL('inventory'), { params: { page, search: searchKeyword } })
@@ -218,6 +219,8 @@ export default function InventoryView() {
           <CalendarTodayOutlinedIcon fontSize="small" />
         </InputAdornment>
       }
+      onOpen={() => setTrackDateFilterOpen(true)}
+      onClose={() => setTrackDateFilterOpen(false)}
     >
       <MenuItem value={null} disabled>
         <span className={classes.dropdownListItem}>Select Days</span>
@@ -232,7 +235,7 @@ export default function InventoryView() {
         })
       }
       <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
-        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
       </MenuItem>
     </Select>
   </FormControl>
