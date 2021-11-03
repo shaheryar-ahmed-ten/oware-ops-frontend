@@ -30,12 +30,7 @@ import GoogleMap from "../../../components/GoogleMap.js";
 import MaskedInput from "react-text-mask";
 import clsx from 'clsx';
 import moment from "moment-timezone";
-// import * as React from 'react';
-// import TextField from '@mui/material/TextField';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import TimePicker from '@mui/lab/TimePicker';
-// import Stack from '@mui/material/Stack';
+import DurationInput from "../../../components/DurationInput";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -169,6 +164,7 @@ function AddRideView() {
   const [vehicleType, setVehicleType] = useState([]);
   const [pickUp, setPickUp] = useState({});
   const [dropOff, setDropOff] = useState({});
+  const [duration, setDuration] = useState(0);
 
   const phoneNumberMask = [
     /[0-9]/,
@@ -241,15 +237,15 @@ function AddRideView() {
       setActive(!!selectedRide.isActive);
       setPrice(selectedRide.price || "");
       setCost(selectedRide.cost || "");
-      setCustomerDiscount(selectedRide.customerDiscount || "");
-      setDriverIncentive(selectedRide.driverIncentive || "");
+      setCustomerDiscount(selectedRide.customerDiscount || null);
+      setDriverIncentive(selectedRide.driverIncentive || null);
       setMemo(selectedRide.memo || "");
       setWeightCargo(selectedRide.weightCargo || "");
       setPOCName(selectedRide.pocName || "");
       setPOCNumber(selectedRide.pocNumber || "");
-      setETA(selectedRide.eta || "");
-      setCompletionTime(selectedRide.completionTime || "");
-      setCurrentLocation(selectedRide.currentLocation || "");
+      setETA(Math.floor(selectedRide.eta % (3600 * 24) / 3600) || null);
+      setCompletionTime(Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) || null);
+      setCurrentLocation(selectedRide.currentLocation || null);
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
       selectedRide && selectedRide.builtyId ? setBuiltyImageSrc(getURL('preview', selectedRide.builtyId)) : setBuiltyImageSrc(null);
@@ -346,8 +342,8 @@ function AddRideView() {
       weightCargo,
       pocName,
       pocNumber: strPocNumber,
-      eta,
-      completionTime,
+      eta:selectedRide && selectedRide.eta ? Math.floor(selectedRide.eta % (3600 * 24) / 3600) :eta*3600,
+      completionTime:selectedRide && selectedRide.completionTime ? Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) :completionTime*3600,
       isActive,
       dropoffCityId,
       pickupCityId,
@@ -1063,18 +1059,26 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="eta"
-              label="ETA (hh:mm:ss)"
-              type="datetime"
+              label="ETA (hours)"
+              type="number"
               variant="outlined"
-              value={eta}
-              onChange={(e) => setETA(e.target.value)}
+              value={!!eta && eta}
+              onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, eta: true })}
             />
+            {/* <DurationInput
+            setDuration={setDuration}
+            setETA={setETA}
+            duration={duration}
+            label="ETA"
+            selectedRide={selectedRide?selectedRide.eta:null}
+            /> */}
             {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
               <Typography color="error">ETA is required!</Typography>
             ) : (
               ""
             )}
+            {/* {console.log(duration,eta)} */}
           </Grid>
 
           <Grid item sm={6}>
@@ -1105,12 +1109,16 @@ function AddRideView() {
               inputProps={{ className: classes.textBox }}
               margin="dense"
               id="completionTime"
-              label="Trip Completion Time (hh:mm:ss)"
+              label="Trip Completion Time (hours)"
               // placeholder="Trip Completion Time (hh:mm:ss)"
-              type="datetime"
+              type="number"
               variant="outlined"
-              value={completionTime}
-              onChange={(e) => setCompletionTime(e.target.value)}
+              value={!!completionTime && completionTime}
+              onChange={e => {
+                // const regex = /^[0-9]*$/
+                // if (regex.test(e.target.value)) 
+                { setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value) }
+              }}
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
             {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
@@ -1142,7 +1150,7 @@ function AddRideView() {
             )}
 
           </Grid>
-
+          
           <Grid item sm={12}>
             <TextField
               multiline
@@ -1268,9 +1276,9 @@ function AddRideView() {
                     <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
                       Quantity
                     </TableCell>
-                    <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
+                    {/* <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
                       Manifest
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
@@ -1285,7 +1293,7 @@ function AddRideView() {
                         </TableCell>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>{product.quantity}</TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {product.manifestId && product.Manifest ? (
                             <a target="_blank" href={getURL("preview", product.manifestId)}>
                               {product.Manifest.originalName}
@@ -1293,7 +1301,7 @@ function AddRideView() {
                           ) : (
                             ""
                           )}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <DeleteIcon
                             color="error"
@@ -1350,7 +1358,7 @@ function AddRideView() {
               </Grid>
             </Grid>
           </Grid>
-          
+
           {/* Builty EIR Addition Starts */}
 
           <Grid container item xs={12} spacing={3}>

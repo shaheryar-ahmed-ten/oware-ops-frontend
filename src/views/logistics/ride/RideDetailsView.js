@@ -350,13 +350,13 @@ function RideDetailsView(props) {
                 ETA:
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.eta || "-"}
+                {Math.floor(selectedRide.eta % (3600 * 24) / 3600) || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Trip Completion Time:
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.completionTime || "-"}
+                {Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Current Location:
@@ -564,8 +564,8 @@ function RideDetailsView(props) {
               <TableRow className={classes.tableRow} className={classes.tableRow}>
                 <TableCell>{selectedRide.pocName || "-"}</TableCell>
                 <TableCell>{selectedRide.pocNumber || "-"}</TableCell>
-                <TableCell>{selectedRide.eta || "-"}</TableCell>
-                <TableCell>{selectedRide.completionTime || "-"}</TableCell>
+                <TableCell>{Math.floor(selectedRide.eta % (3600 * 24) / 3600) || "-"}</TableCell>
+                <TableCell>{Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) || "-"}</TableCell>
                 <TableCell>{selectedRide.currentLocation || "-"}</TableCell>
                 <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
                
