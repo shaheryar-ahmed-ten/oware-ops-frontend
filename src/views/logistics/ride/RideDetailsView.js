@@ -347,13 +347,13 @@ function RideDetailsView(props) {
                 {selectedRide.pocNumber || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                ETA(MINUTES):
+                ETA(Minutes):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {Math.floor(selectedRide.eta  % 3600 / 60) || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Trip Completion Time(MINUTES):
+                Trip Completion Time(Minutes):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {Math.floor(selectedRide.completionTime  % 3600 / 60) || "-"}
@@ -365,7 +365,7 @@ function RideDetailsView(props) {
                 {selectedRide.currentLocation || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Weight of Cargo(KG):
+                Weight of Cargo(Kg):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.weightCargo || "-"}
