@@ -122,18 +122,18 @@ export default function ProductOutwardView() {
       format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name,
     },
     {
-      id: "creator",
-      label: "CREATOR NAME",
-      minWidth: "auto",
-      className: "",
-      format: (value, entity) => `${entity.User.firstName || ""} ${entity.User.lastName || ""}`,
-    },
-    {
       id: "products",
       label: "NO. OF PRODUCTS",
       minWidth: "auto",
       className: "",
       format: (value, entity) => entity.DispatchOrder.Inventories.length,
+    },
+    {
+      id: "creator",
+      label: "CREATOR",
+      minWidth: "auto",
+      className: "",
+      format: (value, entity) => `${entity.User.firstName || ""} ${entity.User.lastName || ""}`,
     },
     {
       id: "DispatchOrder.quantity",
@@ -361,7 +361,7 @@ export default function ProductOutwardView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
+          // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
