@@ -243,8 +243,9 @@ function AddRideView() {
       setWeightCargo(selectedRide.weightCargo || "");
       setPOCName(selectedRide.pocName || "");
       setPOCNumber(selectedRide.pocNumber || "");
-      setETA(Math.floor(selectedRide.eta % (3600 * 24) / 3600) || null);
-      setCompletionTime(Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) || null);
+      
+      selectedRide && selectedRide.eta ? setETA(Math.floor(selectedRide.eta  % 3600 / 60)) : setETA(null);
+      selectedRide && selectedRide.completionTime ? setCompletionTime(Math.floor(selectedRide.completionTime  % 3600 / 60)) : setCompletionTime(null);
       setCurrentLocation(selectedRide.currentLocation || null);
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
@@ -342,8 +343,8 @@ function AddRideView() {
       weightCargo,
       pocName,
       pocNumber: strPocNumber,
-      eta:selectedRide && selectedRide.eta ? Math.floor(selectedRide.eta % (3600 * 24) / 3600) :eta*3600,
-      completionTime:selectedRide && selectedRide.completionTime ? Math.floor(selectedRide.completionTime % (3600 * 24) / 3600) :completionTime*3600,
+      eta: eta*60,
+      completionTime: completionTime*60,
       isActive,
       dropoffCityId,
       pickupCityId,
@@ -354,7 +355,7 @@ function AddRideView() {
       currentLocation,
 
     };
-
+    
     setValidation({
       status: true,
       customerId: true,
@@ -1059,26 +1060,19 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="eta"
-              label="ETA (hours)"
+              label="ETA (minutes)"
               type="number"
               variant="outlined"
               value={!!eta && eta}
               onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
               onBlur={(e) => setValidation({ ...validation, eta: true })}
             />
-            {/* <DurationInput
-            setDuration={setDuration}
-            setETA={setETA}
-            duration={duration}
-            label="ETA"
-            selectedRide={selectedRide?selectedRide.eta:null}
-            /> */}
             {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
               <Typography color="error">ETA is required!</Typography>
             ) : (
               ""
             )}
-            {/* {console.log(duration,eta)} */}
+           
           </Grid>
 
           <Grid item sm={6}>
@@ -1109,16 +1103,12 @@ function AddRideView() {
               inputProps={{ className: classes.textBox }}
               margin="dense"
               id="completionTime"
-              label="Trip Completion Time (hours)"
+              label="Trip Completion Time (minutes)"
               // placeholder="Trip Completion Time (hh:mm:ss)"
               type="number"
               variant="outlined"
               value={!!completionTime && completionTime}
-              onChange={e => {
-                // const regex = /^[0-9]*$/
-                // if (regex.test(e.target.value)) 
-                { setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value) }
-              }}
+              onChange={e => {setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)} }
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
             {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
