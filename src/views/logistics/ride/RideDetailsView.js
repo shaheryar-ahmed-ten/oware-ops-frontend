@@ -335,13 +335,6 @@ function RideDetailsView(props) {
             </Grid>
             <Grid container spacing={2}>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Weight of Cargo(KG):
-              </Grid>
-              <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.weightCargo || "-"}
-              </Grid>
-             
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
                 POC Name:
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
@@ -353,18 +346,18 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.pocNumber || "-"}
               </Grid>
-             
-
-          
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Trip Completion Time:
+                ETA(Minutes):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.completionTime || "-"}
+                {Math.floor(selectedRide.eta  % 3600 / 60) || "-"}
               </Grid>
-            
-
-             
+              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                Trip Completion Time(Minutes):
+              </Grid>
+              <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                {Math.floor(selectedRide.completionTime  % 3600 / 60) || "-"}
+              </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Current Location:
               </Grid>
@@ -372,10 +365,10 @@ function RideDetailsView(props) {
                 {selectedRide.currentLocation || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                ETA:
+                Weight of Cargo(Kg):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.eta || "-"}
+                {selectedRide.weightCargo || "-"}
               </Grid>
           
             </Grid>
@@ -495,12 +488,12 @@ function RideDetailsView(props) {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>{selectedRide.pickupCity.name}</TableCell>
-                <TableCell>{selectedRide.pickupAddress}</TableCell>
-                <TableCell>{selectedRide.dropoffCity.name}</TableCell>
-                <TableCell>{selectedRide.pickupAddress}</TableCell>
-                <TableCell>{dateFormat(selectedRide.pickupDate)}</TableCell>
-                <TableCell>{dateFormat(selectedRide.dropoffDate)}</TableCell>
+                <TableCell>{selectedRide.pickupCity.name || "-"}</TableCell>
+                <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
+                <TableCell>{selectedRide.dropoffCity.name || "-"}</TableCell>
+                <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
+                <TableCell>{dateFormat(selectedRide.pickupDate) || "-"}</TableCell>
+                <TableCell>{dateFormat(selectedRide.dropoffDate) || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -559,22 +552,23 @@ function RideDetailsView(props) {
         <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
                 <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
                 <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
-                <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME</TableCell>
+                <TableCell className={classes.tableHeadText}>ETA(MINUTES)</TableCell>
+                <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME(MINUTES)</TableCell>
                <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
-               <TableCell className={classes.tableHeadText}>ETA</TableCell>
+               <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
                 <TableCell>{selectedRide.pocName || "-"}</TableCell>
                 <TableCell>{selectedRide.pocNumber || "-"}</TableCell>
-                <TableCell>{selectedRide.completionTime || "-"}</TableCell>
+                <TableCell>{Math.floor(selectedRide.eta  % 3600 / 60) || "-"}</TableCell>
+                <TableCell>{Math.floor(selectedRide.completionTime  % 3600 / 60) || "-"}</TableCell>
                 <TableCell>{selectedRide.currentLocation || "-"}</TableCell>
-                <TableCell>{selectedRide.eta || "-"}</TableCell>
+                <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
+               
               </TableRow>
             </TableBody>
           </Table>
@@ -589,7 +583,7 @@ function RideDetailsView(props) {
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedRide.memo}</TableCell>
+                <TableCell>{selectedRide.memo || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
