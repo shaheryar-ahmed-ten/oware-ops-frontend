@@ -244,8 +244,8 @@ function AddRideView() {
       setPOCName(selectedRide.pocName || "");
       setPOCNumber(selectedRide.pocNumber || "");
       
-      selectedRide && selectedRide.eta ? setETA(Math.floor(selectedRide.eta  % 3600 / 60)) : setETA(null);
-      selectedRide && selectedRide.completionTime ? setCompletionTime(Math.floor(selectedRide.completionTime  % 3600 / 60)) : setCompletionTime(null);
+      selectedRide && selectedRide.eta ? setETA(Math.floor(selectedRide.eta  / 60)) : setETA(null);
+      selectedRide && selectedRide.completionTime ? setCompletionTime(Math.floor(selectedRide.completionTime  / 60)) : setCompletionTime(null);
       setCurrentLocation(selectedRide.currentLocation || null);
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
