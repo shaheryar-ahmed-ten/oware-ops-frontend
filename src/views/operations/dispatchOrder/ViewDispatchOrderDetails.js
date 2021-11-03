@@ -248,10 +248,10 @@ function ViewDispatchOrderDetails() {
                   className={classes.tableHeadText}>CITY
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>CREATOR
+                  className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>NO. OF PRODUCTS
+                  className={classes.tableHeadText}>CREATOR
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>REFERENCE ID
@@ -285,10 +285,10 @@ function ViewDispatchOrderDetails() {
                   {selectedDispatchOrder.Inventory.Warehouse.city}
                 </TableCell>
                 <TableCell>
-                  {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
+                  {selectedDispatchOrder.Inventories.length}
                 </TableCell>
                 <TableCell>
-                  {selectedDispatchOrder.Inventories.length}
+                  {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
                 </TableCell>
                 <TableCell>
                   {selectedDispatchOrder.referenceId}

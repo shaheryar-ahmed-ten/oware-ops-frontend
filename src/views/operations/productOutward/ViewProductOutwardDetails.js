@@ -312,10 +312,10 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>CITY
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>CREATOR
+                  className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>NO. OF PRODUCTS
+                  className={classes.tableHeadText}>CREATOR
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>VEHICLE NUMBER
@@ -343,10 +343,10 @@ function ViewProductOutwardDetails() {
                   {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
                 </TableCell>
                 <TableCell>
-                  {`${selectedProductOutward.User.firstName || ''} ${selectedProductOutward.User.lastName || ''}`}
+                  {selectedProductOutward.DispatchOrder.Inventories.length}
                 </TableCell>
                 <TableCell>
-                  {selectedProductOutward.DispatchOrder.Inventories.length}
+                  {`${selectedProductOutward.User.firstName || ''} ${selectedProductOutward.User.lastName || ''}`}
                 </TableCell>
                 <TableCell>
                   {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || '-' : '-'}
