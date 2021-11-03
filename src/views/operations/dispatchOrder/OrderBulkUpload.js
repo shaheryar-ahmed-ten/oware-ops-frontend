@@ -221,31 +221,31 @@ function OrderBulkUpload() {
             if (!order['company']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Company is not provided.`
+                    message: `Row ${count} : Company cannot be empty.`
                 }]
             }
             if (!order['orderNumber']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Order number is not provided.`
+                    message: `Row ${count} : Order number cannot be empty.`
                 }]
             }
             if (!order['warehouse']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Warehouse is not provided.`
+                    message: `Row ${count} : Warehouse cannot be empty.`
                 }]
             }
             if (!order['receiverName']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Receiver name is not provided.`
+                    message: `Row ${count} : Receiver name cannot be empty.`
                 }]
             }
             if (!order['receiverPhone']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : phone number is not provided.`
+                    message: `Row ${count} : phone number cannot be empty.`
                 }]
             }
             if (order['receiverPhone'] && !isPhone(`0${order['receiverPhone']}`)) {
@@ -257,7 +257,7 @@ function OrderBulkUpload() {
             if (!order['shipmentDate']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Shipment date is not provided.`
+                    message: `Row ${count} : Shipment date cannot be empty.`
                 }]
             }
             if (order['shipmentDate'] && (!order['shipmentDate'].includes("PM") && !order['shipmentDate'].includes("AM"))) {
@@ -269,19 +269,19 @@ function OrderBulkUpload() {
             if (!order['referenceId']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : ReferenceId is not provided.`
+                    message: `Row ${count} : ReferenceId cannot be empty.`
                 }]
             }
             if (!order['product']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Product is not provided.`
+                    message: `Row ${count} : Product cannot be empty.`
                 }]
             }
             if (!order['quantity']) {
                 sanitizationArray = [...sanitizationArray, {
                     row: count,
-                    message: `Row ${count} : Quantity is not provided.`
+                    message: `Row ${count} : Quantity cannot be empty.`
                 }]
             }
             if (order['quantity'] && Number.isInteger(order['quantity']) && order['quantity'] > 0) {
@@ -375,7 +375,7 @@ function OrderBulkUpload() {
                                 <Alert severity="info" className={classes.guideLine}>The provided product inventory levels must be present in the selected company & warehouse.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>Same order number must used to associate multiple products to the same dispatch order.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>A different order number should be used for each dispatch order. Same order numbers cannot be used across multiple dispatch orders.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload. (edited)</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample values for order rows which must be replaced with actual values before upload.</Alert>
                             </Grid>
                         </>
                 }

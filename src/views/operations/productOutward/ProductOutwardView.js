@@ -71,11 +71,11 @@ export default function ProductOutwardView() {
     className: '',
     format: (value, entity) => {
       return (
-      <Tooltip title={`${entity.internalIdForBusiness}`}>
-      <Typography>
-        {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
-      </Typography>
-    </Tooltip>
+        <Tooltip title={`${entity.internalIdForBusiness}`}>
+          <Typography>
+            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+          </Typography>
+        </Tooltip>
       )
     }
   },
@@ -87,11 +87,11 @@ export default function ProductOutwardView() {
     format: (value, entity) => {
       return (
         <Tooltip title={`${entity.DispatchOrder.internalIdForBusiness}`}>
-        <Typography>
-          {entity.DispatchOrder.internalIdForBusiness.length > 20 ? `${entity.DispatchOrder.internalIdForBusiness.substring(0, 20)}...` : entity.DispatchOrder.internalIdForBusiness}
-        </Typography>
-      </Tooltip>
-        )
+          <Typography>
+            {entity.DispatchOrder.internalIdForBusiness.length > 20 ? `${entity.DispatchOrder.internalIdForBusiness.substring(0, 20)}...` : entity.DispatchOrder.internalIdForBusiness}
+          </Typography>
+        </Tooltip>
+      )
     }
   },
   {
@@ -99,17 +99,15 @@ export default function ProductOutwardView() {
     label: 'COMPANY',
     minWidth: 'auto',
     className: '',
-    format: (value, entity) =>{
+    format: (value, entity) => {
       return (
         <Tooltip title={`${entity.DispatchOrder.Inventory.Company.name}`}>
-        <Typography>
-          {entity.DispatchOrder.Inventory.Company.name.length > 20 ? `${entity.DispatchOrder.Inventory.Company.name.substring(0, 20)}...` : entity.DispatchOrder.Inventory.Company.name}
-        </Typography>
-      </Tooltip>
-        )
+          <Typography>
+            {entity.DispatchOrder.Inventory.Company.name.length > 20 ? `${entity.DispatchOrder.Inventory.Company.name.substring(0, 20)}...` : entity.DispatchOrder.Inventory.Company.name}
+          </Typography>
+        </Tooltip>
+      )
     }
-    // format: (value, entity, inventory) => inventory.Company.name
-    
   },
   {
     id: 'Inventory.Warehouse.name',
@@ -117,38 +115,14 @@ export default function ProductOutwardView() {
     minWidth: 'auto',
     className: '',
     format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name
-    // format: (value, entity, inventory) => inventory.Warehouse.name
   },
-  //  {
-  //   id: 'Inventory.Product.UOM.name',
-  //   label: 'UOM',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.DispatchOrder.Inventory.Product.UOM.name
-  //   // format: (value, entity, inventory) => inventory.Product.UOM.name
-  // },
-  // {
-  //   id: 'DispatchOrder.receiverName',
-  //   label: 'RECEIVER NAME',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.DispatchOrder.receiverName
-  // },
-  // {
-  //   id: 'DispatchOrder.receiverPhone',
-  //   label: 'RECEIVER PHONE',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.DispatchOrder.receiverPhone
-  // },
-  
-  // {
-  //   id: 'city',
-  //   label: 'CITY',
-  //   minWidth: 'auto',
-  //   className: '',
-  //   format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.city
-  // },
+  {
+    id: "creator",
+    label: "CREATOR NAME",
+    minWidth: "auto",
+    className: "",
+    format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
+  },
   {
     id: 'products',
     label: 'NO. OF PRODUCTS',
