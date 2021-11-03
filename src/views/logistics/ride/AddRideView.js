@@ -29,6 +29,8 @@ import { Map, GoogleApiWrapper } from "google-maps-react";
 import GoogleMap from "../../../components/GoogleMap.js";
 import MaskedInput from "react-text-mask";
 import clsx from 'clsx';
+import moment from "moment-timezone";
+import DurationInput from "../../../components/DurationInput";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -162,6 +164,7 @@ function AddRideView() {
   const [vehicleType, setVehicleType] = useState([]);
   const [pickUp, setPickUp] = useState({});
   const [dropOff, setDropOff] = useState({});
+  const [duration, setDuration] = useState(0);
 
   const phoneNumberMask = [
     /[0-9]/,
@@ -234,15 +237,16 @@ function AddRideView() {
       setActive(!!selectedRide.isActive);
       setPrice(selectedRide.price || "");
       setCost(selectedRide.cost || "");
-      setCustomerDiscount(selectedRide.customerDiscount || "");
-      setDriverIncentive(selectedRide.driverIncentive || "");
+      setCustomerDiscount(selectedRide.customerDiscount || null);
+      setDriverIncentive(selectedRide.driverIncentive || null);
       setMemo(selectedRide.memo || "");
       setWeightCargo(selectedRide.weightCargo || "");
       setPOCName(selectedRide.pocName || "");
       setPOCNumber(selectedRide.pocNumber || "");
-      setETA(selectedRide.eta || "");
-      setCompletionTime(selectedRide.completionTime || "");
-      setCurrentLocation(selectedRide.currentLocation || "");
+      
+      selectedRide && selectedRide.eta ? setETA(Math.floor(selectedRide.eta  % 3600 / 60)) : setETA(null);
+      selectedRide && selectedRide.completionTime ? setCompletionTime(Math.floor(selectedRide.completionTime  % 3600 / 60)) : setCompletionTime(null);
+      setCurrentLocation(selectedRide.currentLocation || null);
       selectedRide && selectedRide.manifestId ? setManifestImageSrc(getURL('preview', selectedRide.manifestId)) : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId ? setEIRImageSrc(getURL('preview', selectedRide.eirId)) : setEIRImageSrc(null);
       selectedRide && selectedRide.builtyId ? setBuiltyImageSrc(getURL('preview', selectedRide.builtyId)) : setBuiltyImageSrc(null);
@@ -339,8 +343,8 @@ function AddRideView() {
       weightCargo,
       pocName,
       pocNumber: strPocNumber,
-      eta,
-      completionTime,
+      eta: eta*60,
+      completionTime: completionTime*60,
       isActive,
       dropoffCityId,
       pickupCityId,
@@ -351,7 +355,7 @@ function AddRideView() {
       currentLocation,
 
     };
-
+    
     setValidation({
       status: true,
       customerId: true,
@@ -490,9 +494,19 @@ function AddRideView() {
       return false;
     }
 
-    const eirFile = checkEIRFile ? checkEIRFile : null;
-    setEIRImageSrc(eirFile);
-    setEIRImage(eirFile)
+    const readerEIR = new FileReader();
+    checkEIRFile && readerEIR.readAsDataURL(checkEIRFile);
+    readerEIR.addEventListener('load', event => {
+      const _loadedEIRImageUrl = event.target.result;
+      const imageEIR = document.createElement('img');
+      imageEIR.src = _loadedEIRImageUrl;
+      imageEIR.addEventListener('load', () => {
+        setEIRImageSrc(_loadedEIRImageUrl);
+        const eirFile = checkEIRFile ? checkEIRFile : null;
+        setEIRImage(eirFile)
+      });
+
+    })
   }
 
   const newBuiltyValidateLogoImage = (event) => {
@@ -511,9 +525,19 @@ function AddRideView() {
       return false;
     }
 
-    const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
-    setBuiltyImageSrc(builtyFile);
-    setBuiltyImage(builtyFile)
+    const readerBuilty = new FileReader();
+    checkBuiltyFile && readerBuilty.readAsDataURL(checkBuiltyFile);
+    readerBuilty.addEventListener('load', event => {
+      const _loadedBuiltyImageUrl = event.target.result;
+      const imageBuilty = document.createElement('img');
+      imageBuilty.src = _loadedBuiltyImageUrl;
+      imageBuilty.addEventListener('load', () => {
+        setBuiltyImageSrc(_loadedBuiltyImageUrl);
+        const builtyFile = checkBuiltyFile ? checkBuiltyFile : null;
+        setBuiltyImage(builtyFile)
+      });
+
+    })
   }
   return (
     <>
@@ -1036,7 +1060,7 @@ function AddRideView() {
               fullWidth={true}
               margin="dense"
               id="eta"
-              label="ETA"
+              label="ETA (minutes)"
               type="number"
               variant="outlined"
               value={!!eta && eta}
@@ -1048,6 +1072,7 @@ function AddRideView() {
             ) : (
               ""
             )}
+           
           </Grid>
 
           <Grid item sm={6}>
@@ -1078,12 +1103,12 @@ function AddRideView() {
               inputProps={{ className: classes.textBox }}
               margin="dense"
               id="completionTime"
-              label="Trip Completion Time"
-              placeholder="Trip Completion Time"
+              label="Trip Completion Time (minutes)"
+              // placeholder="Trip Completion Time (hh:mm:ss)"
               type="number"
               variant="outlined"
               value={!!completionTime && completionTime}
-              onChange={(e) => setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+              onChange={e => {setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)} }
               onBlur={(e) => setValidation({ ...validation, completionTime: true })}
             />
             {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
@@ -1115,7 +1140,7 @@ function AddRideView() {
             )}
 
           </Grid>
-
+          
           <Grid item sm={12}>
             <TextField
               multiline
@@ -1241,9 +1266,9 @@ function AddRideView() {
                     <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
                       Quantity
                     </TableCell>
-                    <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
+                    {/* <TableCell style={{ background: "transparent", fontWeight: "bolder", fontSize: "12px" }}>
                       Manifest
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
@@ -1258,7 +1283,7 @@ function AddRideView() {
                         </TableCell>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>{product.quantity}</TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {product.manifestId && product.Manifest ? (
                             <a target="_blank" href={getURL("preview", product.manifestId)}>
                               {product.Manifest.originalName}
@@ -1266,7 +1291,7 @@ function AddRideView() {
                           ) : (
                             ""
                           )}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <DeleteIcon
                             color="error"
@@ -1281,6 +1306,49 @@ function AddRideView() {
               </Table>
             </TableContainer>
           </Grid>
+
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={12}>
+              <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <Button
+                  variant="contained"
+                  component="label"
+                  color={(selectedRide && selectedRide.manifestId) || manifestImage ? "primary" : "default"}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Product Manifest {(selectedRide && selectedRide.manifestId) || manifestImage ? "Uploaded" : ""}
+                  <input
+                    type="file"
+                    hidden
+                    value={(e) => e.target.value + 3}
+                    onChange={(e) => {
+                      newManifestValidateLogoImage(e)
+                    }}
+                    accept=".jpg,.png,.jpeg"
+                  />
+                </Button>
+                {(manifestSize == true) ? <Typography color="error">Manifest  size should be less than 1 MB</Typography> : ''}
+                {(manifestType == true) ? <Typography color="error">Manifest image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
+              </FormControl>
+              <Grid style={{ textAlign: 'center' }}>
+
+                {!manifestImageSrc ? '' :
+                  <Grid item xs={12} style={{ marginLeft: 380 }}>
+                    <DeleteSharpIcon
+                      onClick={() => removePreviewId()}
+                    />
+                  </Grid>
+                }
+
+                {
+                  manifestImageSrc ?
+                    <img id="previewImage" src={manifestImageSrc} /> :
+                    null
+                }
+              </Grid>
+            </Grid>
+          </Grid>
+
           {/* Builty EIR Addition Starts */}
 
           <Grid container item xs={12} spacing={3}>
@@ -1376,47 +1444,6 @@ function AddRideView() {
 
           {/* Builty EIR Ends  */}
 
-          <Grid container item xs={12} spacing={3}>
-            <Grid item sm={12}>
-              <FormControl margin="dense" fullWidth={true} variant="outlined">
-                <Button
-                  variant="contained"
-                  component="label"
-                  color={(selectedRide && selectedRide.manifestId) || manifestImage ? "primary" : "default"}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Product Manifest {(selectedRide && selectedRide.manifestId) || manifestImage ? "Uploaded" : ""}
-                  <input
-                    type="file"
-                    hidden
-                    value={(e) => e.target.value + 3}
-                    onChange={(e) => {
-                      newManifestValidateLogoImage(e)
-                    }}
-                    accept=".jpg,.png,.jpeg"
-                  />
-                </Button>
-                {(manifestSize == true) ? <Typography color="error">Manifest  size should be less than 1 MB</Typography> : ''}
-                {(manifestType == true) ? <Typography color="error">Manifest image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-              </FormControl>
-              <Grid style={{ textAlign: 'center' }}>
-
-                {!manifestImageSrc ? '' :
-                  <Grid item xs={12} style={{ marginLeft: 380 }}>
-                    <DeleteSharpIcon
-                      onClick={() => removePreviewId()}
-                    />
-                  </Grid>
-                }
-
-                {
-                  manifestImageSrc ?
-                    <img id="previewImage" src={manifestImageSrc} /> :
-                    null
-                }
-              </Grid>
-            </Grid>
-          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={3}>
