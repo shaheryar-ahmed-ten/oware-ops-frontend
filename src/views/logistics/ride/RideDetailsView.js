@@ -347,13 +347,13 @@ function RideDetailsView(props) {
                 {selectedRide.pocNumber || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                ETA:
+                ETA(MINUTES):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {Math.floor(selectedRide.eta  % 3600 / 60) || "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Trip Completion Time:
+                Trip Completion Time(MINUTES):
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {Math.floor(selectedRide.completionTime  % 3600 / 60) || "-"}
@@ -554,8 +554,8 @@ function RideDetailsView(props) {
               <TableRow>
                 <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
                 <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
-                <TableCell className={classes.tableHeadText}>ETA</TableCell>
-                <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME</TableCell>
+                <TableCell className={classes.tableHeadText}>ETA(MINUTES)</TableCell>
+                <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME(MINUTES)</TableCell>
                <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
                <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
               </TableRow>
