@@ -197,7 +197,7 @@ export default function ProductInwardView() {
         client_Tz: moment.tz.guess()
       },
     }).then(response => {
-      FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
+      FileDownload(response.data, `ProductInwards ${moment().format('DD-MM-yyyy')}.xlsx`);
     });
   }
 

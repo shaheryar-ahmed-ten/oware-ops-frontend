@@ -14,11 +14,10 @@ import {
   Backdrop,
   Typography,
   Tooltip,
-
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
-import { getURL, dateFormat, digitize, dateToPickerFormat } from "../../../utils/common";
+import { getURL, dateFormat } from "../../../utils/common";
 import { Alert, Pagination } from "@material-ui/lab";
 import ConfirmDelete from "../../../components/ConfirmDelete";
 import { debounce } from "lodash";
@@ -31,6 +30,8 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SelectDropdown from '../../../components/SelectDropdown';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,6 +98,12 @@ const useStyles = makeStyles((theme) => ({
   backdropAgreeButton: {
     marginLeft: 10,
   },
+  bulkBtn: {
+    marginLeft: 5
+  },
+  exportBtn: {
+    marginLeft: 5
+  }
 }));
 
 export default function DispatchOrderView() {
@@ -351,6 +358,20 @@ export default function DispatchOrderView() {
     getDispatchOrders(page, searchKeyword, selectedFilterStatus);
   }, [page, searchKeyword, selectedFilterStatus]);
 
+  const exportToExcel = () => {
+    // TODO: update the api
+    axios.get(getURL('inventory/export'), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, `DispatchOrders ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
+
   const searchInput = (
     <InputBase
       placeholder="Search"
@@ -391,13 +412,14 @@ export default function DispatchOrderView() {
       title={"DispatchOrder"}
     />
   );
+
   const addBulkProductsButton = (
     <Button
       key={4}
       variant="contained"
       color="primary"
       size="small"
-      style={{ width: 150, transform: "translateX(7px)" }}
+      className={classes.bulkBtn}
       onClick={() => navigate("bulk-upload")}
     >
       Bulk Upload
@@ -408,10 +430,20 @@ export default function DispatchOrderView() {
     setSelectedFilterStatus(null);
   }
 
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
+
+
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>
