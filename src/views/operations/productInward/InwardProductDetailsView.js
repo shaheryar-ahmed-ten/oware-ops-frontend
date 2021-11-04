@@ -127,7 +127,7 @@ function InwardProductDetailsView() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                Processed By :
+                Created By :
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -230,6 +230,9 @@ function InwardProductDetailsView() {
                   className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
+                  className={classes.tableHeadText}>Created By
+                </TableCell>
+                <TableCell
                   className={classes.tableHeadText}>Reference Id
                 </TableCell>
                 <TableCell
@@ -250,6 +253,9 @@ function InwardProductDetailsView() {
                 </TableCell>
                 <TableCell>
                   {selectedProductInward.Products.length}
+                </TableCell>
+                <TableCell>
+                {selectedProductInward.User.firstName + ` ` + selectedProductInward.User.lastName}
                 </TableCell>
                 <TableCell>
                   {selectedProductInward.referenceId}
