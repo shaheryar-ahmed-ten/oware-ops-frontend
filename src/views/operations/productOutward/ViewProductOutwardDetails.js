@@ -136,7 +136,7 @@ function ViewProductOutwardDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                Creator :
+                Created By :
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -315,7 +315,7 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>CREATOR
+                  className={classes.tableHeadText}>CREATED BY
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>VEHICLE NUMBER

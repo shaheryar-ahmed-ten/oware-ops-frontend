@@ -130,7 +130,7 @@ export default function ProductOutwardView() {
     },
     {
       id: "creator",
-      label: "CREATOR",
+      label: "CREATED BY",
       minWidth: "auto",
       className: "",
       format: (value, entity) => `${entity.User.firstName || ""} ${entity.User.lastName || ""}`,
