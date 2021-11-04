@@ -18,3 +18,12 @@
     border: 1px solid lightgray;
     border-radius: 5px;
 }
+.mask-text:focus{
+    outline: 10px #0a61fb !important;
+}
+
+.mask-text:focus-within{
+    border-color: #0a61fb !important;
+    border: 2px solid #0a61fb !important;
+    /* outline-width: 10px; */
+}

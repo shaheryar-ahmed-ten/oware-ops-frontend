@@ -37,7 +37,7 @@ import { Select } from "@material-ui/core";
 import TableStatsHeader from "../../../components/TableStatsHeader";
 import { useNavigate } from "react-router";
 import fileDownload from "js-file-download";
-import moment from "moment";
+import moment from "moment-timezone";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import SelectDropdown from "../../../components/SelectDropdown";
 import SelectCustomDropdown from "../../../components/SelectCustomDropdown";
@@ -467,6 +467,8 @@ export default function RideView() {
       setOpen={setOpen}
       setSelectedType={setSelectedDay}
       setPage={setPage}
+      startDate={startDate}
+      endDate={endDate}
     />
   );
   const exportToExcel = () => {
@@ -480,6 +482,7 @@ export default function RideView() {
           start: startDate == "-" ? "" : startDate,
           end: endDate == "-" ? "" : endDate,
           status: currentFilter == "ALL" ? "" : currentFilter,
+          client_Tz: moment.tz.guess()
         },
       })
       .then((response) => {
@@ -588,16 +591,16 @@ export default function RideView() {
     ) : (
       ""
     );
-  const customText =
-    selectedDay == "custom" && startDate !== "-" && startDate !== null && endDate !== null ? (
-      <FormHelperText style={textStyle}>
-        From {startDate} to {endDate}
-      </FormHelperText>
-    ) : (
-      ""
-    );
+  // const customText =
+  //   selectedDay == "custom" && startDate !== "-" && startDate !== null && endDate !== null ? (
+  //     <FormHelperText style={textStyle}>
+  //       From {startDate} to {endDate}
+  //     </FormHelperText>
+  //   ) : (
+  //     ""
+  //   );
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText, daysSelect, searchInput, exportButton, customText];
+  const headerButtons = [filterText, daysSelect, searchInput, exportButton];
 
   return (
     <Paper className={classes.root}>

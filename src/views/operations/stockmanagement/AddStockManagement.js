@@ -396,7 +396,7 @@ export default function AddStockManagement() {
                 </Button>
               </Grid>
             </Grid>
-            <Grid item sm={6}>
+            <Grid item sm={6} >
               {
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
                   <Autocomplete
@@ -439,9 +439,11 @@ export default function AddStockManagement() {
             </Grid>
 
             {/* Product Details */}
-            <Grid container item xs={12} alignItems="center" spacing={1}>
+            <Grid container item xs={12} alignItems="center" spacing={1} style = {{paddingTop:10}}>
               <Grid item sm={4}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <FormControl 
+                // margin="dense" 
+                fullWidth={true} variant="outlined">
                   <Autocomplete
                     id="product"
                     key={products}
@@ -462,7 +464,7 @@ export default function AddStockManagement() {
               <Grid item sm={4}>
                 <TextField
                   fullWidth={true}
-                  margin="normal"
+                  // margin="normal"
                   id="quantityAdjust"
                   label="Quantity to adjust"
                   variant="outlined"
@@ -476,7 +478,7 @@ export default function AddStockManagement() {
               <Grid item sm={2}>
                 <TextField
                   fullWidth={true}
-                  margin="normal"
+                  // margin="normal"
                   id="availableQuantity"
                   label="Available Quantity"
                   type="number"
@@ -489,7 +491,7 @@ export default function AddStockManagement() {
               <Grid item sm={2}>
                 <TextField
                   fullWidth={true}
-                  margin="normal"
+                  // margin="normal"
                   id="uom"
                   label="UOM"
                   type="text"
@@ -500,7 +502,9 @@ export default function AddStockManagement() {
                 {validation.reasonType && !isRequired(reasonType) ? <Typography color="error" style={{ visibility: 'hidden' }}>DUMMY</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
               </Grid>
               <Grid item sm={6}>
-                <FormControl margin="dense" fullWidth={true} variant="outlined">
+                <FormControl 
+                margin="normal" 
+                fullWidth={true} variant="outlined">
                   <Autocomplete
                     id="reasonType"
                     key={productId}

@@ -8,11 +8,26 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
-  Typography
+  Typography,
+  makeStyles
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 
+const useStyles = makeStyles((theme) => ({
+  textBox: {
+    height: 34
+  },
+  labelBox: {
+    "& label": {
+      paddingTop: 7
+    }
+  }
+}));
+
 export default function AddBrandView({ addBrand, open, handleClose, selectedBrand, formErrors }) {
+
+  const classes = useStyles();
+
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
   const [manufacturerName, setManufacturerName] = useState('');
@@ -63,8 +78,11 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                   type="text"
                   variant="outlined"
                   value={name}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                   onChange={e => setName(e.target.value)}
                   onBlur={e => setValidation({ ...validation, name: true })}
+                  
                 />
                 {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
               </Grid>
@@ -79,6 +97,8 @@ export default function AddBrandView({ addBrand, open, handleClose, selectedBran
                   value={manufacturerName}
                   onChange={e => setManufacturerName(e.target.value)}
                   onBlur={e => setValidation({ ...validation, manufacturerName: true })}
+                  inputProps={{ className: classes.textBox }}
+                  className={classes.labelBox}
                 />
                 {validation.manufacturerName && !isRequired(manufacturerName) ? <Typography color="error">Manufacturer name is required!</Typography> : ''}
               </Grid>

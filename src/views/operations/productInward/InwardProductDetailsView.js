@@ -41,9 +41,9 @@ const useStyles = makeStyles((theme) => ({
   },
   tableRow: {
     "&:last-child th, &:last-child td": {
-        borderBottom: 0,
+      borderBottom: 0,
     },
-},
+  },
 }));
 
 function InwardProductDetailsView() {
@@ -127,7 +127,7 @@ function InwardProductDetailsView() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                Processed By :
+                CREATED BY :
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -197,7 +197,7 @@ function InwardProductDetailsView() {
           </Grid>
         </Box>
       </Box>
-      
+
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
@@ -218,22 +218,25 @@ function InwardProductDetailsView() {
             <TableHead>
               <TableRow>
                 <TableCell
-                  className={classes.tableHeadText}>Inward Id
+                  className={classes.tableHeadText}>INWARD ID
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Company
+                  className={classes.tableHeadText}>COMPANY
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Warehouse
+                  className={classes.tableHeadText}>WAREHOUSE
                 </TableCell>
                 <TableCell
                   className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Reference Id
+                  className={classes.tableHeadText}>CREATED BY
                 </TableCell>
                 <TableCell
-                  className={classes.tableHeadText}>Inward Date
+                  className={classes.tableHeadText}>REFERENCE ID
+                </TableCell>
+                <TableCell
+                  className={classes.tableHeadText}>INWARD DATE
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -250,6 +253,9 @@ function InwardProductDetailsView() {
                 </TableCell>
                 <TableCell>
                   {selectedProductInward.Products.length}
+                </TableCell>
+                <TableCell>
+                  {selectedProductInward.User.firstName + ` ` + selectedProductInward.User.lastName}
                 </TableCell>
                 <TableCell>
                   {selectedProductInward.referenceId}

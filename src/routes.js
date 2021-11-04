@@ -38,6 +38,7 @@ import VehicleTypeView from "./views/logistics/vehicletype/VehicleTypeView";
 import RideDetailsView from "./views/logistics/ride/RideDetailsView";
 import ActivityView from "./views/administration/activity/ActivityView";
 import BulkUpload from "./views/administration/product/BulkUpload";
+import OrderBulkUpload from "./views/operations/dispatchOrder/OrderBulkUpload";
 
 const routes = (user) => [
   {
@@ -121,6 +122,11 @@ const routes = (user) => [
       {
         path: "dispatch-order",
         element: checkPermission(user, "OPS_DISPATCHORDER_FULL") ? <DispatchOrderView /> : <Navigate to="404" />,
+      }
+      ,
+      {
+        path: "dispatch-order/bulk-upload",
+        element: checkPermission(user, "OPS_PRODUCT_FULL") ? <OrderBulkUpload/> : <Navigate to="404" />,
       },
       {
         path: "dispatch-order/create",

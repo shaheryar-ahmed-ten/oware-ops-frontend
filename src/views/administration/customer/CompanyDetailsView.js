@@ -51,6 +51,28 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                         />
                                     </Grid>
                                 </Grid>
+                                {
+                                    selectedCompany.phone ?
+                                        <Grid item container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    id="phone"
+                                                    label={'Phone'}
+                                                    type="text"
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    disabled
+                                                    fullWidth
+                                                    variant="filled"
+                                                    value={selectedCompany.phone}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                        :
+                                        ''
+                                }
+
                                 <Grid item container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
@@ -115,15 +137,15 @@ function CompanyDetailsView({ open, handleClose, selectedCompany, relationType }
                                         />
                                     </Grid>
                                     {(selectedCompany && selectedCompany.logoId) ?
-                                    <Grid item xs={12} style={{fontWeight:600 }}>
+                                        <Grid item xs={12} style={{ fontWeight: 600 }}>
                                             Logo
-                                    </Grid>
-                                    : ''}
-                                    <Grid item xs={12} style={{textAlign: 'center'}}>
+                                        </Grid>
+                                        : ''}
+                                    <Grid item xs={12} style={{ textAlign: 'center' }}>
                                         {(selectedCompany && selectedCompany.logoId) ?
                                             <a target="_blank" href={getURL('preview', selectedCompany.logoId)}><img src={getURL('preview', selectedCompany.logoId)} alt="Company Logo" /></a>
-                                        : ''}
-                                     </Grid>
+                                            : ''}
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </DialogContent>

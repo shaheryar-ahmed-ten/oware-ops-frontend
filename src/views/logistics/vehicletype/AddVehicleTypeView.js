@@ -1,66 +1,57 @@
 import {
-    makeStyles,
-    TextField,
-    Grid,
-    InputBase,
-    Button,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Typography
+  makeStyles,
+  TextField,
+  Grid,
+  InputBase,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography
 } from '@material-ui/core';
 import React, { useState, useCallback, useEffect } from 'react'
-import TableHeader from '../../../components/TableHeader';
-import { Alert, Pagination } from '@material-ui/lab';
-import MessageSnackbar from '../../../components/MessageSnackbar';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import axios from 'axios';
-import { getURL } from '../../../utils/common';
-import { debounce, set } from 'lodash';
-import { DEBOUNCE_CONST } from '../../../Config';
 import { isRequired } from '../../../utils/validators';
 // import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 // import { upload } from '../../../utils/upload';
-import { useNavigate,useLocation } from 'react-router';
-// import { isRequired } from '../../../utils/validators';
+import { useNavigate, useLocation } from 'react-router';
+import { Autocomplete } from '@material-ui/lab';
 
 
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-        marginBottom: '20px'
-    },
-    container: {
-        // maxHeight: 450,
-        padding: 20,
-    },
-    active: {
-        color: theme.palette.success.main
-    },
-    searchInput: {
-        border: '1px solid grey',
-        borderRadius: 4,
-        opacity: 0.6,
-        padding: '0px 8px',
-        marginRight: 7,
-        height: 30,
-    },
+  root: {
+    width: '100%',
+    marginBottom: '20px'
+  },
+  container: {
+    // maxHeight: 450,
+    padding: 20,
+  },
+  active: {
+    color: theme.palette.success.main
+  },
+  searchInput: {
+    border: '1px solid grey',
+    borderRadius: 4,
+    opacity: 0.6,
+    padding: '0px 8px',
+    marginRight: 7,
+    height: 30,
+  },
 }))
 
-function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose, addVehicleType, carmakes, carmodels ,types }) {
-    const [validation, setValidation] = useState({});
-    const { state } = useLocation();
-    const { viewOnly } = state || '';
-    const classes = useStyles();
-    const [pageCount, setPageCount] = useState(1);
-    const [page, setPage] = useState(1);
+function AddVehicleTypeView({ selectedVehicleType, formErrors, open, handleClose, addVehicleType, carmakes, carmodels, types }) {
+  const [validation, setValidation] = useState({});
+  const { state } = useLocation();
+  const { viewOnly } = state || '';
+  const classes = useStyles();
+  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(1);
   const [makeid, setCarMakeId] = useState('')
   const [carMake, setCarMake] = useState('')
   const [modelid, setCarModelId] = useState('')
@@ -72,12 +63,12 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
     if (open)
       resetLocalStates()
     if (selectedVehicleType) {
-        setCarMakeId(selectedVehicleType ? selectedVehicleType.makeId : '');
-        setCarMake(selectedVehicleType ? selectedVehicleType.CarMake.name : '');
-        setCarModelId(selectedVehicleType ? selectedVehicleType.modelId : '');
-        setCarModel(selectedVehicleType ? selectedVehicleType.CarModel.name : '');
-        setTypeId(selectedVehicleType ? selectedVehicleType.vehicleTypeId : '');
-        setCatType(selectedVehicleType ? selectedVehicleType.VehicleType.name : '')
+      setCarMakeId(selectedVehicleType ? selectedVehicleType.makeId : '');
+      setCarMake(selectedVehicleType ? selectedVehicleType.CarMake.name : '');
+      setCarModelId(selectedVehicleType ? selectedVehicleType.modelId : '');
+      setCarModel(selectedVehicleType ? selectedVehicleType.CarModel.name : '');
+      setTypeId(selectedVehicleType ? selectedVehicleType.vehicleTypeId : '');
+      setCatType(selectedVehicleType ? selectedVehicleType.VehicleType.name : '')
     }
     else {
       resetLocalStates()
@@ -87,11 +78,11 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
   useEffect(() => {
     if (!!selectedVehicleType) {
       setCarMakeId(selectedVehicleType.makeId || '');
-      setCarMake( selectedVehicleType.CarMake.name || '');
+      setCarMake(selectedVehicleType.CarMake.name || '');
       setCarModelId(selectedVehicleType.modelId || '');
       setCarModel(selectedVehicleType.CarModel.name || '');
       setTypeId(selectedVehicleType.vehicleTypeId || '');
-      setCatType(selectedVehicleType.VehicleType.name ||'')
+      setCatType(selectedVehicleType.VehicleType.name || '')
     }
   }, [selectedVehicleType]);
 
@@ -100,13 +91,13 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
     setCarModelId('');
     setValidation({});
     setTypeId('');
-   
+
   }
   const handleSubmit = async () => {
     const newVehicleType = {
-        makeId : makeid,
-        modelId : modelid,
-        vehicleTypeId : typeid
+      makeId: makeid,
+      modelId: modelid,
+      vehicleTypeId: typeid
     }
 
     setValidation({
@@ -116,104 +107,87 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
     });
 
     if (isRequired(typeid) &&
-    isRequired(makeid) &&
-    isRequired(modelid)) 
-    {
+      isRequired(makeid) &&
+      isRequired(modelid)) {
 
-    try {
-      await addVehicleType(newVehicleType);
-    } catch (err) {
-      // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+      try {
+        await addVehicleType(newVehicleType);
+      } catch (err) {
+        // setFormErrors(<Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors('')}>{res.data.message}</Alert>);
+      }
     }
   }
-  }
-    return(
+  return (
 
-        <div style={{ display: "inline" }}>
+    <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title"
-        fullWidth
-        maxWidth="sm">
+          fullWidth
+          maxWidth="sm">
           <DialogTitle>
             {!selectedVehicleType ? 'Add Vehicle Type' : 'Edit Vehicle Type'}
           </DialogTitle>
           <DialogContent>
             {formErrors}
-            <Grid container > 
-               <Grid container spacing={2}>
-                    <Grid item sm={6}>
-                        <FormControl margin="dense" fullWidth={true} variant="outlined">
-                            <InputLabel>Car Make</InputLabel>
-                            <Select
-                            fullWidth={true}
-                            id="makeid"
-                            label="Car Make"
-                            variant="outlined"
-                            value={makeid}
-                            onChange={e => setCarMakeId(e.target.value)}
-                            onBlur={e => setValidation({ ...validation, makeid: true })}
-                            >
-                            {
-                                makeid && makeid !== "" ?
-                                <MenuItem value={makeid} disabled>{carMake}</MenuItem>
-                                :
-                                <MenuItem value={""} disabled>Select Car Make</MenuItem>
-                            }
-                            {carmakes && carmakes.map(carmake => <MenuItem key={carmake.id} value={carmake.id}>{carmake.name}</MenuItem>)}
-                            </Select>
-                            {validation.makeid && !isRequired(makeid) ? <Typography color="error">Car Make is required!</Typography> : ''}
-                        </FormControl>
-                    </Grid>
-                    <Grid item sm={6}>
-                        <FormControl margin="dense" fullWidth={true} variant="outlined">
-                            <InputLabel>Car Model</InputLabel>
-                            <Select
-                            fullWidth={true}
-                            id="modelid"
-                            label="Car Model"
-                            variant="outlined"
-                            value={modelid}
-                            onChange={e => setCarModelId(e.target.value)}
-                            onBlur={e => setValidation({ ...validation, modelid: true })}
-                            >
-
-                            {
-                                modelid && modelid !== "" ?
-                                <MenuItem value={modelid} disabled>{carModel}</MenuItem>
-                                :
-                                <MenuItem value={""} disabled>Select Car Model</MenuItem>
-                            } 
-                            {carmodels && carmodels.map(carmodel => <MenuItem key={carmodel.id} value={carmodel.id}>{carmodel.name}</MenuItem>)}
-                            </Select>
-                            {validation.modelid && !isRequired(modelid) ? <Typography color="error">Car Model is required!</Typography> : ''}
-                        </FormControl>
-                    </Grid> 
-               </Grid>
-               <Grid container spacing={2}>
-                    <Grid item sm={12}>
-                    <FormControl margin="dense" fullWidth={true} variant="outlined">
-                        <InputLabel>Vehicle Category</InputLabel>
-                        <Select
-                        fullWidth={true}
-                        id="typeid"
-                        label="Vehicle Category"
-                        variant="outlined"
-                        value={typeid}
-                        onChange={e => setTypeId(e.target.value)}
-                        onBlur={e => setValidation({ ...validation, typeid: true })}
-                        >
-                        {
-                            typeid && typeid !== "" ?
-                            <MenuItem value={typeid} disabled>{catType}</MenuItem>
-                            :
-                            <MenuItem value={""} disabled>Select Vehicle Category</MenuItem>
-                        }
-                        {types && types.map(type => <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
-                        </Select>
-                        {validation.typeid && !isRequired(typeid) ? <Typography color="error">Vehicle Category is required!</Typography> : ''}
-                    </FormControl>
-                    </Grid>
-               </Grid>
+            <Grid container >
+              <Grid container spacing={2}>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <Autocomplete
+                      id="makeid"
+                      key={carmakes}
+                      options={carmakes}
+                      defaultValue={!!selectedVehicleType && !!selectedVehicleType.CarMake ? selectedVehicleType.CarMake : ''}
+                      renderInput={(params) => <TextField {...params} label="Car Make" variant="outlined" />}
+                      getOptionLabel={(carmake) => carmake.name || ""}
+                      onBlur={e => setValidation({ ...validation, makeid: true })}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setCarMakeId(newValue.id)
+                      }}
+                    />
+                    {validation.makeid && !isRequired(makeid) ? <Typography color="error">Car Make is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+                <Grid item sm={6}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <Autocomplete
+                      id="modelid"
+                      key={carmodels}
+                      options={carmodels}
+                      defaultValue={!!selectedVehicleType && !!selectedVehicleType.CarModel ? selectedVehicleType.CarModel : ''}
+                      renderInput={(params) => <TextField {...params} label="Car Model" variant="outlined" />}
+                      getOptionLabel={(carmodel) => carmodel.name || ""}
+                      onBlur={e => setValidation({ ...validation, modelid: true })}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setCarModelId(newValue.id)
+                      }}
+                    />
+                    {validation.modelid && !isRequired(modelid) ? <Typography color="error">Car Model is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
+                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                    <Autocomplete
+                      id="typeid"
+                      key={types}
+                      options={types}
+                      defaultValue={!!selectedVehicleType && !!selectedVehicleType.VehicleType ? selectedVehicleType.VehicleType : ''}
+                      renderInput={(params) => <TextField {...params} label="Vehicle Category" variant="outlined" />}
+                      getOptionLabel={(type) => type.name || ""}
+                      onBlur={e => setValidation({ ...validation, typeid: true })}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setTypeId(newValue.id)
+                      }}
+                    />
+                    {validation.typeid && !isRequired(typeid) ? <Typography color="error">Vehicle Category is required!</Typography> : ''}
+                  </FormControl>
+                </Grid>
+              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
@@ -227,7 +201,7 @@ function AddVehicleTypeView({selectedVehicleType, formErrors, open, handleClose,
       </form>
     </div >
 
-    );
+  );
 }
 
 export default AddVehicleTypeView

@@ -1,6 +1,7 @@
 import { Button, FormControl, InputAdornment, makeStyles, MenuItem, Select, TextField } from '@material-ui/core'
 import React from 'react'
-
+import moment from 'moment';
+import { useState } from 'react';
 const useStyles = makeStyles((theme) => ({
     formControl: {
         minWidth: 160,
@@ -30,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
         }
     }
 }));
-function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage, open, setOpen }) {
+function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon, resetFilters, setPage, open, setOpen ,startDate, endDate}) {
     const classes = useStyles();
+    const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false);
     // console.log(list[4].name)
 
     const handleChange = (event) => {
@@ -65,6 +67,8 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
                             {icon}
                         </InputAdornment>
                     }
+                    onOpen={() => setTrackDateFilterOpen(true)}
+                    onClose={() => setTrackDateFilterOpen(false)}
                 >
                     <MenuItem value={null} disabled>
                         <span className={classes.dropdownListItem}>{name}</span>
@@ -82,7 +86,7 @@ function SelectCustomDropdown({ name, list, selectedType, setSelectedType, icon,
                         })
                     }
                     <MenuItem key={'custom'} value={'custom'} onClick={()=>setOpen(true)}>
-                                    <span className={classes.dropdownListItem}>Custom</span>
+                         <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY")+" - "+moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
                     </MenuItem>
                 </Select>
             </FormControl>

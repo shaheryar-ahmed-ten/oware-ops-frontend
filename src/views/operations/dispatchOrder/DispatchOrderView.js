@@ -13,6 +13,8 @@ import {
   TableRow,
   Backdrop,
   Typography,
+  Tooltip,
+
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
@@ -109,14 +111,30 @@ export default function DispatchOrderView() {
       label: "DISPATCH ORDER ID",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.internalIdForBusiness,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.internalIdForBusiness}`}>
+            <Typography>
+              {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+            </Typography>
+          </Tooltip>
+        )
+      }
     },
     {
       id: "Inventory.Company.name",
       label: "COMPANY",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.Inventory.Company.name,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.Inventory.Company.name}`} >
+            <Typography>
+              {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
+            </Typography>
+          </Tooltip>
+        )
+      }
     },
     {
       id: "Inventory.Warehouse.name",
@@ -132,19 +150,13 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => entity.Inventories.length,
     },
-    ,
-    // {
-    //   id: 'receiverName',
-    //   label: 'RECEIVER NAME',
-    //   minWidth: 'auto',
-    //   className: '',
-    // },
-    // {
-    //   id: 'receiverPhone',
-    //   label: 'RECEIVER PHONE',
-    //   minWidth: 'auto',
-    //   className: '',
-    // }
+    {
+      id: "creator",
+      label: "CREATED BY",
+      minWidth: "auto",
+      className: "",
+      format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
+    },
     {
       id: "shipmentDate",
       label: "SHIPMENT DATE",
@@ -157,7 +169,16 @@ export default function DispatchOrderView() {
       label: "REFERENCE ID",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.referenceId,
+      format: (value, entity) => {
+        return (
+          <Tooltip title={`${entity.referenceId}`}>
+            <Typography>
+
+              {entity.referenceId && entity.referenceId.length > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId || ''}
+            </Typography>
+          </Tooltip>
+        )
+      }
     },
     {
       id: "status",
@@ -370,6 +391,18 @@ export default function DispatchOrderView() {
       title={"DispatchOrder"}
     />
   );
+  const addBulkProductsButton = (
+    <Button
+      key={4}
+      variant="contained"
+      color="primary"
+      size="small"
+      style={{ width: 150, transform: "translateX(7px)" }}
+      onClick={() => navigate("bulk-upload")}
+    >
+      Bulk Upload
+    </Button>
+  );
 
   const resetFilters = () => {
     setSelectedFilterStatus(null);
@@ -378,7 +411,7 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, deleteDispatchOrderModal];
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>

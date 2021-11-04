@@ -53,9 +53,11 @@ function ViewProductOutwardDetails() {
       fetchProductOutwards()
     }
   }, [uid])
+
   const fetchProductOutwards = () => {
     _getProductOutwards()
   }
+
   const _getProductOutwards = () => {
     axios.get(getURL(`product-outward/${uid}`))
       .then(res => {
@@ -67,6 +69,7 @@ function ViewProductOutwardDetails() {
   }
 
   const componentRef = useRef();
+
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
@@ -129,6 +132,16 @@ function ViewProductOutwardDetails() {
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
                 {selectedProductOutward.DispatchOrder.Inventory.Warehouse.city}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                CREATED BY :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {`${selectedProductOutward.User.firstName || ''} ${selectedProductOutward.User.lastName || ''}`}
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -302,6 +315,9 @@ function ViewProductOutwardDetails() {
                   className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
+                  className={classes.tableHeadText}>CREATED BY
+                </TableCell>
+                <TableCell
                   className={classes.tableHeadText}>VEHICLE NUMBER
                 </TableCell>
                 <TableCell
@@ -328,6 +344,9 @@ function ViewProductOutwardDetails() {
                 </TableCell>
                 <TableCell>
                   {selectedProductOutward.DispatchOrder.Inventories.length}
+                </TableCell>
+                <TableCell>
+                  {`${selectedProductOutward.User.firstName || ''} ${selectedProductOutward.User.lastName || ''}`}
                 </TableCell>
                 <TableCell>
                   {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || '-' : '-'}

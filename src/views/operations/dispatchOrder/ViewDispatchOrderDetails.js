@@ -113,6 +113,16 @@ function ViewDispatchOrderDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
+                CREATED BY :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
                 Receiver Name :
               </Box>
             </Grid>
@@ -241,6 +251,9 @@ function ViewDispatchOrderDetails() {
                   className={classes.tableHeadText}>NO. OF PRODUCTS
                 </TableCell>
                 <TableCell
+                  className={classes.tableHeadText}>CREATED BY
+                </TableCell>
+                <TableCell
                   className={classes.tableHeadText}>REFERENCE ID
                 </TableCell>
                 <TableCell
@@ -273,6 +286,9 @@ function ViewDispatchOrderDetails() {
                 </TableCell>
                 <TableCell>
                   {selectedDispatchOrder.Inventories.length}
+                </TableCell>
+                <TableCell>
+                  {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
                 </TableCell>
                 <TableCell>
                   {selectedDispatchOrder.referenceId}
