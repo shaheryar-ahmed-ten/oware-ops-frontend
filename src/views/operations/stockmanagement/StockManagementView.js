@@ -122,7 +122,7 @@ export default function StockManagementView() {
     },
     {
       id: 'admin',
-      label: 'ADJUSTED BY',
+      label: 'CREATED BY',
       minWidth: 'auto',
       className: '',
       format: (value, entity) => `${entity.Admin.firstName} ${entity.Admin.lastName}`

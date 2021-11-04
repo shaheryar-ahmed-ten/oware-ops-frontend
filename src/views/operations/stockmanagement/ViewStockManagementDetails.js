@@ -178,7 +178,7 @@ function ViewStockManagementDetails() {
                                             className={classes.tableHeadText}>NO. OF PRODUCTS
                                         </TableCell>
                                         <TableCell
-                                            className={classes.tableHeadText}>ADJUSTED BY
+                                            className={classes.tableHeadText}>CREATED BY
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -289,7 +289,7 @@ function ViewStockManagementDetails() {
                                         className={classes.tableHeadText}>NO. OF PRODUCTS
                                     </TableCell>
                                     <TableCell
-                                        className={classes.tableHeadText}>ADJUSTED BY
+                                        className={classes.tableHeadText}>CREATED BY
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
