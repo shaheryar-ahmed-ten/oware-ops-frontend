@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "20px 14px",
   }
 }));
+
 export default function AddProductInwardView() {
   const classes = useStyles();
   const { state } = useLocation();
