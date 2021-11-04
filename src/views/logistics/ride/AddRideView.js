@@ -1009,6 +1009,7 @@ function AddRideView() {
               <TextField
                 inputProps={{ className: classes.pocBox }}
                 className={classes.labelBox}
+                style={{width:776}}
                 fullWidth={true}
                 margin="dense"
                 id="pocName"
