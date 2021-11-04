@@ -113,7 +113,7 @@ function ViewDispatchOrderDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                Created By :
+                CREATED BY :
               </Box>
             </Grid>
             <Grid item xs={6}>
