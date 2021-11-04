@@ -103,6 +103,13 @@ export default function ProductInwardView() {
       format: (value, entity) => entity.Products.length,
     },
     {
+      id: 'creator',
+      label: 'CREATED BY',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
+    },
+    {
       id: 'referenceId',
       label: 'REFERENCE ID',
       minWidth: 'auto',
