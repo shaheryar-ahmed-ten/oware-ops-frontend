@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -16,18 +16,16 @@ import {
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL, digitize, dateFormat } from '../../../utils/common';
+import { getURL, dateFormat } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddProductInwardView from './AddProductInwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import InwardProductDetailsView from './InwardProductDetailsView';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,6 +47,9 @@ const useStyles = makeStyles(theme => ({
     marginRight: 7,
     height: 30,
   },
+  exportBtn: {
+    marginLeft: 5
+  }
 }));
 
 
@@ -65,10 +66,10 @@ export default function ProductInwardView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
-          <Typography>
-            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
-          </Typography>
-        </Tooltip>
+            <Typography>
+              {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+            </Typography>
+          </Tooltip>
         )
       },
     },
@@ -80,13 +81,13 @@ export default function ProductInwardView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.Company.name}`}>
-          <Typography>
-            {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
-          </Typography>
-        </Tooltip>
+            <Typography>
+              {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
+            </Typography>
+          </Tooltip>
         )
       },
-      
+
     },
     {
       id: 'Warehouse.name',
@@ -142,8 +143,6 @@ export default function ProductInwardView() {
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [productInwards, setProductInwards] = useState([]);
-
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductInward, setSelectedProductInward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
@@ -162,18 +161,15 @@ export default function ProductInwardView() {
       });
   };
 
-
   const openDeleteView = productInward => {
     setSelectedProductInward(productInward);
     setDeleteProductInwardViewOpen(true);
   }
 
-
   const closeDeleteProductInwardView = () => {
     setSelectedProductInward(null);
     setDeleteProductInwardViewOpen(false);
   }
-
 
   const _getProductInwards = (page, searchKeyword) => {
     axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
@@ -187,11 +183,23 @@ export default function ProductInwardView() {
     _getProductInwards(page, searchKeyword);
   }, DEBOUNCE_CONST), []);
 
-
   useEffect(() => {
     getProductInwards(page, searchKeyword);
   }, [page, searchKeyword]);
 
+  const exportToExcel = () => {
+    // TODO: update the api
+    axios.get(getURL('inventory/export'), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, `Inventory ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -204,6 +212,7 @@ export default function ProductInwardView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const addProductInwardButton = <Button
     key={2}
     variant="contained"
@@ -224,8 +233,17 @@ export default function ProductInwardView() {
     title={"ProductInward"}
   />
 
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
 
-  const headerButtons = [searchInput, addProductInwardButton, deleteProductInwardModal];
+
+  const headerButtons = [searchInput, addProductInwardButton, exportButton, deleteProductInwardModal];
 
   return (
     <Paper className={classes.root}>
