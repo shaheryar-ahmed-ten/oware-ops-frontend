@@ -189,7 +189,7 @@ export default function ProductInwardView() {
 
   const exportToExcel = () => {
     // TODO: update the api
-    axios.get(getURL('inventory/export'), {
+    axios.get(getURL('product-inward/export'), {
       responseType: 'blob',
       params: {
         page, search: searchKeyword
