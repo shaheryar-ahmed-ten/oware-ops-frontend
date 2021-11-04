@@ -136,7 +136,7 @@ function ViewProductOutwardDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                CREATED BY :
+                Created by :
               </Box>
             </Grid>
             <Grid item xs={6}>
