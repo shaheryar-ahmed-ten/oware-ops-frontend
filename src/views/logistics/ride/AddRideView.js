@@ -1052,8 +1052,8 @@ function AddRideView() {
                 // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
-              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" style={{ marginLeft: 15 }}>Incorrect phone number!</Typography> : ''}
-              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED" ? <Typography color="error" style={{ marginLeft: 15 }}>POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" >Incorrect phone number!</Typography> : ''}
+              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED" ? <Typography color="error" >POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </Grid>
           </Grid>
 
