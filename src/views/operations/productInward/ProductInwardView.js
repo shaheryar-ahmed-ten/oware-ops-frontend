@@ -242,7 +242,6 @@ export default function ProductInwardView() {
     onClick={() => exportToExcel()}
   > EXPORT TO EXCEL</Button >;
 
-
   const headerButtons = [searchInput, addProductInwardButton, exportButton, deleteProductInwardModal];
 
   return (

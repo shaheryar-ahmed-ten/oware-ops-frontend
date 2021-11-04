@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   makeStyles,
   Paper,
@@ -11,28 +11,21 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  InputLabel,
-  FormControl,
-  Select,
-  FormHelperText,
   Tooltip,
   Typography,
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
-import { getURL, digitize, dateFormat } from "../../../utils/common";
+import { getURL, dateFormat } from "../../../utils/common";
 import { Alert, Pagination } from "@material-ui/lab";
-import EditIcon from "@material-ui/icons/EditOutlined";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import ConfirmDelete from "../../../components/ConfirmDelete";
-import AddProductOutwardView from "./AddProductOutwardView";
 import { debounce } from "lodash";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import ViewProductOutwardDetails from "./ViewProductOutwardDetails";
 import { DEBOUNCE_CONST } from "../../../Config";
 import MessageSnackbar from "../../../components/MessageSnackbar";
 import { useNavigate } from "react-router";
-import { MenuItem } from "@material-ui/core";
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
   searchFilter: {
     marginRight: 7,
   },
+  exportBtn: {
+    marginLeft: 5
+  }
 }));
 
 export default function ProductOutwardView() {
@@ -239,10 +235,25 @@ export default function ProductOutwardView() {
     getProductOutwards(page, searchKeyword, searchFilter);
   }, [page, searchKeyword]);
 
+  const exportToExcel = () => {
+    // TODO: update the api
+    axios.get(getURL('inventory/export'), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, `ProductOutwards ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
+
   const handleSearch = (e) => {
     setPage(1);
     setSearchKeyword(e.target.value);
   };
+
   const searchInput = (
     <>
       <InputBase
@@ -258,6 +269,7 @@ export default function ProductOutwardView() {
       />
     </>
   );
+
   const addProductOutwardButton = (
     <Button
       key={2}
@@ -284,7 +296,16 @@ export default function ProductOutwardView() {
     />
   );
 
-  const headerButtons = [searchInput, addProductOutwardButton, deleteProductOutwardModal];
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
+
+  const headerButtons = [searchInput, addProductOutwardButton, exportButton, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
