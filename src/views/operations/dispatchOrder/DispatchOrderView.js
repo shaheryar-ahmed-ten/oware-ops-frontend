@@ -359,8 +359,7 @@ export default function DispatchOrderView() {
   }, [page, searchKeyword, selectedFilterStatus]);
 
   const exportToExcel = () => {
-    // TODO: update the api
-    axios.get(getURL('inventory/export'), {
+    axios.get(getURL('dispatch-order/export'), {
       responseType: 'blob',
       params: {
         page, search: searchKeyword
