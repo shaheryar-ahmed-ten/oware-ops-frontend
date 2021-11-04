@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pocBox: {
     height: 34,
-    width: "102%",
+    // width: "102%",
   },
   weightBox: {
     display: "none"
@@ -958,7 +958,7 @@ function AddRideView() {
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
-          <Grid item sm={6}>
+          <Grid item sm={6} >
             <TextField
               className={classes.labelBox}
               fullWidth={true}
@@ -998,19 +998,22 @@ function AddRideView() {
         </Grid>
 
         {/* Memo Addition Starts */}
-        <Grid container item xs={12} spacing={3}>
+        <Grid container item xs={12}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>
               Other Details
             </Typography>
           </Grid>
+        </Grid>
+
+
           <Grid container item xs={12} spacing={3} style={{ paddingBottom: 0 }}>
-            <Grid item sm={6}>
+            <Grid item sm={6} >
               <TextField
                 inputProps={{ className: classes.pocBox }}
                 className={classes.labelBox}
-                style={{width:776}}
-                fullWidth={true}
+                // style={{width:"102%"}}
+                fullWidth
                 margin="dense"
                 id="pocName"
                 label="POC Name"
@@ -1029,7 +1032,7 @@ function AddRideView() {
                 ""
               )}
             </Grid>
-            <Grid item sm={6}>
+            <Grid item sm={6} style={{boxSizing:'border-box',paddingRight:20}}>
               <MaskedInput
                 className={clsx({ ["mask-text"]: true }, { ["mask-text:focus"]: true })}
                 // guide={true}
@@ -1045,7 +1048,7 @@ function AddRideView() {
                 onChange={e => {
                   setPOCNumber(e.target.value)
                 }}
-                style={{ height: "17%", width: "97%", marginLeft: 14, marginTop: 6, borderColor: "#c4c4c4", color: "#2f2727", fontWeight: 600, }}
+                style={{ height: "17%", width: "97%", marginLeft: 0, marginTop: 6, borderColor: "#c4c4c4", color: "#2f2727", fontWeight: 600, }}
                 // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
@@ -1054,112 +1057,119 @@ function AddRideView() {
             </Grid>
           </Grid>
 
-          <Grid item sm={6}>
-            <TextField
-              inputProps={{ className: classes.textBox }}
-              className={classes.labelBox}
-              fullWidth={true}
-              margin="dense"
-              id="eta"
-              label="ETA (minutes)"
-              type="number"
-              variant="outlined"
-              value={!!eta && eta}
-              onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              onBlur={(e) => setValidation({ ...validation, eta: true })}
-            />
-            {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
-              <Typography color="error">ETA is required!</Typography>
-            ) : (
-              ""
-            )}
-           
+          <Grid container item xs={12} spacing={3}>
+
+            <Grid item sm={6}>
+              <TextField
+                inputProps={{ className: classes.textBox }}
+                className={classes.labelBox}
+                fullWidth={true}
+                margin="dense"
+                id="eta"
+                label="ETA (minutes)"
+                type="number"
+                variant="outlined"
+                value={!!eta && eta}
+                onChange={(e) => setETA(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+                onBlur={(e) => setValidation({ ...validation, eta: true })}
+              />
+              {validation.eta && !isRequired(eta) && status == "INPROGRESS" ? (
+                <Typography color="error">ETA is required!</Typography>
+              ) : (
+                ""
+              )}
+            
+            </Grid>
+
+            <Grid item sm={6}>
+              <TextField
+                inputProps={{ className: classes.textBox }}
+                className={classes.labelBox}
+                fullWidth={true}
+                margin="dense"
+                id="currentLocation"
+                label="Current Location"
+                variant="outlined"
+                value={currentLocation}
+                onChange={(e) => setCurrentLocation(e.target.value)}
+                onBlur={(e) => setValidation({ ...validation, currentLocation: true })}
+              />
+              {validation.currentLocation && !isRequired(currentLocation) && status == "INPROGRESS" ? (
+                <Typography color="error">Current Location is required!</Typography>
+              ) : (
+                ""
+              )}
+            </Grid>
           </Grid>
 
-          <Grid item sm={6}>
-            <TextField
-              inputProps={{ className: classes.textBox }}
-              className={classes.labelBox}
-              fullWidth={true}
-              margin="dense"
-              id="currentLocation"
-              label="Current Location"
-              variant="outlined"
-              value={currentLocation}
-              onChange={(e) => setCurrentLocation(e.target.value)}
-              onBlur={(e) => setValidation({ ...validation, currentLocation: true })}
-            />
-            {validation.currentLocation && !isRequired(currentLocation) && status == "INPROGRESS" ? (
-              <Typography color="error">Current Location is required!</Typography>
-            ) : (
-              ""
-            )}
-          </Grid>
-          {/* </Grid> */}
+          <Grid container item xs={12} spacing={3}>
 
-          <Grid item sm={6}>
-            <TextField
-              className={classes.labelBox}
-              fullWidth={true}
-              inputProps={{ className: classes.textBox }}
-              margin="dense"
-              id="completionTime"
-              label="Trip Completion Time (minutes)"
-              // placeholder="Trip Completion Time (hh:mm:ss)"
-              type="number"
-              variant="outlined"
-              value={!!completionTime && completionTime}
-              onChange={e => {setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)} }
-              onBlur={(e) => setValidation({ ...validation, completionTime: true })}
-            />
-            {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
-              <Typography color="error">Trip Completion Time is required!</Typography>
-            ) : (
-              ""
-            )}
-          </Grid>
-          <Grid item sm={6}>
-            <TextField
-              className={classes.labelBox}
-              fullWidth={true}
-              inputProps={{ className: classes.textBox }}
-              margin="dense"
-              id="weightCargo"
-              label="Weight of Cargo (Kg)"
-              placeholder="Weight of Cargo (Kg)"
-              type="number"
-              variant="outlined"
-              value={!!weightCargo && weightCargo}
-              minuteStep={15}
-              onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
-              onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
-            />
-            {validation.weightCargo && !isRequired(weightCargo) ? (
-              <Typography color="error">Weight Of Cargo is required!</Typography>
-            ) : (
-              ""
-            )}
+            <Grid item sm={6}>
+              <TextField
+                className={classes.labelBox}
+                fullWidth={true}
+                inputProps={{ className: classes.textBox }}
+                margin="dense"
+                id="completionTime"
+                label="Trip Completion Time (minutes)"
+                // placeholder="Trip Completion Time (hh:mm:ss)"
+                type="number"
+                variant="outlined"
+                value={!!completionTime && completionTime}
+                onChange={e => {setCompletionTime(e.target.value < 0 ? e.target.value == 0 : e.target.value)} }
+                onBlur={(e) => setValidation({ ...validation, completionTime: true })}
+              />
+              {validation.completionTime && !isRequired(completionTime) && status == "COMPLETED" ? (
+                <Typography color="error">Trip Completion Time is required!</Typography>
+              ) : (
+                ""
+              )}
+            </Grid>
 
+            <Grid item sm={6}>
+              <TextField
+                className={classes.labelBox}
+                fullWidth={true}
+                inputProps={{ className: classes.textBox }}
+                margin="dense"
+                id="weightCargo"
+                label="Weight of Cargo (Kg)"
+                placeholder="Weight of Cargo (Kg)"
+                type="number"
+                variant="outlined"
+                value={!!weightCargo && weightCargo}
+                minuteStep={15}
+                onChange={(e) => setWeightCargo(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
+                onBlur={(e) => setValidation({ ...validation, weightCargo: true })}
+              />
+              {validation.weightCargo && !isRequired(weightCargo) ? (
+                <Typography color="error">Weight Of Cargo is required!</Typography>
+              ) : (
+                ""
+              )}
+
+            </Grid>
           </Grid>
           
-          <Grid item sm={12}>
-            <TextField
-              multiline
-              fullWidth={true}
-              margin="dense"
-              rows={6}
-              id="memo"
-              label="Memo for driver"
-              type="text"
-              variant="outlined"
-              InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
-              value={memo}
-              onChange={(e) => setMemo(e.target.value)}
-            />
-            {validation.memo && !isRequired(memo) && status == "UNASSIGNED" ?
-              (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
-              : ("")}
-          </Grid>
+          <Grid container item xs={12} spacing={3}>
+            <Grid item sm={12}>
+              <TextField
+                multiline
+                fullWidth={true}
+                margin="dense"
+                rows={6}
+                id="memo"
+                label="Memo for driver"
+                type="text"
+                variant="outlined"
+                InputProps={{ inputProps: { maxLength: 1000 }, className: classes.memoBox }}
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+              />
+              {validation.memo && !isRequired(memo) && status == "UNASSIGNED" ?
+                (<Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>)
+                : ("")}
+            </Grid>
         </Grid>
 
 
