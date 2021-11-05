@@ -212,28 +212,31 @@ function OrderBulkUpload() {
     for (let order of data.orders) {
       order.shipmentDate = new Date(order.shipmentDate);
     }
-
-    let apiPromise = axios.post(getURL("dispatch-order/bulk"), data);
-    apiPromise
-      .then((res) => {
-        if (!res.data.success) {
+    
+    if (errorsArray.length === 0) {
+      let apiPromise = axios.post(getURL("dispatch-order/bulk"), data);
+      apiPromise
+        .then((res) => {
+          if (!res.data.success) {
+            setSelectedFile(null);
+            setErrorAlerts();
+            displayErrors([...errorsArray, ...res.data.message]);
+            return;
+          }
+          setErrorAlerts([]);
+          setSuccessAlerts([`${res.data.message} `]);
+        })
+        .catch((err) => {
           setSelectedFile(null);
-          setErrorAlerts();
-          displayErrors([...errorsArray, ...res.data.message]);
-          return;
-        }
-        setErrorAlerts([]);
-        setSuccessAlerts([`${res.data.message} `]);
-      })
-      .catch((err) => {
-        setSelectedFile(null);
-        setSuccessAlerts([]);
-        if (Array.isArray(err.response.data.message)) {
-          displayErrors([...errorsArray, ...err.response.data.message]);
-        } else {
-          setErrorAlerts([...errorsArray, err.response.data.error || "Failed to upload bulk orders."]);
-        }
-      });
+          setSuccessAlerts([]);
+          if (Array.isArray(err.response.data.message)) {
+            displayErrors([...errorsArray, ...err.response.data.message]);
+          } else {
+            setErrorAlerts([...errorsArray, err.response.data.error || "Failed to upload bulk orders."]);
+          }
+        });
+    }
+
   };
 
   const dataSanitization = (data) => {
