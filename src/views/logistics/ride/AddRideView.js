@@ -382,8 +382,8 @@ function AddRideView() {
       pickupCityId: true,
       pickupLocation: true,
       dropoffLocation: true,
-      eirImage: true,
-      builtyImage: true,
+      // eirImage: true,
+      // builtyImage: true,
       productCategoryId: products.length > 0 ? false : true,
       productName: products.length > 0 ? false : true,
       productQuantity: products.length > 0 ? false : true,
@@ -407,7 +407,7 @@ function AddRideView() {
         isRequired(weightCargo) ||
         (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber) && isPhone(pocNumber.replace(/-/g, ''))) ||
         (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
-      (status === "COMPLETED" && isRequired(completionTime))
+        (status === "COMPLETED" && isRequired(completionTime))
 
     ) {
 
@@ -419,7 +419,7 @@ function AddRideView() {
 
       if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
 
-      if ((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
+      // if ((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
 
       if (!isNotEmptyArray(products)) return
 
@@ -1052,8 +1052,8 @@ function AddRideView() {
                 // style={{ padding: '21px 26px',marginTop: '8px',marginLeft: '8px', color: 'black', borderColor: 'rgba(0,0,0,0.3)' }}
                 onBlur={e => setValidation({ ...validation, pocNumber: true })}
               />
-              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" style={{ marginLeft: 15 }}>Incorrect phone number!</Typography> : ''}
-              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED" ? <Typography color="error" style={{ marginLeft: 15 }}>POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
+              {validation.pocNumber && isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, '')) ? <Typography color="error" >Incorrect phone number!</Typography> : ''}
+              {validation.pocNumber && !isRequired(pocNumber) && status == "ASSIGNED" ? <Typography color="error" >POC Number is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>}
             </Grid>
           </Grid>
 
@@ -1384,11 +1384,11 @@ function AddRideView() {
                 </Button>
                 {(eirSize == true) ? <Typography color="error">EIR size should be less than 1 MB</Typography> : ''}
                 {(eirType == true) ? <Typography color="error">EIR image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                {!(selectedRide && selectedRide.eirId) && validation.eirImage && !isRequired(eirImage) && status == "COMPLETED" ? (
+                {/* {!(selectedRide && selectedRide.eirId) && validation.eirImage && !isRequired(eirImage) && status == "COMPLETED" ? (
                   <Typography color="error">EIR Image is required!</Typography>
                 ) : (
                   ""
-                )}
+                )} */}
               </FormControl>
               <Grid style={{ textAlign: 'center' }}>
 
@@ -1428,11 +1428,11 @@ function AddRideView() {
                 </Button>
                 {(builtySize == true) ? <Typography color="error">Builty size should be less than 1 MB</Typography> : ''}
                 {(builtyType == true) ? <Typography color="error">Builty image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                {!(selectedRide && selectedRide.builtyId) && validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED" ? (
+                {/* {!(selectedRide && selectedRide.builtyId) && validation.builtyImage && !isRequired(builtyImage) && status == "COMPLETED" ? (
                   <Typography color="error">Builty Image is required!</Typography>
                 ) : (
                   ""
-                )}
+                )} */}
               </FormControl>
               <Grid style={{ textAlign: 'center' }}>
 
