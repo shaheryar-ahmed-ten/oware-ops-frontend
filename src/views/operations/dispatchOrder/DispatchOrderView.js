@@ -393,7 +393,7 @@ export default function DispatchOrderView() {
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
-    
+
     axios.get(getURL('dispatch-order/export'), {
       responseType: 'blob',
       params: {
@@ -557,11 +557,13 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, daysSelect, exportButton, deleteDispatchOrderModal,];
+  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
+  const headerButtonsTwo = [daysSelect, exportButton];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <TableHeader title="Dispatch Order" buttons={headerButtons} />
         <Table aria-label="sticky table">
           <TableHead>
