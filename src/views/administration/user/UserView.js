@@ -136,7 +136,7 @@ export default function UserView() {
         return
       }
       setShowMessage({
-        message: "New user has been created."
+        message: !selectedUser ? "New user has been created." : "User updated successfully."
       })
       closeAddUserView();
       getUsers();
