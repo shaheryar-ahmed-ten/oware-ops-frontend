@@ -13,10 +13,18 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  Select,
+  TextField,
+  ListItem,
+  DialogTitle,
+  Dialog,
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
-import { getURL, dateFormat } from "../../../utils/common";
+import { getURL, dateFormat, dividerDateFormatForFilter } from "../../../utils/common";
 import { Alert, Pagination } from "@material-ui/lab";
 import ConfirmDelete from "../../../components/ConfirmDelete";
 import { debounce } from "lodash";
@@ -26,6 +34,7 @@ import MessageSnackbar from "../../../components/MessageSnackbar";
 import { useNavigate } from "react-router";
 import moment from 'moment-timezone';
 import FileDownload from 'js-file-download';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +60,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 7,
   },
   exportBtn: {
+    marginLeft: 5
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    '& .MuiSelect-outlined': {
+      paddingTop: '6px',
+      paddingBottom: '6px',
+    },
     marginLeft: 5
   }
 }));
@@ -191,6 +208,28 @@ export default function ProductOutwardView() {
 
   const [searchFilter, setSearchFilter] = useState("Company.name");
 
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
+
+
   const deleteProductOutward = (data) => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`)).then((res) => {
       if (!res.data.success) {
@@ -236,10 +275,13 @@ export default function ProductOutwardView() {
   }, [page, searchKeyword]);
 
   const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
     axios.get(getURL('product-outward/export'), {
       responseType: 'blob',
       params: {
-        page, search: searchKeyword
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
         ,
         client_Tz: moment.tz.guess()
       },
@@ -304,7 +346,88 @@ export default function ProductOutwardView() {
     onClick={() => exportToExcel()}
   > EXPORT TO EXCEL</Button >;
 
-  const headerButtons = [searchInput, addProductOutwardButton, exportButton, deleteProductOutwardModal];
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  }
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
+    setPage(1)
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = <FormControl className={classes.formControl}>
+    <Select
+      value={selectedDay}
+      variant="outlined"
+      onChange={handleChange}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      className={classes.placeholderText}
+      startAdornment={
+        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
+          <CalendarTodayOutlinedIcon fontSize="small" />
+        </InputAdornment>
+      }
+      onOpen={() => setTrackDateFilterOpen(true)}
+      onClose={() => setTrackDateFilterOpen(false)}
+    >
+      <MenuItem value={null} disabled>
+        <span className={classes.dropdownListItem}>Select Days</span>
+      </MenuItem>
+      {
+        [{ name: 'All' }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+            </MenuItem>
+          )
+        })
+      }
+      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+      </MenuItem>
+    </Select>
+  </FormControl>
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+
+  const headerButtons = [searchInput, addProductOutwardButton, daysSelect, exportButton, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
@@ -386,6 +509,27 @@ export default function ProductOutwardView() {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} />
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={'startDate'}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={'startDate'}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+              setReRender(!reRender)
+            }}>
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
     </Paper>
   );
 }
