@@ -407,7 +407,7 @@ function AddRideView() {
         isRequired(weightCargo) ||
         (status === "ASSIGNED" && isRequired(pocName) && isRequired(pocNumber) && isPhone(pocNumber.replace(/-/g, ''))) ||
         (status === "INPROGRESS" && isRequired(eta) && isRequired(currentLocation)) ||
-      (status === "COMPLETED" && isRequired(completionTime))
+        (status === "COMPLETED" && isRequired(completionTime))
 
     ) {
 
