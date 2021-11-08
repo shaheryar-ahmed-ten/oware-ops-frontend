@@ -422,6 +422,8 @@ function AddRideView() {
 
       // if ((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
 
+      if ((status === "COMPLETED" && !isRequired(completionTime))) return
+
       if (!isNotEmptyArray(products)) return
 
       if ((status === "ASSIGNED" && !isRequired(pocNumber) && !isPhone(pocNumber.replace(/-/g, ''))) || (status === "ASSIGNED" && !isRequired(pocName))) return
