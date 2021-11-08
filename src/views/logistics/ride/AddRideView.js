@@ -352,6 +352,7 @@ function AddRideView() {
       dropoffLocation: dropOff,
       eirId: selectedRide && selectedRide.eirId || eirImage || null,
       builtyId: selectedRide && selectedRide.builtyId || builtyImage || null,
+      manifestId: selectedRide && selectedRide.manifestId || manifestImage || null,
       currentLocation,
 
     };
