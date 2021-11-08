@@ -40,3 +40,11 @@ export const checkForMatchInArray = (array, propertyToMatch, valueToMatch) => {
   }
   return false;
 };
+
+export const checkForZeroQuantityInArray = (array) => {
+  for (let el of array) {
+    if (el.quantity == 0 || el.quantity === 0)
+      return false
+  }
+  return true
+}

@@ -178,7 +178,6 @@ function VehicleTypeView() {
     const _getVehicleTypes = (page, searchKeyword) => {
         axios.get(getURL('vehicle-types'), { params: { page, search: searchKeyword } })
             .then(res => {
-                // console.log("ve",res.data)
                 setPageCount(res.data.pages)
                 setVehicleTypes(res.data.data)
             });
@@ -192,7 +191,6 @@ function VehicleTypeView() {
     const getRelations = () => {
         axios.get(getURL('vehicle-types/relations'))
             .then(res => {
-                console.log("vehicle types/relations",res.data.data)
                 setTypes(res.data.data.vehicleTypes)
                 setCarModels(res.data.data.carModels)
                 setCarMakes(res.data.data.carMakes)
