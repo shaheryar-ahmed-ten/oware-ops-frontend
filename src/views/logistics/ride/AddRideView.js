@@ -422,6 +422,8 @@ function AddRideView() {
 
       // if ((status === "COMPLETED" && !isRequired(newRide.builtyId)) || (status === "COMPLETED" && !isRequired(newRide.eirId))) return
 
+      if((status === "INPROGRESS" && !isRequired(eta) && !isRequired(currentLocation))) return
+      
       if ((status === "COMPLETED" && !isRequired(completionTime))) return
 
       if (!isNotEmptyArray(products)) return
