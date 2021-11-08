@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors, removeLogoId, isEdit }) {
   const [validation, setValidation] = useState({});
   const [name, setName] = useState('');
-  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+  // const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
   const [contactId, setContactId] = useState('');
   const classes = useStyles();
 
@@ -64,7 +64,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     if (!!selectedCompany) {
       // will work on edit
       setName(selectedCompany.name || '');
-      setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
+      // setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
       setType(selectedCompany.type || '');
       setContactId(selectedCompany.contactId || '');
       setNotes(selectedCompany.notes || '');
@@ -74,7 +74,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       { selectedCompany && selectedCompany.logoId ? setLogoImageSrc(getURL('preview', selectedCompany.logoId)) : setLogoImageSrc(null) }
     } else {
       setName('');
-      setInternalIdForBusiness('');
+      // setInternalIdForBusiness('');
       setType('');
       setContactId('');
       setNotes('');
@@ -90,7 +90,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
   const handleSubmit = async () => {
     const newCompany = {
       name,
-      internalIdForBusiness,
+      // internalIdForBusiness,
       contactId,
       relationType,
       type,
@@ -111,7 +111,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       companyPhone: true
     });
     if (isRequired(name)
-      && isRequired(internalIdForBusiness)
+      // && isRequired(internalIdForBusiness)
       && isRequired(contactId)
       && (relationType == 'VENDOR' || isRequired(type))
       && isRequired(relationType)) {
@@ -196,7 +196,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
                     inputProps={{ className: classes.textBox }}
@@ -214,7 +214,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   {validation.name && !isChar(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is only characters!</Typography> : ''}
 
                 </Grid>
-                <Grid item sm={6}>
+                {/* <Grid item sm={6}>
                   <TextField
                     fullWidth={true}
                     inputProps={{ className: classes.textBox }}
@@ -229,31 +229,31 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
                   />
                   {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
-                </Grid>
+                </Grid> */}
                 {relationType == 'CUSTOMER' ?
-                <Grid item sm={12}>
-                  <MaskedInput
-                    className={clsx({ ["mask-text"]: true })}
-                    // guide={true}
-                    // showMask={true}
-                    variant="outlined"
-                    name="phone"
-                    mask={phoneNumberMask}
-                    label="Company Phone"
-                    id="companyPhone"
-                    type="text"
-                    value={companyPhone}
-                    placeholder="Company Phone(e.g 032*-*******)"
-                    onChange={e => {
-                      setCompanyPhone(e.target.value)
-                    }}
-                    style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)' }}
-                  // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-                  />
-                  {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-                  {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
-                </Grid>
-                :""}
+                  <Grid item sm={12}>
+                    <MaskedInput
+                      className={clsx({ ["mask-text"]: true })}
+                      // guide={true}
+                      // showMask={true}
+                      variant="outlined"
+                      name="phone"
+                      mask={phoneNumberMask}
+                      label="Company Phone"
+                      id="companyPhone"
+                      type="text"
+                      value={companyPhone}
+                      placeholder="Company Phone(e.g 032*-*******)"
+                      onChange={e => {
+                        setCompanyPhone(e.target.value)
+                      }}
+                      style={{ padding: '22px 10px', color: '#2f2727', fontWeight: 600, borderColor: 'rgba(0,0,0,0.3)' }}
+                    // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+                    />
+                    {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                    {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
+                  </Grid>
+                  : ""}
               </Grid>
               {relationType == 'CUSTOMER' ?
                 <Grid container spacing={2}>
