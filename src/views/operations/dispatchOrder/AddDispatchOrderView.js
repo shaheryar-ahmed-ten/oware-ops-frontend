@@ -310,7 +310,6 @@ export default function AddDispatchOrderView() {
       internalIdForBusiness,
       orderMemo
     }
-    console.log(newDispatchOrder)
 
     setValidation({
       quantity: true,
