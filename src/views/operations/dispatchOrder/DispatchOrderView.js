@@ -370,16 +370,23 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   };
 
-  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus) => {
-    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword.trim(), status: selectedFilterStatus } }).then((res) => {
+  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate) => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL("dispatch-order"), {
+      params: {
+        page, search: searchKeyword.trim(), days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
+    }).then((res) => {
       setPageCount(res.data.pages);
       setDispatchOrders(res.data.data);
     });
   };
 
   const getDispatchOrders = useCallback(
-    debounce((page, searchKeyword, selectedFilterStatus) => {
-      _getDispatchOrders(page, searchKeyword, selectedFilterStatus);
+    debounce((page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate) => {
+      _getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate);
     }, DEBOUNCE_CONST),
     []
   );
@@ -387,8 +394,10 @@ export default function DispatchOrderView() {
   useEffect(() => {
     if (selectedFilterStatus)
       setSearchKeyword('')
-    getDispatchOrders(page, searchKeyword, selectedFilterStatus);
-  }, [page, searchKeyword, selectedFilterStatus]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedFilterStatus, selectedDay, reRender]);
 
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
@@ -557,7 +566,7 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, daysSelect];
+  const headerButtons = [searchInput, statusSelect, daysSelect];
   const headerButtonsTwo = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal,];
 
   return (

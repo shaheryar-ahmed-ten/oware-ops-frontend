@@ -255,24 +255,32 @@ export default function ProductOutwardView() {
     setDeleteProductOutwardViewOpen(false);
   };
 
-  const _getProductOutwards = (page, searchKeyword, searchFilter) => {
-    axios.get(getURL("product-outward"), { params: { page, search: searchKeyword } }).then((res) => {
-      console.log("res.data", res.data);
+  const _getProductOutwards = (page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate) => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL("product-outward"), {
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
+    }).then((res) => {
       setPageCount(res.data.pages);
       setProductOutwards(res.data.data);
     });
   };
 
   const getProductOutwards = useCallback(
-    debounce((page, searchKeyword, searchFilter) => {
-      _getProductOutwards(page, searchKeyword, searchFilter);
+    debounce((page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate) => {
+      _getProductOutwards(page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate);
     }, DEBOUNCE_CONST),
     []
   );
 
   useEffect(() => {
-    getProductOutwards(page, searchKeyword, searchFilter);
-  }, [page, searchKeyword]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getProductOutwards(page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedDay, reRender]);
 
   const exportToExcel = () => {
     let startingDate = new Date(startDate);

@@ -209,21 +209,30 @@ export default function ProductInwardView() {
     setDeleteProductInwardViewOpen(false);
   }
 
-  const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
+  const _getProductInwards = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL('product-inward'), {
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
+    })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
       });
   }
 
-  const getProductInwards = useCallback(debounce((page, searchKeyword) => {
-    _getProductInwards(page, searchKeyword);
+  const getProductInwards = useCallback(debounce((page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+    _getProductInwards(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
   }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
-    getProductInwards(page, searchKeyword);
-  }, [page, searchKeyword]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getProductInwards(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedDay, reRender]);
 
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
