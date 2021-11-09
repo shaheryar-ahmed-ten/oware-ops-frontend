@@ -60,7 +60,8 @@ function OrdersCsvReader({ bulkUpload, selectedFile, setSelectedFile }) {
                 shipmentDate: order['Shipment Date'],
                 referenceId: order['Reference ID'],
                 product: order['Product Name'],
-                quantity: order['Quantity']
+                quantity: order['Quantity'],
+                orderMemo: order['Order Memo']
             })
         }
         bulkUpload({ orders: modifiedOrder })

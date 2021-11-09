@@ -63,6 +63,7 @@ export default function AddDispatchOrderView() {
   const [productId, setProductId] = useState('');
   const [referenceId, setReferenceId] = useState('');
   const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+  const [orderMemo, setOrderMemo] = useState('');
 
   const [formErrors, setFormErrors] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -117,6 +118,7 @@ export default function AddDispatchOrderView() {
         });
       setInternalIdForBusiness(selectedDispatchOrder.internalIdForBusiness);
       setReferenceId(selectedDispatchOrder.referenceId || '');
+      setOrderMemo(selectedDispatchOrder.orderMemo || null);
       getProducts({ customerId: selectedDispatchOrder.Inventory.customerId, warehouseId: selectedDispatchOrder.Inventory.warehouseId })
         .then((products) => {
           if (selectedDispatchOrder.Inventories.length > 0 && inventories.length == 0) {
@@ -146,6 +148,7 @@ export default function AddDispatchOrderView() {
       setReceiverName('');
       setReceiverPhone();
       setReferenceId('');
+      setOrderMemo('');
     }
   }, [selectedDispatchOrder])
 
@@ -304,7 +307,8 @@ export default function AddDispatchOrderView() {
       receiverName,
       receiverPhone: strRecPhone,
       referenceId,
-      internalIdForBusiness
+      internalIdForBusiness,
+      orderMemo
     }
 
     setValidation({
@@ -383,7 +387,8 @@ export default function AddDispatchOrderView() {
           receiverName,
           receiverPhone: strRecPhone,
           referenceId,
-          internalIdForBusiness
+          internalIdForBusiness,
+          orderMemo
         }
 
         setValidation({
@@ -567,6 +572,26 @@ export default function AddDispatchOrderView() {
             onChange={e => setReferenceId(e.target.value)}
             inputProps={{ maxLength: 30 }}
           />
+
+        </Grid>
+
+        <Grid item sm={12} style = {{paddingTop:0}}>
+        {/* <Grid item sm={12}> */}
+              <TextField
+                multiline
+                fullWidth={true}
+                margin="dense"
+                rows={6}
+                id="orderMemo"
+                label="Order Memo (Optional)"
+                type="text"
+                variant="outlined"
+                InputProps={{ inputProps: { maxLength: 1000 } }}
+                value={orderMemo}
+                onChange={(e) => setOrderMemo(e.target.value)}
+              />
+             <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
+            {/* </Grid> */}
 
         </Grid>
 

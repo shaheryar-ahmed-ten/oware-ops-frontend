@@ -152,6 +152,17 @@ function ViewDispatchOrderDetails() {
               </Box>
             </Grid>
             <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Order Memo :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedDispatchOrder.orderMemo || "-"}
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
               <Box display="none" displayPrint="block" style={{ margin: "10mm 0mm 0mm 0mm" }}>
                 <Typography variant="h3">
                   Products
@@ -266,7 +277,7 @@ function ViewDispatchOrderDetails() {
                   className={classes.tableHeadText}>RECEIVER PHONE
                 </TableCell>
                 {/* <TableCell
-                  className={classes.tableHeadText}>STATUS
+                  className={classes.tableHeadText}>ORDER MEMO
                 </TableCell> */}
               </TableRow>
             </TableHead>
@@ -326,6 +337,20 @@ function ViewDispatchOrderDetails() {
                   }
                 </TableCell>
             */}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell className={classes.tableHeadText}>ORDER MEMO</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow className={classes.tableRow} className={classes.tableRow}>
+                <TableCell>{selectedDispatchOrder.orderMemo || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
