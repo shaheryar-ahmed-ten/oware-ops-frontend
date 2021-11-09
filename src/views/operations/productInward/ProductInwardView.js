@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 4,
     opacity: 0.6,
     padding: '0px 8px',
-    marginRight: 7,
+    marginRight: 5,
     height: 30,
   },
   exportBtn: {
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
       paddingTop: '6px',
       paddingBottom: '6px',
     },
-    marginLeft: 5
+    marginRight: 5
   },
 }));
 
@@ -363,7 +363,7 @@ export default function ProductInwardView() {
     margin="dense"
   />
 
-  const headerButtons = [searchInput, addProductInwardButton, daysSelect, exportButton, deleteProductInwardModal];
+  const headerButtons = [searchInput, daysSelect, addProductInwardButton, exportButton, deleteProductInwardModal];
 
   return (
     <Paper className={classes.root}>
