@@ -158,7 +158,7 @@ function ViewDispatchOrderDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                {selectedDispatchOrder.orderMemo}
+                {selectedDispatchOrder.orderMemo || "-"}
               </Box>
             </Grid>
 
@@ -350,7 +350,7 @@ function ViewDispatchOrderDetails() {
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedDispatchOrder.orderMemo }</TableCell>
+                <TableCell>{selectedDispatchOrder.orderMemo || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
