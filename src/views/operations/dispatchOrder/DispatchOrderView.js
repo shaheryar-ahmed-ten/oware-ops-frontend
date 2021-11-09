@@ -557,14 +557,14 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
-  const headerButtonsTwo = [daysSelect, exportButton];
+  const headerButtons = [statusSelect, searchInput, daysSelect];
+  const headerButtonsTwo = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal,];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="" buttons={headerButtonsTwo} />
-        <TableHeader title="Dispatch Order" buttons={headerButtons} />
+        <TableHeader title="Dispatch Order" buttons={headerButtonsTwo} />
+        <TableHeader title="" buttons={headerButtons} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>

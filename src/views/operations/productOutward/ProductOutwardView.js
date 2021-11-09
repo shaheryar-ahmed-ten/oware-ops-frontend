@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     height: 30,
   },
   searchFilter: {
-    marginRight: 7,
+    // marginRight: 5,
   },
   exportBtn: {
     marginLeft: 5
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '6px',
       paddingBottom: '6px',
     },
-    marginLeft: 5
+    marginRight: 5
   }
 }));
 
@@ -427,7 +427,7 @@ export default function ProductOutwardView() {
     margin="dense"
   />
 
-  const headerButtons = [searchInput, addProductOutwardButton, daysSelect, exportButton, deleteProductOutwardModal];
+  const headerButtons = [searchInput, daysSelect, addProductOutwardButton, exportButton, deleteProductOutwardModal];
 
   return (
     <Paper className={classes.root}>
