@@ -355,7 +355,7 @@ export default function ProductView() {
     />
   );
   const headerButtons = [searchInput, addProductButton, addBulkProductsButton, addProductModal, deleteProductModal];
-
+// retur
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
