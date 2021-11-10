@@ -125,8 +125,9 @@ function OrderBulkUpload() {
       // verify date format
       if (
         !moment(new Date(order.shipmentDate)).isValid() ||
-        (!order.shipmentDate.includes("AM") && !order.shipmentDate.includes("PM")) ||
-        new Date().getTime() > new Date(order.shipmentDate).getTime()
+        (!order.shipmentDate.includes("AM") && !order.shipmentDate.includes("PM"))
+        // ||
+        // new Date().getTime() > new Date(order.shipmentDate).getTime()
       ) {
         errorsArray = [
           ...errorsArray,
@@ -212,7 +213,7 @@ function OrderBulkUpload() {
     for (let order of data.orders) {
       order.shipmentDate = new Date(order.shipmentDate);
     }
-    
+
     if (errorsArray.length === 0) {
       let apiPromise = axios.post(getURL("dispatch-order/bulk"), data);
       apiPromise
