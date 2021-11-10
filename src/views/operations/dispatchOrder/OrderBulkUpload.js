@@ -122,6 +122,16 @@ function OrderBulkUpload() {
           },
         ];
       }
+      // verify orderMemo Length
+      if (order.orderMemo.length>1000) {
+        errorsArray = [
+          ...errorsArray,
+          {
+            row: count,
+            message: `Row ${count} : Memo length exceeds 1000 characters.`,
+          },
+        ];
+      }
       // verify date format
       if (
         !moment(new Date(order.shipmentDate)).isValid() ||
@@ -455,6 +465,9 @@ function OrderBulkUpload() {
               <Alert severity="info" className={classes.guideLine}>
                 A different order number should be used for each dispatch order. Same order numbers cannot be used
                 across multiple dispatch orders.
+              </Alert>
+              <Alert severity="info" className={classes.guideLine}>
+                Order Memo field is <strong>optional</strong> and its limit cannot exceeds 1000 characters.
               </Alert>
               <Alert severity="info" className={classes.guideLine}>
                 The template contains sample values for order rows which must be replaced with actual values before
