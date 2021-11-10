@@ -133,19 +133,19 @@ function OrderBulkUpload() {
         ];
       }
       // verify date format
-      if (
-        !moment(new Date(order.shipmentDate)).isValid() ||
-        (!order.shipmentDate.includes("AM") && !order.shipmentDate.includes("PM")) ||
-        new Date().getTime() > new Date(order.shipmentDate).getTime()
-      ) {
-        errorsArray = [
-          ...errorsArray,
-          {
-            row: count,
-            message: `Row ${count} : Invalid shipment date.`,
-          },
-        ];
-      }
+      // if (
+      //   !moment(new Date(order.shipmentDate)).isValid() ||
+      //   (!order.shipmentDate.includes("AM") && !order.shipmentDate.includes("PM")) ||
+      //   new Date().getTime() > new Date(order.shipmentDate).getTime()
+      // ) {
+      //   errorsArray = [
+      //     ...errorsArray,
+      //     {
+      //       row: count,
+      //       message: `Row ${count} : Invalid shipment date.`,
+      //     },
+      //   ];
+      // }
       // verify same company,warehouse,referenceId,shipmentDate,receiverDetails on same order number
       if (tempTwo.find((el) => el.orderNumber === order.orderNumber && el.company !== order.company)) {
         setSelectedFile(null);
@@ -316,15 +316,15 @@ function OrderBulkUpload() {
           },
         ];
       }
-      if (order["shipmentDate"] && !order["shipmentDate"].includes("PM") && !order["shipmentDate"].includes("AM")) {
-        sanitizationArray = [
-          ...sanitizationArray,
-          {
-            row: count,
-            message: `Row ${count} : Invalid shipment time format.`,
-          },
-        ];
-      }
+      // if (order["shipmentDate"] && !order["shipmentDate"].includes("PM") && !order["shipmentDate"].includes("AM")) {
+      //   sanitizationArray = [
+      //     ...sanitizationArray,
+      //     {
+      //       row: count,
+      //       message: `Row ${count} : Invalid shipment time format.`,
+      //     },
+      //   ];
+      // }
       if (!order["referenceId"]) {
         sanitizationArray = [
           ...sanitizationArray,
