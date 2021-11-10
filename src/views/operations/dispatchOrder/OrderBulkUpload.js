@@ -123,7 +123,7 @@ function OrderBulkUpload() {
         ];
       }
       // verify orderMemo Length
-      if (order.orderMemo && order.orderMemo.length>1000) {
+      if (order.orderMemo &&order.orderMemo.length>1000) {
         errorsArray = [
           ...errorsArray,
           {
