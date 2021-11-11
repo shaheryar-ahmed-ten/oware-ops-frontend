@@ -168,7 +168,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     setActive(true);
     setCompanyPhone('');
     setLogoImage(null);
-    setValidation('');
+    // setValidation('');
   };
 
   const removePreviewId = (event) => {
@@ -200,6 +200,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
           // setValidation('');
           resetStates()
+          setValidation('');
         }}>
           <DialogTitle>
             {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
@@ -411,6 +412,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
               // setValidation('')
               handleClose()
               resetStates()
+              setValidation('');
             }
             } color="default" variant="contained">Cancel</Button>
             <Button onClick={()=>{
