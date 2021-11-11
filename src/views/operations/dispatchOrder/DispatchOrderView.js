@@ -41,6 +41,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment-timezone';
 import FileDownload from 'js-file-download';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -119,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: '6px',
       paddingBottom: '6px',
     },
-    marginLeft: 5
+    // marginLeft: 5
   },
 }));
 
@@ -330,6 +331,10 @@ export default function DispatchOrderView() {
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
   const [reRender, setReRender] = useState(false)
+  // warehouse filter
+  const [warehouses, setWarehouses] = useState([])
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null)
+
 
   const cancelDispatchOrder = (dispatchOrderId) => {
     axios
@@ -370,34 +375,64 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   };
 
-  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate) => {
+  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate, selectedWarehouse) => {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
 
     axios.get(getURL("dispatch-order"), {
       params: {
-        page, search: searchKeyword.trim(), days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        page, search: searchKeyword.trim(),
+        days: !selectedDateRange ?
+          selectedDay
+          :
+          null,
+        startingDate: selectedDateRange ?
+          startingDate
+          :
+          null,
+        endingDate: selectedDateRange ?
+          endingDate
+          : null,
+        warehouse: selectedWarehouse
       }
     }).then((res) => {
       setPageCount(res.data.pages);
       setDispatchOrders(res.data.data);
     });
+
+
   };
 
+  const _getWarehouse = () => {
+    axios.get(getURL("warehouse"))
+      .then((res) => {
+        setWarehouses(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+        setWarehouses([])
+      })
+  }
+
   const getDispatchOrders = useCallback(
-    debounce((page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate) => {
-      _getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate);
+    debounce((page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate, selectedWarehouse) => {
+      _getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate, selectedWarehouse);
     }, DEBOUNCE_CONST),
     []
   );
 
   useEffect(() => {
+    _getWarehouse()
+  }, [])
+
+
+  useEffect(() => {
     if (selectedFilterStatus)
       setSearchKeyword('')
     if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
-      getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate);
+      getDispatchOrders(page, searchKeyword, selectedFilterStatus, selectedDay, selectedDateRange, startDate, endDate, selectedWarehouse);
     }
-  }, [page, searchKeyword, selectedFilterStatus, selectedDay, reRender]);
+  }, [page, searchKeyword, selectedFilterStatus, selectedDay, reRender, selectedWarehouse]);
 
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
@@ -566,7 +601,11 @@ export default function DispatchOrderView() {
   // status filter
   const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
 
-  const headerButtons = [searchInput, statusSelect, daysSelect];
+
+  // status warehouse
+  const warehouseSelect = <SelectDropdown icon={<HomeOutlinedIcon fontSize="small" />} resetFilters={resetFilters} type="Warehouses" name="Select Warehouse" list={[{ name: 'All' }, ...warehouses]} selectedType={selectedWarehouse} setSelectedType={setSelectedWarehouse} setPage={setPage} />
+
+  const headerButtons = [searchInput, warehouseSelect, statusSelect, daysSelect];
   const headerButtonsTwo = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal,];
 
   return (
