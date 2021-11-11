@@ -259,7 +259,7 @@ function AddRideView() {
   useEffect(() => {
     setProductName("");
     setProductQuantity("");
-    setProductCategoryId(null);
+    setProductCategoryId("");
   }, [products]);
 
   useEffect(() => {
@@ -1190,7 +1190,7 @@ function AddRideView() {
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Autocomplete
                   id="productCategories"
-                  key={productCategories}
+                  key={productCategoryId}
                   options={productCategories}
                   renderInput={(params) => <TextField {...params} label="Product Category" variant="outlined" />}
                   getOptionLabel={(productCategory) => productCategory.name || ""}
