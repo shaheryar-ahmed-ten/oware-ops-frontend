@@ -213,6 +213,17 @@ function OrderBulkUpload() {
           },
         ];
       }
+      if (tempTwo.find((el) => el.orderNumber === order.orderNumber && el.orderMemo !== order.orderMemo)) {
+        setSelectedFile(null);
+        setSuccessAlerts([]);
+        errorsArray = [
+          ...errorsArray,
+          {
+            row: count,
+            message: `Row ${count} : Can not upload file having different orderMemo in same order number.`,
+          },
+        ];
+      }
 
       errorsArray.length > 0 ? setErrorAlerts(errorsArray) : tempTwo.push(order);
 
