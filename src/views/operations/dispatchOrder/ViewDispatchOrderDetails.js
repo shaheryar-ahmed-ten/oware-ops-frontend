@@ -1,31 +1,46 @@
-import { Box, Grid, IconButton, makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, Typography, Button } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react'
-import { useReactToPrint } from 'react-to-print';
-import { dateFormat, getURL } from '../../../utils/common';
-import PrintIcon from '@material-ui/icons/Print';
-import { useLocation, useNavigate, useParams } from 'react-router';
-import { TableRow } from '@material-ui/core';
-import axios from 'axios';
+import {
+  Box,
+  Grid,
+  IconButton,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  Typography,
+  Button,
+} from "@material-ui/core";
+import React, { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import { dateFormat, getURL } from "../../../utils/common";
+import PrintIcon from "@material-ui/icons/Print";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { TableRow } from "@material-ui/core";
+import axios from "axios";
+import owareLogo from "../../../assets/icons/oware-logo-black.png";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
     padding: "30px 30px",
   },
   pageHeading: {
-    fontWeight: 600
+    fontWeight: 600,
   },
   pageSubHeading: {
-    fontWeight: 300
+    fontWeight: 300,
   },
   heading: {
-    fontWeight: 'bolder'
+    fontWeight: "bolder",
   },
   shadedTableHeader: {
-    backgroundColor: 'rgba(202,201,201,0.3)'
+    backgroundColor: "rgba(202,201,201,0.3)",
   },
   tableHeadText: {
-    background: 'transparent', fontWeight: 'bolder', fontSize: '12px'
+    background: "transparent",
+    fontWeight: "bolder",
+    fontSize: "12px",
   },
   tableRow: {
     "&:last-child th, &:last-child td": {
@@ -42,32 +57,30 @@ function ViewDispatchOrderDetails() {
   const [selectedDispatchOrder, setSelectedDispatchOrder] = useState(state ? state.selectedDispatchOrder : null);
   useEffect(() => {
     if (!selectedDispatchOrder) {
-      fetchDispatchOrders()
+      fetchDispatchOrders();
     }
-  }, [uid])
+  }, [uid]);
   const fetchDispatchOrders = () => {
-    _getDispatchOrders()
-  }
+    _getDispatchOrders();
+  };
   const _getDispatchOrders = () => {
-    axios.get(getURL(`dispatch-order/${uid}`))
-      .then(res => {
-        console.log(res.data.data)
-        setSelectedDispatchOrder(res.data.data)
-      });
-  }
+    axios.get(getURL(`dispatch-order/${uid}`)).then((res) => {
+      console.log(res.data.data);
+      setSelectedDispatchOrder(res.data.data);
+    });
+  };
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
-  return (
-    selectedDispatchOrder ? <>
+  return selectedDispatchOrder ? (
+    <>
       <Box display="none" displayPrint="block" ref={componentRef}>
         <Box display="none" displayPrint="block" style={{ padding: "25mm 25mm 0mm 25mm" }}>
-          <Typography variant="h3">
-            Dispatch Order
-          </Typography>
+          <img style={{ width: "12%", margin: "20px 0px" }} src={owareLogo} />
+          <Typography variant="h3">Dispatch Order</Typography>
         </Box>
         <Box display="none" displayPrint="block" style={{ padding: "10mm 25mm 0mm 25mm" }}>
           <Grid container spacing={2}>
@@ -118,7 +131,7 @@ function ViewDispatchOrderDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
+                {`${selectedDispatchOrder.User.firstName || ""} ${selectedDispatchOrder.User.lastName || ""}`}
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -164,9 +177,7 @@ function ViewDispatchOrderDetails() {
 
             <Grid item xs={6}>
               <Box display="none" displayPrint="block" style={{ margin: "10mm 0mm 0mm 0mm" }}>
-                <Typography variant="h3">
-                  Products
-                </Typography>
+                <Typography variant="h3">Products</Typography>
               </Box>
             </Grid>
             <Grid item xs={12}>
@@ -174,52 +185,25 @@ function ViewDispatchOrderDetails() {
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow className={classes.shadedTableHeader}>
-                      <TableCell
-                        className={classes.tableHeadText}>
-                        PRODUCT
-                      </TableCell>
-                      <TableCell
-                        className={classes.tableHeadText}>
-                        PRODUCT WEIGHT
-                      </TableCell>
-                      <TableCell
-                        className={classes.tableHeadText}>
-                        UOM
-                      </TableCell>
-                      <TableCell
-                        className={classes.tableHeadText}>
-                        QUANTITY
-                      </TableCell>
-                      <TableCell
-                        className={classes.tableHeadText}>
-                        AVAILABLE QUANTITY
-                      </TableCell>
+                      <TableCell className={classes.tableHeadText}>PRODUCT</TableCell>
+                      <TableCell className={classes.tableHeadText}>PRODUCT WEIGHT</TableCell>
+                      <TableCell className={classes.tableHeadText}>UOM</TableCell>
+                      <TableCell className={classes.tableHeadText}>QUANTITY</TableCell>
+                      <TableCell className={classes.tableHeadText}>AVAILABLE QUANTITY</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {
-                      selectedDispatchOrder.Inventories.map((order, idx) => {
-                        return (
-                          <TableRow key={idx}>
-                            <TableCell>
-                              {order.Product.name}
-                            </TableCell>
-                            <TableCell>
-                              {order.Product.weight} KG/UNIT
-                            </TableCell>
-                            <TableCell>
-                              {order.Product.UOM.name}
-                            </TableCell>
-                            <TableCell>
-                              {order.OrderGroup.quantity}
-                            </TableCell>
-                            <TableCell>
-                              {order.availableQuantity}
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })
-                    }
+                    {selectedDispatchOrder.Inventories.map((order, idx) => {
+                      return (
+                        <TableRow key={idx}>
+                          <TableCell>{order.Product.name}</TableCell>
+                          <TableCell>{order.Product.weight} KG/UNIT</TableCell>
+                          <TableCell>{order.Product.UOM.name}</TableCell>
+                          <TableCell>{order.OrderGroup.quantity}</TableCell>
+                          <TableCell>{order.availableQuantity}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -230,14 +214,15 @@ function ViewDispatchOrderDetails() {
       <Grid container className={classes.parentContainer} spacing={3}>
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
-            <Typography variant="h3" className={classes.heading}>Dispatch Order Details
+            <Typography variant="h3" className={classes.heading}>
+              Dispatch Order Details
               <IconButton aria-label="print" onClick={handlePrint}>
                 <PrintIcon />
               </IconButton>
             </Typography>
           </Grid>
           <Grid item xs={1}>
-            <Button variant="contained" color="primary" onClick={() => navigate('/operations/dispatch-order')}>
+            <Button variant="contained" color="primary" onClick={() => navigate("/operations/dispatch-order")}>
               Back
             </Button>
           </Grid>
@@ -246,36 +231,16 @@ function ViewDispatchOrderDetails() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell
-                  className={classes.tableHeadText}>DISPATCH ORDER ID
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>COMPANY
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>WAREHOUSE
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>CITY
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>NO. OF PRODUCTS
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>CREATED BY
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>REFERENCE ID
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>SHIPMENT DATE
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>RECEIVER NAME
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>RECEIVER PHONE
-                </TableCell>
+                <TableCell className={classes.tableHeadText}>DISPATCH ORDER ID</TableCell>
+                <TableCell className={classes.tableHeadText}>COMPANY</TableCell>
+                <TableCell className={classes.tableHeadText}>WAREHOUSE</TableCell>
+                <TableCell className={classes.tableHeadText}>CITY</TableCell>
+                <TableCell className={classes.tableHeadText}>NO. OF PRODUCTS</TableCell>
+                <TableCell className={classes.tableHeadText}>CREATED BY</TableCell>
+                <TableCell className={classes.tableHeadText}>REFERENCE ID</TableCell>
+                <TableCell className={classes.tableHeadText}>SHIPMENT DATE</TableCell>
+                <TableCell className={classes.tableHeadText}>RECEIVER NAME</TableCell>
+                <TableCell className={classes.tableHeadText}>RECEIVER PHONE</TableCell>
                 {/* <TableCell
                   className={classes.tableHeadText}>ORDER MEMO
                 </TableCell> */}
@@ -283,36 +248,18 @@ function ViewDispatchOrderDetails() {
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
+                <TableCell>{selectedDispatchOrder.internalIdForBusiness}</TableCell>
+                <TableCell>{selectedDispatchOrder.Inventory.Company.name}</TableCell>
+                <TableCell>{selectedDispatchOrder.Inventory.Warehouse.name}</TableCell>
+                <TableCell>{selectedDispatchOrder.Inventory.Warehouse.city}</TableCell>
+                <TableCell>{selectedDispatchOrder.Inventories.length}</TableCell>
                 <TableCell>
-                  {selectedDispatchOrder.internalIdForBusiness}
+                  {`${selectedDispatchOrder.User.firstName || ""} ${selectedDispatchOrder.User.lastName || ""}`}
                 </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.Inventory.Company.name}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.Inventory.Warehouse.name}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.Inventory.Warehouse.city}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.Inventories.length}
-                </TableCell>
-                <TableCell>
-                  {`${selectedDispatchOrder.User.firstName || ''} ${selectedDispatchOrder.User.lastName || ''}`}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.referenceId}
-                </TableCell>
-                <TableCell>
-                  {dateFormat(selectedDispatchOrder.shipmentDate)}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.receiverName}
-                </TableCell>
-                <TableCell>
-                  {selectedDispatchOrder.receiverPhone}
-                </TableCell>
+                <TableCell>{selectedDispatchOrder.referenceId}</TableCell>
+                <TableCell>{dateFormat(selectedDispatchOrder.shipmentDate)}</TableCell>
+                <TableCell>{selectedDispatchOrder.receiverName}</TableCell>
+                <TableCell>{selectedDispatchOrder.receiverPhone}</TableCell>
                 {/* <TableCell>
                   {selectedDispatchOrder.ProductOutwards.forEach(po => {
                        let totalDispatched = 0
@@ -360,63 +307,34 @@ function ViewDispatchOrderDetails() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow className={classes.shadedTableHeader}>
-                <TableCell
-                  className={classes.tableHeadText}>
-                  PRODUCT
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>
-                  PRODUCT WEIGHT
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>
-                  UOM
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>
-                  QUANTITY
-                </TableCell>
-                <TableCell
-                  className={classes.tableHeadText}>
-                  AVAILABLE QUANTITY
-                </TableCell>
+                <TableCell className={classes.tableHeadText}>PRODUCT</TableCell>
+                <TableCell className={classes.tableHeadText}>PRODUCT WEIGHT</TableCell>
+                <TableCell className={classes.tableHeadText}>UOM</TableCell>
+                <TableCell className={classes.tableHeadText}>QUANTITY</TableCell>
+                <TableCell className={classes.tableHeadText}>AVAILABLE QUANTITY</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {
-                selectedDispatchOrder.Inventories.map((order, idx) => {
-                  return (
-                    <TableRow key={idx}>
-                      <TableCell>
-                        {order.Product.name}
-                      </TableCell>
-                      <TableCell>
-                        {order.Product.weight} KG
-                      </TableCell>
-                      <TableCell>
-                        {order.Product.UOM.name}
-                      </TableCell>
-                      <TableCell>
-                        {order.OrderGroup.quantity}
-                      </TableCell>
-                      <TableCell>
-                        {order.availableQuantity}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              }
+              {selectedDispatchOrder.Inventories.map((order, idx) => {
+                return (
+                  <TableRow key={idx}>
+                    <TableCell>{order.Product.name}</TableCell>
+                    <TableCell>{order.Product.weight} KG</TableCell>
+                    <TableCell>{order.Product.UOM.name}</TableCell>
+                    <TableCell>{order.OrderGroup.quantity}</TableCell>
+                    <TableCell>{order.availableQuantity}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
       </Grid>
     </>
-      :
-      null
-  );
+  ) : null;
 }
 
-export default ViewDispatchOrderDetails
+export default ViewDispatchOrderDetails;
 
 // selectedDispatchOrder ?
 //   <div style={{ display: "inline" }}>
