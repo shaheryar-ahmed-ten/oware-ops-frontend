@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
-import dropoffIcon from "../assets/mapicon/darkgreen_MarkerD.png";
-import pickupIcon from "../assets/mapicon/red_MarkerP.png";
+import dropoffIcon from "../assets/icons/mapicon/darkgreen_MarkerD.png";
+import pickupIcon from "../assets/icons/mapicon/red_MarkerP.png";
 import Geocode from "react-geocode";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
@@ -126,7 +126,7 @@ function GoogleMap(props) {
       const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
       zoom = calc.zoom;
       mapCenter = calc.mapCenter;
-      setState({ ...state, zoom, mapCenter })
+      setState({ ...state, zoom, mapCenter });
 
       Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
         .then((addresses) => addresses.results[0].formatted_address)
@@ -139,7 +139,7 @@ function GoogleMap(props) {
           setDropoffSearchBox(result);
         });
     }
-  }, [])
+  }, []);
 
   const [state, setState] = useState({
     pickupMarker: {
@@ -153,9 +153,9 @@ function GoogleMap(props) {
     mapCenter: mapCenter
       ? mapCenter
       : {
-        lat: 30.2919928,
-        lng: 64.8560693,
-      },
+          lat: 30.2919928,
+          lng: 64.8560693,
+        },
     zoom: zoom ? zoom : 5.5,
   });
 
@@ -200,9 +200,9 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-              lat: latLng.lat,
-              lng: latLng.lng,
-            },
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
           zoom: zoom ? zoom : 14,
         });
         setPickUp({
@@ -237,9 +237,9 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-              lat: latLng.lat,
-              lng: latLng.lng,
-            },
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
           zoom: zoom ? zoom : 14,
         });
 
@@ -389,17 +389,17 @@ function GoogleMap(props) {
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                        backgroundColor: "#fafafa",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      }
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
                       : {
-                        backgroundColor: "#ffffff",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      };
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {
@@ -439,17 +439,17 @@ function GoogleMap(props) {
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                        backgroundColor: "#fafafa",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      }
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
                       : {
-                        backgroundColor: "#ffffff",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      };
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {
