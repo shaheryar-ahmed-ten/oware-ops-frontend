@@ -133,13 +133,13 @@ export default function RideView() {
     //   className: '',
     //   format: (value, entity) => entity.Driver ? entity.Driver.phone : ''
     // },
-    //  {
-    //   id: 'vehicleId',
-    //   label: 'Vehicle',
-    //   minWidth: 'auto',
-    //   className: '',
-    //   format: (value, entity) => entity.Vehicle.registrationNumber
-    // },
+     {
+      id: 'vehicleId',
+      label: 'VEHICLE NO.',
+      minWidth: 'auto',
+      className: '',
+      format: (value, entity) => entity.Vehicle.registrationNumber
+    },
     {
       id: "vendorName",
       label: "VENDOR",
@@ -153,13 +153,13 @@ export default function RideView() {
     //     minWidth: 'auto',
     //     className: ''
     // },
-    // {
-    //   id: 'pickupDate',
-    //   label: 'Pickup date',
-    //   minWidth: 150,
-    //   className: '',
-    //   format: dateFormat
-    // },
+    {
+      id: 'pickupDate',
+      label: 'PICKUP DATE',
+      minWidth: 150,
+      className: '',
+      format: dateFormat
+    },
     //  {
     //     id: 'dropoffAddress',
     //     label: 'Dropoff Address',
