@@ -114,12 +114,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       // && isRequired(internalIdForBusiness)
       && isRequired(contactId)
       && (relationType == 'VENDOR' || isRequired(type))
-      && isRequired(relationType)) {
-
-      if (logoImage) [newCompany.logoId] = await upload([logoImage], 'customer');
-
+      && isRequired(relationType)
+      && ((relationType != 'VENDOR' && isRequired(companyPhone))
+        ||
+        (relationType == 'VENDOR')
+      )) {
+      if (logoImage) {
+        [newCompany.logoId] = await upload([logoImage], 'customer');
+      }
       setSelectedCompanyTempLogoId(null);
       addCompany(newCompany);
+      resetStates()
     }
   }
 
@@ -227,22 +232,6 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                   {validation.name && !isChar(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is only characters!</Typography> : ''}
 
                 </Grid>
-                {/* <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    inputProps={{ className: classes.textBox }}
-                    className={classes.labelBox}
-                    margin="dense"
-                    id="internalIdForBusiness"
-                    label={relationType == 'CUSTOMER' ? ` Company ID*` : ` Vendor ID*`}
-                    type="text"
-                    variant="outlined"
-                    value={internalIdForBusiness}
-                    onChange={e => setInternalIdForBusiness(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
-                  />
-                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
-                </Grid> */}
                 {relationType == 'CUSTOMER' ?
                   <Grid item sm={12}>
                     <MaskedInput
@@ -261,10 +250,9 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         setCompanyPhone(e.target.value)
                       }}
                       style={{ padding: '22px 10px', color: '#2f2727', fontWeight: 600, borderColor: 'rgba(0,0,0,0.3)' }}
-                    // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
+                      onBlur={e => setValidation({ ...validation, companyPhone: true })}
                     />
-                    {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-                    {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
+                    {validation.companyPhone && !isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
                   </Grid>
                   : ""}
               </Grid>
@@ -415,9 +403,8 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
               setValidation('');
             }
             } color="default" variant="contained">Cancel</Button>
-            <Button onClick={()=>{
+            <Button onClick={() => {
               handleSubmit()
-              resetStates()
             }
             } color="primary" variant="contained">
               {!selectedCompany ? `Add ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}` : `Update ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}`}
