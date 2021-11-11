@@ -160,6 +160,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     })
   }
 
+  const resetStates = () => {
+    setName('');
+    setType('');
+    setContactId('');
+    setNotes('');
+    setActive(true);
+    setCompanyPhone('');
+    setLogoImage(null);
+    // setValidation('');
+  };
+
   const removePreviewId = (event) => {
     setLogoImage(null);
     setLogoImageSrc(null);
@@ -187,7 +198,9 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
-          setValidation('')
+          // setValidation('');
+          resetStates()
+          setValidation('');
         }}>
           <DialogTitle>
             {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
@@ -396,11 +409,17 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
           <DialogActions>
             <Button onClick={() => {
               setExplicitReRender(!explicitReRender);
-              setValidation('')
+              // setValidation('')
               handleClose()
+              resetStates()
+              setValidation('');
             }
             } color="default" variant="contained">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
+            <Button onClick={()=>{
+              handleSubmit()
+              resetStates()
+            }
+            } color="primary" variant="contained">
               {!selectedCompany ? `Add ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}` : `Update ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}`}
             </Button>
           </DialogActions>
