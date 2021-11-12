@@ -115,7 +115,7 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
       && isRequired(contactId)
       && (relationType == 'VENDOR' || isRequired(type))
       && isRequired(relationType)
-      && ((relationType != 'VENDOR' && isRequired(companyPhone))
+      && ((relationType != 'VENDOR' && isRequired(companyPhone) && isPhone(companyPhone))
         ||
         (relationType == 'VENDOR')
       )) {
@@ -248,11 +248,13 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       placeholder="Company Phone(e.g 032*-*******)"
                       onChange={e => {
                         setCompanyPhone(e.target.value)
+                        console.log(!isPhone(companyPhone.replace(/-/g, '')))
                       }}
                       style={{ padding: '22px 10px', color: '#2f2727', fontWeight: 600, borderColor: 'rgba(0,0,0,0.3)' }}
                       onBlur={e => setValidation({ ...validation, companyPhone: true })}
                     />
-                    {validation.companyPhone && !isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
+                    {validation.companyPhone && !isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Phone number must be provided!</Typography> : ''}
+                    {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
                   </Grid>
                   : ""}
               </Grid>
