@@ -699,7 +699,7 @@ export default function DispatchOrderView() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Dispatch Order.." buttons={headerButtonsTwo} />
+        <TableHeader title="Dispatch Order" buttons={headerButtonsTwo} />
         <TableHeader title="" buttons={headerButtons} />
         <Table aria-label="sticky table">
           <TableHead>
