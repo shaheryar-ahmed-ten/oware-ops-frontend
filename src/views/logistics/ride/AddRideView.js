@@ -1190,7 +1190,7 @@ function AddRideView() {
               <FormControl margin="dense" fullWidth={true} variant="outlined">
                 <Autocomplete
                   id="productCategories"
-                  key={productCategoryId}
+                  key={products}
                   options={productCategories}
                   renderInput={(params) => <TextField {...params} label="Product Category" variant="outlined" />}
                   getOptionLabel={(productCategory) => productCategory.name || ""}
