@@ -693,14 +693,14 @@ export default function DispatchOrderView() {
     />
   );
 
-  const headerButtons = [searchInput, warehouseSelect, statusSelect, daysSelect];
-  const headerButtonsTwo = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal];
+  const headerButtons = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal];
+  const headerButtonsTwo = [searchInput, warehouseSelect, statusSelect, daysSelect];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Dispatch Order" buttons={headerButtonsTwo} />
-        <TableHeader title="" buttons={headerButtons} />
+        <TableHeader title="Dispatch Order" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -716,7 +716,7 @@ export default function DispatchOrderView() {
                     // textAlign: "center",
                   }}
                 >
-                  {column.label}
+                  {column.label.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>

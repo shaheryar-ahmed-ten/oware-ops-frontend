@@ -435,12 +435,14 @@ export default function ProductOutwardView() {
     margin="dense"
   />
 
-  const headerButtons = [searchInput, daysSelect, addProductOutwardButton, exportButton, deleteProductOutwardModal];
+  const headerButtons = [addProductOutwardButton, exportButton, deleteProductOutwardModal];
+  const headerButtonsTwo = [searchInput, daysSelect]
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Outward" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -455,7 +457,7 @@ export default function ProductOutwardView() {
                     fontSize: "12px",
                   }}
                 >
-                  {column.label}
+                  {column.label.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>
