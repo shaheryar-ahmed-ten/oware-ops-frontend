@@ -114,7 +114,7 @@ function GoogleMap(props) {
     const mapCenter = { lat: midPointLat, lng: midPointLng };
     return { mapCenter, zoom };
   };
-  const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
+  const { setDropOff, setPickUp, pickupLocation, dropoffLocation, setPickupAddress, setDropoffAddress } = props;
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
   const [dropoffSearchBox, setDropoffSearchBox] = useState("");
@@ -209,6 +209,7 @@ function GoogleMap(props) {
           lat: latLng.lat,
           lng: latLng.lng,
         });
+        setPickupAddress(pickupAddress);
         setpickupSearchBox(pickupAddress);
       })
       .catch((error) => console.error("Error", error));
@@ -247,6 +248,7 @@ function GoogleMap(props) {
           lat: latLng.lat,
           lng: latLng.lng,
         });
+        setDropoffAddress(dropoffAddress);
       });
     if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
@@ -257,6 +259,7 @@ function GoogleMap(props) {
     const updatedLng = latLng.lng();
     const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
     setpickupSearchBox(addr);
+    setPickupAddress(addr);
 
     setState({
       ...state,
@@ -280,6 +283,7 @@ function GoogleMap(props) {
     const updatedLng = latLng.lng();
     const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
     setDropoffSearchBox(addr);
+    setDropoffAddress(addr);
     setState({
       ...state,
       dropoffMarker: {
