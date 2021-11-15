@@ -162,7 +162,7 @@ function ViewStockManagementDetails() {
       {/* Only for printing */}
       <Box display="none" displayPrint="block" ref={componentRef}>
         <Box style={{ padding: "25mm 15mm" }}>
-          <img style={{ width: "12%", margin: "20px 0px" }} src={owareLogo} />
+          <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
           <Typography variant="h3">Stock Adjustment Details</Typography>
           <TableContainer className={classes.parentContainerForPrint}>
             <Table stickyHeader aria-label="sticky table">
