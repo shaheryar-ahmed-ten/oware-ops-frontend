@@ -1219,7 +1219,7 @@ function AddRideView() {
                     if (newValue) setProductCategoryId(newValue.id);
                   }}
                 />
-                {!(selectedRide && selectedRide.RideProducts) &&
+                {
                 validation.productCategoryId &&
                 !isRequired(productCategoryId) ? (
                   <Typography color="error">Product Category is required!</Typography>
@@ -1244,7 +1244,7 @@ function AddRideView() {
                 }}
                 onBlur={(e) => setValidation({ ...validation, productName: true })}
               />
-              {!(selectedRide && selectedRide.RideProducts) && validation.productName && !isRequired(productName) ? (
+              {validation.productName && !isRequired(productName) ? (
                 <Typography color="error">Product name is required!</Typography>
               ) : (
                 ""
@@ -1265,7 +1265,7 @@ function AddRideView() {
                 onChange={(e) => setProductQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, productQuantity: true })}
               />
-              {!(selectedRide && selectedRide.RideProducts) &&
+              {
               validation.productQuantity &&
               !isRequired(productQuantity) ? (
                 <Typography color="error">Product quantity is required!</Typography>
