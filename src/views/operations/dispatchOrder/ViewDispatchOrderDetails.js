@@ -79,7 +79,7 @@ function ViewDispatchOrderDetails() {
     <>
       <Box display="none" displayPrint="block" ref={componentRef}>
         <Box display="none" displayPrint="block" style={{ padding: "25mm 25mm 0mm 25mm" }}>
-          <img style={{ width: "12%", margin: "20px 0px" }} src={owareLogo} />
+          <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
           <Typography variant="h3">Dispatch Order</Typography>
         </Box>
         <Box display="none" displayPrint="block" style={{ padding: "10mm 25mm 0mm 25mm" }}>

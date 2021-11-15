@@ -140,7 +140,7 @@ function RideDetailsView(props) {
         <Box style={{ padding: "25mm 15mm" }}>
           <Grid container item xs={12} justifyContent="space-between">
             <Grid item xs={12}>
-              <img style={{ width: "12%", margin: "20px 0px" }} src={owareLogo} />
+              <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
               <Typography variant="h3" className={classes.heading}>
                 Ride Details
               </Typography>
