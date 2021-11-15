@@ -478,7 +478,7 @@ function OrderBulkUpload() {
                 across multiple dispatch orders.
               </Alert>
               <Alert severity="info" className={classes.guideLine}>
-                Order Memo field is <strong>optional</strong> and its limit cannot exceeds 1000 characters.
+                Order Memo field is optional and maximum 1000 characters are allowed.
               </Alert>
               <Alert severity="info" className={classes.guideLine}>
                 The template contains sample values for order rows which must be replaced with actual values before
