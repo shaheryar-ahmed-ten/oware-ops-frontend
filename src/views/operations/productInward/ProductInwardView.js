@@ -372,12 +372,14 @@ export default function ProductInwardView() {
     margin="dense"
   />
 
-  const headerButtons = [searchInput, daysSelect, addProductInwardButton, exportButton, deleteProductInwardModal];
+  const headerButtons = [addProductInwardButton, exportButton, deleteProductInwardModal];
+  const headerButtonsTwo = [searchInput, daysSelect]
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Inward" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -387,7 +389,7 @@ export default function ProductInwardView() {
                   align={column.align}
                   style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
                 >
-                  {column.label}
+                  {column.label.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>

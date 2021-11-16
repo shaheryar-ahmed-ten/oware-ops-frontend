@@ -291,13 +291,16 @@ export default function StockManagementView() {
     />
   </>
 
-  const headerButtons = [daysSelect, searchInput, addStockMangementButton];
+  const headerButtons = [addStockMangementButton];
+  const headerButtonsTwo = [searchInput, daysSelect];
 
   return (
     <>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
           <TableHeader title="Stock Adjustment" buttons={headerButtons} />
+          <TableHeader title="" buttons={headerButtonsTwo} />
+
           <Table aria-label="sticky table" >
             <TableHead>
               <TableRow>
@@ -307,7 +310,7 @@ export default function StockManagementView() {
                     align={column.align}
                     style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
                   >
-                    {column.label}
+                    {column.label.toUpperCase()}
                   </TableCell>
                 ))}
               </TableRow>

@@ -490,7 +490,7 @@ function RideDetailsView(props) {
                 <TableCell>{selectedRide.pickupCity.name || "-"}</TableCell>
                 <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
                 <TableCell>{selectedRide.dropoffCity.name || "-"}</TableCell>
-                <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
+                <TableCell>{selectedRide.dropoffAddress || "-"}</TableCell>
                 <TableCell>{dateFormat(selectedRide.pickupDate) || "-"}</TableCell>
                 <TableCell>{dateFormat(selectedRide.dropoffDate) || "-"}</TableCell>
               </TableRow>
