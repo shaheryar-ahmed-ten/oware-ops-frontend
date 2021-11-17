@@ -125,6 +125,7 @@ export default function AddCompanyView({
       isActive,
     };
     setValidation({
+      pocUserId: true,
       name: true,
       internalIdForBusiness: true,
       contactId: true,
@@ -136,7 +137,7 @@ export default function AddCompanyView({
 
     if (
       isRequired(name) &&
-      // && isRequired(internalIdForBusiness)
+      isRequired(pocUserId) &&
       isRequired(contactId) &&
       (relationType == "VENDOR" || isRequired(type)) &&
       isRequired(relationType) &&
@@ -367,7 +368,7 @@ export default function AddCompanyView({
                   </FormControl>
                 </Grid>
               </Grid>
-              {selectedCompany ? (
+              {selectedCompany && relationType == "CUSTOMER" ? (
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -385,7 +386,12 @@ export default function AddCompanyView({
                         }}
                         onBlur={(e) => setValidation({ ...validation, pocUserId: true })}
                         onChange={(event, newValue) => {
-                          if (newValue) setPocUserId(newValue.id);
+                          console.log("newValue", newValue);
+                          if (newValue) {
+                            setPocUserId(newValue.id);
+                          } else {
+                            setPocUserId(null);
+                          }
                         }}
                         defaultValue={
                           !!selectedCompany
@@ -396,7 +402,7 @@ export default function AddCompanyView({
                             : ""
                         }
                       />
-                      {validation.contactId && !isRequired(contactId) ? (
+                      {validation.pocUserId && !isRequired(pocUserId) ? (
                         <Typography color="error">POC User is required!</Typography>
                       ) : (
                         ""
