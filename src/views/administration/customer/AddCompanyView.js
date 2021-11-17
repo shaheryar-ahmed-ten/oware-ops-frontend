@@ -377,18 +377,19 @@ export default function AddCompanyView({
                         options={pocUsers}
                         renderInput={(params) => <TextField {...params} label="POCUser*" variant="outlined" />}
                         getOptionLabel={(user) => {
-                          return user && user.name
-                            ? user.name
-                            : user.firstName && user.lastName
-                            ? `${user.firstName} ${user.lastName}`
-                            : "";
+                          if (user)
+                            return user && user.name
+                              ? user.name
+                              : user.firstName && user.lastName
+                              ? `${user.firstName} ${user.lastName}`
+                              : "";
                         }}
                         onBlur={(e) => setValidation({ ...validation, pocUserId: true })}
                         onChange={(event, newValue) => {
                           if (newValue) setPocUserId(newValue.id);
                         }}
                         defaultValue={
-                          !!selectedCompany
+                          !!selectedCompany && selectedCompany.pocUser
                             ? {
                                 name: `${selectedCompany.pocUser.firstName} ${selectedCompany.pocUser.lastName}`,
                                 id: selectedCompany.pocUser.id,
