@@ -168,23 +168,27 @@ export default function CompanyView({ relationType }) {
     let apiPromise = null;
     if (!selectedCompany) apiPromise = axios.post(getURL(`company/${relationType}`), data);
     else apiPromise = axios.put(getURL(`company/${relationType}/${selectedCompany.id}`), data);
-    apiPromise.then((res) => {
-      if (!res.data.success) {
-        setFormErrors(
-          <Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors("")}>
-            {res.data.message}
-          </Alert>
-        );
-        return;
-      }
-      setShowMessage({
-        message: `${relationType == "CUSTOMER" ? ` Company` : ` Vendor`} has been ${
-          !!selectedCompany ? "updated" : "created"
-        }.`,
+    apiPromise
+      .then((res) => {
+        if (!res.data.success) {
+          setFormErrors(
+            <Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors("")}>
+              {res.data.message}
+            </Alert>
+          );
+          return;
+        }
+        setShowMessage({
+          message: `${relationType == "CUSTOMER" ? ` Company` : ` Vendor`} has been ${
+            !!selectedCompany ? "updated" : "created"
+          }.`,
+        });
+        closeAddCompanyView();
+        getCompanies();
+      })
+      .catch((error) => {
+        console.log("error", error);
       });
-      closeAddCompanyView();
-      getCompanies();
-    });
   };
 
   const deleteCompany = (data) => {
