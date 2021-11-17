@@ -763,6 +763,22 @@ function AddRideView() {
               Pickup & Drop-off
             </Typography>
           </Grid>
+          <Grid
+            item
+            sm={12}
+            className={classes.locationMap}
+            style={{ position: "relative", minHeight: 350, marginBottom: 30, maxWidth: "98%" }}
+          >
+            <GoogleMap
+              setDropOff={setDropOff}
+              setPickUp={setPickUp}
+              pickupLocation={selectedRide ? selectedRide.pickupLocation : ""}
+              dropoffLocation={selectedRide ? selectedRide.dropoffLocation : ""}
+              showMapSearchFields={true}
+              setPickupAddress={setPickupAddress}
+              setDropoffAddress={setDropoffAddress}
+            />
+          </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
           <Grid item sm={6}>
@@ -847,22 +863,6 @@ function AddRideView() {
             ) : (
               ""
             )} */}
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            className={classes.locationMap}
-            style={{ position: "relative", minHeight: 350, marginBottom: 30, maxWidth: "98%" }}
-          >
-            <GoogleMap
-              setDropOff={setDropOff}
-              setPickUp={setPickUp}
-              pickupLocation={selectedRide ? selectedRide.pickupLocation : ""}
-              dropoffLocation={selectedRide ? selectedRide.dropoffLocation : ""}
-              showMapSearchFields={true}
-              setPickupAddress={setPickupAddress}
-              setDropoffAddress={setDropoffAddress}
-            />
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
@@ -1219,9 +1219,7 @@ function AddRideView() {
                     if (newValue) setProductCategoryId(newValue.id);
                   }}
                 />
-                {
-                validation.productCategoryId &&
-                !isRequired(productCategoryId) ? (
+                {validation.productCategoryId && !isRequired(productCategoryId) ? (
                   <Typography color="error">Product Category is required!</Typography>
                 ) : (
                   ""
@@ -1265,9 +1263,7 @@ function AddRideView() {
                 onChange={(e) => setProductQuantity(e.target.value < 0 ? e.target.value == 0 : e.target.value)}
                 onBlur={(e) => setValidation({ ...validation, productQuantity: true })}
               />
-              {
-              validation.productQuantity &&
-              !isRequired(productQuantity) ? (
+              {validation.productQuantity && !isRequired(productQuantity) ? (
                 <Typography color="error">Product quantity is required!</Typography>
               ) : (
                 ""

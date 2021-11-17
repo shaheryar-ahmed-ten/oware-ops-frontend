@@ -69,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
     transition: ".1s",
     outline: "none",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.05)",
+    position: "relative",
+    bottom: "200px",
   },
 }));
 
@@ -386,7 +388,10 @@ function GoogleMap(props) {
                   className={classes.placeInput}
                   value={pickupSearchBox}
                 />
-                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                <div
+                  className="autocomplete-dropdown-container"
+                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                >
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
                     const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
@@ -436,7 +441,10 @@ function GoogleMap(props) {
                   className={classes.placeInput}
                   value={dropoffSearchBox}
                 />
-                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                <div
+                  className="autocomplete-dropdown-container"
+                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                >
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
                     const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";

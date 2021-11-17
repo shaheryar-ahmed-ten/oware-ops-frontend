@@ -236,24 +236,6 @@ function RideDetailsView(props) {
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
                 {dateFormat(selectedRide.dropoffDate) || "-"}
               </Grid>
-              {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-                <>
-                  <Grid item style={{ fontWeight: 500 }} xs={3}>
-                    Map Pickup Pin Address :
-                  </Grid>
-                  <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                    {mapPickupAddress || "-"}
-                  </Grid>
-                  <Grid item style={{ fontWeight: 500 }} xs={3}>
-                    Map Dropoff Pin Address :
-                  </Grid>
-                  <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                    {mapDropoffAddress || "-"}
-                  </Grid>
-                </>
-              ) : (
-                ""
-              )}
             </Grid>
             {/* {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
             <Grid container spacing={2}>
