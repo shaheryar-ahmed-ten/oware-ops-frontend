@@ -137,7 +137,6 @@ export default function AddCompanyView({
 
     if (
       isRequired(name) &&
-      isRequired(pocUserId) &&
       isRequired(contactId) &&
       (relationType == "VENDOR" || isRequired(type)) &&
       isRequired(relationType) &&
