@@ -142,7 +142,7 @@ export default function ProductInwardView() {
       format: dateFormat
     }, {
       id: 'actions',
-      label: '',
+      label: 'ACTIONS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) =>
