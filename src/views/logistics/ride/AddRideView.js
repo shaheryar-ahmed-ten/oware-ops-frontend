@@ -345,6 +345,8 @@ function AddRideView() {
     };
 
     setValidation({
+      pickupAddress: true,
+      dropoffAddress: true,
       status: true,
       customerId: true,
       vehicleId: true,
@@ -378,6 +380,8 @@ function AddRideView() {
     });
 
     if (
+      isRequired(pickupAddress) &&
+      isRequired(dropoffAddress) &&
       isRequired(vehicleId) &&
       (status === "UNASSIGNED" || isRequired(driverId)) &&
       isRequired(customerId) &&
@@ -415,6 +419,8 @@ function AddRideView() {
       if (status === "INPROGRESS" && !isRequired(eta) && !isRequired(currentLocation)) return;
 
       if (status === "COMPLETED" && !isRequired(completionTime)) return;
+
+      if (!isRequired(pickupAddress) && !isRequired(dropoffAddress)) return;
 
       if (!isNotEmptyArray(products)) return;
 
@@ -816,11 +822,11 @@ function AddRideView() {
               onChange={(e) => setPickupAddress(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, pickupAddress: true })}
             />
-            {/* {validation.pickupAddress && !isRequired(pickupAddress) ? (
+            {validation.pickupAddress && !isRequired(pickupAddress) ? (
               <Typography color="error">Pickup address is required!</Typography>
             ) : (
               ""
-            )} */}
+            )}
           </Grid>
 
           <Grid item sm={6}>
@@ -858,11 +864,11 @@ function AddRideView() {
               onChange={(e) => setDropoffAddress(e.target.value)}
               onBlur={(e) => setValidation({ ...validation, dropoffAddress: true })}
             />
-            {/* {validation.dropoffAddress && !isRequired(dropoffAddress) ? (
+            {validation.dropoffAddress && !isRequired(dropoffAddress) ? (
               <Typography color="error">Dropoff address is required!</Typography>
             ) : (
               ""
-            )} */}
+            )}
           </Grid>
         </Grid>
         <Grid container item xs={12} spacing={3}>
