@@ -11,7 +11,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { getURL, SharedContext } from '../../utils/common';
 import { getUserToken, setUser, setUserToken } from '../../utils/auth';
-import Logo from '../../components/Logo';
+// import Logo from '../../components/Logo';
+import OwareLogo from '../../assets/icons/oware-logo-black.png'
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -134,7 +135,7 @@ export default function LoginView({ }) {
       <Grid>
         <Paper elevation={0} className={classes.paperStyle}>
           <Grid align="center">
-            <Logo variant="h1" />
+            <img src={OwareLogo} alt="Logo" width="300px" height="80px"/>
           </Grid>
           {formErrors}
           <Box mt={4}>
