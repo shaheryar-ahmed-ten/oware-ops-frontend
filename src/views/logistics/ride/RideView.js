@@ -191,7 +191,7 @@ export default function RideView() {
     },
     {
       id: "actions",
-      label: "",
+      label: "ACTIONS",
       minWidth: 120,
       className: "",
       format: (value, entity) => [
