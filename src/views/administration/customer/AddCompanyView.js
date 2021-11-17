@@ -72,6 +72,7 @@ export default function AddCompanyView({
 
   useEffect(() => {
     if (!!selectedCompany) {
+      setPocUserId(selectedCompany.pocUserId);
       // will work on edit
       setName(selectedCompany.name || "");
       // setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
@@ -403,11 +404,6 @@ export default function AddCompanyView({
                             : ""
                         }
                       />
-                      {validation.pocUserId && !isRequired(pocUserId) ? (
-                        <Typography color="error">POC User is required!</Typography>
-                      ) : (
-                        ""
-                      )}
                     </FormControl>
                   </Grid>
                 </Grid>
