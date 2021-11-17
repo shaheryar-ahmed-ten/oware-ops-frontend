@@ -72,6 +72,7 @@ export default function AddCompanyView({
 
   useEffect(() => {
     if (!!selectedCompany) {
+      setPocUserId(selectedCompany.pocUserId);
       // will work on edit
       setName(selectedCompany.name || "");
       // setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
@@ -146,9 +147,11 @@ export default function AddCompanyView({
       if (logoImage) {
         [newCompany.logoId] = await upload([logoImage], "customer");
       }
-      setSelectedCompanyTempLogoId(null);
-      addCompany(newCompany);
-      resetStates();
+      if ((pocUserId && isActive === true) || isActive === false || relationType == "VENDOR") {
+        setSelectedCompanyTempLogoId(null);
+        addCompany(newCompany);
+        resetStates();
+      }
     }
   };
 
@@ -386,7 +389,6 @@ export default function AddCompanyView({
                         }}
                         onBlur={(e) => setValidation({ ...validation, pocUserId: true })}
                         onChange={(event, newValue) => {
-                          console.log("newValue", newValue);
                           if (newValue) {
                             setPocUserId(newValue.id);
                           } else {
@@ -402,8 +404,8 @@ export default function AddCompanyView({
                             : ""
                         }
                       />
-                      {validation.pocUserId && !isRequired(pocUserId) ? (
-                        <Typography color="error">POC User is required!</Typography>
+                      {validation.pocUserId && pocUserId === null && isActive === true ? (
+                        <Typography color="error">POC user is required when company is active!</Typography>
                       ) : (
                         ""
                       )}
