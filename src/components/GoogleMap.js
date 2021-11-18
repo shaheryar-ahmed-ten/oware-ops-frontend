@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
-import dropoffIcon from "../assets/mapicon/darkgreen_MarkerD.png";
-import pickupIcon from "../assets/mapicon/red_MarkerP.png";
+import dropoffIcon from "../assets/icons/mapicon/darkgreen_MarkerD.png";
+import pickupIcon from "../assets/icons/mapicon/red_MarkerP.png";
 import Geocode from "react-geocode";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
@@ -69,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
     transition: ".1s",
     outline: "none",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.05)",
+    position: "relative",
+    bottom: "200px",
   },
 }));
 
@@ -114,7 +116,7 @@ function GoogleMap(props) {
     const mapCenter = { lat: midPointLat, lng: midPointLng };
     return { mapCenter, zoom };
   };
-  const { setDropOff, setPickUp, pickupLocation, dropoffLocation } = props;
+  const { setDropOff, setPickUp, pickupLocation, dropoffLocation, setPickupAddress, setDropoffAddress } = props;
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
   const [dropoffSearchBox, setDropoffSearchBox] = useState("");
@@ -126,7 +128,7 @@ function GoogleMap(props) {
       const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
       zoom = calc.zoom;
       mapCenter = calc.mapCenter;
-      setState({ ...state, zoom, mapCenter })
+      setState({ ...state, zoom, mapCenter });
 
       Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
         .then((addresses) => addresses.results[0].formatted_address)
@@ -139,7 +141,7 @@ function GoogleMap(props) {
           setDropoffSearchBox(result);
         });
     }
-  }, [])
+  }, []);
 
   const [state, setState] = useState({
     pickupMarker: {
@@ -153,9 +155,9 @@ function GoogleMap(props) {
     mapCenter: mapCenter
       ? mapCenter
       : {
-        lat: 30.2919928,
-        lng: 64.8560693,
-      },
+          lat: 30.2919928,
+          lng: 64.8560693,
+        },
     zoom: zoom ? zoom : 5.5,
   });
 
@@ -200,15 +202,16 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-              lat: latLng.lat,
-              lng: latLng.lng,
-            },
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
           zoom: zoom ? zoom : 14,
         });
         setPickUp({
           lat: latLng.lat,
           lng: latLng.lng,
         });
+        setPickupAddress(pickupAddress);
         setpickupSearchBox(pickupAddress);
       })
       .catch((error) => console.error("Error", error));
@@ -237,9 +240,9 @@ function GoogleMap(props) {
           mapCenter: mapCenter
             ? mapCenter
             : {
-              lat: latLng.lat,
-              lng: latLng.lng,
-            },
+                lat: latLng.lat,
+                lng: latLng.lng,
+              },
           zoom: zoom ? zoom : 14,
         });
 
@@ -247,6 +250,7 @@ function GoogleMap(props) {
           lat: latLng.lat,
           lng: latLng.lng,
         });
+        setDropoffAddress(dropoffAddress);
       });
     if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
@@ -257,6 +261,7 @@ function GoogleMap(props) {
     const updatedLng = latLng.lng();
     const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
     setpickupSearchBox(addr);
+    setPickupAddress(addr);
 
     setState({
       ...state,
@@ -280,6 +285,7 @@ function GoogleMap(props) {
     const updatedLng = latLng.lng();
     const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
     setDropoffSearchBox(addr);
+    setDropoffAddress(addr);
     setState({
       ...state,
       dropoffMarker: {
@@ -382,24 +388,27 @@ function GoogleMap(props) {
                   className={classes.placeInput}
                   value={pickupSearchBox}
                 />
-                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                <div
+                  className="autocomplete-dropdown-container"
+                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                >
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
                     const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                        backgroundColor: "#fafafa",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      }
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
                       : {
-                        backgroundColor: "#ffffff",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      };
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {
@@ -432,24 +441,27 @@ function GoogleMap(props) {
                   className={classes.placeInput}
                   value={dropoffSearchBox}
                 />
-                <div className="autocomplete-dropdown-container" style={{ overflowY: "auto", maxHeight: 150 }}>
+                <div
+                  className="autocomplete-dropdown-container"
+                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                >
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
                     const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {
-                        backgroundColor: "#fafafa",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      }
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
                       : {
-                        backgroundColor: "#ffffff",
-                        cursor: "pointer",
-                        borderBottom: "1px solid black",
-                        padding: "5px 5px",
-                      };
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
                     return (
                       <div
                         {...getSuggestionItemProps(suggestion, {

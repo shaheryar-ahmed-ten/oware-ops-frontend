@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   makeStyles,
   Paper,
@@ -12,22 +12,29 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography
+  Typography,
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  Select,
+  TextField,
+  ListItem,
+  DialogTitle,
+  Dialog,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL, digitize, dateFormat } from '../../../utils/common';
+import { getURL, dateFormat, dividerDateFormatForFilter } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
-import AddProductInwardView from './AddProductInwardView';
 import { debounce } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import InwardProductDetailsView from './InwardProductDetailsView';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
 import { useNavigate } from 'react-router';
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,8 +53,19 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 4,
     opacity: 0.6,
     padding: '0px 8px',
-    marginRight: 7,
+    marginRight: 5,
     height: 30,
+  },
+  exportBtn: {
+    marginLeft: 5
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    '& .MuiSelect-outlined': {
+      paddingTop: '6px',
+      paddingBottom: '6px',
+    },
+    marginRight: 5
   },
 }));
 
@@ -65,10 +83,10 @@ export default function ProductInwardView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.internalIdForBusiness}`} classes={{ tooltip: classes.customWidth }}>
-          <Typography>
-            {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
-          </Typography>
-        </Tooltip>
+            <Typography>
+              {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+            </Typography>
+          </Tooltip>
         )
       },
     },
@@ -80,13 +98,13 @@ export default function ProductInwardView() {
       format: (value, entity) => {
         return (
           <Tooltip title={`${entity.Company.name}`}>
-          <Typography>
-            {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
-          </Typography>
-        </Tooltip>
+            <Typography>
+              {entity.Company.name.length > 20 ? `${entity.Company.name.substring(0, 20)}...` : entity.Company.name}
+            </Typography>
+          </Tooltip>
         )
       },
-      
+
     },
     {
       id: 'Warehouse.name',
@@ -124,7 +142,7 @@ export default function ProductInwardView() {
       format: dateFormat
     }, {
       id: 'actions',
-      label: '',
+      label: 'ACTIONS',
       minWidth: 'auto',
       className: '',
       format: (value, entity) =>
@@ -142,13 +160,32 @@ export default function ProductInwardView() {
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [productInwards, setProductInwards] = useState([]);
-
-
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedProductInward, setSelectedProductInward] = useState(null);
   const [formErrors, setFormErrors] = useState('');
   const [deleteProductInwardViewOpen, setDeleteProductInwardViewOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
 
   const deleteProductInward = data => {
     axios.delete(getURL(`product-inward/${selectedProductInward.id}`))
@@ -162,36 +199,56 @@ export default function ProductInwardView() {
       });
   };
 
-
   const openDeleteView = productInward => {
     setSelectedProductInward(productInward);
     setDeleteProductInwardViewOpen(true);
   }
-
 
   const closeDeleteProductInwardView = () => {
     setSelectedProductInward(null);
     setDeleteProductInwardViewOpen(false);
   }
 
+  const _getProductInwards = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
 
-  const _getProductInwards = (page, searchKeyword) => {
-    axios.get(getURL('product-inward'), { params: { page, search: searchKeyword } })
+    axios.get(getURL('product-inward'), {
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
+    })
       .then(res => {
         setPageCount(res.data.pages)
         setProductInwards(res.data.data)
       });
   }
 
-  const getProductInwards = useCallback(debounce((page, searchKeyword) => {
-    _getProductInwards(page, searchKeyword);
+  const getProductInwards = useCallback(debounce((page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+    _getProductInwards(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
   }, DEBOUNCE_CONST), []);
 
-
   useEffect(() => {
-    getProductInwards(page, searchKeyword);
-  }, [page, searchKeyword]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getProductInwards(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedDay, reRender]);
 
+  const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL('product-inward/export'), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, `ProductInwards ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -204,6 +261,7 @@ export default function ProductInwardView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
   const addProductInwardButton = <Button
     key={2}
     variant="contained"
@@ -224,13 +282,104 @@ export default function ProductInwardView() {
     title={"ProductInward"}
   />
 
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
 
-  const headerButtons = [searchInput, addProductInwardButton, deleteProductInwardModal];
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  }
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
+    setPage(1)
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = <FormControl className={classes.formControl}>
+    <Select
+      value={selectedDay}
+      variant="outlined"
+      onChange={handleChange}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      className={classes.placeholderText}
+      startAdornment={
+        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
+          <CalendarTodayOutlinedIcon fontSize="small" />
+        </InputAdornment>
+      }
+      onOpen={() => setTrackDateFilterOpen(true)}
+      onClose={() => setTrackDateFilterOpen(false)}
+    >
+      <MenuItem value={null} disabled>
+        <span className={classes.dropdownListItem}>Select Days</span>
+      </MenuItem>
+      {
+        [{ name: 'All' }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+            </MenuItem>
+          )
+        })
+      }
+      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+      </MenuItem>
+    </Select>
+  </FormControl>
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+
+  const headerButtons = [addProductInwardButton, exportButton, deleteProductInwardModal];
+  const headerButtonsTwo = [searchInput, daysSelect]
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Product Inward" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -240,7 +389,7 @@ export default function ProductInwardView() {
                   align={column.align}
                   style={{ minWidth: column.minWidth, background: 'transparent', fontWeight: 'bolder', fontSize: '12px' }}
                 >
-                  {column.label}
+                  {column.label.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>
@@ -280,6 +429,27 @@ export default function ProductInwardView() {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} />
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={'startDate'}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={'startDate'}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+              setReRender(!reRender)
+            }}>
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
     </Paper>
   );
 }

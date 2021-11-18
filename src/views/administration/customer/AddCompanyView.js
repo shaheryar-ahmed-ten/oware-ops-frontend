@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   makeStyles,
   Grid,
@@ -13,115 +13,147 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
-  Typography
-} from '@material-ui/core'
-import DeleteSharpIcon from '@material-ui/icons/DeleteSharp';
-import { isChar, isPhone, isRequired } from '../../../utils/validators';
-import { upload } from '../../../utils/upload';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { getURL } from '../../../utils/common';
-import { Autocomplete } from '@material-ui/lab';
-import MaskedInput from 'react-text-mask';
-import clsx from 'clsx';
-
+  Typography,
+} from "@material-ui/core";
+import DeleteSharpIcon from "@material-ui/icons/DeleteSharp";
+import { isChar, isPhone, isRequired } from "../../../utils/validators";
+import { upload } from "../../../utils/upload";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import { getURL } from "../../../utils/common";
+import { Autocomplete } from "@material-ui/lab";
+import MaskedInput from "react-text-mask";
+import clsx from "clsx";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   textBox: {
-    height: 34
+    height: 34,
   },
   labelBox: {
     "& label": {
-      paddingTop: 7
-    }
-  }
+      paddingTop: 7,
+    },
+  },
 }));
 
-export default function AddCompanyView({ relationType, addCompany, users, customerTypes, open, handleClose, selectedCompany, formErrors, removeLogoId, isEdit }) {
+export default function AddCompanyView({
+  relationType,
+  addCompany,
+  users,
+  customerTypes,
+  open,
+  handleClose,
+  selectedCompany,
+  formErrors,
+  removeLogoId,
+  isEdit,
+}) {
   const [validation, setValidation] = useState({});
-  const [name, setName] = useState('');
-  const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
-  const [contactId, setContactId] = useState('');
+  const [name, setName] = useState("");
+  // const [internalIdForBusiness, setInternalIdForBusiness] = useState('');
+  const [contactId, setContactId] = useState("");
   const classes = useStyles();
 
-  const [type, setType] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [contactPhone, setContactPhone] = useState('');
-  const [notes, setNotes] = useState('');
-  const [isActive, setActive] = useState(true);
+  const [type, setType] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [isActive, setActive] = useState(false);
   const [logoImage, setLogoImage] = useState(null);
   const [logoImageSrc, setLogoImageSrc] = useState(null);
   const [logoDimension, setLogoDimension] = useState(false);
   const [logoType, setLogoType] = useState(false);
   const [logoSize, setLogoSize] = useState(false);
-
-
-  const [selectedCompanyTempLogoId, setSelectedCompanyTempLogoId] = useState(null)
-  const [explicitReRender, setExplicitReRender] = useState(false)
-
-  const [companyPhone, setCompanyPhone] = useState('')
+  const [selectedCompanyTempLogoId, setSelectedCompanyTempLogoId] = useState(null);
+  const [explicitReRender, setExplicitReRender] = useState(false);
+  const [companyPhone, setCompanyPhone] = useState("");
+  const [pocUsers, setPocUsers] = useState([]);
+  const [pocUserId, setPocUserId] = useState();
 
   useEffect(() => {
     if (!!selectedCompany) {
+      setPocUserId(selectedCompany.pocUserId);
       // will work on edit
-      setName(selectedCompany.name || '');
-      setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
-      setType(selectedCompany.type || '');
-      setContactId(selectedCompany.contactId || '');
-      setNotes(selectedCompany.notes || '');
+      setName(selectedCompany.name || "");
+      // setInternalIdForBusiness(selectedCompany.internalIdForBusiness || '');
+      setType(selectedCompany.type || "");
+      setContactId(selectedCompany.contactId || "");
+      setNotes(selectedCompany.notes || "");
       setActive(!!selectedCompany.isActive);
-      setCompanyPhone(selectedCompany.phone || '')
-      selectedCompany.logoId = !selectedCompany.logoId ? selectedCompanyTempLogoId : selectedCompany.logoId
-      { selectedCompany && selectedCompany.logoId ? setLogoImageSrc(getURL('preview', selectedCompany.logoId)) : setLogoImageSrc(null) }
+      setCompanyPhone(selectedCompany.phone || "");
+      selectedCompany.logoId = !selectedCompany.logoId ? selectedCompanyTempLogoId : selectedCompany.logoId;
+      {
+        selectedCompany && selectedCompany.logoId
+          ? setLogoImageSrc(getURL("preview", selectedCompany.logoId))
+          : setLogoImageSrc(null);
+      }
     } else {
-      setName('');
-      setInternalIdForBusiness('');
-      setType('');
-      setContactId('');
-      setNotes('');
-      setLogoImageSrc('');
-      setActive(true);
+      setName("");
+      // setInternalIdForBusiness('');
+      setType("");
+      setContactId("");
+      setNotes("");
+      setLogoImageSrc("");
+      setActive(false);
     }
   }, [selectedCompany, explicitReRender]);
 
   useEffect(() => {
-    if (relationType == 'VENDOR') setType(null);
+    if (relationType == "VENDOR") setType(null);
   }, [relationType]);
+
+  useEffect(() => {
+    if (!!selectedCompany) {
+      axios.get(getURL(`company/poc-users/${selectedCompany.id}`)).then((res) => {
+        setPocUsers(res.data.data);
+      });
+    }
+  }, [selectedCompany]);
 
   const handleSubmit = async () => {
     const newCompany = {
       name,
-      internalIdForBusiness,
+      // internalIdForBusiness,
       contactId,
+      pocUserId,
       relationType,
       type,
       contactEmail,
       contactPhone,
-      logoId: selectedCompany && selectedCompany.logoId || logoImage || null,
+      logoId: (selectedCompany && selectedCompany.logoId) || logoImage || null,
       notes,
-      phone: companyPhone.replace(/-/g, ''),
-      isActive
-    }
+      phone: companyPhone.replace(/-/g, ""),
+      isActive,
+    };
     setValidation({
+      pocUserId: true,
       name: true,
       internalIdForBusiness: true,
       contactId: true,
       relationType: true,
       // logoImage: true,
-      type: relationType == 'CUSTOMER',
-      companyPhone: true
+      type: relationType == "CUSTOMER",
+      companyPhone: true,
     });
-    if (isRequired(name)
-      && isRequired(internalIdForBusiness)
-      && isRequired(contactId)
-      && (relationType == 'VENDOR' || isRequired(type))
-      && isRequired(relationType)) {
 
-      if (logoImage) [newCompany.logoId] = await upload([logoImage], 'customer');
-
-      setSelectedCompanyTempLogoId(null);
-      addCompany(newCompany);
+    if (
+      isRequired(name) &&
+      isRequired(contactId) &&
+      (relationType == "VENDOR" || isRequired(type)) &&
+      isRequired(relationType) &&
+      ((relationType != "VENDOR" && isRequired(companyPhone) && isPhone(companyPhone.replace(/-/g, ""))) ||
+        relationType == "VENDOR")
+    ) {
+      if (logoImage) {
+        [newCompany.logoId] = await upload([logoImage], "customer");
+      }
+      if ((pocUserId && isActive === true) || isActive === false || relationType == "VENDOR") {
+        setSelectedCompanyTempLogoId(null);
+        addCompany(newCompany);
+        resetStates();
+      }
     }
-  }
+  };
 
   const newValidateLogoImage = (event) => {
     const checkFile = event.target.files[0];
@@ -139,123 +171,140 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
     }
     const reader = new FileReader();
     checkFile && reader.readAsDataURL(checkFile);
-    reader.addEventListener('load', event => {
+    reader.addEventListener("load", (event) => {
       const _loadedImageUrl = event.target.result;
-      const image = document.createElement('img');
+      const image = document.createElement("img");
       image.src = _loadedImageUrl;
-      image.addEventListener('load', () => {
+      image.addEventListener("load", () => {
         const { width, height } = image;
         if (image && width > 142 && height > 37) {
           setLogoDimension(true);
           setLogoImageSrc(null);
           setLogoImage(null);
           return false;
-        }
-        else {
+        } else {
           setLogoImageSrc(_loadedImageUrl);
           const logoFile = checkFile ? checkFile : null;
-          setLogoImage(logoFile)
+          setLogoImage(logoFile);
         }
       });
-    })
-  }
+    });
+  };
+
+  const resetStates = () => {
+    setName("");
+    setType("");
+    setContactId("");
+    setNotes("");
+    setActive(true);
+    setCompanyPhone("");
+    setLogoImage(null);
+    // setValidation('');
+  };
 
   const removePreviewId = (event) => {
     setLogoImage(null);
     setLogoImageSrc(null);
     // setCurrentFileName(null)
-    setSelectedCompanyTempLogoId(selectedCompany.logoId)
+    setSelectedCompanyTempLogoId(selectedCompany.logoId);
     selectedCompany.logoId = null;
-  }
+  };
 
-  const phoneNumberMask = [
-    /[0-9]/,
-    /\d/,
-    /\d/,
-    /\d/,
-    "-",
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/
-  ];
+  const phoneNumberMask = [/[0-9]/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
-          setValidation('')
-        }}>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+          onBackdropClick={() => {
+            // setValidation('');
+            resetStates();
+            setValidation("");
+          }}
+        >
           <DialogTitle>
-            {!selectedCompany ? `Add ` : `Edit `}{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}
+            {!selectedCompany ? `Add ` : `Edit `}
+            {relationType == "CUSTOMER" ? "Company" : "Vendor"}
           </DialogTitle>
           <DialogContent>
             {formErrors}
             <Grid container>
               <Grid container spacing={2}>
-                <Grid item sm={6}>
+                <Grid item sm={12}>
                   <TextField
                     fullWidth={true}
                     inputProps={{ className: classes.textBox }}
                     className={classes.labelBox}
                     margin="dense"
                     id="name"
-                    label={relationType == 'CUSTOMER' ? ` Company Name*` : ` Vendor Name*`}
+                    label={relationType == "CUSTOMER" ? ` Company Name*` : ` Vendor Name*`}
                     type="text"
                     variant="outlined"
                     value={name}
-                    onChange={e => setName(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, name: true })}
+                    onChange={(e) => setName(e.target.value)}
+                    onBlur={(e) => setValidation({ ...validation, name: true })}
                   />
-                  {validation.name && !isRequired(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is required!</Typography> : ''}
-                  {validation.name && !isChar(name) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} name is only characters!</Typography> : ''}
-
+                  {validation.name && !isRequired(name) ? (
+                    <Typography color="error">
+                      {relationType == "CUSTOMER" ? "Company" : "Vendor"} name is required!
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
+                  {validation.name && !isChar(name) ? (
+                    <Typography color="error">
+                      {relationType == "CUSTOMER" ? "Company" : "Vendor"} name is only characters!
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
                 </Grid>
-                <Grid item sm={6}>
-                  <TextField
-                    fullWidth={true}
-                    inputProps={{ className: classes.textBox }}
-                    className={classes.labelBox}
-                    margin="dense"
-                    id="internalIdForBusiness"
-                    label={relationType == 'CUSTOMER' ? ` Company ID*` : ` Vendor ID*`}
-                    type="text"
-                    variant="outlined"
-                    value={internalIdForBusiness}
-                    onChange={e => setInternalIdForBusiness(e.target.value)}
-                    onBlur={e => setValidation({ ...validation, internalIdForBusiness: true })}
-                  />
-                  {validation.internalIdForBusiness && !isRequired(internalIdForBusiness) ? <Typography color="error">{relationType == 'CUSTOMER' ? 'Company' : 'Vendor'} ID is required!</Typography> : ''}
-                </Grid>
-                {relationType == 'CUSTOMER' ?
-                <Grid item sm={12}>
-                  <MaskedInput
-                    className={clsx({ ["mask-text"]: true })}
-                    // guide={true}
-                    // showMask={true}
-                    variant="outlined"
-                    name="phone"
-                    mask={phoneNumberMask}
-                    label="Company Phone"
-                    id="companyPhone"
-                    type="text"
-                    value={companyPhone}
-                    placeholder="Company Phone(e.g 032*-*******)"
-                    onChange={e => {
-                      setCompanyPhone(e.target.value)
-                    }}
-                    style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)' }}
-                  // onBlur={e => setValidation({ ...validation, receiverPhone: true })}
-                  />
-                  {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, '')) ? <Typography color="error">Incorrect phone number!</Typography> : ''}
-                  {/* {validation.receiverPhone && !isRequired(receiverPhone) ? <Typography color="error">Receiver phone is required!</Typography> : <Typography color="error" style={{ visibility: 'hidden' }}>Dummy</Typography>} */}
-                </Grid>
-                :""}
+                {relationType == "CUSTOMER" ? (
+                  <Grid item sm={12}>
+                    <MaskedInput
+                      className={clsx({ ["mask-text"]: true })}
+                      // guide={true}
+                      // showMask={true}
+                      variant="outlined"
+                      name="phone"
+                      mask={phoneNumberMask}
+                      label="Company Phone"
+                      id="companyPhone"
+                      type="text"
+                      value={companyPhone}
+                      placeholder="Company Phone(e.g 032*-*******)"
+                      onChange={(e) => {
+                        setCompanyPhone(e.target.value);
+                      }}
+                      style={{
+                        padding: "22px 10px",
+                        color: "#2f2727",
+                        fontWeight: 600,
+                        borderColor: "rgba(0,0,0,0.3)",
+                      }}
+                      onBlur={(e) => setValidation({ ...validation, companyPhone: true })}
+                    />
+                    {validation.companyPhone &&
+                    !isRequired(companyPhone) &&
+                    !isPhone(companyPhone.replace(/-/g, "")) ? (
+                      <Typography color="error">Phone number must be provided!</Typography>
+                    ) : (
+                      ""
+                    )}
+                    {validation.companyPhone && isRequired(companyPhone) && !isPhone(companyPhone.replace(/-/g, "")) ? (
+                      <Typography color="error">Incorrect phone number!</Typography>
+                    ) : (
+                      ""
+                    )}
+                  </Grid>
+                ) : (
+                  ""
+                )}
               </Grid>
-              {relationType == 'CUSTOMER' ?
+              {relationType == "CUSTOMER" ? (
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -263,20 +312,28 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         id="customerTypes"
                         key={customerTypes}
                         options={customerTypes}
-                        defaultValue={type ? type : ''}
+                        defaultValue={type ? type : ""}
                         renderInput={(params) => <TextField {...params} label="Company Type" variant="outlined" />}
                         getOptionLabel={(customerType) => customerType || ""}
-                        onBlur={e => setValidation({ ...validation, type: true })}
+                        onBlur={(e) => setValidation({ ...validation, type: true })}
                         onChange={(event, newValue) => {
-                          if (newValue)
-                            setType(newValue)
+                          if (newValue) setType(newValue);
                         }}
                       />
-                      {validation.type && !isRequired(type) ? <Typography color="error"> {relationType == 'CUSTOMER' ? 'Company' : 'Vendor'}  type is required!</Typography> : ''}
+                      {validation.type && !isRequired(type) ? (
+                        <Typography color="error">
+                          {" "}
+                          {relationType == "CUSTOMER" ? "Company" : "Vendor"} type is required!
+                        </Typography>
+                      ) : (
+                        ""
+                      )}
                     </FormControl>
                   </Grid>
                 </Grid>
-                : ''}
+              ) : (
+                ""
+              )}
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -284,29 +341,81 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                       id="contactId"
                       key={users}
                       options={users}
-                      defaultValue={!!selectedCompany ? { name: `${selectedCompany.Contact.firstName} ${selectedCompany.Contact.lastName}`, id: selectedCompany.Contact.id } : ''}
+                      defaultValue={
+                        !!selectedCompany
+                          ? {
+                              name: `${selectedCompany.Contact.firstName} ${selectedCompany.Contact.lastName}`,
+                              id: selectedCompany.Contact.id,
+                            }
+                          : ""
+                      }
                       renderInput={(params) => <TextField {...params} label="Contact*" variant="outlined" />}
                       getOptionLabel={(user) => {
-                        return (
-                          user && user.name ?
-                            user.name
-                            :
-                            user.firstName && user.lastName ?
-                              `${user.firstName} ${user.lastName}`
-                              :
-                              ''
-                        )
+                        return user && user.name
+                          ? user.name
+                          : user.firstName && user.lastName
+                          ? `${user.firstName} ${user.lastName}`
+                          : "";
                       }}
-                      onBlur={e => setValidation({ ...validation, contactId: true })}
+                      onBlur={(e) => setValidation({ ...validation, contactId: true })}
                       onChange={(event, newValue) => {
-                        if (newValue)
-                          setContactId(newValue.id)
+                        if (newValue) setContactId(newValue.id);
                       }}
                     />
-                    {validation.contactId && !isRequired(contactId) ? <Typography color="error">Contact is required!</Typography> : ''}
+                    {validation.contactId && !isRequired(contactId) ? (
+                      <Typography color="error">Contact is required!</Typography>
+                    ) : (
+                      ""
+                    )}
                   </FormControl>
                 </Grid>
               </Grid>
+              {selectedCompany && relationType == "CUSTOMER" ? (
+                <Grid container spacing={2}>
+                  <Grid item sm={12}>
+                    <FormControl margin="dense" fullWidth={true} variant="outlined">
+                      <Autocomplete
+                        id="pocUserId"
+                        key={pocUsers}
+                        options={pocUsers}
+                        renderInput={(params) => <TextField {...params} label="POCUser*" variant="outlined" />}
+                        getOptionLabel={(user) => {
+                          if (user)
+                            return user && user.name
+                              ? user.name
+                              : user.firstName && user.lastName
+                              ? `${user.firstName} ${user.lastName}`
+                              : "";
+                        }}
+                        onBlur={(e) => setValidation({ ...validation, pocUserId: true })}
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            setPocUserId(newValue.id);
+                          } else {
+                            setPocUserId(null);
+                          }
+                        }}
+                        defaultValue={
+                          !!selectedCompany && selectedCompany.pocUser
+                            ? {
+                                name: `${selectedCompany.pocUser.firstName} ${selectedCompany.pocUser.lastName}`,
+                                id: selectedCompany.pocUser.id,
+                              }
+                            : ""
+                        }
+                      />
+                      {validation.pocUserId && pocUserId === null && isActive === true ? (
+                        <Typography color="error">POC user is required when company is active!</Typography>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              ) : (
+                ""
+              )}
+
               <Grid container spacing={2}>
                 <Grid item sm={12}>
                   <TextField
@@ -320,29 +429,30 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                     variant="outlined"
                     InputProps={{ inputProps: { maxLength: 1000 } }}
                     value={notes}
-                    onChange={e => setNotes(e.target.value)}
+                    onChange={(e) => setNotes(e.target.value)}
                   />
                   <Typography style={{ color: "#1d1d1d", fontSize: 12 }}>Max Length (1000 characters)</Typography>
                 </Grid>
               </Grid>
 
-
               <p>&nbsp;</p>
-              {relationType == 'CUSTOMER' ?
+              {relationType == "CUSTOMER" ? (
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
-                    <Typography color="#03a9f4"><strong>Note</strong>: Company logo needs to be 142 px x 37px or smaller. Size should be less than 1 MB. Only .jpg, .jpeg or .png formats are allowed.</Typography>
+                    <Typography color="#03a9f4">
+                      <strong>Note</strong>: Company logo needs to be 142 px x 37px or smaller. Size should be less than
+                      1 MB. Only .jpg, .jpeg or .png formats are allowed.
+                    </Typography>
                     <p>&nbsp;</p>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
                       <Button
                         variant="contained"
                         component="label"
-                        color={(logoImageSrc) ? 'primary' : 'default'}
+                        color={logoImageSrc ? "primary" : "default"}
                         startIcon={<CloudUploadIcon />}
                       >
-                        {relationType == 'CUSTOMER' ? ` Company Logo Image` : ` Vendor Logo Image`} {(logoImageSrc) ? 'Uploaded' : ''}
-
-
+                        {relationType == "CUSTOMER" ? ` Company Logo Image` : ` Vendor Logo Image`}{" "}
+                        {logoImageSrc ? "Uploaded" : ""}
                         <input
                           type="file"
                           hidden
@@ -352,61 +462,84 @@ export default function AddCompanyView({ relationType, addCompany, users, custom
                         />
                         {/* <img id="previewImage" src="#" alt="Company Logo" /> */}
                       </Button>
-                      {(logoSize == true) ? <Typography color="error">Logo image size should be less than 1 MB</Typography> : ''}
-                      {(logoType == true) ? <Typography color="error">Logo image accepted formats are .jpg, .jpeg or .png</Typography> : ''}
-                      {(logoDimension == true) ? <Typography color="error">Logo image dimensions should be 142 px x 37 px or smaller</Typography> : ''}
+                      {logoSize == true ? (
+                        <Typography color="error">Logo image size should be less than 1 MB</Typography>
+                      ) : (
+                        ""
+                      )}
+                      {logoType == true ? (
+                        <Typography color="error">Logo image accepted formats are .jpg, .jpeg or .png</Typography>
+                      ) : (
+                        ""
+                      )}
+                      {logoDimension == true ? (
+                        <Typography color="error">Logo image dimensions should be 142 px x 37 px or smaller</Typography>
+                      ) : (
+                        ""
+                      )}
                       {/* {!(selectedCompany && selectedCompany.logoId) && validation.logoImage && !isRequired(logoImage) ? <Typography color="error">Logo image is required!</Typography> : ''} */}
                     </FormControl>
 
-                    <Grid style={{ textAlign: 'center' }}>
-
-                      {!logoImageSrc ? '' :
+                    <Grid style={{ textAlign: "center" }}>
+                      {!logoImageSrc ? (
+                        ""
+                      ) : (
                         <Grid item xs={12} style={{ marginLeft: 380 }}>
-                          <DeleteSharpIcon
-                            onClick={() => removePreviewId()}
-                          />
+                          <DeleteSharpIcon onClick={() => removePreviewId()} />
                         </Grid>
-                      }
-                      {
-                        logoImageSrc ?
-                          <img id="previewImage" src={logoImageSrc} /> :
-                          null
-                      }
+                      )}
+                      {logoImageSrc ? <img id="previewImage" src={logoImageSrc} /> : null}
                     </Grid>
-
                   </Grid>
-
                 </Grid>
-                : ''}
-
-
-              <Grid container spacing={2}>
-                <Grid item sm={12}>
-                  <Checkbox
-                    checked={isActive}
-                    onChange={(e) => setActive(e.target.checked)}
-                    color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                  />
-                  Active
+              ) : (
+                ""
+              )}
+              {selectedCompany ? (
+                <Grid container spacing={2}>
+                  <Grid item sm={12}>
+                    <Checkbox
+                      checked={isActive}
+                      onChange={(e) => setActive(e.target.checked)}
+                      color="primary"
+                      inputProps={{ "aria-label": "secondary checkbox" }}
+                    />
+                    Active
+                  </Grid>
                 </Grid>
-              </Grid>
+              ) : (
+                ""
+              )}
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => {
-              setExplicitReRender(!explicitReRender);
-              setValidation('')
-              handleClose()
-            }
-            } color="default" variant="contained">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedCompany ? `Add ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}` : `Update ${relationType == 'CUSTOMER' ? 'COMPANY' : 'VENDOR'}`}
+            <Button
+              onClick={() => {
+                setExplicitReRender(!explicitReRender);
+                // setValidation('')
+                handleClose();
+                resetStates();
+                setValidation("");
+              }}
+              color="default"
+              variant="contained"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handleSubmit();
+              }}
+              color="primary"
+              variant="contained"
+            >
+              {!selectedCompany
+                ? `Add ${relationType == "CUSTOMER" ? "COMPANY" : "VENDOR"}`
+                : `Update ${relationType == "CUSTOMER" ? "COMPANY" : "VENDOR"}`}
             </Button>
           </DialogActions>
         </Dialog>
       </form>
-
     </div>
   );
 }
