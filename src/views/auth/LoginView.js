@@ -77,7 +77,7 @@ export default function LoginView({}) {
       <Grid>
         <Paper elevation={0} className={classes.paperStyle}>
           <Grid align="center">
-            <img src={OwareLogo} alt="Logo" width="300px" height="80px" />
+            <img src={OwareLogo} alt="Logo" width="255px" height="66.33px" />
           </Grid>
           {formErrors}
           <Box mt={4}>
