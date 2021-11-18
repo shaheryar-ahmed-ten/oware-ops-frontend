@@ -187,7 +187,7 @@ export default function CompanyView({ relationType }) {
         getCompanies();
       })
       .catch((error) => {
-        console.log("error", error);
+        console.info("error", error);
       });
   };
 

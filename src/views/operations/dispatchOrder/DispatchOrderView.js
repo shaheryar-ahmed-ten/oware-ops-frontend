@@ -356,7 +356,7 @@ export default function DispatchOrderView() {
         getDispatchOrders(page, searchKeyword);
       })
       .catch((error) => {
-        console.log(error);
+        console.info(error);
       });
   };
 
@@ -422,7 +422,6 @@ export default function DispatchOrderView() {
         setWarehouses(res.data.data);
       })
       .catch((err) => {
-        console.log(err);
         setWarehouses([]);
       });
   };

@@ -65,7 +65,6 @@ function ViewDispatchOrderDetails() {
   };
   const _getDispatchOrders = () => {
     axios.get(getURL(`dispatch-order/${uid}`)).then((res) => {
-      console.log(res.data.data);
       setSelectedDispatchOrder(res.data.data);
     });
   };
@@ -260,30 +259,6 @@ function ViewDispatchOrderDetails() {
                 <TableCell>{dateFormat(selectedDispatchOrder.shipmentDate)}</TableCell>
                 <TableCell>{selectedDispatchOrder.receiverName}</TableCell>
                 <TableCell>{selectedDispatchOrder.receiverPhone}</TableCell>
-                {/* <TableCell>
-                  {selectedDispatchOrder.ProductOutwards.forEach(po => {
-                       let totalDispatched = 0
-                       po.OutwardGroups.forEach(outGroup => {
-                        totalDispatched += outGroup.quantity;  
-                        console.log("total dispatched", totalDispatched)
-                        {
-                          return(
-                            totalDispatched === 0 ? 
-                            <Button color="primary" className={clsx(classes.statusButtons, classes.pendingStatusButtonStyling)}>
-                            Pending
-                          </Button> : totalDispatched > 0 && totalDispatched < selectedDispatchOrder.quantity ? <Button color="primary" className={clsx(classes.statusButtons, classes.partialStatusButtonStyling)}>
-                            Partially fulfilled
-                          </Button> : selectedDispatchOrder.quantity === totalDispatched ? <Button color="primary" className={clsx(classes.statusButtons, classes.fullfilledStatusButtonStyling)}>
-                            Fulfilled
-                          </Button> : ''
-                          )
-                        }
-                 
-                      })
-                  })   
-                  }
-                </TableCell>
-            */}
               </TableRow>
             </TableBody>
           </Table>

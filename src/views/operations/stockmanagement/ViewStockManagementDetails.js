@@ -149,7 +149,7 @@ function ViewStockManagementDetails() {
         setSelectedInventoryWastages(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.info(error);
       });
   };
 

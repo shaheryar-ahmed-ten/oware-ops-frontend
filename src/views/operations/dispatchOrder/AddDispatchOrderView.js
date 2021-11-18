@@ -98,7 +98,7 @@ export default function AddDispatchOrderView() {
         setCustomers(res.data.customers);
       })
       .catch((err) => {
-        console.log(err);
+        console.info(err);
       });
   };
 
@@ -205,7 +205,7 @@ export default function AddDispatchOrderView() {
         setSelectedDispatchOrder(response.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.info(error);
       });
   };
 
