@@ -94,7 +94,7 @@ export default function AddCompanyView({
       setContactId("");
       setNotes("");
       setLogoImageSrc("");
-      setActive(false);
+      relationType == "VENDOR" ? setActive(true) : setActive(false);
     }
   }, [selectedCompany, explicitReRender]);
 
@@ -495,7 +495,7 @@ export default function AddCompanyView({
               ) : (
                 ""
               )}
-              {selectedCompany ? (
+              {selectedCompany || relationType == "VENDOR" ? (
                 <Grid container spacing={2}>
                   <Grid item sm={12}>
                     <Checkbox
