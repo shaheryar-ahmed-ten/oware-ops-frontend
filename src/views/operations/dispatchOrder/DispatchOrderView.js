@@ -404,6 +404,7 @@ export default function DispatchOrderView() {
           page,
           search: searchKeyword.trim(),
           days: !selectedDateRange ? selectedDay : null,
+          status: !!selectedFilterStatus ? selectedFilterStatus : null,
           startingDate: selectedDateRange ? startingDate : null,
           endingDate: selectedDateRange ? endingDate : null,
           warehouse: selectedWarehouse,
