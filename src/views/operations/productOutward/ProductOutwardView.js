@@ -21,7 +21,7 @@ import {
   ListItem,
   DialogTitle,
   Dialog,
-  FormHelperText
+  FormHelperText,
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
@@ -33,9 +33,9 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import { DEBOUNCE_CONST } from "../../../Config";
 import MessageSnackbar from "../../../components/MessageSnackbar";
 import { useNavigate } from "react-router";
-import moment from 'moment-timezone';
-import FileDownload from 'js-file-download';
-import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+import moment from "moment-timezone";
+import FileDownload from "js-file-download";
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,16 +61,16 @@ const useStyles = makeStyles((theme) => ({
     // marginRight: 5,
   },
   exportBtn: {
-    marginLeft: 5
+    marginLeft: 5,
   },
   placeholderText: {
     color: "#CAC9C9",
-    '& .MuiSelect-outlined': {
-      paddingTop: '6px',
-      paddingBottom: '6px',
+    "& .MuiSelect-outlined": {
+      paddingTop: "6px",
+      paddingBottom: "6px",
     },
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 }));
 
 export default function ProductOutwardView() {
@@ -209,28 +209,33 @@ export default function ProductOutwardView() {
 
   const [searchFilter, setSearchFilter] = useState("Company.name");
 
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
-  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
-  const [days] = useState([{
-    id: 7,
-    name: '7 days'
-  }, {
-    id: 14,
-    name: '14 days'
-  }, {
-    id: 30,
-    name: '30 days'
-  }, {
-    id: 60,
-    name: '60 days'
-  }])
-  const [selectedDay, setSelectedDay] = useState(null)
-  const [openDialog, setOpenDialog] = useState(false)
-  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
-  const [reRender, setReRender] = useState(false)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false);
+  const [days] = useState([
+    {
+      id: 7,
+      name: "7 days",
+    },
+    {
+      id: 14,
+      name: "14 days",
+    },
+    {
+      id: 30,
+      name: "30 days",
+    },
+    {
+      id: 60,
+      name: "60 days",
+    },
+  ]);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState(false); // bool
+  const [reRender, setReRender] = useState(false);
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState({});
 
   const deleteProductOutward = (data) => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`)).then((res) => {
@@ -257,18 +262,32 @@ export default function ProductOutwardView() {
     setDeleteProductOutwardViewOpen(false);
   };
 
-  const _getProductOutwards = (page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate) => {
+  const _getProductOutwards = (
+    page,
+    searchKeyword,
+    searchFilter,
+    selectedDay,
+    selectedDateRange,
+    startDate,
+    endDate
+  ) => {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
 
-    axios.get(getURL("product-outward"), {
-      params: {
-        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
-      }
-    }).then((res) => {
-      setPageCount(res.data.pages);
-      setProductOutwards(res.data.data);
-    });
+    axios
+      .get(getURL("product-outward"), {
+        params: {
+          page,
+          search: searchKeyword,
+          days: !selectedDateRange ? selectedDay : null,
+          startingDate: selectedDateRange ? startingDate : null,
+          endingDate: selectedDateRange ? endingDate : null,
+        },
+      })
+      .then((res) => {
+        setPageCount(res.data.pages);
+        setProductOutwards(res.data.data);
+      });
   };
 
   const getProductOutwards = useCallback(
@@ -279,7 +298,7 @@ export default function ProductOutwardView() {
   );
 
   useEffect(() => {
-    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+    if ((selectedDay === "custom" && !!selectedDateRange) || selectedDay !== "custom") {
       getProductOutwards(page, searchKeyword, searchFilter, selectedDay, selectedDateRange, startDate, endDate);
     }
   }, [page, searchKeyword, selectedDay, reRender]);
@@ -290,23 +309,25 @@ export default function ProductOutwardView() {
       let startingDate = new Date(startDate);
       let endingDate = new Date(endDate);
 
-      axios.get(getURL('product-outward/export'), {
-        responseType: 'blob',
-        params: {
-          page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
-          ,
-          client_Tz: moment.tz.guess()
-        },
-      }).then(response => {
-        FileDownload(response.data, `ProductOutwards ${moment().format('DD-MM-yyyy')}.xlsx`);
-      });
+      axios
+        .get(getURL("product-outward/export"), {
+          responseType: "blob",
+          params: {
+            page,
+            search: searchKeyword,
+            days: !selectedDateRange ? selectedDay : null,
+            startingDate: selectedDateRange ? startingDate : null,
+            endingDate: selectedDateRange ? endingDate : null,
+            client_Tz: moment.tz.guess(),
+          },
+        })
+        .then((response) => {
+          FileDownload(response.data, `ProductOutwards ${moment().format("DD-MM-yyyy")}.xlsx`);
+        });
+    } else {
+      setValidations({ ...validations, selectedDay: true });
     }
-    else {
-      setValidations({ ...validations, selectedDay: true })
-    }
-
-
-  }
+  };
 
   const handleSearch = (e) => {
     setPage(1);
@@ -355,104 +376,125 @@ export default function ProductOutwardView() {
     />
   );
 
-  const exportButton = <Button
-    key={2}
-    variant="contained"
-    color="primary"
-    size="small"
-    className={classes.exportBtn}
-    onClick={() => exportToExcel()}
-  > EXPORT TO EXCEL</Button >;
+  const exportButton = (
+    <Button
+      key={2}
+      variant="contained"
+      color="primary"
+      size="small"
+      className={classes.exportBtn}
+      onClick={() => exportToExcel()}
+    >
+      {" "}
+      EXPORT TO EXCEL
+    </Button>
+  );
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-  }
+  };
 
   const handleChange = (event) => {
     // reset the local state to remove the helper text
-    if (event.target.value !== 'custom' && selectedDateRange) {
-      setSelectedDateRange(false)
+    if (event.target.value !== "custom" && selectedDateRange) {
+      setSelectedDateRange(false);
     }
-    setPage(1)
+    setPage(1);
     setSelectedDay(event.target.value);
   };
 
-  const daysSelect = <FormControl className={classes.formControl}>
-    <Select
-      value={selectedDay}
-      variant="outlined"
-      onChange={handleChange}
-      displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
-      className={classes.placeholderText}
-      startAdornment={
-        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
-          <CalendarTodayOutlinedIcon fontSize="small" />
-        </InputAdornment>
-      }
-      onOpen={() => setTrackDateFilterOpen(true)}
-      onClose={() => setTrackDateFilterOpen(false)}
-    >
-      <MenuItem value={null} disabled>
-        <span className={classes.dropdownListItem}>Select Days</span>
-      </MenuItem>
-      {
-        [{ name: 'All' }, ...days].map((item, idx) => {
+  const daysSelect = (
+    <FormControl className={classes.formControl}>
+      <Select
+        value={selectedDay}
+        variant="outlined"
+        onChange={handleChange}
+        displayEmpty
+        inputProps={{ "aria-label": "Without label" }}
+        className={classes.placeholderText}
+        startAdornment={
+          <InputAdornment
+            position="start"
+            classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}
+          >
+            <CalendarTodayOutlinedIcon fontSize="small" />
+          </InputAdornment>
+        }
+        onOpen={() => setTrackDateFilterOpen(true)}
+        onClose={() => setTrackDateFilterOpen(false)}
+      >
+        <MenuItem value={null} disabled>
+          <span className={classes.dropdownListItem}>Select Days</span>
+        </MenuItem>
+        {[{ name: "All" }, ...days].map((item, idx) => {
           return (
             <MenuItem key={idx} value={item.id}>
-              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+              <span className={classes.dropdownListItem}>{item.name || ""}</span>
             </MenuItem>
-          )
-        })
-      }
-      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
-        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
-      </MenuItem>
-    </Select>
-    {
-      validations.selectedDay ?
-        <FormHelperText>Select days filter to export.</FormHelperText>
-        :
-        ''
-    }
-  </FormControl>
+          );
+        })}
+        <MenuItem
+          key={"custom"}
+          value={"custom"}
+          onClick={() => {
+            setOpenDialog(true);
+          }}
+        >
+          <span className={classes.dropdownListItem}>
+            {startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen
+              ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY")
+              : "Custom"}
+          </span>
+        </MenuItem>
+      </Select>
+      {validations.selectedDay ? (
+        <FormHelperText style={{ color: "red" }}>Select days filter to export.</FormHelperText>
+      ) : (
+        ""
+      )}
+    </FormControl>
+  );
 
-  const startDateRange = <TextField
-    id="date"
-    label="From"
-    type="date"
-    variant="outlined"
-    className={classes.textFieldRange}
-    InputLabelProps={{
-      shrink: true,
-    }}
-    fullWidth
-    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
-    defaultValue={startDate}
-    value={startDate}
-    onChange={(e) => setStartDate(e.target.value)}
-    margin="dense"
-  />
+  const startDateRange = (
+    <TextField
+      id="date"
+      label="From"
+      type="date"
+      variant="outlined"
+      className={classes.textFieldRange}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      fullWidth
+      inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+      defaultValue={startDate}
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      margin="dense"
+    />
+  );
 
-  const endDateRange = <TextField
-    id="date"
-    label="To"
-    type="date"
-    variant="outlined"
-    className={classes.textFieldRange}
-    InputLabelProps={{
-      shrink: true,
-    }}
-    fullWidth
-    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
-    defaultValue={endDate}
-    value={endDate}
-    onChange={(e) => setEndDate(e.target.value)}
-    margin="dense"
-  />
+  const endDateRange = (
+    <TextField
+      id="date"
+      label="To"
+      type="date"
+      variant="outlined"
+      className={classes.textFieldRange}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      fullWidth
+      inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+      defaultValue={endDate}
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      margin="dense"
+    />
+  );
 
   const headerButtons = [addProductOutwardButton, exportButton, deleteProductOutwardModal];
-  const headerButtonsTwo = [searchInput, daysSelect]
+  const headerButtonsTwo = [searchInput, daysSelect];
 
   return (
     <Paper className={classes.root}>
@@ -530,7 +572,7 @@ export default function ProductOutwardView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-          // onChangeRowsPerPage={handleChangeRowsPerPage}
+            // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
@@ -538,20 +580,23 @@ export default function ProductOutwardView() {
 
       <Dialog onClose={handleCloseDialog} open={openDialog}>
         <DialogTitle>Choose Date</DialogTitle>
-        <ListItem button key={'startDate'}>
+        <ListItem button key={"startDate"}>
           {startDateRange}
         </ListItem>
-        <ListItem button key={'startDate'}>
+        <ListItem button key={"startDate"}>
           {endDateRange}
         </ListItem>
-        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
-          <Button variant="contained" color="primary"
+        <ListItem autoFocus button style={{ justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="primary"
             disabled={!startDate || !endDate}
             onClick={() => {
-              setSelectedDateRange(true)
-              setOpenDialog(false)
-              setReRender(!reRender)
-            }}>
+              setSelectedDateRange(true);
+              setOpenDialog(false);
+              setReRender(!reRender);
+            }}
+          >
             OK
           </Button>
         </ListItem>
