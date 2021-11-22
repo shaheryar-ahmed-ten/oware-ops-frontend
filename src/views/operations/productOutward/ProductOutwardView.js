@@ -21,6 +21,7 @@ import {
   ListItem,
   DialogTitle,
   Dialog,
+  FormHelperText
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
@@ -229,6 +230,7 @@ export default function ProductOutwardView() {
   const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
   const [reRender, setReRender] = useState(false)
 
+  const [validations, setValidations] = useState({})
 
   const deleteProductOutward = (data) => {
     axios.delete(getURL(`product-outward/${selectedProductOutward.id}`)).then((res) => {
@@ -283,19 +285,27 @@ export default function ProductOutwardView() {
   }, [page, searchKeyword, selectedDay, reRender]);
 
   const exportToExcel = () => {
-    let startingDate = new Date(startDate);
-    let endingDate = new Date(endDate);
+    // check if date is selected
+    if (!!selectedDateRange || !!selectedDay) {
+      let startingDate = new Date(startDate);
+      let endingDate = new Date(endDate);
 
-    axios.get(getURL('product-outward/export'), {
-      responseType: 'blob',
-      params: {
-        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
-        ,
-        client_Tz: moment.tz.guess()
-      },
-    }).then(response => {
-      FileDownload(response.data, `ProductOutwards ${moment().format('DD-MM-yyyy')}.xlsx`);
-    });
+      axios.get(getURL('product-outward/export'), {
+        responseType: 'blob',
+        params: {
+          page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+          ,
+          client_Tz: moment.tz.guess()
+        },
+      }).then(response => {
+        FileDownload(response.data, `ProductOutwards ${moment().format('DD-MM-yyyy')}.xlsx`);
+      });
+    }
+    else {
+      setValidations({ ...validations, selectedDay: true })
+    }
+
+
   }
 
   const handleSearch = (e) => {
@@ -399,6 +409,12 @@ export default function ProductOutwardView() {
         <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
       </MenuItem>
     </Select>
+    {
+      validations.selectedDay ?
+        <FormHelperText>Select days filter to export.</FormHelperText>
+        :
+        ''
+    }
   </FormControl>
 
   const startDateRange = <TextField
