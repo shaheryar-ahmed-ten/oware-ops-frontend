@@ -21,6 +21,7 @@ import PrintIcon from "@material-ui/icons/Print";
 import { Map, GoogleApiWrapper } from "google-maps-react";
 import GoogleMap from "../../../components/GoogleMap.js";
 import Geocode from "react-geocode";
+import owareLogo from "../../../assets/icons/oware-logo-black.png";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
 Geocode.setApiKey("AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU");
@@ -114,11 +115,10 @@ function RideDetailsView(props) {
     axios
       .get(getURL(`ride/preview/7`))
       .then((res) => {
-        console.log(res);
         setProductManifestPreview(res.data.preview);
       })
       .catch((err) => {
-        console.log(err);
+        console.info(err);
       });
   };
 
@@ -139,6 +139,7 @@ function RideDetailsView(props) {
         <Box style={{ padding: "25mm 15mm" }}>
           <Grid container item xs={12} justifyContent="space-between">
             <Grid item xs={12}>
+              <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
               <Typography variant="h3" className={classes.heading}>
                 Ride Details
               </Typography>
@@ -234,63 +235,7 @@ function RideDetailsView(props) {
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
                 {dateFormat(selectedRide.dropoffDate) || "-"}
               </Grid>
-              {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-            <>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                Map Pickup Pin Address :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapPickupAddress || "-"}
-              </Grid>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                Map Dropoff Pin Address :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapDropoffAddress || "-"}
-              </Grid>
-            </>
-            ) : (
-              ""
-            )}
             </Grid>
-            {/* {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-            <Grid container spacing={2}>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                Map PickupAddress :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapPickupAddress}
-              </Grid>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                Map DropoffAddress :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {mapDropoffAddress}
-              </Grid>
-            </Grid>
-            ) : (
-              ""
-            )} */}
-
-
-            {console.log(
-              `selectedRide.pickupLocation && selectedRide.dropoffLocation`,
-              selectedRide.pickupLocation && selectedRide.dropoffLocation
-            )}
-            {/* {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-              <Grid container item xs={12} spacing={3}>
-                <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
-                  <Typography>{mapPickupAddress}</Typography>
-                  {console.log("mapPickupAddress:-", mapPickupAddress)}
-                </Grid>
-                <Grid item sm={12} className={classes.locationMap} style={{ position: "relative" }}>
-                  {mapDropoffAddress}
-                  {console.log("mapDropoffAddress:-", mapDropoffAddress)}
-                </Grid>
-              </Grid>
-            ) : (
-              ""
-            )} */}
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
@@ -370,18 +315,16 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.weightCargo || "-"}
               </Grid>
-          
             </Grid>
-            
+
             <Grid container spacing={2} style={{ paddingTop: 15 }}>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Memo :
               </Grid>
-              <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)"}}>
+              <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.memo || "-"}
               </Grid>
             </Grid>
-           
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
@@ -491,7 +434,7 @@ function RideDetailsView(props) {
                 <TableCell>{selectedRide.pickupCity.name || "-"}</TableCell>
                 <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
                 <TableCell>{selectedRide.dropoffCity.name || "-"}</TableCell>
-                <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
+                <TableCell>{selectedRide.dropoffAddress || "-"}</TableCell>
                 <TableCell>{dateFormat(selectedRide.pickupDate) || "-"}</TableCell>
                 <TableCell>{dateFormat(selectedRide.dropoffDate) || "-"}</TableCell>
               </TableRow>
@@ -549,15 +492,15 @@ function RideDetailsView(props) {
           </Grid>
         </Grid>
         <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
-        <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
                 <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
                 <TableCell className={classes.tableHeadText}>ETA(MINUTES)</TableCell>
                 <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME(MINUTES)</TableCell>
-               <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
-               <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
+                <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
+                <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -568,12 +511,11 @@ function RideDetailsView(props) {
                 <TableCell>{Math.floor(selectedRide.completionTime / 60) || "-"}</TableCell>
                 <TableCell>{selectedRide.currentLocation || "-"}</TableCell>
                 <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
-               
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
-    
+
         <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -619,7 +561,6 @@ function RideDetailsView(props) {
           </Table>
         </TableContainer>
 
-        
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             {selectedRide && selectedRide.eirId !== null ? (
@@ -634,9 +575,11 @@ function RideDetailsView(props) {
                 {/* <a target="_blank" href={productManifestPreview}>
                   Product Manifest Image
                 </a> */}
-                   <Grid item xs={12}>
-                 <a target="_blank" href={getURL('preview', selectedRide.eirId)}><img src={getURL('preview',  selectedRide.eirId)} alt="EIR Image" /></a>
-                 </Grid>
+                <Grid item xs={12}>
+                  <a target="_blank" href={getURL("preview", selectedRide.eirId)}>
+                    <img src={getURL("preview", selectedRide.eirId)} alt="EIR Image" />
+                  </a>
+                </Grid>
               </>
             ) : (
               ""
@@ -646,9 +589,7 @@ function RideDetailsView(props) {
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
         </Grid>
-       
 
-      
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             {selectedRide && selectedRide.builtyId !== null ? (
@@ -663,9 +604,11 @@ function RideDetailsView(props) {
                 {/* <a target="_blank" href={productManifestPreview}>
                   Product Manifest Image
                 </a> */}
-                   <Grid item xs={12}>
-                 <a target="_blank" href={getURL('preview', selectedRide.builtyId)}><img src={getURL('preview',  selectedRide.builtyId)} alt="Manifest Image" /></a>
-                 </Grid>
+                <Grid item xs={12}>
+                  <a target="_blank" href={getURL("preview", selectedRide.builtyId)}>
+                    <img src={getURL("preview", selectedRide.builtyId)} alt="Manifest Image" />
+                  </a>
+                </Grid>
               </>
             ) : (
               ""
@@ -675,7 +618,6 @@ function RideDetailsView(props) {
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
         </Grid>
-       
 
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
@@ -691,9 +633,11 @@ function RideDetailsView(props) {
                 {/* <a target="_blank" href={productManifestPreview}>
                   Product Manifest Image
                 </a> */}
-                   <Grid item xs={12}>
-                 <a target="_blank" href={getURL('preview', selectedRide.manifestId)}><img src={getURL('preview',  selectedRide.manifestId)} alt="Manifest Image" /></a>
-                 </Grid>
+                <Grid item xs={12}>
+                  <a target="_blank" href={getURL("preview", selectedRide.manifestId)}>
+                    <img src={getURL("preview", selectedRide.manifestId)} alt="Manifest Image" />
+                  </a>
+                </Grid>
               </>
             ) : (
               ""

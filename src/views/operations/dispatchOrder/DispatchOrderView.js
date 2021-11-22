@@ -14,11 +14,18 @@ import {
   Backdrop,
   Typography,
   Tooltip,
-
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  Select,
+  TextField,
+  ListItem,
+  DialogTitle,
+  Dialog,
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
-import { getURL, dateFormat, digitize, dateToPickerFormat } from "../../../utils/common";
+import { getURL, dateFormat, dividerDateFormatForFilter } from "../../../utils/common";
 import { Alert, Pagination } from "@material-ui/lab";
 import ConfirmDelete from "../../../components/ConfirmDelete";
 import { debounce } from "lodash";
@@ -29,8 +36,13 @@ import { useNavigate } from "react-router";
 import clsx from "clsx";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import CancelIcon from "@material-ui/icons/Cancel";
-import SelectDropdown from '../../../components/SelectDropdown';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import SelectDropdown from "../../../components/SelectDropdown";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import moment from "moment-timezone";
+import FileDownload from "js-file-download";
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
+import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
+import owareLogo from "../../../assets/icons/oware-logo-black.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,6 +109,20 @@ const useStyles = makeStyles((theme) => ({
   backdropAgreeButton: {
     marginLeft: 10,
   },
+  bulkBtn: {
+    marginLeft: 5,
+  },
+  exportBtn: {
+    marginLeft: 5,
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    "& .MuiSelect-outlined": {
+      paddingTop: "6px",
+      paddingBottom: "6px",
+    },
+    // marginLeft: 5
+  },
 }));
 
 export default function DispatchOrderView() {
@@ -115,11 +141,13 @@ export default function DispatchOrderView() {
         return (
           <Tooltip title={`${entity.internalIdForBusiness}`}>
             <Typography>
-              {entity.internalIdForBusiness.length > 20 ? `${entity.internalIdForBusiness.substring(0, 20)}...` : entity.internalIdForBusiness}
+              {entity.internalIdForBusiness.length > 20
+                ? `${entity.internalIdForBusiness.substring(0, 20)}...`
+                : entity.internalIdForBusiness}
             </Typography>
           </Tooltip>
-        )
-      }
+        );
+      },
     },
     {
       id: "Inventory.Company.name",
@@ -128,13 +156,15 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => {
         return (
-          <Tooltip title={`${entity.Inventory.Company.name}`} >
+          <Tooltip title={`${entity.Inventory.Company.name}`}>
             <Typography>
-              {entity.Inventory.Company.name > 20 ? `${entity.Inventory.Company.name.substring(0, 20)}...` : entity.Inventory.Company.name}
+              {entity.Inventory.Company.name > 20
+                ? `${entity.Inventory.Company.name.substring(0, 20)}...`
+                : entity.Inventory.Company.name}
             </Typography>
           </Tooltip>
-        )
-      }
+        );
+      },
     },
     {
       id: "Inventory.Warehouse.name",
@@ -155,7 +185,7 @@ export default function DispatchOrderView() {
       label: "CREATED BY",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => `${entity.User.firstName || ''} ${entity.User.lastName || ''}`,
+      format: (value, entity) => `${entity.User.firstName || ""} ${entity.User.lastName || ""}`,
     },
     {
       id: "shipmentDate",
@@ -173,12 +203,13 @@ export default function DispatchOrderView() {
         return (
           <Tooltip title={`${entity.referenceId}`}>
             <Typography>
-
-              {entity.referenceId && entity.referenceId.length > 20 ? `${entity.referenceId.substring(0, 20)}...` : entity.referenceId || ''}
+              {entity.referenceId && entity.referenceId.length > 20
+                ? `${entity.referenceId.substring(0, 20)}...`
+                : entity.referenceId || ""}
             </Typography>
           </Tooltip>
-        )
-      }
+        );
+      },
     },
     {
       id: "status",
@@ -213,12 +244,6 @@ export default function DispatchOrderView() {
       minWidth: 150,
       className: "",
       format: (value, entity) => {
-        // let totalDispatched = 0
-        // entity.ProductOutwards.forEach(po => {
-        //   po.OutwardGroups.forEach(outGroup => {
-        //     totalDispatched += outGroup.quantity
-        //   });
-        // });
         return [
           <VisibilityIcon key="view" onClick={() => navigate(`view/${entity.id}`)} style={{ cursor: "pointer" }} />,
           entity.status != 3 ? (
@@ -269,40 +294,69 @@ export default function DispatchOrderView() {
   const [deleteDispatchOrderViewOpen, setDeleteDispatchOrderViewOpen] = useState(false);
 
   const [showMessage, setShowMessage] = useState(null);
-  const [messageType, setMessageType] = useState('green');
+  const [messageType, setMessageType] = useState("green");
 
   // filters
   const [filterStatus, setFilterStatus] = useState([
     {
       id: 2,
-      name: 'Fulfilled'
+      name: "Fulfilled",
     },
     {
       id: 1,
-      name: 'Partially Fulfilled'
+      name: "Partially Fulfilled",
     },
     {
       id: 0,
-      name: 'Pending'
+      name: "Pending",
     },
     {
       id: 3,
-      name: 'Canceled'
+      name: "Canceled",
     },
-  ])
-  const [selectedFilterStatus, setSelectedFilterStatus] = useState(null)
+  ]);
+  const [selectedFilterStatus, setSelectedFilterStatus] = useState(null);
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false);
+  const [days] = useState([
+    {
+      id: 7,
+      name: "7 days",
+    },
+    {
+      id: 14,
+      name: "14 days",
+    },
+    {
+      id: 30,
+      name: "30 days",
+    },
+    {
+      id: 60,
+      name: "60 days",
+    },
+  ]);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState(false); // bool
+  const [reRender, setReRender] = useState(false);
+  // warehouse filter
+  const [warehouses, setWarehouses] = useState([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
 
   const cancelDispatchOrder = (dispatchOrderId) => {
     axios
       .patch(getURL(`dispatch-order/cancel/${dispatchOrderId}`))
       .then((response) => {
         setShowMessage({
-          message: "The dispatch order has been deleted successfully."
-        })
+          message: "The dispatch order has been deleted successfully.",
+        });
         getDispatchOrders(page, searchKeyword);
       })
       .catch((error) => {
-        console.log(error);
+        console.info(error);
       });
   };
 
@@ -331,25 +385,116 @@ export default function DispatchOrderView() {
     setDeleteDispatchOrderViewOpen(false);
   };
 
-  const _getDispatchOrders = (page, searchKeyword, selectedFilterStatus) => {
-    axios.get(getURL("dispatch-order"), { params: { page, search: searchKeyword.trim(), status: selectedFilterStatus } }).then((res) => {
-      setPageCount(res.data.pages);
-      setDispatchOrders(res.data.data);
-    });
+  const _getDispatchOrders = (
+    page,
+    searchKeyword,
+    selectedFilterStatus,
+    selectedDay,
+    selectedDateRange,
+    startDate,
+    endDate,
+    selectedWarehouse
+  ) => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios
+      .get(getURL("dispatch-order"), {
+        params: {
+          page,
+          search: searchKeyword.trim(),
+          days: !selectedDateRange ? selectedDay : null,
+          status: !!selectedFilterStatus ? selectedFilterStatus : null,
+          startingDate: selectedDateRange ? startingDate : null,
+          endingDate: selectedDateRange ? endingDate : null,
+          warehouse: selectedWarehouse,
+        },
+      })
+      .then((res) => {
+        setPageCount(res.data.pages);
+        setDispatchOrders(res.data.data);
+      });
+  };
+
+  const _getWarehouse = () => {
+    axios
+      .get(getURL("warehouse"))
+      .then((res) => {
+        setWarehouses(res.data.data);
+      })
+      .catch((err) => {
+        setWarehouses([]);
+      });
   };
 
   const getDispatchOrders = useCallback(
-    debounce((page, searchKeyword, selectedFilterStatus) => {
-      _getDispatchOrders(page, searchKeyword, selectedFilterStatus);
-    }, DEBOUNCE_CONST),
+    debounce(
+      (
+        page,
+        searchKeyword,
+        selectedFilterStatus,
+        selectedDay,
+        selectedDateRange,
+        startDate,
+        endDate,
+        selectedWarehouse
+      ) => {
+        _getDispatchOrders(
+          page,
+          searchKeyword,
+          selectedFilterStatus,
+          selectedDay,
+          selectedDateRange,
+          startDate,
+          endDate,
+          selectedWarehouse
+        );
+      },
+      DEBOUNCE_CONST
+    ),
     []
   );
 
   useEffect(() => {
-    if (selectedFilterStatus)
-      setSearchKeyword('')
-    getDispatchOrders(page, searchKeyword, selectedFilterStatus);
-  }, [page, searchKeyword, selectedFilterStatus]);
+    _getWarehouse();
+  }, []);
+
+  useEffect(() => {
+    if (selectedFilterStatus) setSearchKeyword("");
+    if ((selectedDay === "custom" && !!selectedDateRange) || selectedDay !== "custom") {
+      getDispatchOrders(
+        page,
+        searchKeyword,
+        selectedFilterStatus,
+        selectedDay,
+        selectedDateRange,
+        startDate,
+        endDate,
+        selectedWarehouse
+      );
+    }
+  }, [page, searchKeyword, selectedFilterStatus, selectedDay, reRender, selectedWarehouse]);
+
+  const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios
+      .get(getURL("dispatch-order/export"), {
+        responseType: "blob",
+        params: {
+          page,
+          search: searchKeyword,
+          days: !selectedDateRange ? selectedDay : null,
+          startingDate: selectedDateRange ? startingDate : null,
+          endingDate: selectedDateRange ? endingDate : null,
+          client_Tz: moment.tz.guess(),
+        },
+      })
+      .then((response) => {
+        FileDownload(response.data, `DispatchOrders ${moment().format("DD-MM-yyyy")}.xlsx`);
+      });
+  };
 
   const searchInput = (
     <InputBase
@@ -362,8 +507,8 @@ export default function DispatchOrderView() {
       value={searchKeyword}
       key={1}
       onChange={(e) => {
-        resetFilters()
-        setSearchKeyword(e.target.value)
+        resetFilters();
+        setSearchKeyword(e.target.value);
       }}
     />
   );
@@ -391,13 +536,14 @@ export default function DispatchOrderView() {
       title={"DispatchOrder"}
     />
   );
+
   const addBulkProductsButton = (
     <Button
       key={4}
       variant="contained"
       color="primary"
       size="small"
-      style={{ width: 150, transform: "translateX(7px)" }}
+      className={classes.bulkBtn}
       onClick={() => navigate("bulk-upload")}
     >
       Bulk Upload
@@ -406,17 +552,155 @@ export default function DispatchOrderView() {
 
   const resetFilters = () => {
     setSelectedFilterStatus(null);
-  }
+  };
+
+  const exportButton = (
+    <Button
+      key={2}
+      variant="contained"
+      color="primary"
+      size="small"
+      className={classes.exportBtn}
+      onClick={() => exportToExcel()}
+    >
+      {" "}
+      EXPORT TO EXCEL
+    </Button>
+  );
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== "custom" && selectedDateRange) {
+      setSelectedDateRange(false);
+    }
+    setPage(1);
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = (
+    <FormControl className={classes.formControl}>
+      <Select
+        value={selectedDay}
+        variant="outlined"
+        onChange={handleChange}
+        displayEmpty
+        inputProps={{ "aria-label": "Without label" }}
+        className={classes.placeholderText}
+        startAdornment={
+          <InputAdornment
+            position="start"
+            classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}
+          >
+            <CalendarTodayOutlinedIcon fontSize="small" />
+          </InputAdornment>
+        }
+        onOpen={() => setTrackDateFilterOpen(true)}
+        onClose={() => setTrackDateFilterOpen(false)}
+      >
+        <MenuItem value={null} disabled>
+          <span className={classes.dropdownListItem}>Select Days</span>
+        </MenuItem>
+        {[{ name: "All" }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ""}</span>
+            </MenuItem>
+          );
+        })}
+        <MenuItem
+          key={"custom"}
+          value={"custom"}
+          onClick={() => {
+            setOpenDialog(true);
+          }}
+        >
+          <span className={classes.dropdownListItem}>
+            {startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen
+              ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY")
+              : "Custom"}
+          </span>
+        </MenuItem>
+      </Select>
+    </FormControl>
+  );
+
+  const startDateRange = (
+    <TextField
+      id="date"
+      label="From"
+      type="date"
+      variant="outlined"
+      className={classes.textFieldRange}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      fullWidth
+      inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+      defaultValue={startDate}
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      margin="dense"
+    />
+  );
+
+  const endDateRange = (
+    <TextField
+      id="date"
+      label="To"
+      type="date"
+      variant="outlined"
+      className={classes.textFieldRange}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      fullWidth
+      inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+      defaultValue={endDate}
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      margin="dense"
+    />
+  );
 
   // status filter
-  const statusSelect = <SelectDropdown icon={<MoreHorizIcon fontSize="small" />} type="Status" name="Select Status" list={[{ name: 'All' }, ...filterStatus]} selectedType={selectedFilterStatus} setSelectedType={setSelectedFilterStatus} setPage={setPage} />
+  const statusSelect = (
+    <SelectDropdown
+      icon={<MoreHorizIcon fontSize="small" />}
+      type="Status"
+      name="Select Status"
+      list={[{ name: "All" }, ...filterStatus]}
+      selectedType={selectedFilterStatus}
+      setSelectedType={setSelectedFilterStatus}
+      setPage={setPage}
+    />
+  );
 
-  const headerButtons = [statusSelect, searchInput, addDispatchOrderButton, addBulkProductsButton, deleteDispatchOrderModal,];
+  // status warehouse
+  const warehouseSelect = (
+    <SelectDropdown
+      icon={<HomeOutlinedIcon fontSize="small" />}
+      resetFilters={resetFilters}
+      type="Warehouses"
+      name="Select Warehouse"
+      list={[{ name: "All" }, ...warehouses]}
+      selectedType={selectedWarehouse}
+      setSelectedType={setSelectedWarehouse}
+      setPage={setPage}
+    />
+  );
+
+  const headerButtons = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal];
+  const headerButtonsTwo = [searchInput, warehouseSelect, statusSelect, daysSelect];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Dispatch Order" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -432,7 +716,7 @@ export default function DispatchOrderView() {
                     // textAlign: "center",
                   }}
                 >
-                  {column.label}
+                  {column.label.toUpperCase()}
                 </TableCell>
               ))}
             </TableRow>
@@ -478,6 +762,30 @@ export default function DispatchOrderView() {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} type={messageType} />
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={"startDate"}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={"startDate"}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true);
+              setOpenDialog(false);
+              setReRender(!reRender);
+            }}
+          >
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
     </Paper>
   );
 }
