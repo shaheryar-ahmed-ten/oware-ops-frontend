@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   makeStyles,
   Grid,
@@ -13,73 +13,70 @@ import {
   Checkbox,
   FormControl,
   InputLabel,
-  Typography
-} from '@material-ui/core'
-import { isChar, isRequired } from '../../../utils/validators';
-import { Autocomplete } from '@material-ui/lab';
+  Typography,
+} from "@material-ui/core";
+import { isChar, isRequired } from "../../../utils/validators";
+import { Autocomplete } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   textBox: {
-    height: 34
+    height: 34,
   },
   labelBox: {
     "& label": {
-      paddingTop: 7
-    }
-  }
+      paddingTop: 7,
+    },
+  },
 }));
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const classes = useStyles();
-  const cities = ['Karachi', 'Lahore'];
+  const cities = ["Karachi", "Lahore", "Islamabad", "Sheikhpura", "Muridke", "Multan", "Faisalabad"];
   const [validation, setValidation] = useState({});
-  const [name, setName] = useState('');
-  const [businessWarehouseCode, setBusinessWarehouseCode] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
+  const [name, setName] = useState("");
+  const [businessWarehouseCode, setBusinessWarehouseCode] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
   const [isActive, setActive] = useState(true);
 
   useEffect(() => {
     if (!!selectedWarehouse) {
-      setName(selectedWarehouse.name || '');
-      setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || '');
-      setAddress(selectedWarehouse.address || '');
-      setCity(selectedWarehouse.city || '');
+      setName(selectedWarehouse.name || "");
+      setBusinessWarehouseCode(selectedWarehouse.businessWarehouseCode || "");
+      setAddress(selectedWarehouse.address || "");
+      setCity(selectedWarehouse.city || "");
       setActive(!!selectedWarehouse.isActive);
     } else {
-      setName('');
-      setBusinessWarehouseCode('');
-      setAddress('');
-      setCity('');
+      setName("");
+      setBusinessWarehouseCode("");
+      setAddress("");
+      setCity("");
       setActive(true);
     }
-  }, [selectedWarehouse])
-  const handleSubmit = e => {
-
+  }, [selectedWarehouse]);
+  const handleSubmit = (e) => {
     const newWarehouse = {
       name,
       businessWarehouseCode,
       address,
       city,
-      isActive
-    }
+      isActive,
+    };
     setValidation({
       name: true,
       address: true,
-      city: true
+      city: true,
     });
     if (isRequired(name) && isRequired(address) && isRequired(city)) {
       addWarehouse(newWarehouse);
     }
-  }
+  };
 
   return (
     <div style={{ display: "inline" }}>
       <form>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          <DialogTitle>
-            {!selectedWarehouse ? 'Add Warehouse' : 'Edit Warehouse'}
-          </DialogTitle>
+          <DialogTitle>{!selectedWarehouse ? "Add Warehouse" : "Edit Warehouse"}</DialogTitle>
           <DialogContent>
             {formErrors}
             <Grid container>
@@ -94,10 +91,10 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   type="text"
                   variant="outlined"
                   value={name}
-                  onChange={e => setName(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, name: true })}
+                  onChange={(e) => setName(e.target.value)}
+                  onBlur={(e) => setValidation({ ...validation, name: true })}
                 />
-                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
+                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ""}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -110,10 +107,14 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   type="text"
                   variant="outlined"
                   value={businessWarehouseCode}
-                  onChange={e => setBusinessWarehouseCode(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, businessWarehouseCode: true })}
+                  onChange={(e) => setBusinessWarehouseCode(e.target.value)}
+                  onBlur={(e) => setValidation({ ...validation, businessWarehouseCode: true })}
                 />
-                {validation.businessWarehouseCode && !isRequired(businessWarehouseCode) ? <Typography color="error">Business warehouse code is required!</Typography> : ''}
+                {validation.businessWarehouseCode && !isRequired(businessWarehouseCode) ? (
+                  <Typography color="error">Business warehouse code is required!</Typography>
+                ) : (
+                  ""
+                )}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -126,10 +127,14 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   type="text"
                   variant="outlined"
                   value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, address: true })}
+                  onChange={(e) => setAddress(e.target.value)}
+                  onBlur={(e) => setValidation({ ...validation, address: true })}
                 />
-                {validation.address && !isRequired(address) ? <Typography color="error">Address is required!</Typography> : ''}
+                {validation.address && !isRequired(address) ? (
+                  <Typography color="error">Address is required!</Typography>
+                ) : (
+                  ""
+                )}
               </Grid>
               <Grid item sm={12}>
                 <FormControl margin="dense" fullWidth={true} variant="outlined">
@@ -137,16 +142,15 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                     id="cities"
                     key={cities}
                     options={cities}
-                    defaultValue={city ? city : ''}
+                    defaultValue={city ? city : ""}
                     renderInput={(params) => <TextField {...params} label="City" variant="outlined" />}
                     getOptionLabel={(city) => city}
-                    onBlur={e => setValidation({ ...validation, city: true })}
+                    onBlur={(e) => setValidation({ ...validation, city: true })}
                     onChange={(event, newValue) => {
-                      if (newValue)
-                        setCity(newValue)
+                      if (newValue) setCity(newValue);
                     }}
                   />
-                  {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ''}
+                  {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ""}
                 </FormControl>
               </Grid>
               <Grid item sm={12}>
@@ -154,16 +158,18 @@ export default function AddWarehouseView({ addWarehouse, open, handleClose, sele
                   checked={isActive}
                   onChange={(e) => setActive(e.target.checked)}
                   color="primary"
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  inputProps={{ "aria-label": "secondary checkbox" }}
                 />
                 Active
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={handleClose} color="default" variant="contained">
+              Cancel
+            </Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedWarehouse ? 'Add Warehouse' : 'Update Warehouse'}
+              {!selectedWarehouse ? "Add Warehouse" : "Update Warehouse"}
             </Button>
           </DialogActions>
         </Dialog>
