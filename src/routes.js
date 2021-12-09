@@ -86,11 +86,11 @@ const routes = (user) => [
         element: checkPermission(user, "OPS_PRODUCT_FULL") ? <ActivityView /> : <Navigate to="404" />,
       },
       {
-        path: "/",
+        path: "",
         element: checkPermission(user, "OPS_USER_FULL") ? (
-          <Navigate to="/administration/user" />
+          <Navigate to="administration/user" />
         ) : (
-          <Navigate to="/administration/customer" />
+          <Navigate to="administration/customer" />
         ),
       },
       {
@@ -122,11 +122,10 @@ const routes = (user) => [
       {
         path: "dispatch-order",
         element: checkPermission(user, "OPS_DISPATCHORDER_FULL") ? <DispatchOrderView /> : <Navigate to="404" />,
-      }
-      ,
+      },
       {
         path: "dispatch-order/bulk-upload",
-        element: checkPermission(user, "OPS_PRODUCT_FULL") ? <OrderBulkUpload/> : <Navigate to="404" />,
+        element: checkPermission(user, "OPS_PRODUCT_FULL") ? <OrderBulkUpload /> : <Navigate to="404" />,
       },
       {
         path: "dispatch-order/create",
