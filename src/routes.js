@@ -88,9 +88,9 @@ const routes = (user) => [
       {
         path: "",
         element: checkPermission(user, "OPS_USER_FULL") ? (
-          <Navigate to="administration/user" />
+          <Navigate to="/administration/user" />
         ) : (
-          <Navigate to="administration/customer" />
+          <Navigate to="/administration/customer" />
         ),
       },
       {
