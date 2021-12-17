@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
   const classes = useStyles();
-  const cities = ["Karachi", "Lahore", "Islamabad", "Sheikhpura", "Muridke", "Multan", "Faisalabad"];
+  const cities = ["Karachi", "Lahore", "Islamabad", "Sheikhpura", "Muridke", "Multan", "Faisalabad", "Khairpur"];
   const [validation, setValidation] = useState({});
   const [name, setName] = useState("");
   const [businessWarehouseCode, setBusinessWarehouseCode] = useState("");
