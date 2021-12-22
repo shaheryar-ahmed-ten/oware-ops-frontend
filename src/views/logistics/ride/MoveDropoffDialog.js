@@ -11,13 +11,21 @@ import {
   Typography,
   TextField,
   Grid,
+  makeStyles,
 } from "@material-ui/core";
 import { Close } from "@material-ui/icons";
 import { useState, useEffect } from "react";
 import MessageSnackbar from "../../../components/MessageSnackbar";
 import { arraymove } from "../../../utils/common";
 
+const useStyles = makeStyles((theme) => ({
+  positionBlock: {
+    width: 110,
+  },
+}));
+
 const MoveDropoffDialog = (props) => {
+  const classes = useStyles();
   const [newDropoffPosition, setNewDropoffPosition] = useState(null);
   const {
     dropoffDialogState,
@@ -60,8 +68,8 @@ const MoveDropoffDialog = (props) => {
       setDropoffs(dropoffs);
       resetDropoffState(dropoffs[idx]);
       setDropoffDialogState(!dropoffDialogState);
-      setPositionError(false);
-      setNewDropoffPosition(null)
+      // setPositionError(false);
+      // setNewDropoffPosition(null)
     } else {
       setPositionError(true);
     }
@@ -79,7 +87,7 @@ const MoveDropoffDialog = (props) => {
           <Close />
         </IconButton> */}
       </Box>
-      <DialogContent style={{overflow:"hidden"}}>
+      <DialogContent style={{ overflow: "hidden" }}>
         <Grid container item xs={12} spacing={1} justifyContent="center" alignItems="center">
           {/* {newDropoffPosition ? (
             <Typography variant="p" className={{ fontWeight: 500 }} style={{ marginRight: 20 }}>
@@ -92,45 +100,42 @@ const MoveDropoffDialog = (props) => {
             ""
           )} */}
           <Grid container item xs={6}>
-          <Typography>
-            Bring it to new Position
-
-          </Typography>
+            <Typography>Bring it to new Position</Typography>
           </Grid>
-          
+
           <Grid container item xs={6}>
-          <TextField
-            type="number"
-            // InputProps={{ inputProps: { min: 1, max: 5 } }}
-            id="outlined-basic"
-            label="Position"
-            variant="outlined"
-            value={newDropoffPosition}
-            style={{ maxWidth: "50%", marginLeft:"-80px" }}
-            // onChange={(e) => {
-            //   const regex = /[0-9]/;
-            //   if (regex.test(e.target.value))
-            //     setNewDropoffPosition(e.target.value < 0 ? e.target.value == 0 : e.target.value);
-            // }}
-            onChange={
-              (e) => {
-                // if (e.target.value < 1) {
-                //   setNewDropoffPosition(1);
-                // } else if (e.target.value > dropoffs.length) {
-                //   setNewDropoffPosition(dropoffs.length);
-                // } else {
-                //   setNewDropoffPosition(e.target.value);
-                // }
-                setNewDropoffPosition(e.target.value < 1 ? e.target.value == 1 : e.target.value);
+            <TextField
+              type="number"
+              InputProps={{ inputProps: { min: 1, max: dropoffs.length }, className: classes.positionBlock }}
+              id="outlined-basic"
+              label="Position"
+              variant="outlined"
+              value={newDropoffPosition}
+              style={{ maxWidth: "50%", marginLeft: "-80px" }}
+              // onChange={(e) => {
+              //   const regex = /[0-9]/;
+              //   if (regex.test(e.target.value))
+              //     setNewDropoffPosition(e.target.value < 0 ? e.target.value == 0 : e.target.value);
+              // }}
+              onChange={
+                (e) => {
+                  // if (e.target.value < 1) {
+                  //   setNewDropoffPosition(1);
+                  // } else if (e.target.value > dropoffs.length) {
+                  //   setNewDropoffPosition(dropoffs.length);
+                  // } else {
+                  //   setNewDropoffPosition(e.target.value);
+                  // }
+                  setNewDropoffPosition(e.target.value < 1 ? e.target.value == 1 : e.target.value);
+                }
+                // e.target.value < 1
+                //   ? setNewDropoffPosition(1)
+                //   : e.target.value > dropoffs.length
+                //   ? setNewDropoffPosition(dropoffs.length)
+                //   : setNewDropoffPosition(e.target.value)
               }
-              // e.target.value < 1
-              //   ? setNewDropoffPosition(1)
-              //   : e.target.value > dropoffs.length
-              //   ? setNewDropoffPosition(dropoffs.length)
-              //   : setNewDropoffPosition(e.target.value)
-            }
-          />
-          {/* {newDropoffPosition ? (
+            />
+            {/* {newDropoffPosition ? (
             <Typography variant="p" className={{ fontWeight: 500, marginLeft: 10 }} style={{ marginLeft: 20 }}>
               {" "}
               Before Dropoff{" "}
@@ -145,12 +150,14 @@ const MoveDropoffDialog = (props) => {
           {positionError ? <Typography color="error">Incorrect Dropoff Position!</Typography> : ""}
         </Grid>
       </DialogContent>
-      <DialogActions style={{marginBottom:12,marginTop:12}}>
+      <DialogActions style={{ marginBottom: 12, marginTop: 12 }}>
         <Button
           // color="primary"
           variant="contained"
           onClick={() => {
             setDropoffDialogState(!dropoffDialogState);
+            setPositionError(false);
+            setNewDropoffPosition(null);
           }}
         >
           Cancel

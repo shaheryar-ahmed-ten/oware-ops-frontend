@@ -671,7 +671,9 @@ function AddRideView() {
         // isRequired(vehicleType) &&
         isRequired(pickupCityId) &&
         isRequired(pickupDate) &&
-        isRequired(weightCargo)
+        isRequired(weightCargo) &&
+        isRequired(price) &&
+        isRequired(cost)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -1805,7 +1807,7 @@ function AddRideView() {
                     ""
                   )}
                 </Grid>
-                {/* <Grid container item sm={12}>
+                <Grid container item sm={12}>
                   <Grid item xs={!!manifestImageSrc ? 11 : 12}>
                     <FormControl margin="dense" fullWidth={true} variant="outlined">
                       <Button
@@ -1863,7 +1865,7 @@ function AddRideView() {
                   <Grid item xs={12} style={{ textAlign: "center" }}>
                     {manifestImageSrc ? <img id="previewImage" src={manifestImageSrc} /> : null}
                   </Grid>
-                </Grid> */}
+                </Grid>
               </Grid>
             </Grid>
           ) : (
