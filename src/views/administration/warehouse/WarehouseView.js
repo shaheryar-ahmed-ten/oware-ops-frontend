@@ -10,19 +10,32 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  Select,
+  TextField,
+  ListItem,
+  DialogTitle,
+  Dialog,
 } from '@material-ui/core';
 import TableHeader from '../../../components/TableHeader'
 import axios from 'axios';
-import { getURL } from '../../../utils/common';
+import { getURL, dividerDateFormatForFilter } from '../../../utils/common';
 import { Alert, Pagination } from '@material-ui/lab';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ConfirmDelete from '../../../components/ConfirmDelete';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import AddWarehouseView from './AddWarehouseView';
+import WarehouseDetailsView from './WarehouseDetailsView';
 import { debounce } from 'lodash';
 import { DEBOUNCE_CONST } from '../../../Config';
 import MessageSnackbar from '../../../components/MessageSnackbar';
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,6 +56,17 @@ const useStyles = makeStyles(theme => ({
     padding: '0px 8px',
     marginRight: 7,
     height: 30,
+  },
+  exportBtn: {
+    marginLeft: 5
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    '& .MuiSelect-outlined': {
+      paddingTop: '6px',
+      paddingBottom: '6px',
+    },
+    marginRight: 5
   },
 }));
 
@@ -77,11 +101,12 @@ export default function WarehouseView() {
     format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
-    label: '',
+    label: 'Actions',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>
       [
+        <VisibilityIcon key="view" onClick={() => openViewDetails(entity)} />,
         <EditIcon key="edit" onClick={() => openEditView(entity)} />,
         // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ]
@@ -94,7 +119,29 @@ export default function WarehouseView() {
   const [formErrors, setFormErrors] = useState('');
   const [addWarehouseViewOpen, setAddWarehouseViewOpen] = useState(false);
   const [deleteWarehouseViewOpen, setDeleteWarehouseViewOpen] = useState(false);
+  const [warehouseDetailsView, setWarehouseDetailsView] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
+
 
   const addWarehouse = data => {
     let apiPromise = null;
@@ -106,7 +153,7 @@ export default function WarehouseView() {
         return
       }
       setShowMessage({
-        message: "New Warehouse has been created."
+        message: !selectedWarehouse ? "New Warehouse has been created." : "The Warehouse has been updated."
       })
       closeAddWarehouseView(false);
       getWarehouses();
@@ -130,6 +177,12 @@ export default function WarehouseView() {
     setAddWarehouseViewOpen(true);
   }
 
+  const openViewDetails = warehouse => {
+    console.log("openne",warehouse,warehouseDetailsView)
+    setSelectedWarehouse(warehouse)
+    setWarehouseDetailsView(true)
+  }
+
   const openDeleteView = warehouse => {
     setSelectedWarehouse(warehouse);
     setDeleteWarehouseViewOpen(true);
@@ -140,26 +193,58 @@ export default function WarehouseView() {
     setAddWarehouseViewOpen(false);
   }
 
+  const closeWarehouseDetailsView = () => {
+    setWarehouseDetailsView(false)
+    setSelectedWarehouse(null)
+  }
+
   const closeDeleteWarehouseView = () => {
     setSelectedWarehouse(null);
     setDeleteWarehouseViewOpen(false);
   }
 
-  const _getWarehouses = (page, searchKeyword) => {
-    axios.get(getURL('warehouse'), { params: { page, search: searchKeyword } })
+  const _getWarehouses = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL('warehouse'), {
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
+    })
       .then(res => {
         setPageCount(res.data.pages)
         setWarehouses(res.data.data)
       });
   }
 
-  const getWarehouses = useCallback(debounce((page, searchKeyword) => {
-    _getWarehouses(page, searchKeyword);
+  const getWarehouses = useCallback(debounce((page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+    _getWarehouses(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
   }, DEBOUNCE_CONST), []);
 
   useEffect(() => {
-    getWarehouses(page, searchKeyword);
-  }, [page, searchKeyword]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getWarehouses(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedDay, reRender]);
+
+  const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL('warehouse/export'), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, `Warehouse ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
+
 
   const searchInput = <InputBase
     placeholder="Search"
@@ -193,12 +278,110 @@ export default function WarehouseView() {
     selectedEntity={selectedWarehouse && selectedWarehouse.name}
     title={"Warehouse"}
   />
-  const headerButtons = [searchInput, addWarehouseButton, addWarehouseModal, deleteWarehouseModal];
+  const warehouseDetailsViewModal = <WarehouseDetailsView
+    key={5}
+    selectedWarehouse={selectedWarehouse}
+    open={warehouseDetailsView}
+    handleClose={closeWarehouseDetailsView} 
+  />
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  }
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
+    setPage(1)
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = <FormControl className={classes.formControl}>
+    <Select
+      value={selectedDay}
+      variant="outlined"
+      onChange={handleChange}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      className={classes.placeholderText}
+      startAdornment={
+        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
+          <CalendarTodayOutlinedIcon fontSize="small" />
+        </InputAdornment>
+      }
+      onOpen={() => setTrackDateFilterOpen(true)}
+      onClose={() => setTrackDateFilterOpen(false)}
+    >
+      <MenuItem value={null} disabled>
+        <span className={classes.dropdownListItem}>Select Days</span>
+      </MenuItem>
+      {
+        [{ name: 'All' }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+            </MenuItem>
+          )
+        })
+      }
+      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+      </MenuItem>
+    </Select>
+  </FormControl>
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+  const headerButtons = [addWarehouseButton, exportButton, addWarehouseModal, deleteWarehouseModal,warehouseDetailsViewModal];
+  const headerButtonsTwo = [searchInput, daysSelect]
+
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Warehouse" buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -248,6 +431,27 @@ export default function WarehouseView() {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} />
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={'startDate'}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={'startDate'}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+              setReRender(!reRender)
+            }}>
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
 
     </Paper>
   );

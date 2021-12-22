@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink as RouterLink, useLocation } from 'react-router-dom';
+import { Link, NavLink as RouterLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -63,17 +63,21 @@ const NavItem = ({
       disableGutters
       {...rest}
     >
-      <Button
-        activeClassName={classes.active}
-        className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.active : classes.button}
-        component={RouterLink}
-        to={href}
+      <Link to={href}
+        state={{ prevPath: location.pathname }}
       >
-        <span className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.titleActive : classes.title}>
-          {title}
-        </span>
-      </Button>
-    </ListItem>
+        <Button
+          activeClassName={classes.active}
+          className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.active : classes.button}
+        // component={RouterLink}
+        // to={href}
+        >
+          <span className={activeRouteName && currentPathName.toLowerCase() === activeRouteName.toLowerCase() ? classes.titleActive : classes.title}>
+            {title}
+          </span>
+        </Button>
+      </Link>
+    </ListItem >
   );
 };
 

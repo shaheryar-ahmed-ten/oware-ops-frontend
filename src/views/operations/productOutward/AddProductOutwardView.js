@@ -5,6 +5,8 @@ import {
   TextField,
   Select,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   InputLabel,
   MenuItem,
   Typography,
@@ -14,14 +16,19 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  RadioGroup,
+  Radio,
 } from "@material-ui/core";
 import { isRequired, isNotEmptyArray } from "../../../utils/validators";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import axios from "axios";
-import { checkForZeroQuantityInArray, dateFormat, getURL } from "../../../utils/common";
+import { checkForZeroQuantityInArray, dateFormat, filterZeroQuantity, getURL } from "../../../utils/common";
 import { TableBody } from "@material-ui/core";
 import { useLocation, useNavigate } from "react-router";
 import MessageSnackbar from "../../../components/MessageSnackbar";
+import moment from "moment-timezone";
+import { useGridControlState } from "@material-ui/data-grid";
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -37,9 +44,18 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     fontWeight: "bolder",
   },
+  externalVehicle: {
+    marginTop: "0px",
+  },
+  referenceId: {
+    marginTop: "1px",
+  },
+  // radioField:{
+  //   marginTop:"15px",
+  // },
 }));
 
-export default function AddProductOutwardView({}) {
+export default function AddProductOutwardView({ }) {
   const classes = useStyles();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -116,10 +132,6 @@ export default function AddProductOutwardView({}) {
     if (value && dispatchOrders.length > 0) {
       let dispatchOrder = dispatchOrders.find((dispatchOrder) => dispatchOrder.id == value);
       setSelectedDispatchOrder(dispatchOrder);
-      // let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0);
-      // let totalQuantityDispatched = dispatchOrder.Inventories.reduce((acc, po) => acc + po.committedQuantity, 0);
-      // setRequestedQuantity(dispatchOrder.quantity || 0);
-      // setRemainingQuantity(dispatchOrder.quantity - totalQuantityDispatched || 0); // requested qt - sent quantity
       setWarehouse(dispatchOrder.Inventory.Warehouse.name);
       setCustomer(dispatchOrder.Inventory.Company.name);
       setShipmentDate(dispatchOrder.shipmentDate || "");
@@ -127,8 +139,11 @@ export default function AddProductOutwardView({}) {
       setReceiverPhone(dispatchOrder.receiverPhone || "");
       setReferenceId(dispatchOrder.referenceId || "");
       setInternalIdForBusiness(`PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`);
+      // setIsInternal(selectedProductOutward.isInternal || 1);
       if (selectedProductOutward) {
-        setVehicleId(selectedProductOutward.vehicleId || "");
+        setVehicleId(selectedProductOutward.vehicleId || null);
+        setExternalVehicle(selectedProductOutward.externalVehicle || null);
+        // setIsInternal(selectedProductOutward.isInternal || 1);
       }
     } else {
       setWarehouse("");
@@ -139,6 +154,8 @@ export default function AddProductOutwardView({}) {
       setReferenceId("");
       setInternalIdForBusiness("");
       setVehicleId("");
+      setExternalVehicle("");
+      // setIsInternal("");
     }
   };
 
@@ -173,26 +190,27 @@ export default function AddProductOutwardView({}) {
   // Done: add vehicleNumber and vehicle0
   const handleSubmit = (e) => {
     setDisableSubmitButton(true);
+    // filter product containing 0 qty
+    const filteredArray = filterZeroQuantity(Object.values(inventoryQuantities))
     const newProductOutward = {
       dispatchOrderId,
-      // quantity,
       referenceId,
-      vehicleId,
-      inventories: Object.values(inventoryQuantities),
+      vehicleId: vehicleId || null,
+      externalVehicle: selectedRadioValue == 'externalRide' ? externalVehicle : null,
+      inventories: filteredArray,
       internalIdForBusiness,
     };
 
     setValidation({
-      // quantity: true,
       dispatchOrderId: true,
-      vehicleId: true,
+      externalVehicle: selectedRadioValue == 'externalRide' ? true : false,
     });
 
     if (
       isRequired(dispatchOrderId) &&
-      isRequired(vehicleId) &&
-      isNotEmptyArray(Object.values(inventoryQuantities)) &&
-      checkForZeroQuantityInArray(Object.values(inventoryQuantities))
+        selectedRadioValue == 'externalRide' ? isRequired(externalVehicle) : true &&
+        isNotEmptyArray(filteredArray) &&
+      checkForZeroQuantityInArray(filteredArray)
     ) {
       setDisableSubmitButton(true);
       addProductOutward(newProductOutward);
@@ -200,6 +218,19 @@ export default function AddProductOutwardView({}) {
       setDisableSubmitButton(false);
     }
   };
+
+  const [selectedRadioValue, setSelectedRadioValue] = useState('internalRide');
+  const [externalVehicle, setExternalVehicle] = useState(null);
+
+
+  const handleChange = (event) => {
+    setSelectedRadioValue(event.target.value);
+  };
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'any',
+    limit: 100,
+  });
 
   return (
     <>
@@ -217,19 +248,60 @@ export default function AddProductOutwardView({}) {
             </Button>
           </Grid>
         </Grid>
+
+        {/* <Grid container item xs={12} justifyContent="space-between"> */}
         <Grid item sm={6}>
           <FormControl fullWidth={true} variant="outlined">
             <Autocomplete
+              classes={{
+                option: classes.option
+              }}
+              renderOption={(props, option) => {
+                let grThanTwo, grThanOne, message;
+                var end = moment();
+                var duration = moment.duration(end.diff(props.shipmentDate));
+                var hours = duration.asHours();
+                grThanTwo = hours > 48;
+                grThanOne = hours > 24;
+                message = grThanTwo || grThanOne ? ` - ${Math.floor(duration.asDays())} days pending` : ""
+                return (
+                  <span {...props} style={{
+
+                    // fontWeight: 600
+                  }}>
+                    <p>
+                      {props.internalIdForBusiness}
+                      <span
+                        style={{
+                          color: grThanTwo ?
+                            'rgba(255,30,0,0.8)' : grThanOne ?
+                              '#DBA712' : 'black',
+
+                        }}>
+                        {message}
+                      </span>
+                    </p>
+                  </span>
+                );
+              }}
               id="combo-box-demo"
               defaultValue={
-                selectedProductOutward ? { internalIdForBusiness: selectedProductOutward.internalIdForBusiness } : ""
+                selectedProductOutward ?
+                  { internalIdForBusiness: selectedProductOutward.internalIdForBusiness }
+                  :
+                  ""
               }
+              filterOptions={filterOptions}
               options={dispatchOrdersForDropdown}
-              getOptionLabel={(dispatchOrder) => dispatchOrder.internalIdForBusiness || ""}
+              getOptionLabel={(dispatchOrder) =>
+                dispatchOrder.internalIdForBusiness || ""}
               onChange={(event, newValue) => {
-                if (newValue) selectDispatchOrder(newValue.id, newValue.internalIdForBusiness || "");
+                if (newValue)
+                  selectDispatchOrder(newValue.id, newValue.internalIdForBusiness || "");
               }}
-              renderInput={(params) => <TextField {...params} label="Dispatch Order Id" variant="outlined" />}
+              renderInput={(params) =>
+                <TextField {...params} label="Dispatch Order Id" variant="outlined"
+                />}
             />
             {validation.dispatchOrderId && !isRequired(dispatchOrderId) ? (
               <Typography color="error">Dispatch order Id is required!</Typography>
@@ -238,30 +310,11 @@ export default function AddProductOutwardView({}) {
             )}
           </FormControl>
         </Grid>
+
         <Grid item sm={6}>
-          <FormControl fullWidth={true} variant="outlined">
-            <Autocomplete
-              id="vehicles"
-              key={vehicles}
-              options={vehicles}
-              // defaultValue={city ? city : ''}
-              renderInput={(params) => <TextField {...params} label="Vehicle" variant="outlined" />}
-              getOptionLabel={(vehicle) => vehicle.registrationNumber}
-              onBlur={(e) => setValidation({ ...validation, city: true })}
-              onChange={(event, newValue) => {
-                if (newValue) setVehicleId(newValue.id);
-              }}
-            />
-            {validation.vehicleId && !isRequired(vehicleId) ? (
-              <Typography color="error">Vehicle number is required!</Typography>
-            ) : (
-              ""
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item sm={12}>
           <TextField
             fullWidth={true}
+            className={classes.referenceId}
             margin="normal"
             id="referenceId"
             label="Reference Id"
@@ -275,6 +328,97 @@ export default function AddProductOutwardView({}) {
             }}
           />
         </Grid>
+        <Grid item sm={6}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend" style={{ paddingTop: 13 }}>Transportation Type</FormLabel>
+            <RadioGroup row aria-label="gender" name="row-radio-buttons-group" style={{ marginTop: 5 }}>
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={selectedRadioValue === 'internalRide'}
+                    onChange={handleChange}
+                    value="internalRide"
+                    name="radio-buttons"
+                    labelPlacement="internal"
+                  // inputProps={{ 'aria-label': 'externalRide' }}
+                  />
+                }
+                label="Oware Provided"
+              />
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={selectedRadioValue === 'externalRide'}
+                    onChange={handleChange}
+                    value="externalRide"
+                    name="radio-buttons"
+                  // inputProps={{ 'aria-label': 'externalRide' }}
+                  />
+                }
+                label="Customer Provided"
+              />
+
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        {/* </Grid> */}
+
+        {selectedRadioValue == 'internalRide' ?
+          (
+            // Internal Ride
+            <Grid item sm={6}>
+              <TextField
+                fullWidth={true}
+                // inputProps={{ className: classes.externalVehicle }}
+                // className={classes.externalVehicle}
+                margin="normal"
+                id="externalVehicle"
+                label="Customer Provided Vehicle (Customer Provided Transportation Only)"
+                type="text"
+                // variant="outlined"
+                value={vehicleId}
+                disabled
+                inputProps={{ maxLength: 30 }}
+                variant="filled"
+              // onChange={(e) => {
+              //   setExternalVehicle(e.target.value);
+              // }}
+              // onBlur={(e) => setValidation({ ...validation, externalVehicle: true })}
+              />
+              {/* {externalVehicle && selectedRadioValue == 'internalRide' ? (
+                <Typography color="error">External Vehicle number should be blank for Oware Provided !</Typography>
+              ) : (
+                ""
+              )} */}
+            </Grid>
+          )
+          :
+          // External Ride
+          <Grid item sm={6}>
+            <TextField
+              fullWidth={true}
+              // inputProps={{ className: classes.externalVehicle }}
+              // className={classes.externalVehicle}
+              margin="normal"
+              id="externalVehicle"
+              label="Customer Provided Vehicle (Customer Provided Transportation Only)"
+              type="text"
+              variant="outlined"
+              value={externalVehicle}
+              // disabled
+              inputProps={{ maxLength: 30 }}
+              onChange={(e) => {
+                setExternalVehicle(e.target.value);
+              }}
+              onBlur={(e) => setValidation({ ...validation, externalVehicle: true })}
+            />
+            {validation.externalVehicle && !isRequired(externalVehicle) && selectedRadioValue == 'externalRide' ? (
+              <Typography color="error">External Vehicle number is required!</Typography>
+            ) : (
+              ""
+            )}
+          </Grid>
+        }
       </Grid>
 
       {selectedDispatchOrder ? (
@@ -384,8 +528,8 @@ export default function AddProductOutwardView({}) {
                                   e.target.value < 0
                                     ? e.target.value == 0
                                     : e.target.value < remainingQt
-                                    ? e.target.value
-                                    : remainingQt,
+                                      ? e.target.value
+                                      : remainingQt,
                                 id: inventory.id,
                                 availableQuantity: remainingQt,
                               },

@@ -12,7 +12,10 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tab,
 } from "@material-ui/core";
+// import Tab from '@material-ui/core';
+import { TabContext, TabPanel, TabList } from "@material-ui/lab";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { dateFormat, getURL } from "../../../utils/common";
@@ -96,7 +99,7 @@ function RideDetailsView(props) {
     _getSelectedRide();
   };
   const _getSelectedRide = async () => {
-    axios.get(getURL(`ride/single/${uid}`)).then((res) => {
+    axios.get(getURL(`ride/${uid}`)).then((res) => {
       setSelectedRide(res.data.data);
       const { pickupLocation, dropoffLocation } = res.data.data;
       if (pickupLocation && pickupLocation.lat && dropoffLocation) {
@@ -132,6 +135,14 @@ function RideDetailsView(props) {
     height: "50%",
   };
 
+  const [value, setValue] = useState(1);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // console.log("selectedRide",selectedRide)
+
   return selectedRide ? (
     <>
       {/* Only for printing */}
@@ -141,7 +152,7 @@ function RideDetailsView(props) {
             <Grid item xs={12}>
               <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
               <Typography variant="h3" className={classes.heading}>
-                Ride Details
+                Load Details
               </Typography>
             </Grid>
           </Grid>
@@ -169,33 +180,60 @@ function RideDetailsView(props) {
                 Vendor :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.Driver.Vendor.name || "-"}
+                {selectedRide.Driver && selectedRide.Driver.Vendor ? selectedRide.Driver.Vendor.name : "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={3}>
                 Vehicle Type :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.Vehicle.Car.CarMake.name + " " + selectedRide.Vehicle.Car.CarModel.name || "-"}
+                {selectedRide.Vehicle
+                  ? selectedRide.Vehicle.Car.CarMake.name + " " + selectedRide.Vehicle.Car.CarModel.name
+                  : "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={3}>
                 Vehicle :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.Vehicle.registrationNumber || "-"}
+                {selectedRide.Vehicle ? selectedRide.Vehicle.registrationNumber : "-"}
               </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={3}>
                 Driver :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.Driver.name || "-"}
+                {selectedRide.Driver ? selectedRide.Driver.name : "-"}
               </Grid>
             </Grid>
           </Grid>
+          {/* {console.log(selectedRide)} */}
+
+          {selectedRide.status === "Cancelled" ? (
+            <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
+              <Grid container spacing={2}>
+                <Grid style={{ fontWeight: 500 }} item xs={3}>
+                  Cancellation Reason :
+                </Grid>
+                <Grid item xs={3} style={{ fontStyle: "italic" }}>
+                  {selectedRide.cancellationReason ? selectedRide.cancellationReason : "-"}
+                </Grid>
+                <Grid style={{ fontWeight: 500 }} item xs={3}></Grid>
+                <Grid item xs={3} style={{ fontStyle: "italic" }}></Grid>
+
+                <Grid style={{ fontWeight: 500 }} item xs={3}>
+                  Cancellation Comment :
+                </Grid>
+                <Grid item xs={9} style={{ fontStyle: "italic" }}>
+                  {selectedRide.cancellationComment ? selectedRide.cancellationComment : "-"}
+                </Grid>
+              </Grid>
+            </Grid>
+          ) : (
+            ""
+          )}
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
             <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
               <Typography variant="h5" className={classes.pageSubHeading}>
-                PICKUP & DROPOFF
+                PICKUP
               </Typography>
             </Grid>
             <Grid container spacing={2}>
@@ -203,37 +241,19 @@ function RideDetailsView(props) {
                 PickupCity :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.pickupCity.name || "-"}
+                {selectedRide.pickupCity ? selectedRide.pickupCity.name : "-"}
               </Grid>
               <Grid item style={{ fontWeight: 500 }} xs={3}>
                 PickupAddress :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.pickupAddress || "-"}
-              </Grid>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                DropoffCity :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.dropoffCity.name || "-"}
-              </Grid>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                DropoffAddress :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {selectedRide.dropoffAddress || "-"}
+                {selectedRide.pickupAddress ? selectedRide.pickupAddress : "-"}
               </Grid>
               <Grid item style={{ fontWeight: 500 }} xs={3}>
                 PickupDate :
               </Grid>
               <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {dateFormat(selectedRide.pickupDate) || "-"}
-              </Grid>
-              <Grid item style={{ fontWeight: 500 }} xs={3}>
-                DropoffDate :
-              </Grid>
-              <Grid item xs={3} style={{ fontStyle: "italic" }}>
-                {dateFormat(selectedRide.dropoffDate) || "-"}
+                {selectedRide.pickupDate ? dateFormat(selectedRide.pickupDate) : "-"}
               </Grid>
             </Grid>
           </Grid>
@@ -245,19 +265,19 @@ function RideDetailsView(props) {
               </Typography>
             </Grid>
             <Grid container spacing={2}>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
+              {/* <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Customer Price (Rs.) :
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.price || "-"}
-              </Grid>
+              </Grid> */}
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Vendor Cost (Rs.) :
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.cost || "-"}
               </Grid>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
+              {/* <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Customer Discount (Rs.) :
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
@@ -268,7 +288,7 @@ function RideDetailsView(props) {
               </Grid>
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {selectedRide.driverIncentive || "-"}
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
 
@@ -279,18 +299,6 @@ function RideDetailsView(props) {
               </Typography>
             </Grid>
             <Grid container spacing={2}>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
-                POC Name:
-              </Grid>
-              <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.pocName || "-"}
-              </Grid>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
-                POC Number:
-              </Grid>
-              <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.pocNumber || "-"}
-              </Grid>
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 ETA(Minutes):
               </Grid>
@@ -303,12 +311,7 @@ function RideDetailsView(props) {
               <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
                 {Math.floor(selectedRide.completionTime / 60) || "-"}
               </Grid>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Current Location:
-              </Grid>
-              <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.currentLocation || "-"}
-              </Grid>
+
               <Grid style={{ fontWeight: 500 }} item xs={4}>
                 Weight of Cargo(Kg):
               </Grid>
@@ -316,45 +319,90 @@ function RideDetailsView(props) {
                 {selectedRide.weightCargo || "-"}
               </Grid>
             </Grid>
-
-            <Grid container spacing={2} style={{ paddingTop: 15 }}>
-              <Grid style={{ fontWeight: 500 }} item xs={4}>
-                Memo :
-              </Grid>
-              <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                {selectedRide.memo || "-"}
-              </Grid>
-            </Grid>
           </Grid>
 
           <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
             <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
               <Typography variant="h5" className={classes.pageSubHeading}>
-                PRODUCT DETAILS
+                DROPOFF
               </Typography>
             </Grid>
-            <TableContainer className={classes.parentContainer}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow className={classes.shadedTableHeader}>
-                    <TableCell className={classes.tableHeadText}>CATEGORY</TableCell>
-                    <TableCell className={classes.tableHeadText}>NAME</TableCell>
-                    <TableCell className={classes.tableHeadText}>QUANTITY</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {selectedRide.RideProducts.map((product) => {
-                    return (
-                      <TableRow>
-                        <TableCell>{product.Category.name}</TableCell>
-                        <TableCell>{product.name}</TableCell>
-                        <TableCell>{product.quantity}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Grid container style={{ display: "block" }}>
+              {selectedRide.RideDropoff.map((dropoff, index) => {
+                return (
+                  <>
+                    <Grid container style={{ display: "inline-block" }}>
+                      <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+                        <Typography variant="h6" className={classes.pageSubHeading}>
+                          {index > -1 ? `DROPOFF ${index + 1}` : `DROPOFF ${index + 1}`}
+                        </Typography>
+                      </Grid>
+                      {/* <Grid container item xs={12} spacing={2}> */}
+                        <Grid container item xs={12} spacing={2}>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Dropoff Status:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.status ? dropoff.status : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Outward ID:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.ProductOutward ? dropoff.ProductOutward.internalIdForBusiness : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Dropoff City:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.DropoffCity ? dropoff.DropoffCity.name : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Dropoff Address:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.address ? dropoff.address : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Dropoff Date:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.dateTime ? dateFormat(dropoff.dateTime) : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            POC Name:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.pocName || "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            POC Number:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.pocNumber ? dropoff.pocNumber : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Current Location:
+                          </Grid>
+                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.currentLocation ? dropoff.currentLocation : "-"}
+                          </Grid>
+                          <Grid style={{ fontWeight: 500 }} item xs={4}>
+                            Memo :
+                          </Grid>
+                          <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                            {dropoff.memo ? dropoff.memo : "-"}
+                          </Grid>
+                          {/* </Grid> */}
+                        </Grid>
+                        
+                        {/* </Grid> */}
+                      {/* </Grid> */}
+                    </Grid>
+                  </>
+                );
+              })}
+            </Grid>
           </Grid>
         </Box>
       </Box>
@@ -363,7 +411,7 @@ function RideDetailsView(props) {
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
             <Typography variant="h3" className={classes.heading}>
-              Ride Details
+              Load Details
               <IconButton aria-label="print" onClick={handlePrint}>
                 <PrintIcon />
               </IconButton>
@@ -397,23 +445,48 @@ function RideDetailsView(props) {
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedRide.Customer.name || ""}</TableCell>
-                <TableCell>{selectedRide.status || ""}</TableCell>
-                <TableCell>{selectedRide.Driver.Vendor.name || ""}</TableCell>
+                <TableCell>{selectedRide.Customer.name || "-"}</TableCell>
+                <TableCell>{selectedRide.status || "-"}</TableCell>
+                <TableCell>{selectedRide.Driver ? selectedRide.Driver.Vendor.name : "-"}</TableCell>
                 <TableCell>
-                  {selectedRide.Vehicle.Car.CarMake.name + " " + selectedRide.Vehicle.Car.CarModel.name || ""}
+                  {selectedRide.Vehicle
+                    ? selectedRide.Vehicle.Car.CarMake.name + " " + selectedRide.Vehicle.Car.CarModel.name
+                    : "-"}
                 </TableCell>
-                <TableCell>{selectedRide.Vehicle.registrationNumber || ""}</TableCell>
-                <TableCell>{selectedRide.Driver.name || ""}</TableCell>
+                <TableCell>{selectedRide.Vehicle ? selectedRide.Vehicle.registrationNumber : "-"}</TableCell>
+                <TableCell>{selectedRide.Driver ? selectedRide.Driver.name : "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
 
+        {selectedRide.status === "Cancelled" ? (
+          <TableContainer className={classes.parentContainer}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell className={classes.tableHeadText} style={{ width: "20%" }}>
+                    CANCELLATION REASON
+                  </TableCell>
+                  <TableCell className={classes.tableHeadText}>CANCELLATION COMMENT</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow className={classes.tableRow} className={classes.tableRow}>
+                  <TableCell>{selectedRide.cancellationReason || "-"}</TableCell>
+                  <TableCell>{selectedRide.cancellationComment || "-"}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          ""
+        )}
+
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>
-              Pickup & Drop-off
+              Pickup
             </Typography>
           </Grid>
         </Grid>
@@ -423,38 +496,35 @@ function RideDetailsView(props) {
               <TableRow>
                 <TableCell className={classes.tableHeadText}>PICKUP CITY</TableCell>
                 <TableCell className={classes.tableHeadText}>PICKUP ADDRESS</TableCell>
-                <TableCell className={classes.tableHeadText}>DROPOFF CITY</TableCell>
-                <TableCell className={classes.tableHeadText}>DROPOFF ADDRESS</TableCell>
                 <TableCell className={classes.tableHeadText}>PICKUP DATE</TableCell>
-                <TableCell className={classes.tableHeadText}>DROPOFF DATE</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
+              <TableRow className={classes.tableRow} className={classes.tableRow}>
                 <TableCell>{selectedRide.pickupCity.name || "-"}</TableCell>
                 <TableCell>{selectedRide.pickupAddress || "-"}</TableCell>
-                <TableCell>{selectedRide.dropoffCity.name || "-"}</TableCell>
-                <TableCell>{selectedRide.dropoffAddress || "-"}</TableCell>
                 <TableCell>{dateFormat(selectedRide.pickupDate) || "-"}</TableCell>
-                <TableCell>{dateFormat(selectedRide.dropoffDate) || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
 
-        {selectedRide.pickupLocation && selectedRide.dropoffLocation ? (
-          <Grid container item xs={12} spacing={3} style={{ minHeight: 400, marginBottom: 20 }}>
+        {selectedRide.pickupLocation ? (
+          <Grid item sm={12}>
             <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
               <GoogleMap
-                pickupLocation={selectedRide.pickupLocation}
-                dropoffLocation={selectedRide.dropoffLocation}
-                showMapSearchFields={false}
+               editable={false}
+               showSingleSearchField={false}
+               singleLocationLatlng={selectedRide.pickupLocation}
+               showMapSearchFields={false}
               />
             </Grid>
           </Grid>
         ) : (
           ""
         )}
+
+        {/* </Grid> */}
 
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
@@ -495,37 +565,16 @@ function RideDetailsView(props) {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
-                <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
                 <TableCell className={classes.tableHeadText}>ETA(MINUTES)</TableCell>
                 <TableCell className={classes.tableHeadText}>TRIP COMPLETION TIME(MINUTES)</TableCell>
-                <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
                 <TableCell className={classes.tableHeadText}>WEIGHT OF CARGO (KG)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedRide.pocName || "-"}</TableCell>
-                <TableCell>{selectedRide.pocNumber || "-"}</TableCell>
                 <TableCell>{Math.floor(selectedRide.eta / 60) || "-"}</TableCell>
                 <TableCell>{Math.floor(selectedRide.completionTime / 60) || "-"}</TableCell>
-                <TableCell>{selectedRide.currentLocation || "-"}</TableCell>
                 <TableCell>{selectedRide.weightCargo || "-"}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.tableHeadText}>MEMO</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow className={classes.tableRow} className={classes.tableRow}>
-                <TableCell>{selectedRide.memo || "-"}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -534,32 +583,122 @@ function RideDetailsView(props) {
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h5" className={classes.pageSubHeading}>
-              Product Details
+              DropOff
             </Typography>
           </Grid>
         </Grid>
-        <TableContainer className={classes.parentContainer}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow className={classes.shadedTableHeader}>
-                <TableCell className={classes.tableHeadText}>CATEGORY</TableCell>
-                <TableCell className={classes.tableHeadText}>NAME</TableCell>
-                <TableCell className={classes.tableHeadText}>QUANTITY</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedRide.RideProducts.map((product) => {
+
+        {/* <Grid container item xs={12} spacing={3}> */}
+        <Box sx={{ width: "100%", typography: "body1" }}>
+          <TabContext value={value}>
+            <>
+              <Box sx={{ borderBottom: 1, borderColor: "divider", justifyContent: "flex-start" }}>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="lab API tabs example"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                >
+                  {selectedRide.RideDropoff.map((dropoff, index) => {
+                    return <Tab label={"Dropoff" + `${index + 1}`} value={index + 1} />;
+                  })}
+                </TabList>
+              </Box>
+
+              {selectedRide.RideDropoff.map((dropoff, index) => {
                 return (
-                  <TableRow>
-                    <TableCell>{product.Category.name}</TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.quantity}</TableCell>
-                  </TableRow>
+                  <TabPanel value={index + 1}>
+                    <TableContainer className={classes.parentContainer} style={{ overflow: "hidden" }}>
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell className={classes.tableHeadText}>DROPOFF STATUS</TableCell>
+                            <TableCell className={classes.tableHeadText}>OUTWARD ID</TableCell>
+                            <TableCell className={classes.tableHeadText}>DROPOFF CITY</TableCell>
+                            <TableCell className={classes.tableHeadText}>DROPOFF ADDRESS</TableCell>
+                            <TableCell className={classes.tableHeadText}>DROPOFF DATE</TableCell>
+                            <TableCell className={classes.tableHeadText}>POC NAME</TableCell>
+                            <TableCell className={classes.tableHeadText}>POC NUMBER</TableCell>
+                            <TableCell className={classes.tableHeadText}>CURRENT LOCATION</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <>
+                            <TableRow className={classes.tableRow} className={classes.tableRow}>
+                              <TableCell>{dropoff.status ? dropoff.status : "-"}</TableCell>
+                              <TableCell>
+                                {dropoff.ProductOutward ? dropoff.ProductOutward.internalIdForBusiness : "-"}
+                              </TableCell>
+                              <TableCell>{dropoff.DropoffCity ? dropoff.DropoffCity.name : "-"}</TableCell>
+                              <TableCell>{dropoff.address ? dropoff.address : "-"}</TableCell>
+                              <TableCell>{dropoff.dateTime ? dateFormat(dropoff.dateTime) : "-"}</TableCell>
+                              <TableCell>{dropoff.pocName ? dropoff.pocName : "-"}</TableCell>
+                              <TableCell>{dropoff.pocNumber ? dropoff.pocNumber : "-"}</TableCell>
+                              <TableCell>{dropoff.currentLocation ? dropoff.currentLocation : "-"}</TableCell>
+                            </TableRow>
+                          </>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <TableContainer className={classes.parentContainer} style={{ paddingTop: 0 }}>
+                      <Table stickyHeader aria-label="sticky table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell className={classes.tableHeadText}>MEMO</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <TableRow className={classes.tableRow} className={classes.tableRow}>
+                            <TableCell>{dropoff.memo ? dropoff.memo : "-"}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    <Grid item sm={12}>
+                      {selectedRide.RideDropoff ? (
+                        // <Grid container item xs={12} spacing={3} style={{ minHeight: 400, marginBottom: 20 }}>
+                        <Grid
+                          item
+                          sm={12}
+                          className={classes.locationMap}
+                          style={{ position: "relative", minHeight: 300 }}
+                        >
+                          <GoogleMap
+                            // pickupLocation={selectedRide.pickupLocation}
+                            editable={false}
+                            showSingleSearchField={false}
+                            singleLocationLatlng={selectedRide.RideDropoff[index].location}
+                            showMapSearchFields={false}
+                          />
+                        </Grid>
+                      ) : (
+                        // </Grid>
+                        ""
+                      )}
+                    </Grid>
+                    {dropoff.manifestId ? (
+                      <Grid item sm={12} style={{ marginTop: 20 }}>
+                        <Grid>
+                          <Typography variant="h6" className={classes.pageSubHeading} style={{ marginTop: 20 }}>
+                            Manifest Image
+                          </Typography>
+                        </Grid>
+                        <Grid item sm={12} style={{ marginTop: 20 }}>
+                          <a target="_blank" href={getURL("preview", dropoff.manifestId)}>
+                            <img src={getURL("preview", dropoff.manifestId)} alt="Manifest Image" />
+                          </a>
+                        </Grid>
+                      </Grid>
+                    ) : (
+                      ""
+                    )}
+                  </TabPanel>
                 );
               })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </>
+          </TabContext>
+        </Box>
 
         <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
@@ -619,7 +758,7 @@ function RideDetailsView(props) {
           </Grid> */}
         </Grid>
 
-        <Grid container item xs={12} spacing={3}>
+        {/* <Grid container item xs={12} spacing={3}>
           <Grid item xs={12}>
             {selectedRide && selectedRide.Manifest ? (
               <>
@@ -630,9 +769,9 @@ function RideDetailsView(props) {
                     </Typography>
                   </Grid>
                 </Grid>
-                {/* <a target="_blank" href={productManifestPreview}>
+                <a target="_blank" href={productManifestPreview}>
                   Product Manifest Image
-                </a> */}
+                </a>
                 <Grid item xs={12}>
                   <a target="_blank" href={getURL("preview", selectedRide.manifestId)}>
                     <img src={getURL("preview", selectedRide.manifestId)} alt="Manifest Image" />
@@ -642,11 +781,11 @@ function RideDetailsView(props) {
             ) : (
               ""
             )}
-          </Grid>
-          {/* <Grid item xs={12}>
+          </Grid> */}
+        {/* <Grid item xs={12}>
             <Map google={props.google} zoom={8} style={mapStyles} initialCenter={{ lat: 47.444, lng: -122.176 }} />
           </Grid> */}
-        </Grid>
+        {/* </Grid> */}
       </Grid>
     </>
   ) : (

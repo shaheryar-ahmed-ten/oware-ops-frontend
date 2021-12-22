@@ -18,7 +18,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import React, { useEffect, useState } from 'react'
 import { upload } from '../../../utils/upload';
 import { Autocomplete } from '@material-ui/lab';
-
+import clsx from "clsx";
+import MaskedInput from "react-text-mask";
 // const useStyles = makeStyles((theme) => ({
 
 // }))
@@ -75,9 +76,11 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
 
   const handleSubmit = async () => {
 
+    let strDriverNumber = driverPhone;
+    let stringDriverNumber = strDriverNumber.replace(/-/g, "");
     const newDriver = {
       name: driverName,
-      phone: driverPhone,
+      phone: stringDriverNumber,
       drivingLicenseNumber: drivingLicenseNumber,
       companyId: vendorId,
       cnicNumber: cnicNumber,
@@ -97,6 +100,7 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
 
     if (isRequired(driverName) &&
       isRequired(driverPhone) &&
+      isPhone(driverPhone.replace(/-/g, "")) &&
       isRequired(validation) &&
       isRequired(drivingLicenseNumber) &&
       isRequired(vendorId) &&
@@ -106,6 +110,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
       if (CNICImage) [newDriver.cnicId] = await upload([CNICImage], 'driver');
 
       if (!isRequired(newDriver.drivingLicenseId) || !isRequired(newDriver.cnicId)) return
+
+      if(!isPhone(driverPhone.replace(/-/g, ""))) return
 
       addDriver(newDriver);
     }
@@ -139,6 +145,8 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
     }
     setCNICImage(checkFile)
   }
+
+  const phoneNumberMask = [/[0]/, /[3]/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 
   return (
     <div style={{ display: "inline" }}>
@@ -206,23 +214,40 @@ function AddDriverView({ selectedDriver, companies, formErrors, open, handleClos
                 </Grid>
                 <Grid item sm={6}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <TextField
-                      fullWidth={true}
-                      inputProps={{ className: classes.textBox }}
-                      className={classes.labelBox}
-                      margin="dense"
-                      id="driverPhone"
-                      label="Phone"
-                      type="tel"
+                      <MaskedInput
+                      className={clsx({ ["mask-text"]: true })}
+                      // guide={true}
+                      // showMask={true}
                       variant="outlined"
+                      name="phone"
+                      mask={phoneNumberMask}
+                      label="Driver Phone"
+                      id="driverPhone"
+                      type="text"
                       value={driverPhone}
-                      placeholder="0346xxxxxx8"
-                      onChange={e => setDriverPhone(e.target.value)}
-                      onBlur={e => setValidation({ ...validation, driverPhone: true })}
+                      placeholder="Driver Phone(e.g 032*-*******)"
+                      onChange={(e) => {
+                        setDriverPhone(e.target.value);
+                      }}
+                      style={{
+                        // padding: "22px 10px",
+                        // color: "#2f2727",
+                        // fontWeight: 600,
+                        // borderColor: "rgba(0,0,0,0.3)",
+                        height: "17%",
+                        width: "90%",
+                        marginLeft: 0,
+                        marginTop: 6,
+                        borderColor: "#c4c4c4",
+                        color: "#2f2727",
+                        fontWeight: 600,
+                        padding: "17px 12px"
+                      }}
+                      onBlur={(e) => setValidation({ ...validation, driverPhone: true })}
                     />
                     {validation.driverPhone && !isRequired(driverPhone) ? <Typography color="error">Phone number is required!</Typography> : ''}
-                    {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
-                    {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Format: 0343XXXXX79</Typography> : ''}
+                    {validation.driverPhone && !isPhone(driverPhone.replace(/-/g, "")) && isRequired(driverPhone) ? <Typography color="error">Incorrect Phone number!</Typography> : ''}
+                    {/* {validation.driverPhone && !isPhone(driverPhone) && isRequired(driverPhone) ? <Typography color="error">Format: 0343XXXXX79</Typography> : ''} */}
                   </FormControl>
                 </Grid>
               </Grid>

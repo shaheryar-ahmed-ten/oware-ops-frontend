@@ -19,12 +19,12 @@ export const dateFormat = (value) => {
   return value ? moment(value).format("DD-MM-yyyy hh:mm A") : "-";
 };
 
-export const dateToPickerFormat = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "-");
+export const dateToPickerFormat = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "");
 
-export const dividerDateFormat = value => value ? moment(value).format('DD-MM-yyyy') : "-";
-export const dividerTimeFormat = value => value ? moment(value).format('hh:mm A') : "-";
+export const dividerDateFormat = (value) => (value ? moment(value).format("DD-MM-yyyy") : "-");
+export const dividerTimeFormat = (value) => (value ? moment(value).format("hh:mm A") : "-");
 
-export const dividerDateFormatForFilter = value => value ? moment(value).format('yyyy-MM-DD') : "-";
+export const dividerDateFormatForFilter = (value) => (value ? moment(value).format("yyyy-MM-DD") : "-");
 
 export const SharedContext = createContext(null);
 
@@ -41,10 +41,35 @@ export const checkForMatchInArray = (array, propertyToMatch, valueToMatch) => {
   return false;
 };
 
+export const filterZeroQuantity = (array) => {
+  return array.filter((el) => el.quantity > 0);
+};
+
 export const checkForZeroQuantityInArray = (array) => {
+  console.log("Array", array);
   for (let el of array) {
-    if (el.quantity == 0 || el.quantity === 0)
-      return false
+    if (el.quantity === 0 || el.quantity === 0) return false;
   }
-  return true
-}
+  return true;
+};
+
+export const removeItemFromArrayIfExistInAnotherArray = (removeFromThisArray, anotherArray) => {
+  for (const item of anotherArray) {
+    removeFromThisArray = removeFromThisArray.filter((i) => i.id !== item.outwardId);
+  }
+  return removeFromThisArray;
+};
+
+export const arraymove = (arr, fromIndex, toIndex) => {
+  var element = arr[fromIndex];
+  arr.splice(fromIndex, 1);
+  arr.splice(toIndex, 0, element);
+};
+
+export const sortByKey = (array, key) => {
+  return array.sort(function (a, b) {
+    var x = a[key];
+    var y = b[key];
+    return x < y ? -1 : x > y ? 1 : 0;
+  });
+};

@@ -304,7 +304,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
               {(!isCurrentUser() && portal == 'CUSTOMER') ?
                 <Grid item sm={12}>
                   <FormControl margin="dense" fullWidth={true} variant="outlined">
-                    <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Company</InputLabel>
+                    {/* <InputLabel htmlFor="outlined-age-native-simple" className={classes.labelPadding}>Company</InputLabel>
                     <Select
                       className={classes.selectBox}
                       required
@@ -318,23 +318,35 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     >
                       <MenuItem value="" disabled>Select a company</MenuItem>
                       {customers.map(customer => <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>)}
-                    </Select>
+                    </Select> */}
+                    <Autocomplete
+                      id="customers"
+                      key={customers}
+                      options={customers}
+                      defaultValue={selectedUser && selectedUser.companyId ? selectedUser : ''}
+                      renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
+                      getOptionLabel={(customer) => {
+                        return (
+                          customer && customer.name ?
+                            customer.name || ""
+                            :
+                            customer.Company ?
+                              customer.Company.name
+                              :
+                              ''
+                        )
+                      }}
+                      onBlur={e => setValidation({ ...validation, companyId: true })}
+                      onChange={(event, newValue) => {
+                        if (newValue)
+                          setCompanyId(newValue.id)
+                      }}
+                    />
                     {validation.companyId && !isRequired(companyId) ? <Typography color="error">Customer is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
                 : ''}
               <Grid item sm={12}>
-                {/* <TextField
-                  fullWidth={true}
-                  margin="dense"
-                  id="phone"
-                  label="Phone Number"
-                  type="phone"
-                  variant="outlined"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, phone: true })}
-                /> */}
                 <MaskedInput
                   className="mask-text"
                   // guide={false}
@@ -352,7 +364,7 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
                     setPhone(e.target.value)
                   }}
                   onBlur={e => setValidation({ ...validation, phone: true })}
-                  style={{ padding: '22px 10px', color: '#2f2727',fontWeight:600, borderColor: 'rgba(0,0,0,0.3)',marginTop:10 }}
+                  style={{ padding: '22px 10px', color: '#2f2727', fontWeight: 600, borderColor: 'rgba(0,0,0,0.3)', marginTop: 10 }}
                 />
                 {validation.phone && !isRequired(phone) ? <Typography color="error">Phone number is required!</Typography> : ''}
                 {/* {validation.phone && !isRequired(phone) ? <Typography color="error">Incorrect phone number!</Typography> : ''} */}

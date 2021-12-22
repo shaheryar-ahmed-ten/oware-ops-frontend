@@ -1,200 +1,181 @@
-import React, { useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { TreeItem, TreeView } from '@material-ui/lab';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { SharedContext } from '../../../utils/common';
+import React, { useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import { TreeItem, TreeView } from "@material-ui/lab";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { SharedContext } from "../../../utils/common";
 
-import {
-  Box,
-  Divider,
-  Drawer,
-  Hidden,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
-import NavItem from './NavItem';
-import { checkPermission } from '../../../utils/auth';
+import { Box, Divider, Drawer, Hidden, Typography, makeStyles } from "@material-ui/core";
+import NavItem from "./NavItem";
+import { checkPermission } from "../../../utils/auth";
 
 const navTreeData = [
   {
-    title: 'Administration',
-    nodeId: 'administration',
+    title: "Administration",
+    nodeId: "administration",
     children: [
       {
-        canActivate: user => checkPermission(user, 'OPS_USER_FULL'),
-        href: '/administration/user',
-        title: 'User',
-        activeRouteName: 'user'
+        canActivate: (user) => checkPermission(user, "OPS_USER_FULL"),
+        href: "/administration/user",
+        title: "User",
+        activeRouteName: "user",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-        href: '/administration/customer',
-        title: 'Company',
-        activeRouteName: 'customer'
+        canActivate: (user) => checkPermission(user, "OPS_CUSTOMER_FULL"),
+        href: "/administration/customer",
+        title: "Company",
+        activeRouteName: "customer",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_WAREHOUSE_FULL'),
-        href: '/administration/warehouse',
-        title: 'Warehouse',
-        activeRouteName: 'warehouse'
+        canActivate: (user) => checkPermission(user, "OPS_WAREHOUSE_FULL"),
+        href: "/administration/warehouse",
+        title: "Warehouse",
+        activeRouteName: "warehouse",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_BRAND_FULL'),
-        href: '/administration/brand',
-        title: 'Brand',
-        activeRouteName: 'brand'
+        canActivate: (user) => checkPermission(user, "OPS_BRAND_FULL"),
+        href: "/administration/brand",
+        title: "Brand",
+        activeRouteName: "brand",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_UOM_FULL'),
-        href: '/administration/uom',
-        title: 'UoM',
-        activeRouteName: 'uom'
+        canActivate: (user) => checkPermission(user, "OPS_UOM_FULL"),
+        href: "/administration/uom",
+        title: "UoM",
+        activeRouteName: "uom",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_CATEGORY_FULL'),
-        href: '/administration/category',
-        title: 'Category',
-        activeRouteName: 'category'
+        canActivate: (user) => checkPermission(user, "OPS_CATEGORY_FULL"),
+        href: "/administration/category",
+        title: "Category",
+        activeRouteName: "category",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
-        href: '/administration/product',
-        title: 'Product',
-        activeRouteName: 'product'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCT_FULL"),
+        href: "/administration/product",
+        title: "Product",
+        activeRouteName: "product",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCT_FULL'),
-        href: '/administration/activity-logs',
-        title: 'Activity Logs',
-        activeRouteName: 'activity-logs'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCT_FULL"),
+        href: "/administration/activity-logs",
+        title: "Activity Logs",
+        activeRouteName: "activity-logs",
       },
-    ]
+    ],
   },
   {
-    title: 'Warehouse Ops',
-    nodeId: 'operations',
+    title: "Warehouse Ops",
+    nodeId: "operations",
     children: [
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/operations/product-inward',
-        title: 'Product Inward',
-        activeRouteName: 'product-inward'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
+        href: "/operations/product-inward",
+        title: "Product Inward",
+        activeRouteName: "product-inward",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_DISPATCHORDER_FULL'),
-        href: '/operations/dispatch-order',
-        title: 'Dispatch Order',
-        activeRouteName: 'dispatch-order'
+        canActivate: (user) => checkPermission(user, "OPS_DISPATCHORDER_FULL"),
+        href: "/operations/dispatch-order",
+        title: "Dispatch Order",
+        activeRouteName: "dispatch-order",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTOUTWARD_FULL'),
-        href: '/operations/product-outward',
-        title: 'Product Outward',
-        activeRouteName: 'product-outward'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTOUTWARD_FULL"),
+        href: "/operations/product-outward",
+        title: "Product Outward",
+        activeRouteName: "product-outward",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-        href: '/operations/stock-adjustment',
-        title: 'Stock Adjustment',
-        activeRouteName: 'stock-adjustment'
-      }
-    ]
+        canActivate: (user) => checkPermission(user, "OPS_CUSTOMER_FULL"),
+        href: "/operations/stock-adjustment",
+        title: "Stock Adjustment",
+        activeRouteName: "stock-adjustment",
+      },
+    ],
   },
   {
-    title: 'Reporting',
-    nodeId: 'reporting',
+    title: "Reporting",
+    nodeId: "reporting",
     children: [
       {
-        canActivate: user => checkPermission(user, 'OPS_INVENTORY_FULL'),
-        href: '/reporting/inventory',
-        title: 'Inventory',
-        activeRouteName: 'inventory'
-      }
-    ]
+        canActivate: (user) => checkPermission(user, "OPS_INVENTORY_FULL"),
+        href: "/reporting/inventory",
+        title: "Inventory",
+        activeRouteName: "inventory",
+      },
+    ],
   },
   {
-    title: 'Logistics',
-    nodeId: 'logistics',
+    title: "Logistics",
+    nodeId: "logistics",
     children: [
       {
-        canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-        href: '/logistics/vendor',
-        title: 'Vendor',
-        activeRouteName: 'vendor'
+        canActivate: (user) => checkPermission(user, "OPS_CUSTOMER_FULL"),
+        href: "/logistics/vendor",
+        title: "Vendor",
+        activeRouteName: "vendor",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/logistics/driver',
-        title: 'Driver',
-        activeRouteName: 'driver'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
+        href: "/logistics/driver",
+        title: "Driver",
+        activeRouteName: "driver",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/logistics/vehicle-type',
-        title: 'Vehicle Type',
-        activeRouteName: 'vehicle-type'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
+        href: "/logistics/vehicle-type",
+        title: "Vehicle Type",
+        activeRouteName: "vehicle-type",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/logistics/vehicle',
-        title: 'Vehicle',
-        activeRouteName: 'vehicle'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
+        href: "/logistics/vehicle",
+        title: "Vehicle",
+        activeRouteName: "vehicle",
       },
       {
-        canActivate: user => checkPermission(user, 'OPS_PRODUCTINWARD_FULL'),
-        href: '/logistics/ride',
-        title: 'Ride',
-        activeRouteName: 'ride'
+        canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
+        href: "/logistics/ride",
+        title: "Load",
+        activeRouteName: "ride",
       },
-    ]
+    ],
   },
-  // {
-  //   title: 'Management',
-  //   nodeId: 'management',
-  //   children: [
-  //     {
-  //       canActivate: user => checkPermission(user, 'OPS_CUSTOMER_FULL'),
-  //       href: '/management/stock-adjustment',
-  //       title: 'Stock Adjustment',
-  //       activeRouteName: 'stockmanagement'
-  //     }
-  //   ]  
-  // }
 ];
 
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
-    width: '100vw'
+    width: "100vw",
   },
   desktopDrawer: {
     width: 256,
     top: 0,
     backgroundColor: theme.palette.secondary.main,
-    height: '100vh'
+    height: "100vh",
   },
   avatar: {
-    cursor: 'pointer',
+    cursor: "pointer",
     width: 64,
-    height: 64
+    height: 64,
   },
   brand: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
   },
   treeNode: {
     color: theme.palette.primary.light,
   },
   treeItem: {
     "&:hover": {
-      color: "white"
-    }
-  }
+      color: "white",
+    },
+  },
 }));
 
 const NavBar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
-  const [expanded, setExpanded] = React.useState([`${location.pathname.split('/')[1]}`]);
+  const [expanded, setExpanded] = React.useState([`${location.pathname.split("/")[1]}`]);
   const [selected, setSelected] = React.useState([]);
   const classes = useStyles();
   const { currentUser } = useContext(SharedContext);
@@ -215,21 +196,21 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   };
 
   const content = (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column">
-      <Box
-        alignItems="start"
-        display="flex"
-        flexDirection="column"
-        p={2}>
-        <Typography variant="h2" style={{ fontWeight: "bolder" }} component="div" className={classes.brand} color="primary">oware</Typography>
+    <Box height="100%" display="flex" flexDirection="column">
+      <Box alignItems="start" display="flex" flexDirection="column" p={2}>
+        <Typography
+          variant="h2"
+          style={{ fontWeight: "bolder" }}
+          component="div"
+          className={classes.brand}
+          color="primary"
+        >
+          oware
+        </Typography>
       </Box>
       <Divider />
 
       <Box p={2}>
-
         <TreeView
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
@@ -238,27 +219,30 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           onNodeToggle={handleToggle}
           onNodeSelect={handleSelect}
         >
-
           {navTreeData.map((treeData, i) => (
             <TreeItem nodeId={treeData.nodeId} key={i} label={treeData.title} className={classes.treeNode}>
-              {treeData.children.map((treeItem, j) => (
-                treeItem.canActivate(currentUser) ? <NavItem key={j} title={treeItem.title} className={classes.treeItem} href={treeItem.href} activeRouteName={treeItem.activeRouteName} /> : ''
-              ))}
+              {treeData.children.map((treeItem, j) =>
+                treeItem.canActivate(currentUser) ? (
+                  <NavItem
+                    key={j}
+                    title={treeItem.title}
+                    className={classes.treeItem}
+                    href={treeItem.href}
+                    activeRouteName={treeItem.activeRouteName}
+                  />
+                ) : (
+                  ""
+                )
+              )}
             </TreeItem>
           ))}
         </TreeView>
-
       </Box>
       <Divider />
 
       <Box flexGrow={1} />
-      <Box
-        p={2}
-        m={2}
-        bgcolor="background.dark">
-
-      </Box>
-    </Box >
+      <Box p={2} m={2} bgcolor="background.dark"></Box>
+    </Box>
   );
 
   return (
@@ -269,16 +253,13 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           classes={{ paper: classes.mobileDrawer }}
           onClose={onMobileClose}
           open={openMobile}
-          variant="temporary">
+          variant="temporary"
+        >
           {content}
         </Drawer>
       </Hidden>
       <Hidden mdDown>
-        <Drawer
-          anchor="left"
-          classes={{ paper: classes.desktopDrawer }}
-          open
-          variant="persistent">
+        <Drawer anchor="left" classes={{ paper: classes.desktopDrawer }} open variant="persistent">
           {content}
         </Drawer>
       </Hidden>
@@ -288,12 +269,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool
+  openMobile: PropTypes.bool,
 };
 
 NavBar.defaultProps = {
-  onMobileClose: () => { },
-  openMobile: false
+  onMobileClose: () => {},
+  openMobile: false,
 };
 
 export default NavBar;

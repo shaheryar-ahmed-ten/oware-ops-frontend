@@ -43,6 +43,7 @@ import FileDownload from "js-file-download";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 import owareLogo from "../../../assets/icons/oware-logo-black.png";
+import TableStatsHeader from "../../../components/TableStatsHeader";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -173,13 +174,13 @@ export default function DispatchOrderView() {
       className: "",
       format: (value, entity) => entity.Inventory.Warehouse.name,
     },
-    {
-      id: "Inventories.length",
-      label: "NO. OF PRODUCTS",
-      minWidth: "auto",
-      className: "",
-      format: (value, entity) => entity.Inventories.length,
-    },
+    // {
+    //   id: "Inventories.length",
+    //   label: "NO. OF PRODUCTS",
+    //   minWidth: "auto",
+    //   className: "",
+    //   format: (value, entity) => entity.Inventories.length,
+    // },
     {
       id: "creator",
       label: "CREATED BY",
@@ -192,7 +193,24 @@ export default function DispatchOrderView() {
       label: "SHIPMENT DATE",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => dateFormat(entity.shipmentDate),
+      format: (value, entity) => {
+        var end = moment();
+        var duration = moment.duration(end.diff(entity.shipmentDate));
+        var hours = duration.asHours();
+        var grThanTwo = hours > 48;
+        var grThanOne = hours > 24;
+        return <span
+          style={{
+            color: grThanTwo && entity.status != 2 && entity.status != 3 ?
+              'rgba(255,30,0,0.8)' : grThanOne && entity.status != 2 && entity.status != 3 ?
+                '#DBA712' : 'black',
+
+            // fontWeight: 600
+          }}
+        >
+          {dateFormat(entity.shipmentDate)}
+        </span>
+      }
     },
     {
       id: "referenceid",
@@ -238,6 +256,24 @@ export default function DispatchOrderView() {
         );
       },
     },
+    // {
+    //   id: "pendingDays",
+    //   label: "Pending Days",
+    //   minWidth: "auto",
+    //   className: "",
+    //   format: (value, entity) => {
+    //     var end = moment();
+    //     var duration = moment.duration(end.diff(entity.createdAt));
+    //     var pendingDays = entity.status != 2 && entity.status != 3
+    //       ?
+    //       Math.floor(duration.asDays())
+    //       :
+    //       ''
+    //     return (
+    //       pendingDays
+    //     )
+    //   },
+    // },
     {
       id: "actions",
       label: "Actions",
@@ -295,20 +331,23 @@ export default function DispatchOrderView() {
 
   const [showMessage, setShowMessage] = useState(null);
   const [messageType, setMessageType] = useState("green");
+  const [currentFilter, setCurrentFilter] = useState("ALL");
+  const [stats, setStats] = useState([]);
+  const [totalProducts, setTotalProducts] = useState();
 
   // filters
   const [filterStatus, setFilterStatus] = useState([
     {
-      id: 2,
-      name: "Fulfilled",
+      id: 0,
+      name: "Pending",
     },
     {
       id: 1,
       name: "Partially Fulfilled",
     },
     {
-      id: 0,
-      name: "Pending",
+      id: 2,
+      name: "Fulfilled",
     },
     {
       id: 3,
@@ -388,6 +427,7 @@ export default function DispatchOrderView() {
   const _getDispatchOrders = (
     page,
     searchKeyword,
+    currentFilter,
     selectedFilterStatus,
     selectedDay,
     selectedDateRange,
@@ -398,13 +438,18 @@ export default function DispatchOrderView() {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
 
+    getStats();
+
     axios
       .get(getURL("dispatch-order"), {
         params: {
           page,
           search: searchKeyword.trim(),
+          currentstatus: currentFilter,
+          status: selectedFilterStatus,
+
           days: !selectedDateRange ? selectedDay : null,
-          status: !!selectedFilterStatus ? selectedFilterStatus : null,
+          // status: !!selectedFilterStatus ? selectedFilterStatus : null,
           startingDate: selectedDateRange ? startingDate : null,
           endingDate: selectedDateRange ? endingDate : null,
           warehouse: selectedWarehouse,
@@ -418,7 +463,7 @@ export default function DispatchOrderView() {
 
   const _getWarehouse = () => {
     axios
-      .get(getURL("warehouse"))
+      .get(getURL("warehouse/relations"))
       .then((res) => {
         setWarehouses(res.data.data);
       })
@@ -432,7 +477,9 @@ export default function DispatchOrderView() {
       (
         page,
         searchKeyword,
+        currentFilter,
         selectedFilterStatus,
+        // currentFilter,
         selectedDay,
         selectedDateRange,
         startDate,
@@ -442,7 +489,9 @@ export default function DispatchOrderView() {
         _getDispatchOrders(
           page,
           searchKeyword,
+          currentFilter,
           selectedFilterStatus,
+
           selectedDay,
           selectedDateRange,
           startDate,
@@ -455,6 +504,12 @@ export default function DispatchOrderView() {
     []
   );
 
+  const getStats = () => {
+    axios.get(getURL("dispatch-order/stats")).then((res) => {
+      setStats(res.data.stats);
+    });
+  };
+
   useEffect(() => {
     _getWarehouse();
   }, []);
@@ -466,6 +521,7 @@ export default function DispatchOrderView() {
         page,
         searchKeyword,
         selectedFilterStatus,
+        currentFilter == "ALL" ? "" : currentFilter,
         selectedDay,
         selectedDateRange,
         startDate,
@@ -473,7 +529,7 @@ export default function DispatchOrderView() {
         selectedWarehouse
       );
     }
-  }, [page, searchKeyword, selectedFilterStatus, selectedDay, reRender, selectedWarehouse]);
+  }, [page, searchKeyword, selectedFilterStatus, currentFilter, selectedDay, reRender, selectedWarehouse]);
 
   const exportToExcel = () => {
     let startingDate = new Date(startDate);
@@ -485,6 +541,9 @@ export default function DispatchOrderView() {
         params: {
           page,
           search: searchKeyword,
+          // status: selectedFilterStatus,
+          currentstatus: currentFilter == "ALL" ? "" : currentFilter,
+          warehouse: selectedWarehouse,
           days: !selectedDateRange ? selectedDay : null,
           startingDate: selectedDateRange ? startingDate : null,
           endingDate: selectedDateRange ? endingDate : null,
@@ -552,7 +611,12 @@ export default function DispatchOrderView() {
 
   const resetFilters = () => {
     setSelectedFilterStatus(null);
+    // setCurrentFilter("ALL")
+    setPage(1);
   };
+  useEffect(() => {
+    setPage(1)
+  }, [currentFilter]);
 
   const exportButton = (
     <Button
@@ -694,12 +758,18 @@ export default function DispatchOrderView() {
   );
 
   const headerButtons = [addDispatchOrderButton, addBulkProductsButton, exportButton, deleteDispatchOrderModal];
-  const headerButtonsTwo = [searchInput, warehouseSelect, statusSelect, daysSelect];
+  const headerButtonsTwo = [searchInput, warehouseSelect, daysSelect];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title="Dispatch Order" buttons={headerButtons} />
+        <TableStatsHeader
+          stats={stats}
+          setCurrentFilter={setCurrentFilter}
+          currentFilter={currentFilter}
+          setTotalProducts={setTotalProducts}
+        />
         <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
@@ -723,6 +793,15 @@ export default function DispatchOrderView() {
           </TableHead>
           <TableBody>
             {dispatchOrders.map((dispatchOrder) => {
+              // do != fullfiled && cancelled and createAt > 24 || 48
+              let grThanTwo, grThanOne, message;
+              if (dispatchOrder.status != 2 && dispatchOrder.status != 3) {
+                var end = moment();
+                var duration = moment.duration(end.diff(dispatchOrder.createdAt));
+                var hours = duration.asHours();
+                grThanTwo = hours > 48;
+                grThanOne = hours > 24;
+              }
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={dispatchOrder.id}>
                   {columns.map((column) => {
