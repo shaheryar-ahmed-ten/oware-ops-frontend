@@ -36,6 +36,7 @@ import { useNavigate } from "react-router";
 import moment from "moment-timezone";
 import FileDownload from "js-file-download";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
+import { isRequired } from "../../../utils/validators";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -136,11 +137,11 @@ export default function ProductOutwardView() {
       format: (value, entity) => entity.DispatchOrder.Inventory.Warehouse.name,
     },
     {
-      id: "products",
-      label: "NO. OF PRODUCTS",
+      id: "externalVehicle",
+      label: "TRANSPORTATION TYPE",
       minWidth: "auto",
       className: "",
-      format: (value, entity) => entity.DispatchOrder.Inventories.length,
+      format: (value, entity) => entity.externalVehicle && isRequired(entity.externalVehicle) ? "Customer Provided":"Oware Provided",
     },
     {
       id: "creator",
@@ -149,21 +150,21 @@ export default function ProductOutwardView() {
       className: "",
       format: (value, entity) => `${entity.User.firstName || ""} ${entity.User.lastName || ""}`,
     },
-    {
-      id: "DispatchOrder.quantity",
-      label: "Requested Quantity to Dispatch",
-      minWidth: "auto",
-      className: "",
-      format: (value, entity) => entity.DispatchOrder.quantity,
-      // format: (value, entity, inventory) => inventory.OrderGroup.quantity
-    },
-    {
-      id: "quantity",
-      label: "Actual Quantity Dispatched",
-      minWidth: "auto",
-      className: "",
-      // format: (value, entity, inventory) => inventory.dispatchedQuantity
-    },
+    // {
+    //   id: "DispatchOrder.quantity",
+    //   label: "Requested Quantity to Dispatch",
+    //   minWidth: "auto",
+    //   className: "",
+    //   format: (value, entity) => entity.DispatchOrder.quantity,
+    //   // format: (value, entity, inventory) => inventory.OrderGroup.quantity
+    // },
+    // {
+    //   id: "quantity",
+    //   label: "Actual Quantity Dispatched",
+    //   minWidth: "auto",
+    //   className: "",
+    //   // format: (value, entity, inventory) => inventory.dispatchedQuantity
+    // },
     {
       id: "DispatchOrder.shipmentDate",
       label: "EXPECTED SHIPMENT DATE",

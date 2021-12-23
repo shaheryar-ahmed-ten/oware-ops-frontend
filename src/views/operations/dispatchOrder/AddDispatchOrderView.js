@@ -654,7 +654,7 @@ export default function AddDispatchOrderView() {
             <TextField
               fullWidth={true}
               margin="normal"
-              InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
+              // InputProps={{ inputProps: { min: 0, max: availableQuantity } }}
               id="quantity"
               label="Quantity"
               type="number"

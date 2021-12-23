@@ -67,7 +67,7 @@ export default function BrandView() {
     format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
-    label: '',
+    label: 'Actions',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>

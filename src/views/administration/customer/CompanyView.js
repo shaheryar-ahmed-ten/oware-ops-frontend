@@ -11,10 +11,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  InputAdornment,
+  MenuItem,
+  FormControl,
+  Select,
+  TextField,
+  ListItem,
+  DialogTitle,
+  Dialog,
+  Tooltip,
+  Typography
 } from "@material-ui/core";
 import TableHeader from "../../../components/TableHeader";
 import axios from "axios";
-import { getURL, digitize } from "../../../utils/common";
+import { getURL, dateFormat, dividerDateFormatForFilter, digitize } from '../../../utils/common';
 import { Alert, Pagination } from "@material-ui/lab";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -24,6 +34,9 @@ import CompanyDetailsView from "./CompanyDetailsView";
 import { capitalize, debounce } from "lodash";
 import MessageSnackbar from "../../../components/MessageSnackbar";
 import { DEBOUNCE_CONST } from "../../../Config";
+import moment from 'moment-timezone';
+import FileDownload from 'js-file-download';
+import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +58,17 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 7,
     height: 30,
   },
+  exportBtn: {
+    marginLeft: 5
+  },
+  placeholderText: {
+    color: "#CAC9C9",
+    '& .MuiSelect-outlined': {
+      paddingTop: '6px',
+      paddingBottom: '6px',
+    },
+    marginRight: 5
+  },
 }));
 
 export default function CompanyView({ relationType }) {
@@ -64,6 +88,17 @@ export default function CompanyView({ relationType }) {
             label: "Vendor",
             minWidth: "auto",
             className: "",
+            format: (value, entity) => {
+              return (
+                <Tooltip title={`${entity.name}`}>
+                  <Typography>
+                    {entity.name.length > 15
+                      ? `${entity.name.substring(0, 15)}...`
+                      : entity.name}
+                  </Typography>
+                </Tooltip>
+              );
+            },
           },
         ]
       : [
@@ -72,6 +107,17 @@ export default function CompanyView({ relationType }) {
             label: "Company",
             minWidth: "auto",
             className: "",
+            format: (value, entity) => {
+              return (
+                <Tooltip title={`${entity.name}`}>
+                  <Typography>
+                    {entity.name.length > 15
+                      ? `${entity.name.substring(0, 15)}...`
+                      : entity.name}
+                  </Typography>
+                </Tooltip>
+              );
+            },
           },
         ]),
     //  {
@@ -125,7 +171,7 @@ export default function CompanyView({ relationType }) {
     // },
     {
       id: "actions",
-      label: "",
+      label: "Actions",
       minWidth: "auto",
       className: "",
       format: (value, entity) => [
@@ -154,6 +200,27 @@ export default function CompanyView({ relationType }) {
   const [showMessage, setShowMessage] = useState(null);
   const [companyDetailsView, setCompanyDetailsView] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [trackDateFilterOpen, setTrackDateFilterOpen] = useState(false)
+  const [days] = useState([{
+    id: 7,
+    name: '7 days'
+  }, {
+    id: 14,
+    name: '14 days'
+  }, {
+    id: 30,
+    name: '30 days'
+  }, {
+    id: 60,
+    name: '60 days'
+  }])
+  const [selectedDay, setSelectedDay] = useState(null)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState(false) // bool
+  const [reRender, setReRender] = useState(false)
+
 
   const removeCurrentLogoId = () => {
     const _selectedCompany = { ...selectedCompany };
@@ -235,16 +302,22 @@ export default function CompanyView({ relationType }) {
     setDeleteCompanyViewOpen(false);
   };
 
-  const _getCompanies = (page, searchKeyword) => {
-    axios.get(getURL(`company/${relationType}`), { params: { page, search: searchKeyword } }).then((res) => {
+  const _getCompanies = (page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate) => {
+
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL(`company/${relationType}`), { params: { 
+      page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null 
+    } }).then((res) => {
       setPageCount(res.data.pages);
       setCompanies(res.data.data);
     });
   };
 
   const getCompanies = useCallback(
-    debounce((page, searchKeyword) => {
-      _getCompanies(page, searchKeyword);
+    debounce((page, searchKeyword,selectedDay, selectedDateRange, startDate, endDate) => {
+      _getCompanies(page, searchKeyword,selectedDay, selectedDateRange, startDate, endDate);
     }, DEBOUNCE_CONST),
     []
   );
@@ -257,12 +330,30 @@ export default function CompanyView({ relationType }) {
   };
 
   useEffect(() => {
-    getCompanies(page, searchKeyword);
-  }, [page, searchKeyword]);
+    if ((selectedDay === 'custom' && !!selectedDateRange) || selectedDay !== 'custom') {
+      getCompanies(page, searchKeyword, selectedDay, selectedDateRange, startDate, endDate);
+    }
+  }, [page, searchKeyword, selectedDay, reRender]);
 
   useEffect(() => {
     getRelations();
   }, []);
+
+  const exportToExcel = () => {
+    let startingDate = new Date(startDate);
+    let endingDate = new Date(endDate);
+
+    axios.get(getURL(`company/${relationType}/export`), {
+      responseType: 'blob',
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+        ,
+        client_Tz: moment.tz.guess()
+      },
+    }).then(response => {
+      FileDownload(response.data, relationType == "CUSTOMER" ? `Company ${moment().format('DD-MM-yyyy')}.xlsx`: `Vendor ${moment().format('DD-MM-yyyy')}.xlsx`);
+    });
+  }
 
   const searchInput = (
     <InputBase
@@ -324,12 +415,105 @@ export default function CompanyView({ relationType }) {
       handleClose={closeCompanyDetailsView}
     />
   );
-  const headerButtons = [searchInput, addCompanyButton, addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
+
+  const exportButton = <Button
+    key={2}
+    variant="contained"
+    color="primary"
+    size="small"
+    className={classes.exportBtn}
+    onClick={() => exportToExcel()}
+  > EXPORT TO EXCEL</Button >;
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  }
+
+  const handleChange = (event) => {
+    // reset the local state to remove the helper text
+    if (event.target.value !== 'custom' && selectedDateRange) {
+      setSelectedDateRange(false)
+    }
+    setPage(1)
+    setSelectedDay(event.target.value);
+  };
+
+  const daysSelect = <FormControl className={classes.formControl}>
+    <Select
+      value={selectedDay}
+      variant="outlined"
+      onChange={handleChange}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      className={classes.placeholderText}
+      startAdornment={
+        <InputAdornment position="start" classes={{ positionStart: classes.inputAdronmentStyle, root: classes.inputAdronmentStyle }}>
+          <CalendarTodayOutlinedIcon fontSize="small" />
+        </InputAdornment>
+      }
+      onOpen={() => setTrackDateFilterOpen(true)}
+      onClose={() => setTrackDateFilterOpen(false)}
+    >
+      <MenuItem value={null} disabled>
+        <span className={classes.dropdownListItem}>Select Days</span>
+      </MenuItem>
+      {
+        [{ name: 'All' }, ...days].map((item, idx) => {
+          return (
+            <MenuItem key={idx} value={item.id}>
+              <span className={classes.dropdownListItem}>{item.name || ''}</span>
+            </MenuItem>
+          )
+        })
+      }
+      <MenuItem key={'custom'} value={'custom'} onClick={() => { setOpenDialog(true) }}>
+        <span className={classes.dropdownListItem}>{startDate !== "-" && startDate !== null && endDate !== null && !trackDateFilterOpen ? moment(startDate).format("DD/MM/YYYY") + " - " + moment(endDate).format("DD/MM/YYYY") : "Custom"}</span>
+      </MenuItem>
+    </Select>
+  </FormControl>
+
+  const startDateRange = <TextField
+    id="date"
+    label="From"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ max: endDate ? endDate : dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={startDate}
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+    margin="dense"
+  />
+
+  const endDateRange = <TextField
+    id="date"
+    label="To"
+    type="date"
+    variant="outlined"
+    className={classes.textFieldRange}
+    InputLabelProps={{
+      shrink: true,
+    }}
+    fullWidth
+    inputProps={{ min: startDate, max: dividerDateFormatForFilter(Date.now()) }}
+    defaultValue={endDate}
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+    margin="dense"
+  />
+
+  const headerButtons = [addCompanyButton, exportButton,addCompanyModal, deleteCompanyModal, companyDetailsViewModal];
+  const headerButtonsTwo = [searchInput, daysSelect]
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <TableHeader title={relationType == "CUSTOMER" ? ` Company` : ` Vendor`} buttons={headerButtons} />
+        <TableHeader title="" buttons={headerButtonsTwo} />
         <Table aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -391,6 +575,27 @@ export default function CompanyView({ relationType }) {
         </Grid>
       </Grid>
       <MessageSnackbar showMessage={showMessage} />
+
+      <Dialog onClose={handleCloseDialog} open={openDialog}>
+        <DialogTitle>Choose Date</DialogTitle>
+        <ListItem button key={'startDate'}>
+          {startDateRange}
+        </ListItem>
+        <ListItem button key={'startDate'}>
+          {endDateRange}
+        </ListItem>
+        <ListItem autoFocus button style={{ justifyContent: 'flex-end' }} >
+          <Button variant="contained" color="primary"
+            disabled={!startDate || !endDate}
+            onClick={() => {
+              setSelectedDateRange(true)
+              setOpenDialog(false)
+              setReRender(!reRender)
+            }}>
+            OK
+          </Button>
+        </ListItem>
+      </Dialog>
     </Paper>
   );
 }

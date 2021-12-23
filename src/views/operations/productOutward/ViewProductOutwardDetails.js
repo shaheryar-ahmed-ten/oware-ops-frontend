@@ -20,6 +20,7 @@ import PrintIcon from "@material-ui/icons/Print";
 import { useLocation, useNavigate, useParams } from "react-router";
 import axios from "axios";
 import owareLogo from "../../../assets/icons/oware-logo-black.png";
+import { isRequired } from "../../../utils/validators";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -171,7 +172,7 @@ function ViewProductOutwardDetails() {
             </Grid>
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
-                {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || "" : ""}
+                {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber : selectedProductOutward.externalVehicle ? selectedProductOutward.externalVehicle  : "-"}
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -182,6 +183,16 @@ function ViewProductOutwardDetails() {
             <Grid item xs={6}>
               <Box display="block" displayPrint="block">
                 {dateFormat(selectedProductOutward.createdAt)}
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                Transportation Type :
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box display="block" displayPrint="block">
+                {selectedProductOutward.externalVehicle && isRequired(selectedProductOutward.externalVehicle)? "Customer Provided" :"Oware Provided" }
               </Box>
             </Grid>
             <Grid item xs={6}>
@@ -275,6 +286,7 @@ function ViewProductOutwardDetails() {
                 <TableCell className={classes.tableHeadText}>CREATED BY</TableCell>
                 <TableCell className={classes.tableHeadText}>VEHICLE NUMBER</TableCell>
                 <TableCell className={classes.tableHeadText}>CREATED AT</TableCell>
+                <TableCell className={classes.tableHeadText}>TRANSPORTATION TYPE</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -289,9 +301,10 @@ function ViewProductOutwardDetails() {
                   {`${selectedProductOutward.User.firstName || ""} ${selectedProductOutward.User.lastName || ""}`}
                 </TableCell>
                 <TableCell>
-                  {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber || "-" : "-"}
+                {selectedProductOutward.Vehicle ? selectedProductOutward.Vehicle.registrationNumber : selectedProductOutward.externalVehicle ? selectedProductOutward.externalVehicle  : "-"}
                 </TableCell>
                 <TableCell>{dateFormat(selectedProductOutward.createdAt)}</TableCell>
+                <TableCell>{selectedProductOutward.externalVehicle && isRequired(selectedProductOutward.externalVehicle)? "Customer Provided" :"Oware Provided" }</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -309,7 +322,7 @@ function ViewProductOutwardDetails() {
                   AVAILABLE QUANTITY
                 </TableCell> */}
                 <TableCell className={classes.tableHeadText}>DISPATCHED QUANTITY</TableCell>
-                <TableCell className={classes.tableHeadText}>REMAINING QUANTITY</TableCell>
+                {/* <TableCell className={classes.tableHeadText}>REMAINING QUANTITY</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -332,13 +345,13 @@ function ViewProductOutwardDetails() {
                         {targetedPoInv ? targetedPoInv.OutwardGroup.availableQuantity : 'Not available'}
                       </TableCell> */}
                     <TableCell>{sentQt}</TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {targetedPoInv
                         ? targetedPoInv.OutwardGroup.availableQuantity - sentQt > 0
                           ? targetedPoInv.OutwardGroup.availableQuantity - sentQt
                           : 0
                         : "Not available"}
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 );
               })}

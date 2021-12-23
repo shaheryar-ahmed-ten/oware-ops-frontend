@@ -84,7 +84,7 @@ function DriverView() {
   // },
   {
     id: 'actions',
-    label: '',
+    label: 'Actions',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>

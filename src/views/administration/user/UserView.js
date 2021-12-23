@@ -103,7 +103,7 @@ export default function UserView() {
     format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
-    label: '',
+    label: 'Actions',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>

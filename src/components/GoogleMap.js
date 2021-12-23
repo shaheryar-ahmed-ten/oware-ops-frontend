@@ -6,6 +6,7 @@ import { SharedContext } from "../utils/common";
 import dropoffIcon from "../assets/icons/mapicon/darkgreen_MarkerD.png";
 import pickupIcon from "../assets/icons/mapicon/red_MarkerP.png";
 import Geocode from "react-geocode";
+import { isNumber } from "lodash";
 
 // set Google Maps Geocoding API for purposes of quota management. Its optional but recommended.
 Geocode.setApiKey("AIzaSyDQiv46FsaIrqpxs4PjEpQYTEncAUZFYlU");
@@ -32,10 +33,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   placeInputDiv: {
+    width: "150%",
     position: "absolute",
     zIndex: 100,
-    top: "80%",
-    left: "20%",
+    top: "130%",
+    left: "45%",
     [theme.breakpoints.up("md")]: {
       width: "25%",
     },
@@ -61,6 +63,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     color: "black",
   },
+  singleInputDiv: {
+    position: "absolute",
+    zIndex: 100,
+    top: "145%",
+    left: "50%",
+    [theme.breakpoints.up("md")]: {
+      width: "70%",
+    },
+    [theme.breakpoints.down("md")]: {
+      width: "100%",
+    },
+    transform: "translateX(-50%)",
+    fontSize: 12,
+    color: "black",
+  },
   placeInput: {
     width: "100%",
     borderRadius: "10px",
@@ -76,12 +93,16 @@ const useStyles = makeStyles((theme) => ({
 
 function GoogleMap(props) {
   const reverseGeocoding = async (latlng) => {
-    const response = await Geocode.fromLatLng(latlng.lat, latlng.lng);
-    const address = response.results[0].formatted_address;
-    return address;
+    if (isNumber(latlng.lat) && isNumber(latlng.lng)) {
+      const response = await Geocode.fromLatLng(latlng.lat, latlng.lng);
+      const address = response.results[0].formatted_address;
+      return address;
+    }
+    return null;
   };
   const classes = useStyles();
   const input = useRef(Map);
+
   const calcZoomAndMapCenter = (pickup, dropoff) => {
     let zoom = null;
     if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
@@ -116,29 +137,51 @@ function GoogleMap(props) {
     const mapCenter = { lat: midPointLat, lng: midPointLng };
     return { mapCenter, zoom };
   };
-  const { setDropOff, setPickUp, pickupLocation, dropoffLocation, setPickupAddress, setDropoffAddress } = props;
+  const {
+    setDropOff,
+    setPickUp,
+    pickupLocation,
+    dropoffLocation,
+    setPickupAddress,
+    setDropoffAddress,
+    setSingleLocationLatlng,
+    singleLocationLatlng,
+    setSingleLocationAddress,
+    showPickupOnly,
+    editable
+  } = props;
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
   const [dropoffSearchBox, setDropoffSearchBox] = useState("");
+  const [singleLocationSearchBox, setSingleLocationSearchBox] = useState("");
 
   let zoom, mapCenter;
 
   useEffect(() => {
-    if (pickupLocation && dropoffLocation && pickupLocation.lat && dropoffLocation.lat) {
+    if (pickupLocation && pickupLocation.lat && dropoffLocation && dropoffLocation.lat) {
       const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
       zoom = calc.zoom;
       mapCenter = calc.mapCenter;
       setState({ ...state, zoom, mapCenter });
-
+    }
+    if (pickupLocation && pickupLocation.lat) {
       Geocode.fromLatLng(pickupLocation.lat, pickupLocation.lng)
         .then((addresses) => addresses.results[0].formatted_address)
         .then((result) => {
           setpickupSearchBox(result);
         });
+    } else if (dropoffLocation && dropoffLocation.lat) {
       Geocode.fromLatLng(dropoffLocation.lat, dropoffLocation.lng)
         .then((addresses) => addresses.results[0].formatted_address)
         .then((result) => {
           setDropoffSearchBox(result);
+        });
+    } else if (singleLocationLatlng && singleLocationLatlng.lat) {
+      setState({ ...state, zoom: 14, mapCenter: singleLocationLatlng });
+      Geocode.fromLatLng(singleLocationLatlng.lat, singleLocationLatlng.lng)
+        .then((addresses) => addresses.results[0].formatted_address)
+        .then((result) => {
+          setSingleLocationSearchBox(result);
         });
     }
   }, []);
@@ -151,6 +194,10 @@ function GoogleMap(props) {
     dropoffMarker: {
       lat: dropoffLocation ? dropoffLocation.lat : null,
       lng: dropoffLocation ? dropoffLocation.lng : null,
+    },
+    singleLocationMarker: {
+      lat: singleLocationLatlng ? singleLocationLatlng.lat : null,
+      lng: singleLocationLatlng ? singleLocationLatlng.lng : null,
     },
     mapCenter: mapCenter
       ? mapCenter
@@ -175,6 +222,14 @@ function GoogleMap(props) {
   const handleChangeDropoff = (dropoffAddress) => {
     setState({ ...state, dropoffAddress });
     setDropoffSearchBox(dropoffAddress);
+  };
+
+  const handleChangeSingleLocation = async (singleLocationSearchBox) => {
+    setState({ ...state, singleLocationSearchBox });
+    setSingleLocationSearchBox(singleLocationSearchBox);
+    setSingleLocationLatlng(
+      reverseGeocoding(singleLocationSearchBox) ? await reverseGeocoding(singleLocationSearchBox) : null
+    );
   };
 
   const handlePickupSelect = (pickupAddress) => {
@@ -255,6 +310,38 @@ function GoogleMap(props) {
     if (setDropoffSearchBox) setDropoffSearchBox(dropoffAddress);
   };
 
+  const handleSingleLocationSelect = (singleLocationAddress) => {
+    geocodeByAddress(singleLocationAddress)
+      .then((results) => getLatLng(results[0]))
+      .then((latLng) => {
+        let zoom, mapCenter;
+        if (state.singleLocationMarker.lat && state.singleLocationMarker.lng) {
+          zoom = 14;
+          mapCenter = state.singleLocationMarker;
+        }
+
+        setState({
+          ...state,
+          singleLocationMarker: {
+            lat: latLng.lat,
+            lng: latLng.lng,
+          },
+          mapCenter: {
+            lat: latLng.lat,
+            lng: latLng.lng,
+          },
+          zoom: zoom ? zoom : 14,
+        });
+
+        setSingleLocationLatlng({
+          lat: latLng.lat,
+          lng: latLng.lng,
+        });
+        setSingleLocationAddress(singleLocationAddress);
+      });
+    if (setSingleLocationSearchBox) setSingleLocationSearchBox(singleLocationAddress);
+  };
+
   const onPickupMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
@@ -289,6 +376,32 @@ function GoogleMap(props) {
     setState({
       ...state,
       dropoffMarker: {
+        lat: updatedLat,
+        lng: updatedLng,
+      },
+      mapCenter: {
+        lat: updatedLat,
+        lng: updatedLng,
+      },
+      zoom: 14,
+    });
+    return { lat: updatedLat, lng: updatedLng };
+  };
+
+  const onSingleLocationMarkerDragEnd = async (coord) => {
+    const { latLng } = coord;
+    const updatedLat = latLng.lat();
+    const updatedLng = latLng.lng();
+    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    setSingleLocationSearchBox(addr);
+    setSingleLocationAddress(addr);
+    setSingleLocationLatlng({
+      lat: updatedLat,
+      lng: updatedLng,
+    });
+    setState({
+      ...state,
+      singleLocationMarker: {
         lat: updatedLat,
         lng: updatedLng,
       },
@@ -369,7 +482,66 @@ function GoogleMap(props) {
       ) : (
         <div></div>
       )}
-      {props.showMapSearchFields ? (
+      {console.log("pickupSearch", pickupSearchBox)}
+      {showPickupOnly ? (
+        <PlacesAutocomplete
+          searchOptions={searchOptions}
+          value={pickupSearchBox}
+          onChange={handleChangePickup}
+          onSelect={handlePickupSelect}
+          style={{ width: "50%" }}
+        >
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            <div className={classes.placeInputDiv}>
+              <input
+                {...getInputProps({
+                  placeholder: "Search Pickup Location...",
+                  className: "location-search-input",
+                })}
+                className={classes.placeInput}
+                value={pickupSearchBox}
+              />
+              <div
+                className="autocomplete-dropdown-container"
+                style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+              >
+                {loading && <div>Loading...</div>}
+                {suggestions.map((suggestion) => {
+                  const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                  // inline style for demonstration purpose
+                  const style = suggestion.active
+                    ? {
+                        backgroundColor: "#fafafa",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      }
+                    : {
+                        backgroundColor: "#ffffff",
+                        cursor: "pointer",
+                        borderBottom: "1px solid black",
+                        padding: "5px 5px",
+                      };
+                  return (
+                    <div
+                      {...getSuggestionItemProps(suggestion, {
+                        className,
+                        style,
+                      })}
+                    >
+                      <span>{suggestion.description}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </PlacesAutocomplete>
+      ) : (
+        ""
+      )}
+
+      {/* {props.showMapSearchFields ? (
         <div>
           <PlacesAutocomplete
             searchOptions={searchOptions}
@@ -440,6 +612,82 @@ function GoogleMap(props) {
                   })}
                   className={classes.placeInput}
                   value={dropoffSearchBox}
+                />
+                <div
+                  className="autocomplete-dropdown-container"
+                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                >
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion) => {
+                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                    // inline style for demonstration purpose
+                    const style = suggestion.active
+                      ? {
+                          backgroundColor: "#fafafa",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        }
+                      : {
+                          backgroundColor: "#ffffff",
+                          cursor: "pointer",
+                          borderBottom: "1px solid black",
+                          padding: "5px 5px",
+                        };
+                    return (
+                      <div
+                        {...getSuggestionItemProps(suggestion, {
+                          className,
+                          style,
+                        })}
+                      >
+                        <span>{suggestion.description}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </PlacesAutocomplete>
+        </div>
+      ) : (
+        <div></div>
+      )} */}
+
+      {state.singleLocationMarker.lat && state.singleLocationMarker.lng ? (
+        <Marker
+          position={{
+            lat: state.singleLocationMarker.lat,
+            lng: state.singleLocationMarker.lng,
+          }}
+          name={"Your Location"}
+          title={"Your Location"}
+          draggable={editable}
+          onDragend={(t, map, coord) => onSingleLocationMarkerDragEnd(coord)}
+        />
+      ) : (
+        <div></div>
+      )}
+
+      {/* Show single for warehouse */}
+      {props.showSingleSearchField ? (
+        <div>
+          <PlacesAutocomplete
+            searchOptions={searchOptions}
+            value={singleLocationSearchBox}
+            onChange={handleChangeSingleLocation}
+            onSelect={handleSingleLocationSelect}
+            style={{ width: "50%", margin: "auto", display: "block" }}
+          >
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div className={classes.singleInputDiv}>
+                <input
+                  {...getInputProps({
+                    placeholder: "Select Location...",
+                    className: "location-search-input",
+                  })}
+                  className={classes.placeInput}
+                  value={singleLocationSearchBox}
                 />
                 <div
                   className="autocomplete-dropdown-container"

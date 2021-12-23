@@ -61,7 +61,7 @@ export default function UoMView() {
     format: value => value ? 'Active' : 'In-Active',
   }, {
     id: 'actions',
-    label: '',
+    label: 'Actions',
     minWidth: 'auto',
     className: '',
     format: (value, entity) =>

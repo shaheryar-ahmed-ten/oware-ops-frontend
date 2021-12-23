@@ -19,6 +19,7 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { TableRow } from "@material-ui/core";
 import axios from "axios";
 import owareLogo from "../../../assets/icons/oware-logo-black.png";
+import moment from "moment-timezone";
 
 const useStyles = makeStyles((theme) => ({
   parentContainer: {
@@ -65,7 +66,15 @@ function ViewDispatchOrderDetails() {
   };
   const _getDispatchOrders = () => {
     axios.get(getURL(`dispatch-order/${uid}`)).then((res) => {
-      setSelectedDispatchOrder(res.data.data);
+      var end = moment();
+      var duration = moment.duration(end.diff(res.data.data.shipmentDate));
+      var pendingDays = res.data.data.status != 2 && res.data.data.status != 3
+        ?
+        Math.floor(duration.asDays())
+        :
+        ''
+      var data = { ...res.data.data, pendingDays }
+      setSelectedDispatchOrder(data);
     });
   };
 
@@ -81,6 +90,7 @@ function ViewDispatchOrderDetails() {
           <img style={{ width: "20%", margin: "20px 0px" }} src={owareLogo} />
           <Typography variant="h3">Dispatch Order</Typography>
         </Box>
+        {/* PRINTING ONLY */}
         <Box display="none" displayPrint="block" style={{ padding: "10mm 25mm 0mm 25mm" }}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -188,7 +198,7 @@ function ViewDispatchOrderDetails() {
                       <TableCell className={classes.tableHeadText}>PRODUCT WEIGHT</TableCell>
                       <TableCell className={classes.tableHeadText}>UOM</TableCell>
                       <TableCell className={classes.tableHeadText}>QUANTITY</TableCell>
-                      <TableCell className={classes.tableHeadText}>AVAILABLE QUANTITY</TableCell>
+                      {/* <TableCell className={classes.tableHeadText}>AVAILABLE QUANTITY</TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -199,7 +209,7 @@ function ViewDispatchOrderDetails() {
                           <TableCell>{order.Product.weight} KG/UNIT</TableCell>
                           <TableCell>{order.Product.UOM.name}</TableCell>
                           <TableCell>{order.OrderGroup.quantity}</TableCell>
-                          <TableCell>{order.availableQuantity}</TableCell>
+                          {/* <TableCell>{order.availableQuantity}</TableCell> */}
                         </TableRow>
                       );
                     })}
@@ -233,11 +243,15 @@ function ViewDispatchOrderDetails() {
                 <TableCell className={classes.tableHeadText}>DISPATCH ORDER ID</TableCell>
                 <TableCell className={classes.tableHeadText}>COMPANY</TableCell>
                 <TableCell className={classes.tableHeadText}>WAREHOUSE</TableCell>
-                <TableCell className={classes.tableHeadText}>CITY</TableCell>
-                <TableCell className={classes.tableHeadText}>NO. OF PRODUCTS</TableCell>
                 <TableCell className={classes.tableHeadText}>CREATED BY</TableCell>
                 <TableCell className={classes.tableHeadText}>REFERENCE ID</TableCell>
                 <TableCell className={classes.tableHeadText}>SHIPMENT DATE</TableCell>
+                {
+                  selectedDispatchOrder.status != 2 && selectedDispatchOrder.status != 3 && selectedDispatchOrder.pendingDays >= 1 ?
+                    < TableCell className={classes.tableHeadText}>PENDING DAYS</TableCell>
+                    :
+                    ''
+                }
                 <TableCell className={classes.tableHeadText}>RECEIVER NAME</TableCell>
                 <TableCell className={classes.tableHeadText}>RECEIVER PHONE</TableCell>
                 {/* <TableCell
@@ -250,13 +264,25 @@ function ViewDispatchOrderDetails() {
                 <TableCell>{selectedDispatchOrder.internalIdForBusiness}</TableCell>
                 <TableCell>{selectedDispatchOrder.Inventory.Company.name}</TableCell>
                 <TableCell>{selectedDispatchOrder.Inventory.Warehouse.name}</TableCell>
-                <TableCell>{selectedDispatchOrder.Inventory.Warehouse.city}</TableCell>
-                <TableCell>{selectedDispatchOrder.Inventories.length}</TableCell>
                 <TableCell>
                   {`${selectedDispatchOrder.User.firstName || ""} ${selectedDispatchOrder.User.lastName || ""}`}
                 </TableCell>
                 <TableCell>{selectedDispatchOrder.referenceId}</TableCell>
-                <TableCell>{dateFormat(selectedDispatchOrder.shipmentDate)}</TableCell>
+                <TableCell
+                  style={{
+                    color: selectedDispatchOrder.pendingDays > 2 ?
+                      'rgba(255,30,0,0.8)' : selectedDispatchOrder.pendingDays > 0 ?
+                        '#DBA712' : 'black',
+                  }}
+                >
+                  {dateFormat(selectedDispatchOrder.shipmentDate)}
+                </TableCell>
+                {
+                  selectedDispatchOrder.status != 2 && selectedDispatchOrder.status != 3 && selectedDispatchOrder.pendingDays >= 1 ?
+                    <TableCell>{selectedDispatchOrder.pendingDays}</TableCell>
+                    :
+                    ''
+                }
                 <TableCell>{selectedDispatchOrder.receiverName}</TableCell>
                 <TableCell>{selectedDispatchOrder.receiverPhone}</TableCell>
               </TableRow>
@@ -310,331 +336,3 @@ function ViewDispatchOrderDetails() {
 }
 
 export default ViewDispatchOrderDetails;
-
-// selectedDispatchOrder ?
-//   <div style={{ display: "inline" }}>
-//     <form>
-//       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-//         <Box display="block" displayPrint="block" ref={componentRef}>
-//           <Box display="none" displayPrint="block" style={{ margin: "25mm 25mm 0mm 25mm" }}>
-//             <DialogTitle>
-//               <Typography variant="h3">
-//                 Dispatch Order
-//               </Typography>
-//             </DialogTitle>
-//           </Box>
-
-//           <Box display="block" displayPrint="none">
-//             <DialogTitle>
-//               View Dispatch Order
-//               <IconButton aria-label="print" onClick={handlePrint}>
-//                 <PrintIcon />
-//               </IconButton>
-//             </DialogTitle>
-//           </Box>
-
-//           <Box display="none" displayPrint="block" style={{ margin: "0mm 25mm 0mm 25mm" }}>
-//             <DialogContent>
-//               {formErrors}
-//               <Grid container spacing={2}>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Dispatch Order Id :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.internalIdForBusiness}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Customer Name :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.Company.name}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Warehouse :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.Warehouse.name}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     City :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.Warehouse.city}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Product :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.Product.name}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Product Weight :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.Product.weight} Kg/unit
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Requested Quantity :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.quantity + ` ` + selectedDispatchOrder.Inventory.Product.UOM.name}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Available Quantity :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.Inventory.availableQuantity + ` ` + selectedDispatchOrder.Inventory.Product.UOM.name}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Receiver Name :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.receiverName}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Receiver Phone :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {selectedDispatchOrder.receiverPhone}
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     Requested Shipment Date&Time :
-//                   </Box>
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <Box display="block" displayPrint="block">
-//                     {dateFormat(selectedDispatchOrder.shipmentDate)}
-//                   </Box>
-//                 </Grid>
-//               </Grid>
-//             </DialogContent>
-//           </Box>
-
-//           <Box display="block" displayPrint="none">
-//             <DialogContent>
-//               {formErrors}
-//               <Grid container spacing={2}>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Dispatch Order Id"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.internalIdForBusiness}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Customer"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Company.name}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Warehouse"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Warehouse.name}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="City"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Warehouse.city}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Product"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Product.name}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Product Weight"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Product.weight}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Quantity"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.quantity}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Available Qt"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.availableQuantity}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="UoM"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.Inventory.Product.UOM.name}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Receiver Name"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.receiverName}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Receiver Ph"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={selectedDispatchOrder.receiverPhone}
-//                   />
-//                 </Grid>
-//                 <Grid item xs={6}>
-//                   <TextField
-//                     id="filled-number"
-//                     label="Req Shipment Date&Time"
-//                     type="text"
-//                     InputLabelProps={{
-//                       shrink: true,
-//                     }}
-//                     disabled
-//                     fullWidth
-//                     variant="filled"
-//                     value={dateFormat(selectedDispatchOrder.shipmentDate)}
-//                   />
-//                 </Grid>
-//               </Grid>
-//             </DialogContent>
-//           </Box>
-
-//           <Box displayPrint="none">
-//             <DialogActions>
-//               <Button onClick={handleClose} color="primary" variant="contained">Close</Button>
-//             </DialogActions>
-//           </Box>
-//         </Box>
-//       </Dialog>
-//     </form>
-//   </div >
-//   :
-//   null

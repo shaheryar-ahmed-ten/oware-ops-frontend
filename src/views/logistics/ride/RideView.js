@@ -43,6 +43,9 @@ import SelectDropdown from "../../../components/SelectDropdown";
 import SelectCustomDropdown from "../../../components/SelectCustomDropdown";
 import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
 import { gridColumnLookupSelector } from "@material-ui/data-grid";
+import qs from "qs";
+import history from "../../../utils/history";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,14 +97,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RideView() {
+export default function RideView(props) {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const columns = [
     {
       id: "id",
-      label: "RIDE ID",
+      label: "LOAD ID",
       minWidth: "auto",
       className: "",
     },
@@ -110,7 +113,7 @@ export default function RideView() {
       label: "STATUS",
       minWidth: 100,
       className: "",
-      format: (value) => statuses[value],
+      format: (value) => value,
     },
     {
       id: "customerId",
@@ -124,71 +127,33 @@ export default function RideView() {
       label: "DRIVER",
       minWidth: 100,
       className: "",
-      format: (value, entity) => (entity.Driver ? entity.Driver.name : ""),
+      format: (value, entity) => (entity.Driver ? entity.Driver.name : "-"),
     },
-    // {
-    //   id: 'driverPhone',
-    //   label: 'Driver Phone',
-    //   minWidth: 150,
-    //   className: '',
-    //   format: (value, entity) => entity.Driver ? entity.Driver.phone : ''
-    // },
-     {
-      id: 'vehicleId',
-      label: 'VEHICLE NO.',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Vehicle.registrationNumber
+
+    {
+      id: "vehicleId",
+      label: "VEHICLE NO.",
+      minWidth: "auto",
+      className: "",
+      format: (value, entity) => (entity.Vehicle ? entity.Vehicle.registrationNumber : "-"),
     },
     {
       id: "vendorName",
       label: "VENDOR",
       minWidth: 100,
       className: "",
-      format: (value, entity) => (entity.Driver ? entity.Driver.Vendor.name : ""),
+      format: (value, entity) => (entity.Driver ? entity.Driver.Vendor.name : "-"),
     },
-    //  {
-    //     id: 'pickupAddress',
-    //     label: 'Pickup Address',
-    //     minWidth: 'auto',
-    //     className: ''
-    // },
+
     {
-      id: 'pickupDate',
-      label: 'PICKUP DATE',
+      id: "pickupDate",
+      label: "PICKUP DATE",
       minWidth: 150,
-      className: '',
-      format: dateFormat
+      className: "",
+      format: dateFormat,
     },
-    //  {
-    //     id: 'dropoffAddress',
-    //     label: 'Dropoff Address',
-    //     minWidth: 'auto',
-    //     className: ''
-    // },
-    {
-      // id: 'RideProducts',
-      // label: 'Product Category',
-      // minWidth: 'auto',
-      // className: '',
-      // format: (value, entity) => value.length
-      // }, {
-      //     id: 'product.Category',
-      //     label: 'Product Category',
-      //     minWidth: 'auto',
-      //     className: '',
-      //     format: (value, entity) => entity.ProductCategory.name
-      // }, {
-      //     id: 'productName',
-      //     label: 'Product Name',
-      //     minWidth: 'auto',
-      //     className: ''
-      // }, {
-      //     id: 'productQuantity',
-      //     label: 'Product Quantity',
-      //     minWidth: 'auto',
-      //     className: ''
-    },
+
+    {},
     {
       id: "actions",
       label: "ACTIONS",
@@ -207,34 +172,21 @@ export default function RideView() {
             })
           }
         />,
-        // <DeleteIcon color="error" key="delete" onClick={() => openDeleteView(entity)} />
       ],
     },
   ];
 
   const divStyle = {
-    // // marginRight: 65,
-    // // marginTop: 5,
     fontSize: 15,
     display: "inline-table",
     paddingRight: 20,
-  };
-  const textStyle = {
-    textAlign: "center",
-    marginRight: 65,
-    marginTop: 5,
   };
 
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [rides, setRides] = useState([]);
 
-  const [vehicles, setVehicles] = useState([]);
-  const [drivers, setDrivers] = useState([]);
   const [statuses, setStatuses] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [companies, setCompanies] = useState([]);
-  const [productCategories, setProductCategories] = useState([]);
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedRide, setSelectedRide] = useState(null);
@@ -275,27 +227,6 @@ export default function RideView() {
     setSelectedDay(null);
   };
 
-  const addRide = (data) => {
-    let apiPromise = null;
-    if (!selectedRide) apiPromise = axios.post(getURL("ride"), data);
-    else apiPromise = axios.put(getURL(`ride/${selectedRide.id}`), data);
-    apiPromise.then((res) => {
-      if (!res.data.success) {
-        setFormErrors(
-          <Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors("")}>
-            {res.data.message}
-          </Alert>
-        );
-        return;
-      }
-      setShowMessage({
-        message: "New ride has been created.",
-      });
-      closeAddRideView(false);
-      getRides();
-    });
-  };
-
   const deleteRide = (data) => {
     axios.delete(getURL(`ride/${selectedRide.id}`)).then((res) => {
       if (!res.data.success) {
@@ -309,21 +240,6 @@ export default function RideView() {
       closeDeleteRideView();
       getRides();
     });
-  };
-
-  const openEditView = (ride) => {
-    setSelectedRide(ride);
-    setAddRideViewOpen(true);
-  };
-
-  const openDeleteView = (ride) => {
-    setSelectedRide(ride);
-    setDeleteRideViewOpen(true);
-  };
-
-  const closeAddRideView = () => {
-    setSelectedRide(null);
-    setAddRideViewOpen(false);
   };
 
   const closeDeleteRideView = () => {
@@ -360,12 +276,7 @@ export default function RideView() {
 
   const getRelations = () => {
     axios.get(getURL("ride/relations")).then((res) => {
-      setVehicles(res.data.vehicles);
-      setDrivers(res.data.drivers);
       setStatuses(res.data.statuses);
-      setCities(res.data.cities);
-      setCompanies(res.data.companies);
-      setProductCategories(res.data.productCategories);
     });
   };
 
@@ -375,31 +286,53 @@ export default function RideView() {
     });
   };
 
+  // state persist start
+  let location = useLocation();
+
   useEffect(() => {
+    // if location.state means the user is navigating from another route other than ride. So clear the presisting filters.
+    if (location.state) {
+      return;
+    }
+    const filterParams = history.location.search.substr(1);
+    const filtersFromParams = qs.parse(filterParams);
+
+    if (filtersFromParams.currentFilter) {
+      setCurrentFilter(filtersFromParams.currentFilter);
+    }
+    if (filtersFromParams.selectedDay) {
+      setSelectedDay(filtersFromParams.selectedDay);
+    }
+    if (filtersFromParams.searchKeyword) {
+      setSearchKeyword(filtersFromParams.searchKeyword);
+    }
+  }, []);
+
+  // state persist end
+  useEffect(() => {
+    history.push(
+      `/logistics/ride?currentFilter=${currentFilter}&searchKeyword=${searchKeyword}&selectedDay=${
+        selectedDay ? selectedDay : ""
+      }`
+    );
+
     getRides(
       page,
       searchKeyword,
       currentFilter == "ALL" ? "" : currentFilter,
-      selectedDay == "custom" ? "" : selectedDay,
+      selectedDay == "custom" ? "" : selectedDay ? selectedDay : "",
       startDate == "-" ? "" : startDate,
       endDate == "-" ? "" : endDate
     );
   }, [page, searchKeyword, currentFilter, selectedDay, mounted]);
 
   useEffect(() => {
-    _getRides(
-      page,
-      selectedDay == "custom" ? "" : selectedDay,
-      startDate == "-" ? "" : startDate,
-      endDate == "-" ? "" : endDate,
-      searchKeyword,
-      currentFilter == "ALL" ? "" : currentFilter
-    );
-  }, [currentFilter, mounted]);
-
-  useEffect(() => {
     getRelations();
   }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [currentFilter]);
 
   useEffect(() => {
     if (currentFilter == "ALL") {
@@ -428,31 +361,6 @@ export default function RideView() {
     />
   );
 
-  const filters = { ALL: "ALL", ...statuses };
-
-  const filterDropdown = (
-    <>
-      {" "}
-      <FormControl className={classes.formControl}>
-        <Select
-          value={currentFilter}
-          onChange={(e) => {
-            setCurrentFilter(e.target.value);
-          }}
-          variant="outlined"
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-          className={classes.placeholderText}
-        >
-          {Object.keys(filters).map((key) => (
-            <MenuItem value={key} key={key}>
-              <ListItemText primary={filters[key]} classes={{ root: classes.dropdownListItem }} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </>
-  );
   const [open, setOpen] = useState(false);
 
   const daysSelect = (
@@ -471,6 +379,7 @@ export default function RideView() {
       endDate={endDate}
     />
   );
+
   const exportToExcel = () => {
     axios
       .get(getURL("ride/export"), {
@@ -482,13 +391,14 @@ export default function RideView() {
           start: startDate == "-" ? "" : startDate,
           end: endDate == "-" ? "" : endDate,
           status: currentFilter == "ALL" ? "" : currentFilter,
-          client_Tz: moment.tz.guess()
+          client_Tz: moment.tz.guess(),
         },
       })
       .then((response) => {
-        fileDownload(response.data, `Rides ${moment().format("DD-MM-yyyy")}.xlsx`);
+        fileDownload(response.data, `Loads ${moment().format("DD-MM-yyyy")}.xlsx`);
       });
   };
+
   const startDateRange = (
     <TextField
       id="date"
@@ -527,7 +437,7 @@ export default function RideView() {
   const addRideButton = (
     <Button variant="contained" color="primary" size="small" onClick={() => navigate("/logistics/ride/create")}>
       {" "}
-      ADD RIDE
+      ADD LOAD
     </Button>
   );
 
@@ -545,7 +455,7 @@ export default function RideView() {
       open={deleteRideViewOpen}
       handleClose={closeDeleteRideView}
       selectedEntity={selectedRide && selectedRide.name}
-      title={"Ride"}
+      title={"Load"}
     />
   );
 
@@ -564,8 +474,6 @@ export default function RideView() {
         <DialogContent>
           <ListItemText>{startDateRange}</ListItemText>
           <ListItemText>{endDateRange}</ListItemText>
-          {/* {startDateRange}
-          {endDateRange} */}
         </DialogContent>
         <DialogActions>
           <Button
@@ -589,23 +497,16 @@ export default function RideView() {
         Showing {filteredCount} filtered rides out of {totalProducts} rides
       </FormHelperText>
     ) : (
-      ""
+      " "
     );
-  // const customText =
-  //   selectedDay == "custom" && startDate !== "-" && startDate !== null && endDate !== null ? (
-  //     <FormHelperText style={textStyle}>
-  //       From {startDate} to {endDate}
-  //     </FormHelperText>
-  //   ) : (
-  //     ""
-  //   );
+
   const topHeaderButtons = [addRideButton, deleteRideModal];
-  const headerButtons = [filterText, daysSelect, searchInput, exportButton];
+  const headerButtons = [filterText, searchInput, daysSelect, exportButton];
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <TableHeader title="Rides" buttons={topHeaderButtons} />
+        <TableHeader title="Loads" buttons={topHeaderButtons} />
         <TableStatsHeader
           stats={stats}
           setCurrentFilter={setCurrentFilter}
@@ -669,7 +570,6 @@ export default function RideView() {
             page={page}
             className={classes.pagination}
             onChange={(e, page) => setPage(page)}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Grid>
       </Grid>
