@@ -633,6 +633,8 @@ function AddRideView() {
       dropoffStatus: true,
       outwardId: true,
       singleLocationLatlng: true,
+      dropoffCityId: true,
+      dropoffAddress: true,
     });
 
     if (eirImage) [newRide.eirId] = await upload([eirImage], "ride");
@@ -805,7 +807,6 @@ function AddRideView() {
   const triggerDropoffValidation = () => {
     setValidation({
       ...validation,
-      dropoffCityId: true,
       dropoffCityId: true,
       singleLocationLatlng: true,
       dropoffAddress: true,

@@ -291,10 +291,10 @@ function GoogleMap(props) {
           zoom: zoom ? zoom : 14,
         });
         if (latLng.lat && latLng.lng) {
-          setPickUp({
-            lat: latLng.lat,
-            lng: latLng.lng,
-          });
+          // setPickUp({
+          //   lat: latLng.lat,
+          //   lng: latLng.lng,
+          // });
         } else {
           setPickUp(null);
         }
@@ -456,8 +456,9 @@ function GoogleMap(props) {
   }, [state.pickupMarker, state.dropoffMarker]);
 
   useEffect(() => {
-    if (state.pickupMarker.lat && state.pickupMarker.lng) setPickUp(state.pickupMarker);
-    else setPickUp(null);
+    if (state.pickupMarker.lat && state.pickupMarker.lng) {
+      // setPickUp(state.pickupMarker)
+    } else setPickUp(null);
   }, [pickupSearchBox]);
 
   const searchOptions = {
