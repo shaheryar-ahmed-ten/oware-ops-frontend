@@ -148,7 +148,7 @@ function GoogleMap(props) {
     singleLocationLatlng,
     setSingleLocationAddress,
     showPickupOnly,
-    editable
+    editable,
   } = props;
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
@@ -215,8 +215,36 @@ function GoogleMap(props) {
   }, [state.pickupMarker]);
 
   const handleChangePickup = (pickupAddress) => {
+    console.log(":- onchange,pickupAddress", pickupAddress);
     setState({ ...state, pickupAddress });
     setpickupSearchBox(pickupAddress);
+    console.log(":- !!pickupAddress", !!pickupAddress);
+    if (!!pickupAddress) {
+      console.log(":- pickupAddress", pickupAddress);
+      geocodeByAddress(pickupAddress)
+        .then((results) => getLatLng(results[0]))
+        .then((latLng) => {
+          if (latLng.lat && latLng.lng) {
+            console.log(":- debug1", {
+              lat: latLng.lat,
+              lng: latLng.lng,
+            });
+            // setPickUp({
+            //   lat: latLng.lat,
+            //   lng: latLng.lng,
+            // });
+          } else {
+            console.log(":- debug2");
+            setPickUp(null);
+          }
+        })
+        .catch((err) => {
+          console.log(":- err", err);
+        });
+    } else {
+      setPickUp(null);
+      console.log(":- debug 3\npickUp", props.pickUp);
+    }
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
@@ -262,10 +290,14 @@ function GoogleMap(props) {
               },
           zoom: zoom ? zoom : 14,
         });
-        setPickUp({
-          lat: latLng.lat,
-          lng: latLng.lng,
-        });
+        if (latLng.lat && latLng.lng) {
+          setPickUp({
+            lat: latLng.lat,
+            lng: latLng.lng,
+          });
+        } else {
+          setPickUp(null);
+        }
         setPickupAddress(pickupAddress);
         setpickupSearchBox(pickupAddress);
       })
@@ -415,9 +447,18 @@ function GoogleMap(props) {
   };
 
   useEffect(() => {
-    if (setPickUp) setPickUp(state.pickupMarker);
+    if (state.pickupMarker.lat && state.pickupMarker.lng) {
+      if (setPickUp) setPickUp(state.pickupMarker);
+    } else {
+      setPickUp(null);
+    }
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
+
+  useEffect(() => {
+    if (state.pickupMarker.lat && state.pickupMarker.lng) setPickUp(state.pickupMarker);
+    else setPickUp(null);
+  }, [pickupSearchBox]);
 
   const searchOptions = {
     componentRestrictions: { country: ["pk"] },
@@ -490,6 +531,7 @@ function GoogleMap(props) {
           onChange={handleChangePickup}
           onSelect={handlePickupSelect}
           style={{ width: "50%" }}
+          // onBlur={(e) => setValidation({ ...validation, pickUp: true })}
         >
           {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
             <div className={classes.placeInputDiv}>

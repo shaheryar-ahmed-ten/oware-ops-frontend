@@ -178,7 +178,6 @@ function AddRideView() {
   };
 
   const addDropoff = (data, dropoffNumber) => {
-    console.log(":- newDropoff", data, "dropoffNumber", dropoffNumber);
     if (dropoffs[dropoffNumber - 1]) {
       dropoffs[dropoffNumber - 1] = data;
       // setAddDropoffMessage({ message: `Dropoff ${dropoffNumber} has been saved!` });
@@ -244,7 +243,7 @@ function AddRideView() {
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [mounted, setMounted] = useState(false);
   const [vehicleType, setVehicleType] = useState([]);
-  const [pickUp, setPickUp] = useState({});
+  const [pickUp, setPickUp] = useState(null);
   const [dropOff, setDropOff] = useState({});
   const [duration, setDuration] = useState(0);
   const [cancellationReasons, setCancellationReasons] = useState([]);
@@ -503,22 +502,15 @@ function AddRideView() {
   }, []);
 
   useEffect(() => {
-    // console.log(":- before manifestImageSrc", manifestImageSrc);
-    console.log(":- useEffect dropoffs", dropoffs);
     if (
       dropoffs &&
       dropoffs[selectedDropoffNumber - 1] &&
       typeof dropoffs[selectedDropoffNumber - 1].manifestId === "number"
     ) {
-      console.log(
-        ":- useEffect dropoffs[selectedDropoffNumber - 1].manifestId ",
-        dropoffs[selectedDropoffNumber - 1].manifestId
-      );
       setManifestImageSrc(getURL("preview", dropoffs[selectedDropoffNumber - 1].manifestId));
     } else {
       setManifestImageSrc(null);
     }
-    // console.log(":- after manifestImageSrc", manifestImageSrc);
   }, [selectedDropoffNumber]);
 
   const handleAddDropoff = async (e) => {
@@ -551,8 +543,6 @@ function AddRideView() {
         currentLocation: true,
         memo: true,
       });
-
-      console.log(":- adddropoff manifestImage", manifestImage);
 
       if (manifestImage) {
         const [manifestId] = await upload([manifestImage], "ride");
@@ -635,6 +625,7 @@ function AddRideView() {
       isActive: true,
       pickupCityId: true,
       pickupLocation: true,
+      pickUp: true,
       productCategoryId: products.length > 0 ? false : true,
       productName: products.length > 0 ? false : true,
       productQuantity: products.length > 0 ? false : true,
@@ -647,6 +638,7 @@ function AddRideView() {
     if (eirImage) [newRide.eirId] = await upload([eirImage], "ride");
 
     if (builtyImage) [newRide.builtyId] = await upload([builtyImage], "ride");
+    console.log(":- addride pickUp", pickUp);
     if (status === RIDE_STATUS.NOT_ASSIGNED) {
       if (
         isRequired(carId) &&
@@ -657,7 +649,10 @@ function AddRideView() {
         isRequired(weightCargo) &&
         isRequired(pocName) &&
         isRequired(pocNumber) &&
-        isPhone(pocNumber.replace(/-/g, ""))
+        isPhone(pocNumber.replace(/-/g, "")) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp)
       ) {
         addRide(newRide);
       }
@@ -673,7 +668,9 @@ function AddRideView() {
         isRequired(pickupDate) &&
         isRequired(weightCargo) &&
         isRequired(price) &&
-        isRequired(cost)
+        isRequired(cost) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -706,7 +703,9 @@ function AddRideView() {
         // isRequired(pocName) &&
         // isRequired(pocNumber) &&
         // isPhone(pocNumber.replace(/-/g, "")) &&
-        isRequired(currentLocation)
+        isRequired(currentLocation) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress)
       ) {
         addRide(newRide);
       }
@@ -722,7 +721,9 @@ function AddRideView() {
         isRequired(pickupDate) &&
         isRequired(price) &&
         isRequired(cost) &&
-        isRequired(weightCargo)
+        isRequired(weightCargo) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isRequired(pocName) &&
@@ -745,7 +746,9 @@ function AddRideView() {
         isRequired(pickupDate) &&
         isRequired(price) &&
         isRequired(cost) &&
-        isRequired(weightCargo)
+        isRequired(weightCargo) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -766,7 +769,9 @@ function AddRideView() {
         isRequired(price) &&
         isRequired(cost) &&
         isRequired(weightCargo) &&
-        isRequired(cancellationReason)
+        isRequired(cancellationReason) &&
+        isRequired(dropoffCityId) &&
+        isRequired(dropoffAddress)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -912,17 +917,13 @@ function AddRideView() {
   const removePreviewId = (event) => {
     setManifestImage(null);
     setManifestImageSrc(null);
-    console.log("selectedDropoffNumber", selectedDropoffNumber);
     if (selectedRide && selectedRide.RideDropoff[selectedDropoffNumber - 1]) {
-      console.log(":- preview debug 1");
       selectedRide.RideDropoff[selectedDropoffNumber - 1].manifestId = null;
     }
     if (dropoffs && dropoffs[selectedDropoffNumber - 1]) {
-      console.log(":- preview debug 2");
       dropoffs[selectedDropoffNumber - 1].manifestId = null;
       setDropoffs(dropoffs);
     }
-    console.log(":- preview remove dropoffs", dropoffs);
   };
 
   const removeEIRPreviewId = (event) => {
@@ -1335,8 +1336,14 @@ function AddRideView() {
               setPickupAddress={setPickupAddress}
               // setDropoffAddress={setDropoffAddress}
               showPickupOnly={true}
+              pickUp={pickUp}
             />
           </Grid>
+          {validation.pickUp && !isRequired(pickUp) ? (
+            <Typography color="error">Pickup Location is required!</Typography>
+          ) : (
+            ""
+          )}
         </Grid>
 
         <Grid container item xs={12} spacing={1}>
