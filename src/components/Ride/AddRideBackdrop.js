@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
 function AddRideBackdrop({ setOpenReplaceRideBackdrop, minDropoff, maxDropoff }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  console.log("minDropoff, maxDropoff", minDropoff, maxDropoff);
   const handleClose = () => {
     // setOpen(false);
     setOpenReplaceRideBackdrop(false);

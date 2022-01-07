@@ -137,9 +137,9 @@ const navTreeData = [
       },
       {
         canActivate: (user) => checkPermission(user, "OPS_PRODUCTINWARD_FULL"),
-        href: "/logistics/ride",
+        href: "/logistics/load",
         title: "Load",
-        activeRouteName: "ride",
+        activeRouteName: "load",
       },
     ],
   },

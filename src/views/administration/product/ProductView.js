@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   blkBtn: {
     marginLeft: 5
   },
-  productBtn:{
+  productBtn: {
     marginRight: 5,
   },
   placeholderText: {
@@ -250,7 +250,14 @@ export default function ProductView() {
       });
       closeAddProductView(false);
       getProducts();
-    });
+    })
+      .catch((error) => {
+        setFormErrors(
+          <Alert elevation={6} variant="filled" severity="error" onClose={() => setFormErrors("")}>
+            {error.response && error.response.data ? error.response.data.message : 'something went wrong.'}
+          </Alert>
+        );
+      })
   };
 
   const bulkUpload = (data) => {
@@ -320,9 +327,10 @@ export default function ProductView() {
     let startingDate = new Date(startDate);
     let endingDate = new Date(endDate);
 
-    axios.get(getURL("product"), { params: { 
-      page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
-    } 
+    axios.get(getURL("product"), {
+      params: {
+        page, search: searchKeyword, days: !selectedDateRange ? selectedDay : null, startingDate: selectedDateRange ? startingDate : null, endingDate: selectedDateRange ? endingDate : null
+      }
     }).then((res) => {
       setPageCount(res.data.pages);
       setProducts(res.data.data);
@@ -520,9 +528,9 @@ export default function ProductView() {
     margin="dense"
   />
 
-  const headerButtons = [addProductButton, addBulkProductsButton,exportButton, addProductModal, deleteProductModal];
+  const headerButtons = [addProductButton, addBulkProductsButton, exportButton, addProductModal, deleteProductModal];
   const headerButtonsTwo = [searchInput, daysSelect]
-// retur
+  // retur
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>

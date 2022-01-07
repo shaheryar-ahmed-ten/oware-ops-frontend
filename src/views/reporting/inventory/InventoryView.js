@@ -29,6 +29,9 @@ import { debounce } from 'lodash';
 import moment from 'moment-timezone';
 import { DEBOUNCE_CONST } from '../../../Config';
 import CalendarTodayOutlinedIcon from '@material-ui/icons/CalendarTodayOutlined';
+import MessageSnackbar from '../../../components/MessageSnackbar';
+import { useNavigate } from 'react-router';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 
 const useStyles = makeStyles(theme => ({
@@ -91,6 +94,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function InventoryView() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const columns = [{
     id: 'product',
     label: 'PRODUCT NAME',
@@ -129,7 +133,23 @@ export default function InventoryView() {
     label: 'DISPATCHED QUANTITY',
     minWidth: 'auto',
     className: '',
-  }];
+  }, {
+    id: 'actions',
+    label: 'ACTIONS',
+    minWidth: 'auto',
+    className: '',
+    format: (value, entity) => {
+      return entity.Product && entity.Product.batchEnabled ?
+        [
+          <VisibilityIcon
+            onClick={() => navigate(`view/${entity.id}`)}
+          />,
+        ]
+        :
+        ''
+    }
+  },
+  ];
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [inventories, setInventories] = useState([]);

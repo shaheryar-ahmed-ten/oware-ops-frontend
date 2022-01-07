@@ -311,7 +311,7 @@ export default function RideView(props) {
   // state persist end
   useEffect(() => {
     history.push(
-      `/logistics/ride?currentFilter=${currentFilter}&searchKeyword=${searchKeyword}&selectedDay=${
+      `/logistics/load?currentFilter=${currentFilter}&searchKeyword=${searchKeyword}&selectedDay=${
         selectedDay ? selectedDay : ""
       }`
     );
@@ -435,7 +435,7 @@ export default function RideView(props) {
   );
 
   const addRideButton = (
-    <Button variant="contained" color="primary" size="small" onClick={() => navigate("/logistics/ride/create")}>
+    <Button variant="contained" color="primary" size="small" onClick={() => navigate("/logistics/load/create")}>
       {" "}
       ADD LOAD
     </Button>

@@ -4,19 +4,21 @@ import {
   Grid,
   Button,
   TextField,
-  Select,
-  InputLabel,
+  // FormControl,
+  FormControlLabel,
   FormControl,
-  MenuItem,
+  FormGroup,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Checkbox,
-  Typography
+  Typography,
+  Switch
 } from '@material-ui/core'
 import { isRequired } from '../../../utils/validators';
 import { Autocomplete } from '@material-ui/lab';
+// import Switch from '@material-ui/core/Switch';
 // import { useStyles } from '@material-ui/pickers/views/Calendar/SlideTransition';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +43,20 @@ export default function AddProductView({ addProduct, open, handleClose, selected
   const [uomId, setUomId] = useState('');
   const [isActive, setActive] = useState(true);
   const classes = useStyles();
+  const [batchEnabled, setBatchEnabled] = useState(false);
+
+  const resetStates = () => {
+    setValidation({});
+    setName("");
+    setDescription("");
+    setDimensionsCBM("");
+    setWeight("");
+    setCategoryId();
+    setBrandId();
+    setUomId();
+    setActive(true);
+    setBatchEnabled(false);
+  }
 
   useEffect(() => {
     if (!!selectedProduct) {
@@ -52,6 +68,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       setBrandId(selectedProduct.brandId || '');
       setUomId(selectedProduct.uomId || '');
       setActive(!!selectedProduct.isActive);
+      setBatchEnabled(!!selectedProduct.batchEnabled || '');
     } else {
       setName('');
       setDescription('');
@@ -61,8 +78,10 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       setBrandId('');
       setUomId('');
       setActive(true);
+      setBatchEnabled(false);
     }
   }, [selectedProduct])
+
   const handleSubmit = e => {
 
     const newProduct = {
@@ -73,7 +92,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       categoryId,
       brandId,
       uomId,
-      isActive
+      isActive,
+      batchEnabled,
     }
 
     setValidation({
@@ -94,13 +114,22 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       isRequired(uomId)
     ) {
       addProduct(newProduct);
+      resetStates();
     }
   }
+
+  const toggleChecked = (event) => {
+    setBatchEnabled(event.target.checked);
+  };
 
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={open} onClose={() => {
+          handleClose()
+        }} onBackdropClick={() => {
+          resetStates();
+        }} aria-labelledby="form-dialog-title">
           <DialogTitle>
             {!selectedProduct ? 'Add Product' : 'Edit Product'}
           </DialogTitle>
@@ -114,7 +143,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   className={classes.labelBox}
                   margin="dense"
                   id="name"
-                  label="Name"
+                  label="Name*"
                   type="text"
                   variant="outlined"
                   value={name}
@@ -130,7 +159,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   className={classes.labelBox}
                   margin="dense"
                   id="description"
-                  label="Description"
+                  label="Description*"
                   type="text"
                   variant="outlined"
                   value={description}
@@ -147,7 +176,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     className={classes.labelBox}
                     margin="dense"
                     id="dimensionsCBM"
-                    label="Volume cm3"
+                    label="Volume cm3*"
                     type="number"
                     variant="outlined"
                     value={dimensionsCBM}
@@ -166,7 +195,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     className={classes.labelBox}
                     margin="dense"
                     id="weight"
-                    label="Weight in KGs"
+                    label="Weight in KGs*"
                     type="number"
                     variant="outlined"
                     value={weight}
@@ -187,7 +216,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       key={categories}
                       options={categories}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.Category.name, id: selectedProduct.Category.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
+                      renderInput={(params) => <TextField {...params} label="Category*" variant="outlined" />}
                       getOptionLabel={(category) => category.name || ""}
                       onBlur={e => setValidation({ ...validation, categoryId: true })}
                       onChange={(event, newValue) => {
@@ -205,7 +234,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       key={brands}
                       options={brands}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.Brand.name, id: selectedProduct.Brand.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="Brand" variant="outlined" />}
+                      renderInput={(params) => <TextField {...params} label="Brand*" variant="outlined" />}
                       getOptionLabel={(brand) => brand.name || ""}
                       onBlur={e => setValidation({ ...validation, brandId: true })}
                       onChange={(event, newValue) => {
@@ -226,7 +255,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                       key={uoms}
                       options={uoms}
                       defaultValue={!!selectedProduct ? { name: selectedProduct.UOM.name, id: selectedProduct.UOM.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="UoM" variant="outlined" />}
+                      renderInput={(params) => <TextField {...params} label="UoM*" variant="outlined" />}
                       getOptionLabel={(uom) => uom.name || ""}
                       onBlur={e => setValidation({ ...validation, categoryId: true })}
                       onChange={(event, newValue) => {
@@ -237,8 +266,19 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     {validation.uomId && !isRequired(uomId) ? <Typography color="error">UoM is required!</Typography> : ''}
                   </FormControl>
                 </Grid>
-
+              </Grid>
+              <Grid container spacing={2}>
                 <Grid item sm={6}>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={<Switch checked={batchEnabled} onChange={toggleChecked} />}
+                      label="Batch Enabled"
+                    />
+                  </FormGroup>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item sm={12}>
                   <Checkbox
                     checked={isActive}
                     onChange={(e) => setActive(e.target.checked)}
@@ -251,13 +291,17 @@ export default function AddProductView({ addProduct, open, handleClose, selected
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="default" variant="contained">Cancel</Button>
+            <Button onClick={() => {
+              resetStates()
+              handleClose();
+            }
+            } color="default" variant="contained">Cancel</Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
               {!selectedProduct ? 'Add Product' : 'Update Product'}
             </Button>
           </DialogActions>
         </Dialog>
       </form>
-    </div>
+    </div >
   );
 }

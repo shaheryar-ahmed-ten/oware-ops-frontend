@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Grid,
   IconButton,
   makeStyles,
@@ -17,7 +18,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { dateFormat, getURL } from "../../../utils/common";
 import PrintIcon from "@material-ui/icons/Print";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import axios from "axios";
 import owareLogo from "../../../assets/icons/oware-logo-black.png";
 
@@ -67,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ViewStockManagementDetails() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const productsColumns = [
     {
       id: "companyName",
@@ -111,7 +113,7 @@ function ViewStockManagementDetails() {
       format: (value, inventory) =>
         inventory.AdjustmentDetails && inventory.AdjustmentDetails.WastagesType
           ? inventory.AdjustmentDetails.WastagesType.name.charAt(0).toUpperCase() +
-            inventory.AdjustmentDetails.WastagesType.name.slice(1).toLowerCase()
+          inventory.AdjustmentDetails.WastagesType.name.slice(1).toLowerCase()
           : "",
     },
     {
@@ -267,13 +269,20 @@ function ViewStockManagementDetails() {
       </Box>
       {/* Only for Displaying */}
       <Grid container className={classes.parentContainer} spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant="h3" className={classes.heading}>
-            Stock Adjustment Details
-            <IconButton aria-label="print" onClick={handlePrint}>
-              <PrintIcon />
-            </IconButton>
-          </Typography>
+        <Grid container item xs={12} justifyContent="space-between">
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.heading}>
+              Stock Adjustment Details
+              <IconButton aria-label="print" onClick={handlePrint}>
+                <PrintIcon />
+              </IconButton>
+            </Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <Button variant="contained" color="primary" onClick={() => navigate("/operations/stock-adjustment")}>
+              Back
+            </Button>
+          </Grid>
         </Grid>
         <TableContainer className={classes.parentContainer}>
           <Table stickyHeader aria-label="sticky table">

@@ -14,9 +14,11 @@ import CategoryView from "../src/views/administration/category/CategoryView";
 import ProductView from "../src/views/administration/product/ProductView";
 
 import ProductInwardView from "../src/views/operations/productInward/ProductInwardView";
+import BulkProductInwardView from "../src/views/operations/productInward/BulkProductInwardView";
 import DispatchOrderView from "../src/views/operations/dispatchOrder/DispatchOrderView";
 import ProductOutwardView from "../src/views/operations/productOutward/ProductOutwardView";
 import InventoryView from "../src/views/reporting/inventory/InventoryView";
+import InventoryDetailsView from "../src/views/reporting/inventory/InventoryDetailsView";
 import ExportView from "../src/views/reporting/exports/ExportView";
 import { checkPermission } from "./utils/auth";
 import DriverView from "./views/logistics/driver/DriverView";
@@ -106,6 +108,10 @@ const routes = (user) => [
       {
         path: "product-inward",
         element: checkPermission(user, "OPS_PRODUCTINWARD_FULL") ? <ProductInwardView /> : <Navigate to="404" />,
+      },
+      {
+        path: "product-inward/bulk-upload",
+        element: checkPermission(user, "OPS_PRODUCTINWARD_FULL") ? <BulkProductInwardView /> : <Navigate to="404" />,
       },
       {
         path: "product-inward/create",
@@ -207,15 +213,15 @@ const routes = (user) => [
       //   element: <AddVehicleTypeView />
       // },
       {
-        path: "ride",
+        path: "load",
         element: <RideView />,
       },
       {
-        path: "ride/create",
+        path: "load/create",
         element: <AddRideView />,
       },
       {
-        path: "ride/view/:uid",
+        path: "load/view/:uid",
         element: <RideDetailsView />,
       },
     ],
@@ -240,6 +246,10 @@ const routes = (user) => [
       {
         path: "export",
         element: checkPermission(user, "OPS_EXPORT_FULL") ? <ExportView /> : <Navigate to="404" />,
+      },
+      {
+        path: "inventory/view/:uid",
+        element: checkPermission(user, "OPS_INVENTORY_FULL") ? <InventoryDetailsView /> : <Navigate to="404" />,
       },
     ],
   },

@@ -80,11 +80,24 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
       setActive(true);
     }
   }, [selectedUser]);
+
   useEffect(() => {
     if (!portal) return setFilteredRoles([]);
     setFilteredRoles(roles.filter(role => role.allowedApps === portal));
   }, [portal]);
 
+  const resetStates = () => {
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setPhone('');
+    setRoleId('');
+    setPortal('');
+    setCompanyId('');
+    setActive(true);
+  }
 
   const changePortal = portal => {
     setRoleId('');
@@ -129,6 +142,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
         delete newUser.companyId;
       }
       addUser(newUser);
+      setValidation({})
+      resetStates()
     }
   }
 
@@ -150,7 +165,11 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onBackdropClick={() => {
+        <Dialog open={open} onClose={() => {
+          setValidation({})
+          resetStates()
+          handleClose()
+        }} aria-labelledby="form-dialog-title" onBackdropClick={() => {
           setValidation('')
         }}>
           <DialogTitle>
@@ -402,7 +421,8 @@ export default function AddUserView({ addUser, roles, customers, portals, open, 
           <DialogActions>
             <Button onClick={() => {
               // setExplicitReRender(!explicitReRender);
-              setValidation('')
+              setValidation({})
+              resetStates()
               handleClose()
             }
             } color="default" variant="contained">Cancel</Button>

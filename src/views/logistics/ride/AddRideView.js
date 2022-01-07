@@ -172,7 +172,7 @@ function AddRideView() {
           );
           return;
         }
-        navigate("/logistics/ride", { state: { prevPath: location.pathname } });
+        navigate("/logistics/load", { state: { prevPath: location.pathname } });
       });
     }
   };
@@ -1067,7 +1067,7 @@ function AddRideView() {
           </Grid>
           <Grid item xs={1}>
             <Link
-              to={"/logistics/ride"} // providing state to clear the persists state filter of ride listing.
+              to={"/logistics/load"} // providing state to clear the persists state filter of ride listing.
               // state={{ prevPath: location.pathname }}
             >
               <Button variant="contained" color="primary">
@@ -2082,6 +2082,7 @@ function AddRideView() {
                     <input
                       type="file"
                       hidden
+                      value={(e) => e.target.value + 1}
                       onChange={(e) => {
                         newEIRValidateLogoImage(e);
                       }}
@@ -2122,6 +2123,7 @@ function AddRideView() {
                     <input
                       type="file"
                       hidden
+                      value={(e) => e.target.value + 2}
                       onChange={(e) => {
                         newBuiltyValidateLogoImage(e);
                       }}

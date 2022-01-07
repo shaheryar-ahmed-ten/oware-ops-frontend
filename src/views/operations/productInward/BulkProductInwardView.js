@@ -76,25 +76,17 @@ function BulkUpload() {
 
 
     const bulkUpload = data => {
+        
         setfileUploaded(true)
         let temp = []
-        for (let product of data.products) {
-            if (temp.includes(product.Name)) {
-                setSelectedFile(null)
-                setSuccessAlerts([])
-                setErrorAlerts(["Can not upload file having duplicate products."])
-                return
-            }
-            temp.push(product.Name)
-        }
+        
         if (!(Array.isArray(data.products) && data.products.length > 0)) {
             setSelectedFile(null)
             setSuccessAlerts([])
-            setErrorAlerts(["Can not upload file having zero products."])
+            setErrorAlerts(["Can not upload file having zero product inwards."])
             return
         }
-
-        let apiPromise = axios.post(getURL('product/bulk'), data)
+        let apiPromise = axios.post(getURL('product-inward/bulk'), data.products)
         apiPromise.then((res) => {
             if (!res.data.success) {
                 setSelectedFile(null)
@@ -107,28 +99,27 @@ function BulkUpload() {
             .catch((err) => {
                 setSelectedFile(null)
                 setSuccessAlerts([])
-                setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk products"])
+                setErrorAlerts(Array.isArray(err.response.data.message) ? err.response.data.message : ["Failed to upload bulk product inwards"])
             })
     }
 
     const downloadTemplate = () => {
-        let apiPromise = axios.get(getURL('product/bulk-template'), {
+        let apiPromise = axios.get(getURL('product-inward/bulk-template'), {
             responseType: 'blob',
         })
         apiPromise.then((response) => {
-            fileDownload(response.data, `Products ${moment().format('DD-MM-yyyy')}.xlsx`);
+            fileDownload(response.data, `Product Inwards ${moment().format('DD-MM-yyyy')}.xlsx`);
         })
-
     }
     return (
         <>
             <Grid container className={classes.root}>
                 <Grid container item xs={12} alignItems="center" className={classes.topHeader}>
                     <Grid item xs={10}>
-                        <Typography component="div" variant="h4" className={classes.heading}>Products Bulk Upload</Typography>
+                        <Typography component="div" variant="h4" className={classes.heading}>Product Inward Bulk Upload</Typography>
                     </Grid>
                     <Grid item xs={2} className={classes.backBtn}>
-                        <Button variant="contained" color="primary" onClick={() => navigate('/administration/product')}>Back</Button>
+                        <Button variant="contained" color="primary" onClick={() => navigate('/operations/product-inward')}>Back</Button>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} alignItems="center" className={classes.headerBtns}>
@@ -169,10 +160,10 @@ function BulkUpload() {
                                 <Typography component="div" className={classes.subHeadingGuideline}>Bulk Upload Guidelines</Typography>
                             </Grid>
                             <Grid item xs={12} alignItems="center" className={classes.guidelines}>
-                                <Alert severity="info" className={classes.guideLine}>Maximum of 1000 products are allowed to be included for upload in a single file.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>Maximum of 1000 product inwards are allowed to be included for upload in a single file.</Alert>
                                 <Alert severity="info" className={classes.guideLine}>The following special characters are not allowed in product names -  !@#$%^\=\[\]{ };:\\|>\/?</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The Brand, Category & UoM values must exist in the system before being used in bulk upload.</Alert>
-                                <Alert severity="info" className={classes.guideLine}>The template contains sample value for product rows which must be replaced with actual values before upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The Company, Warehouse & Product values must exist in the system before being used in bulk upload.</Alert>
+                                <Alert severity="info" className={classes.guideLine}>The template contains sample value for product inward rows which must be replaced with actual values before upload.</Alert>
                             </Grid>
                         </>
                 }
