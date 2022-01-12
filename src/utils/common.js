@@ -20,6 +20,7 @@ export const digitize = (value, places) => {
 export const dateFormat = (value) => {
   return value ? moment(value).format("DD-MM-yyyy hh:mm A") : "-";
 };
+export const dateToPickerFormatYear = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "");
 
 export const dateToPickerFormat = (value) =>
   value ? moment(value).format("DD-MM-yyyyTHH:mm") : "";
@@ -32,6 +33,10 @@ export const dividerTimeFormat = (value) =>
 
 export const dividerDateFormatForFilter = (value) =>
   value ? moment(value).format("DD-MM-yyyy") : "-";
+
+export const compareDateFormat = (value) =>
+  value ? moment(value).format("MM-DD-yyyy") : "-";
+
 
 export const SharedContext = createContext(null);
 

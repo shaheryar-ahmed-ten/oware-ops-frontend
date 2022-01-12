@@ -503,18 +503,23 @@ function GoogleMap(props) {
   };
 
   useEffect(() => {
-    if (state.pickupMarker.lat && state.pickupMarker.lng) {
-      if (setPickUp) setPickUp(state.pickupMarker);
-    } else {
-      setPickUp(null);
-    }
+    // if (state.pickupMarker.lat && state.pickupMarker.lng) {
+    //   console.log(setPickUp);
+    //   if (setPickUp) setPickUp(state.pickupMarker);
+    // } else {
+    //   setPickUp(null);
+    // }
+    if (setPickUp) setPickUp(state.pickupMarker);
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
 
   useEffect(() => {
-    if (state.pickupMarker.lat && state.pickupMarker.lng) {
-      // setPickUp(state.pickupMarker)
-    } else setPickUp(null);
+    //   // if (state.pickupMarker.lat && state.pickupMarker.lng) {
+    //   //   // setPickUp(state.pickupMarker)
+    //   // } else setPickUp(null);
+    //   setPickUp(null);
+    if (setPickUp) setPickUp(state.pickupMarker);
+    if (setDropOff) setDropOff(state.dropoffMarker);
   }, [pickupSearchBox]);
 
   const searchOptions = {

@@ -228,7 +228,7 @@ function ViewProductOutwardDetails() {
                           <Grid item xs={6} style={{ textAlign: 'center' }}>
                             {
                               order.Product.batchEnabled ?
-                                invDetail.batchName || '-'
+                                invDetail.batchNumber || '-'
                                 :
                                 '-'
                             }
@@ -377,7 +377,7 @@ function ViewProductOutwardDetails() {
                       <TableCell>
                         {
                           order.Product.batchEnabled ?
-                            invDetail.batchName || '-'
+                            invDetail.batchNumber || '-'
                             :
                             '-'
                         }

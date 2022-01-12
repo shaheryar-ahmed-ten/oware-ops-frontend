@@ -255,7 +255,11 @@ function InwardProductDetailsView() {
               justifyContent="space-between"
             >
               <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
-                <Typography variant="h5" className={classes.pageSubHeading}>
+                <Typography
+                  variant="h5"
+                  style={{ fontWeight: 700 }}
+                  className={classes.pageSubHeading}
+                >
                   Product Details
                 </Typography>
               </Grid>
@@ -265,7 +269,11 @@ function InwardProductDetailsView() {
                     (batch, index) => {
                       return (
                         <>
-                          <Grid container style={{ display: "inline-block" }}>
+                          <Grid
+                            container
+                            style={{ display: "inline-block" }}
+                            key={index}
+                          >
                             <Grid
                               container
                               item
@@ -273,25 +281,26 @@ function InwardProductDetailsView() {
                               spacing={2}
                               style={{ marginTop: 25 }}
                             >
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 600 }} item xs={6}>
                                 Product Name:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
+                                  fontWeight: 600,
                                   transform: "translateX(-50px)",
                                 }}
                               >
                                 {product ? product.name : "-"}
                               </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Product Weight:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -299,12 +308,12 @@ function InwardProductDetailsView() {
                               >
                                 {product ? product.weight : "-"}
                               </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 UOM:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -312,12 +321,12 @@ function InwardProductDetailsView() {
                               >
                                 {product.UOM ? product.UOM.name : "-"}
                               </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Quantity:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -340,12 +349,12 @@ function InwardProductDetailsView() {
                               >
                                 {batch ? batch.batchName : "-"}
                               </Grid> */}
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Batch Number:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -353,12 +362,12 @@ function InwardProductDetailsView() {
                               >
                                 {batch ? batch.batchNumber : "-"}
                               </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Manufacturing Date:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -368,12 +377,12 @@ function InwardProductDetailsView() {
                                   ? dividerDateFormat(batch.manufacturingDate)
                                   : "-"}
                               </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={4}>
+                              <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Expiry Date:
                               </Grid>
                               <Grid
                                 item
-                                xs={2}
+                                xs={6}
                                 style={{
                                   fontStyle: "italic",
                                   transform: "translateX(-50px)",
@@ -567,15 +576,23 @@ function InwardProductDetailsView() {
                         {/* {console.log(batch)} */}
                         <TableCell>{product ? product.name : "-"}</TableCell>
                         <TableCell>
-                          {product && product.InwardGroup
-                            ? product.InwardGroup.quantity
+                          {batch &&
+                          batch.InwardGroup &&
+                          batch.InwardGroup[0] &&
+                          batch.InwardGroup[0].InwardGroupBatch
+                            ? batch.InwardGroup[0].InwardGroupBatch.quantity
                             : "-"}
                         </TableCell>
                         <TableCell>
                           {product && product.UOM ? product.UOM.name : "-"}
                         </TableCell>
-                        <TableCell>{batch ? batch.batchName : "-"}</TableCell>
-
+                        <TableCell>
+                          {batch
+                            ? batch.batchName.includes("default")
+                              ? "-"
+                              : batch.batchName
+                            : "-"}
+                        </TableCell>
                         <TableCell>{batch ? batch.batchNumber : "-"}</TableCell>
                         <TableCell>
                           {batch

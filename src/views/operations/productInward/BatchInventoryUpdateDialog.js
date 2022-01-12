@@ -97,7 +97,7 @@ const BatchInventoryUpdateDialog = ({
         // fullScreen={fullScreen}
         maxWidth="xl"
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
@@ -201,39 +201,39 @@ const BatchInventoryUpdateDialog = ({
                 <TableBody>
                   {batchData
                     ? batchData.map((batch, idx) => {
-                        return (
-                          <TableRow hover role="checkbox" key={idx}>
-                            <TableCell>
-                              <Radio
-                                checked={selectedValue == batch.id}
-                                onChange={handleChange}
-                                value={batch.id}
-                                name="radio-buttons"
-                                inputProps={{ "aria-label": batch.id }}
-                              />
-                            </TableCell>
-                            <TableCell>
-                              {batch ? batch.batchName : "-"}
-                            </TableCell>
-                            <TableCell>
-                              {batch ? batch.batchNumber : "-"}
-                            </TableCell>
-                            <TableCell>
-                              {batch
-                                ? dividerDateFormat(batch.manufacturingDate)
-                                : "-"}
-                            </TableCell>
-                            <TableCell>
-                              {batch
-                                ? dividerDateFormat(batch.expiryDate)
-                                : "-"}
-                            </TableCell>
-                            <TableCell>
-                              {batch ? batch.availableQuantity : "-"}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
+                      return (
+                        <TableRow hover role="checkbox" key={idx}>
+                          <TableCell>
+                            <Radio
+                              checked={selectedValue == batch.id}
+                              onChange={handleChange}
+                              value={batch.id}
+                              name="radio-buttons"
+                              inputProps={{ "aria-label": batch.id }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {batch ? batch.batchName : "-"}
+                          </TableCell>
+                          <TableCell>
+                            {batch ? batch.batchNumber : "-"}
+                          </TableCell>
+                          <TableCell>
+                            {batch
+                              ? dividerDateFormat(batch.manufacturingDate)
+                              : "-"}
+                          </TableCell>
+                          <TableCell>
+                            {batch
+                              ? dividerDateFormat(batch.expiryDate)
+                              : "-"}
+                          </TableCell>
+                          <TableCell>
+                            {batch ? batch.availableQuantity : "-"}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                     : ""}
                 </TableBody>
               </Table>

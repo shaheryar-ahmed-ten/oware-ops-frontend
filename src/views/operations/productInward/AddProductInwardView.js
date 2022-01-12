@@ -30,7 +30,7 @@ import { isNumber, isRequired } from "../../../utils/validators";
 import { useReactToPrint } from "react-to-print";
 import { Autocomplete } from "@material-ui/lab";
 import axios from "axios";
-import { checkForMatchInArray, getURL } from "../../../utils/common";
+import { checkForMatchInArray, compareDateFormat, dividerDateFormatForFilter, getURL } from "../../../utils/common";
 import MessageSnackbar from "../../../components/MessageSnackbar";
 import { useLocation, useNavigate } from "react-router";
 import moment from "moment";
@@ -123,6 +123,13 @@ export default function AddProductInwardView() {
   const [generateBatchName, setGenerateBatchName] = useState(null);
   const [batchData, setBatchData] = useState(null);
 
+  const [nextThrityDays, setNextThrityDays] = useState(null)
+
+  const resetLocalStates = () => {
+    setProductId("");
+    setQuantity(0);
+  }
+
   useEffect(() => {
     getRelations();
   }, []);
@@ -146,7 +153,7 @@ export default function AddProductInwardView() {
 
   useEffect(() => {
     if (!batchEnabled.batchEnabled) {
-      setExpiryDate(null);
+      setExpiryDate(dividerDateFormat(null));
       setManufacturingDate(null);
       setBatchNumber(null);
       setHasValue(false);
@@ -163,6 +170,11 @@ export default function AddProductInwardView() {
 
   // Clear the selected products on company/warehouse change
   useEffect(() => {
+    var date = new Date();
+    date.setDate(date.getDate() + 30);
+    var dateString = date.toISOString().split('T')[0];
+    setNextThrityDays(dateString)
+
     setQuantity("");
     setProductGroups([]);
   }, [customerId, warehouseId]);
@@ -196,6 +208,35 @@ export default function AddProductInwardView() {
     }
   }, [selectedProductInward, products, warehouses, customers]);
 
+  useEffect(() => {
+    let d1 = new Date(expiryDate)
+    let d2 = new Date()
+    if (d1 < d2) {
+      setMessageType("#FFCC00");
+      setShowMessage({
+        message:
+          "This product is already expired.",
+      });
+    }
+    else if (expiryDate !== '-' && expiryDate < nextThrityDays) {
+      var date1 = new Date(compareDateFormat(expiryDate));
+      var date2 = new Date();
+
+      // To calculate the time difference of two dates
+      var Difference_In_Time = date1.getTime() - date2.getTime();
+
+      // To calculate the no. of days between two dates
+      var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+      setMessageType("#FFCC00");
+      setShowMessage({
+        message:
+          `This product will expire within ${Math.ceil(Difference_In_Days)} days.`,
+      });
+    }
+
+  }, [expiryDate])
+
   const updateProductsTable = async () => {
     if (
       isRequired(quantity) &&
@@ -210,7 +251,9 @@ export default function AddProductInwardView() {
           !batchEnabled.batchEnabled) ||
         (batchEnabled.batchEnabled &&
           checkForMatchInArray(productGroups, "id", productId) &&
-          checkForMatchInArray(productGroups, "batchNumber", batchNumber))
+          checkForMatchInArray(productGroups, "batchNumber", batchNumber) &&
+          checkForMatchInArray(productGroups, "expiryDate", expiryDate)
+        )
       ) {
         setMessageType("#FFCC00");
         setShowMessage({
@@ -232,7 +275,7 @@ export default function AddProductInwardView() {
           })
           .then((resp) => {
             if (resp.data.data) {
-              handleAddedProducts(resp.data.data[0].batchName);
+              handleAddedProducts(`${resp.data.data.inventoryId}-${resp.data.data[0].batchName}`);
             } else {
               var tempBatch = null;
               handleAddedProducts(tempBatch);
@@ -241,7 +284,7 @@ export default function AddProductInwardView() {
         // handleAddedProducts();
       } else if (batchEnabled.batchEnabled) {
         axios.get(getURL("product-inward/max-batch-id")).then((res) => {
-          setGenerateBatchName(res.data.data.id + productGroups.length);
+          setGenerateBatchName(`${res.data.data.inventoryId}-${res.data.data.id + productGroups.length}`);
           if (expiryDate !== null) {
             axios
               .get(getURL("product-inward/existingBatches"), {
@@ -255,20 +298,18 @@ export default function AddProductInwardView() {
               })
               .then((resp) => {
                 if (isRequired(batchNumber)) {
-                  console.log("debug 1");
                   // if different stop
                   var batches = resp.data.data;
                   var flagCheck = false;
                   var timeFlag = false;
-                  console.log("debug 2", batches);
                   if (batches) {
                     for (let batch of batches) {
                       if (
                         batch.batchNumber == batchNumber &&
                         batch.expiryDate.split("T")[0] ==
-                          expiryDate.split("T")[0]
+                        expiryDate.split("T")[0]
                       ) {
-                        handleAddedProducts(batch.batchName);
+                        handleAddedProducts(`${batch.inventoryId}-${batch.batchName}`);
                         // setMessageType("green");
                         // setShowMessage({
                         //   message: "Existing batch will be updated.",
@@ -277,11 +318,11 @@ export default function AddProductInwardView() {
                       } else if (
                         batch.batchNumber != batchNumber &&
                         batch.expiryDate.split("T")[0] ==
-                          expiryDate.split("T")[0]
+                        expiryDate.split("T")[0]
                       ) {
                         var optionalBatchNameAsParam =
                           res.data.data.id + productGroups.length;
-                        handleAddedProducts(optionalBatchNameAsParam);
+                        handleAddedProducts(`${res.data.data.inventoryId}-${optionalBatchNameAsParam}`);
                         return 0;
                       } else {
                         flagCheck = true;
@@ -330,7 +371,6 @@ export default function AddProductInwardView() {
                 // check if prevBack of provided batch number exist
                 // if not
                 if (!resp.data.data) {
-                  console.log("debug 3");
                   // mean batch donot exist on mentioned date
                   axios
                     .get(getURL("product-inward/existingBatches"), {
@@ -351,7 +391,7 @@ export default function AddProductInwardView() {
                           if (
                             batchcheck.batchNumber == batchNumber &&
                             batchcheck.expiryDate.split("T")[0] !=
-                              expiryDate.split("T")[0]
+                            expiryDate.split("T")[0]
                           ) {
                             flagCheckBatches = true;
                           }
@@ -380,7 +420,7 @@ export default function AddProductInwardView() {
                       else if (!timeFlag) {
                         var optionalBatchNameAsParam =
                           res.data.data.id + productGroups.length;
-                        handleAddedProducts(optionalBatchNameAsParam);
+                        handleAddedProducts(`${res.data.data.inventoryId}-${optionalBatchNameAsParam}`);
                         return 0;
                       }
                     });
@@ -412,7 +452,7 @@ export default function AddProductInwardView() {
         // referenceId: true,
         productId: true,
         warehouseId: true,
-        // expiryDate: true,
+        expiryDate: true,
       });
     }
   };
@@ -426,17 +466,30 @@ export default function AddProductInwardView() {
         quantity,
         batchNumber: batchEnabled.batchEnabled ? batchNumber : null,
         manufacturingDate:
-          batchEnabled.batchEnabled && manufacturingDate
+          batchEnabled.batchEnabled && manufacturingDate && manufacturingDate !== '-'
             ? manufacturingDate.split("T")[0]
             : null,
         expiryDate: batchEnabled.batchEnabled ? expiryDate.split("T")[0] : null,
         batchName: optionalBatchNameAsParam
           ? optionalBatchNameAsParam.toString()
           : generateBatchName
-          ? generateBatchName.toString()
-          : null,
+            ? generateBatchName.toString()
+            : null,
       },
     ]);
+    setProductId("");
+    setQuantity(0);
+    setBatchNumber("")
+    setManufacturingDate(dividerDateFormat(null))
+    setExpiryDate(dividerDateFormat(null))
+    setValidation({
+      ...validation,
+      productId: false,
+      quantity: false,
+      batchNumber: false,
+      manufacturingDate: false,
+      expiryDate: false
+    })
   };
 
   const setLocalStates = async (prevStates) => {
@@ -448,7 +501,7 @@ export default function AddProductInwardView() {
         quantity,
         batchNumber: batchEnabled.batchEnabled ? prevStates.batchNumber : null,
         manufacturingDate:
-          batchEnabled.batchEnabled && prevStates.manufacturingDate
+          batchEnabled.batchEnabled && prevStates.manufacturingDate && prevStates.manufacturingDate !== '-'
             ? prevStates.manufacturingDate.split("T")[0]
             : null,
         expiryDate: batchEnabled.batchEnabled
@@ -457,6 +510,19 @@ export default function AddProductInwardView() {
         batchName: prevStates.generatedBatchName,
       },
     ]);
+    setProductId("");
+    setQuantity(0);
+    setBatchNumber("")
+    setManufacturingDate(dividerDateFormat(null))
+    setExpiryDate(dividerDateFormat(null))
+    setValidation({
+      ...validation,
+      productId: false,
+      quantity: false,
+      batchNumber: false,
+      manufacturingDate: false,
+      expiryDate: false
+    })
   };
 
   const addProductInward = (data) => {
@@ -485,7 +551,7 @@ export default function AddProductInwardView() {
           return;
         }
         setShowMessage({
-          message: "New products inward have been created.",
+          message: "Product Inward created successfully.",
         });
         setTimeout(() => {
           navigate("/operations/product-inward");
@@ -500,7 +566,7 @@ export default function AddProductInwardView() {
     setMessageType("green");
     const newProductInward = {
       customerId,
-      productId,
+      productId: productGroups[0].id,
       quantity,
       warehouseId,
       referenceId,
@@ -514,26 +580,20 @@ export default function AddProductInwardView() {
     };
 
     setValidation({
-      // quantity: true,
       customerId: true,
       productId: true,
       warehouseId: true,
-      // batchNumber:true,
-      // manufacturingDate:true,
-      // expiryDate:true,
     });
     if (
-      isRequired(quantity) &&
+      // isRequired(quantity) &&
       isRequired(customerId) &&
-      isRequired(productId) &&
+      // isRequired(productId) &&
       isRequired(warehouseId)
     ) {
       addProductInward(newProductInward);
     }
   };
-  // const handleChange = (event) => {
-  //   setSelectedRadioValue(event.target.value);
-  // };
+
 
   return (
     <>
@@ -566,9 +626,9 @@ export default function AddProductInwardView() {
               defaultValue={
                 selectedProductInward
                   ? {
-                      name: selectedProductInward.Company.name,
-                      id: selectedProductInward.Company.id,
-                    }
+                    name: selectedProductInward.Company.name,
+                    id: selectedProductInward.Company.id,
+                  }
                   : ""
               }
               options={customers}
@@ -601,9 +661,9 @@ export default function AddProductInwardView() {
               defaultValue={
                 selectedProductInward
                   ? {
-                      name: selectedProductInward.Warehouse.name,
-                      id: selectedProductInward.Warehouse.id,
-                    }
+                    name: selectedProductInward.Warehouse.name,
+                    id: selectedProductInward.Warehouse.id,
+                  }
                   : ""
               }
               options={warehouses}
@@ -644,7 +704,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={(e) => setVehicleType(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            // onBlur={e => setValidation({ ...validation, vehicleType: true })}
+          // onBlur={e => setValidation({ ...validation, vehicleType: true })}
           />
         </Grid>
         <Grid item sm={6}>
@@ -658,7 +718,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={(e) => setVehicleName(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            // onBlur={e => setValidation({ ...validation, vehicleName: true })}
+          // onBlur={e => setValidation({ ...validation, vehicleName: true })}
           />
         </Grid>
         <Grid item sm={4}>
@@ -672,7 +732,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={(e) => setVehicleNumber(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            // onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
+          // onBlur={e => setValidation({ ...validation, vehicleNumber: true })}
           />
         </Grid>
         <Grid item sm={4}>
@@ -686,7 +746,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={(e) => setDriverName(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            // onBlur={e => setValidation({ ...validation, driverName: true })}
+          // onBlur={e => setValidation({ ...validation, driverName: true })}
           />
         </Grid>
         <Grid item sm={4}>
@@ -701,7 +761,7 @@ export default function AddProductInwardView() {
             disabled={viewOnly}
             onChange={(e) => setReferenceId(e.target.value)}
             inputProps={{ maxLength: 30 }}
-            // onBlur={e => setValidation({ ...validation, referenceId: true })}
+          // onBlur={e => setValidation({ ...validation, referenceId: true })}
           />
           {validation.referenceId && !isRequired(referenceId) ? (
             <Typography color="error">ReferenceId is required!</Typography>
@@ -718,7 +778,7 @@ export default function AddProductInwardView() {
             margin="dense"
             rows={6}
             id="memo"
-            label="Memo for driver"
+            label="Memo"
             type="text"
             variant="outlined"
             InputProps={{
@@ -758,7 +818,7 @@ export default function AddProductInwardView() {
                 renderInput={(params) => (
                   <TextField {...params} label="Product" variant="outlined" />
                 )}
-                // onBlur={e => setValidation({ ...validation, productId: true })}
+              // onBlur={e => setValidation({ ...validation, productId: true })}
               />
               {validation.productId && !isRequired(productId) ? (
                 <Typography color="error">Product is required!</Typography>
@@ -789,7 +849,7 @@ export default function AddProductInwardView() {
               }
               // onBlur={e => setValidation({ ...validation, quantity: true })}
               InputProps={{ inputProps: { min: 1 } }}
-              // margin="normal"
+            // margin="normal"
             />
             {validation.quantity && !isRequired(quantity) ? (
               <Typography color="error">Quantity is required!</Typography>
@@ -809,7 +869,7 @@ export default function AddProductInwardView() {
               variant="filled"
               value={uom}
               disabled
-              // margin="normal"
+            // margin="normal"
             />
             {
               <Typography color="error" style={{ visibility: "hidden" }}>
@@ -829,9 +889,9 @@ export default function AddProductInwardView() {
               disabled={!batchEnabled.batchEnabled}
               // margin="normal"
               onChange={(e) => setBatchNumber(e.target.value)}
-              // onBlur={(e) =>
-              //   setValidation({ ...validation, batchNumber: true })
-              // }
+            // onBlur={(e) =>
+            //   setValidation({ ...validation, batchNumber: true })
+            // }
             />
             {validation.batchNumber && !isRequired(batchNumber) ? (
               <Typography color="error">Batch Number is required!</Typography>
@@ -847,18 +907,11 @@ export default function AddProductInwardView() {
               // margin="dense"
               id="manufacturingDate"
               label="Manufacturing Date"
-              // type="datetime-local"
-              // variant="outlined"
-              // format={"DD/MM/YYYY"}
               onFocus={() => setFocused(true)}
               value={manufacturingDate}
               defaultValue={manufacturingDate}
               disabled={!batchEnabled.batchEnabled}
               variant={batchEnabled.batchEnabled ? "outlined" : "filled"}
-              // margin="normal"
-              // onChange={(e) =>
-              //   setManufacturingDate(dateToPickerFormat(e.target.value))
-              // }
               type={hasValue || focus ? "date" : "text"}
               onChange={(e) => {
                 if (e.target.value) {
@@ -870,6 +923,7 @@ export default function AddProductInwardView() {
                 // setValidation({ ...validation, manufacturingDate: true })
                 setFocused(false);
               }}
+              inputProps={{ max: expiryDate }}
             />
             {validation.manufacturingDate && !isRequired(manufacturingDate) ? (
               <Typography color="error">
@@ -884,17 +938,13 @@ export default function AddProductInwardView() {
           <Grid item xs={3}>
             <TextField
               fullWidth={true}
-              // margin="dense"
               id="expiryDate"
               label="Expiry Date"
-              // type="datetime-local"
-              // variant="outlined"
               defaultValue={expiryDate}
               value={expiryDate}
               onFocus={() => setExpiryFocused(true)}
               disabled={!batchEnabled.batchEnabled}
               variant={batchEnabled.batchEnabled ? "outlined" : "filled"}
-              // margin="normal"
               type={expiryHasValue || expiryFocus ? "date" : "text"}
               onChange={(e) => {
                 if (e.target.value) {
@@ -906,8 +956,9 @@ export default function AddProductInwardView() {
                 setValidation({ ...validation, expiryDate: true });
                 setExpiryFocused(false);
               }}
+              inputProps={{ min: manufacturingDate }}
             />
-            {validation.expiryDate && !isRequired(expiryDate) ? (
+            {(validation.expiryDate && (!isRequired(expiryDate) || expiryDate === '-')) ? (
               <Typography color="error">Expiry Date is required!</Typography>
             ) : (
               <Typography color="error" style={{ visibility: "hidden" }}>
@@ -917,13 +968,14 @@ export default function AddProductInwardView() {
           </Grid>
           <Grid item xs={2} className={classes.parentContainer}>
             <FormControl
-              // margin="dense"
               fullWidth={true}
               variant="outlined"
             >
               <Button
                 variant="contained"
-                onClick={updateProductsTable}
+                onClick={() => {
+                  updateProductsTable()
+                }}
                 color="primary"
                 variant="contained"
               >
@@ -963,8 +1015,13 @@ export default function AddProductInwardView() {
                   <TableCell>{productGroup.product.name}</TableCell>
                   <TableCell>{productGroup.quantity}</TableCell>
                   <TableCell>{productGroup.product.UOM.name}</TableCell>
-                  <TableCell>{productGroup.batchName}</TableCell>
-                  <TableCell>{productGroup.batchNumber}</TableCell>
+                  <TableCell>{
+                    productGroup.product?.batchEnabled ?
+                      productGroup.batchName?.includes('default') ? '-' : productGroup.batchName
+                      :
+                      '-'
+                  }</TableCell>
+                  <TableCell>{productGroup.batchNumber || '-'}</TableCell>
                   <TableCell>
                     {dividerDateFormat(productGroup.manufacturingDate)}
                   </TableCell>
@@ -975,12 +1032,20 @@ export default function AddProductInwardView() {
                     <DeleteIcon
                       color="error"
                       key="delete"
-                      onClick={() =>
+                      onClick={() => {
                         setProductGroups(
                           productGroups.filter(
                             (_productGroup, _idx) => _idx != idx
                           )
                         )
+                        resetLocalStates()
+                        setValidation({
+                          ...validation,
+                          productId: false,
+                          quantity: false
+                        })
+                      }
+
                       }
                     />
                   </TableCell>

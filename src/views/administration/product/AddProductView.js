@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   makeStyles,
+  withStyles,
   Grid,
   Button,
   TextField,
@@ -14,33 +15,56 @@ import {
   DialogTitle,
   Checkbox,
   Typography,
-  Switch
-} from '@material-ui/core'
-import { isRequired } from '../../../utils/validators';
-import { Autocomplete } from '@material-ui/lab';
+  Switch,
+} from "@material-ui/core";
+import { isRequired } from "../../../utils/validators";
+import { Autocomplete } from "@material-ui/lab";
 // import Switch from '@material-ui/core/Switch';
 // import { useStyles } from '@material-ui/pickers/views/Calendar/SlideTransition';
 
 const useStyles = makeStyles((theme) => ({
   textBox: {
-    height: 34
+    height: 34,
   },
   labelBox: {
     "& label": {
-      paddingTop: 7
-    }
-  }
+      paddingTop: 7,
+    },
+  },
 }));
 
-export default function AddProductView({ addProduct, open, handleClose, selectedProduct, brands, uoms, categories, formErrors }) {
+const PurpleSwitch = withStyles({
+  switchBase: {
+    color: "#cecece",
+    "&$checked": {
+      color: "blue",
+    },
+    "&$checked + $track": {
+      backgroundColor: "blue",
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
+export default function AddProductView({
+  addProduct,
+  open,
+  handleClose,
+  selectedProduct,
+  brands,
+  uoms,
+  categories,
+  formErrors,
+}) {
   const [validation, setValidation] = useState({});
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [dimensionsCBM, setDimensionsCBM] = useState('');
-  const [weight, setWeight] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [brandId, setBrandId] = useState('');
-  const [uomId, setUomId] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [dimensionsCBM, setDimensionsCBM] = useState("");
+  const [weight, setWeight] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [brandId, setBrandId] = useState("");
+  const [uomId, setUomId] = useState("");
   const [isActive, setActive] = useState(true);
   const classes = useStyles();
   const [batchEnabled, setBatchEnabled] = useState(false);
@@ -56,34 +80,33 @@ export default function AddProductView({ addProduct, open, handleClose, selected
     setUomId();
     setActive(true);
     setBatchEnabled(false);
-  }
+  };
 
   useEffect(() => {
     if (!!selectedProduct) {
-      setName(selectedProduct.name || '');
-      setDescription(selectedProduct.description || '');
-      setDimensionsCBM(selectedProduct.dimensionsCBM || '');
-      setWeight(selectedProduct.weight || '');
-      setCategoryId(selectedProduct.categoryId || '');
-      setBrandId(selectedProduct.brandId || '');
-      setUomId(selectedProduct.uomId || '');
+      setName(selectedProduct.name || "");
+      setDescription(selectedProduct.description || "");
+      setDimensionsCBM(selectedProduct.dimensionsCBM || "");
+      setWeight(selectedProduct.weight || "");
+      setCategoryId(selectedProduct.categoryId || "");
+      setBrandId(selectedProduct.brandId || "");
+      setUomId(selectedProduct.uomId || "");
       setActive(!!selectedProduct.isActive);
-      setBatchEnabled(!!selectedProduct.batchEnabled || '');
+      setBatchEnabled(!!selectedProduct.batchEnabled || "");
     } else {
-      setName('');
-      setDescription('');
-      setDimensionsCBM('');
-      setWeight('');
-      setCategoryId('');
-      setBrandId('');
-      setUomId('');
+      setName("");
+      setDescription("");
+      setDimensionsCBM("");
+      setWeight("");
+      setCategoryId("");
+      setBrandId("");
+      setUomId("");
       setActive(true);
       setBatchEnabled(false);
     }
-  }, [selectedProduct])
+  }, [selectedProduct]);
 
-  const handleSubmit = e => {
-
+  const handleSubmit = (e) => {
     const newProduct = {
       name,
       description,
@@ -94,7 +117,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       uomId,
       isActive,
       batchEnabled,
-    }
+    };
 
     setValidation({
       name: true,
@@ -105,7 +128,8 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       brandId: true,
       uomId: true,
     });
-    if (isRequired(name) &&
+    if (
+      isRequired(name) &&
       isRequired(description) &&
       isRequired(dimensionsCBM) &&
       isRequired(weight) &&
@@ -116,7 +140,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
       addProduct(newProduct);
       resetStates();
     }
-  }
+  };
 
   const toggleChecked = (event) => {
     setBatchEnabled(event.target.checked);
@@ -125,13 +149,18 @@ export default function AddProductView({ addProduct, open, handleClose, selected
   return (
     <div style={{ display: "inline" }}>
       <form>
-        <Dialog open={open} onClose={() => {
-          handleClose()
-        }} onBackdropClick={() => {
-          resetStates();
-        }} aria-labelledby="form-dialog-title">
+        <Dialog
+          open={open}
+          onClose={() => {
+            handleClose();
+          }}
+          onBackdropClick={() => {
+            resetStates();
+          }}
+          aria-labelledby="form-dialog-title"
+        >
           <DialogTitle>
-            {!selectedProduct ? 'Add Product' : 'Edit Product'}
+            {!selectedProduct ? "Add Product" : "Edit Product"}
           </DialogTitle>
           <DialogContent>
             {formErrors}
@@ -147,10 +176,14 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   type="text"
                   variant="outlined"
                   value={name}
-                  onChange={e => setName(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, name: true })}
+                  onChange={(e) => setName(e.target.value)}
+                  onBlur={(e) => setValidation({ ...validation, name: true })}
                 />
-                {validation.name && !isRequired(name) ? <Typography color="error">Name is required!</Typography> : ''}
+                {validation.name && !isRequired(name) ? (
+                  <Typography color="error">Name is required!</Typography>
+                ) : (
+                  ""
+                )}
               </Grid>
               <Grid item sm={12}>
                 <TextField
@@ -163,10 +196,18 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                   type="text"
                   variant="outlined"
                   value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  onBlur={e => setValidation({ ...validation, description: true })}
+                  onChange={(e) => setDescription(e.target.value)}
+                  onBlur={(e) =>
+                    setValidation({ ...validation, description: true })
+                  }
                 />
-                {validation.description && !isRequired(description) ? <Typography color="error">Description is required!</Typography> : ''}
+                {validation.description && !isRequired(description) ? (
+                  <Typography color="error">
+                    Description is required!
+                  </Typography>
+                ) : (
+                  ""
+                )}
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
@@ -180,13 +221,18 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     type="number"
                     variant="outlined"
                     value={dimensionsCBM}
-                    onChange={e => {
-                      if (e.target.value > -1)
-                        setDimensionsCBM(e.target.value)
+                    onChange={(e) => {
+                      if (e.target.value > -1) setDimensionsCBM(e.target.value);
                     }}
-                    onBlur={e => setValidation({ ...validation, dimensionsCBM: true })}
+                    onBlur={(e) =>
+                      setValidation({ ...validation, dimensionsCBM: true })
+                    }
                   />
-                  {validation.dimensionsCBM && !isRequired(dimensionsCBM) ? <Typography color="error">Volume is required!</Typography> : ''}
+                  {validation.dimensionsCBM && !isRequired(dimensionsCBM) ? (
+                    <Typography color="error">Volume is required!</Typography>
+                  ) : (
+                    ""
+                  )}
                 </Grid>
                 <Grid item sm={6}>
                   <TextField
@@ -199,71 +245,144 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     type="number"
                     variant="outlined"
                     value={weight}
-                    onChange={e => {
-                      if (e.target.value > -1)
-                        setWeight(e.target.value)
+                    onChange={(e) => {
+                      if (e.target.value > -1) setWeight(e.target.value);
                     }}
-                    onBlur={e => setValidation({ ...validation, weight: true })}
+                    onBlur={(e) =>
+                      setValidation({ ...validation, weight: true })
+                    }
                   />
-                  {validation.weight && !isRequired(weight) ? <Typography color="error">Weight is required!</Typography> : ''}
+                  {validation.weight && !isRequired(weight) ? (
+                    <Typography color="error">Weight is required!</Typography>
+                  ) : (
+                    ""
+                  )}
                 </Grid>
               </Grid>
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <FormControl
+                    margin="dense"
+                    fullWidth={true}
+                    variant="outlined"
+                  >
                     <Autocomplete
                       id="categoryId"
                       key={categories}
                       options={categories}
-                      defaultValue={!!selectedProduct ? { name: selectedProduct.Category.name, id: selectedProduct.Category.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="Category*" variant="outlined" />}
+                      defaultValue={
+                        !!selectedProduct
+                          ? {
+                              name: selectedProduct.Category.name,
+                              id: selectedProduct.Category.id,
+                            }
+                          : ""
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Category*"
+                          variant="outlined"
+                        />
+                      )}
                       getOptionLabel={(category) => category.name || ""}
-                      onBlur={e => setValidation({ ...validation, categoryId: true })}
+                      onBlur={(e) =>
+                        setValidation({ ...validation, categoryId: true })
+                      }
                       onChange={(event, newValue) => {
-                        if (newValue)
-                          setCategoryId(newValue.id)
+                        if (newValue) setCategoryId(newValue.id);
                       }}
                     />
-                    {validation.categoryId && !isRequired(categoryId) ? <Typography color="error">Category is required!</Typography> : ''}
+                    {validation.categoryId && !isRequired(categoryId) ? (
+                      <Typography color="error">
+                        Category is required!
+                      </Typography>
+                    ) : (
+                      ""
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <FormControl
+                    margin="dense"
+                    fullWidth={true}
+                    variant="outlined"
+                  >
                     <Autocomplete
                       id="brandId"
                       key={brands}
                       options={brands}
-                      defaultValue={!!selectedProduct ? { name: selectedProduct.Brand.name, id: selectedProduct.Brand.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="Brand*" variant="outlined" />}
+                      defaultValue={
+                        !!selectedProduct
+                          ? {
+                              name: selectedProduct.Brand.name,
+                              id: selectedProduct.Brand.id,
+                            }
+                          : ""
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Brand*"
+                          variant="outlined"
+                        />
+                      )}
                       getOptionLabel={(brand) => brand.name || ""}
-                      onBlur={e => setValidation({ ...validation, brandId: true })}
+                      onBlur={(e) =>
+                        setValidation({ ...validation, brandId: true })
+                      }
                       onChange={(event, newValue) => {
-                        if (newValue)
-                          setBrandId(newValue.id)
+                        if (newValue) setBrandId(newValue.id);
                       }}
                     />
-                    {validation.brandId && !isRequired(brandId) ? <Typography color="error">Brand is required!</Typography> : ''}
+                    {validation.brandId && !isRequired(brandId) ? (
+                      <Typography color="error">Brand is required!</Typography>
+                    ) : (
+                      ""
+                    )}
                   </FormControl>
                 </Grid>
               </Grid>
 
               <Grid container spacing={2}>
                 <Grid item sm={6}>
-                  <FormControl margin="dense" fullWidth={true} variant="outlined">
+                  <FormControl
+                    margin="dense"
+                    fullWidth={true}
+                    variant="outlined"
+                  >
                     <Autocomplete
                       id="uomId"
                       key={uoms}
                       options={uoms}
-                      defaultValue={!!selectedProduct ? { name: selectedProduct.UOM.name, id: selectedProduct.UOM.id } : ''}
-                      renderInput={(params) => <TextField {...params} label="UoM*" variant="outlined" />}
+                      defaultValue={
+                        !!selectedProduct
+                          ? {
+                              name: selectedProduct.UOM.name,
+                              id: selectedProduct.UOM.id,
+                            }
+                          : ""
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="UoM*"
+                          variant="outlined"
+                        />
+                      )}
                       getOptionLabel={(uom) => uom.name || ""}
-                      onBlur={e => setValidation({ ...validation, categoryId: true })}
+                      onBlur={(e) =>
+                        setValidation({ ...validation, categoryId: true })
+                      }
                       onChange={(event, newValue) => {
-                        if (newValue)
-                          setUomId(newValue.id)
+                        if (newValue) setUomId(newValue.id);
                       }}
                     />
-                    {validation.uomId && !isRequired(uomId) ? <Typography color="error">UoM is required!</Typography> : ''}
+                    {validation.uomId && !isRequired(uomId) ? (
+                      <Typography color="error">UoM is required!</Typography>
+                    ) : (
+                      ""
+                    )}
                   </FormControl>
                 </Grid>
               </Grid>
@@ -271,7 +390,12 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                 <Grid item sm={6}>
                   <FormGroup>
                     <FormControlLabel
-                      control={<Switch checked={batchEnabled} onChange={toggleChecked} />}
+                      control={
+                        <PurpleSwitch
+                          checked={batchEnabled}
+                          onChange={toggleChecked}
+                        />
+                      }
                       label="Batch Enabled"
                     />
                   </FormGroup>
@@ -283,7 +407,7 @@ export default function AddProductView({ addProduct, open, handleClose, selected
                     checked={isActive}
                     onChange={(e) => setActive(e.target.checked)}
                     color="primary"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    inputProps={{ "aria-label": "secondary checkbox" }}
                   />
                   Active
                 </Grid>
@@ -291,17 +415,22 @@ export default function AddProductView({ addProduct, open, handleClose, selected
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => {
-              resetStates()
-              handleClose();
-            }
-            } color="default" variant="contained">Cancel</Button>
+            <Button
+              onClick={() => {
+                resetStates();
+                handleClose();
+              }}
+              color="default"
+              variant="contained"
+            >
+              Cancel
+            </Button>
             <Button onClick={handleSubmit} color="primary" variant="contained">
-              {!selectedProduct ? 'Add Product' : 'Update Product'}
+              {!selectedProduct ? "Add Product" : "Update Product"}
             </Button>
           </DialogActions>
         </Dialog>
       </form>
-    </div >
+    </div>
   );
 }
