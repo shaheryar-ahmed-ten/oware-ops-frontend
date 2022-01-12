@@ -284,7 +284,7 @@ export default function AddProductInwardView() {
         // handleAddedProducts();
       } else if (batchEnabled.batchEnabled) {
         axios.get(getURL("product-inward/max-batch-id")).then((res) => {
-          setGenerateBatchName(`${res.data.data.inventoryId}-${res.data.data.id + productGroups.length}`);
+          setGenerateBatchName(`${res.data.data.inventoryId + productGroups.length}-${res.data.data.id + productGroups.length}`);
           if (expiryDate !== null) {
             axios
               .get(getURL("product-inward/existingBatches"), {
@@ -322,7 +322,7 @@ export default function AddProductInwardView() {
                       ) {
                         var optionalBatchNameAsParam =
                           res.data.data.id + productGroups.length;
-                        handleAddedProducts(`${res.data.data.inventoryId}-${optionalBatchNameAsParam}`);
+                        handleAddedProducts(`${res.data.data.inventoryId + productGroups.length}-${optionalBatchNameAsParam}`);
                         return 0;
                       } else {
                         flagCheck = true;
@@ -420,7 +420,7 @@ export default function AddProductInwardView() {
                       else if (!timeFlag) {
                         var optionalBatchNameAsParam =
                           res.data.data.id + productGroups.length;
-                        handleAddedProducts(`${res.data.data.inventoryId}-${optionalBatchNameAsParam}`);
+                        handleAddedProducts(`${res.data.data.inventoryId + productGroups.length}-${optionalBatchNameAsParam}`);
                         return 0;
                       }
                     });
@@ -869,7 +869,6 @@ export default function AddProductInwardView() {
               variant="filled"
               value={uom}
               disabled
-            // margin="normal"
             />
             {
               <Typography color="error" style={{ visibility: "hidden" }}>
