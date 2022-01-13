@@ -258,7 +258,9 @@ function AddRideView() {
   const [customerDiscount, setCustomerDiscount] = useState();
   const [driverIncentive, setDriverIncentive] = useState();
 
-  const [pickupDate, setPickupDate] = useState(dateToPickerFormatYear(new Date()));
+  const [pickupDate, setPickupDate] = useState(
+    dateToPickerFormatYear(new Date())
+  );
   const [dropoffDate, setDropoffDate] = useState(
     dateToPickerFormatYear(new Date())
   );
@@ -1539,7 +1541,7 @@ function AddRideView() {
               pickUp={pickUp}
             />
           </Grid>
-          {validation.pickUp && !isRequired(pickUp) ? (
+          {validation.pickupAddress && !isRequired(pickupAddress) ? (
             <Typography color="error">Pickup Location is required!</Typography>
           ) : (
             ""
