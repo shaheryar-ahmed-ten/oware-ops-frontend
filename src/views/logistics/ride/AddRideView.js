@@ -746,7 +746,7 @@ function AddRideView() {
         isPhone(pocNumber.replace(/-/g, "")) &&
         isRequired(dropoffCityId) &&
         isRequired(dropoffAddress) &&
-        isRequired(pickUp)
+        isRequired(pickUp.lat)
       ) {
         addRide(newRide);
       }
@@ -767,7 +767,8 @@ function AddRideView() {
         isRequired(price) &&
         isRequired(cost) &&
         isRequired(dropoffCityId) &&
-        isRequired(dropoffAddress)
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp.lat)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -802,7 +803,8 @@ function AddRideView() {
         // isPhone(pocNumber.replace(/-/g, "")) &&
         isRequired(currentLocation) &&
         isRequired(dropoffCityId) &&
-        isRequired(dropoffAddress)
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp.lat)
       ) {
         addRide(newRide);
       }
@@ -820,7 +822,8 @@ function AddRideView() {
         isRequired(cost) &&
         isRequired(weightCargo) &&
         isRequired(dropoffCityId) &&
-        isRequired(dropoffAddress)
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp.lat)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isRequired(pocName) &&
@@ -845,7 +848,8 @@ function AddRideView() {
         isRequired(cost) &&
         isRequired(weightCargo) &&
         isRequired(dropoffCityId) &&
-        isRequired(dropoffAddress)
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp.lat)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -868,7 +872,8 @@ function AddRideView() {
         isRequired(weightCargo) &&
         isRequired(cancellationReason) &&
         isRequired(dropoffCityId) &&
-        isRequired(dropoffAddress)
+        isRequired(dropoffAddress) &&
+        isRequired(pickUp.lat)
         // isRequired(dropoffCityId) &&
         // isRequired(dropoffAddress) &&
         // isNotEmptyArray(products) &&
@@ -1541,7 +1546,7 @@ function AddRideView() {
               pickUp={pickUp}
             />
           </Grid>
-          {validation.pickupAddress && !isRequired(pickupAddress) ? (
+          {validation.pickUp && !isRequired(pickUp.lat) ? (
             <Typography color="error">Pickup Location is required!</Typography>
           ) : (
             ""

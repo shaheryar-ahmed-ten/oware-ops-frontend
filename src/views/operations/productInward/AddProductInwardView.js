@@ -275,10 +275,10 @@ export default function AddProductInwardView() {
           })
           .then((resp) => {
             if (resp.data.data) {
-              handleAddedProducts(`${resp.data.data.inventoryId}-${resp.data.data[0].batchName}`);
+              handleAddedProducts(`${resp.data.data[0].batchName}`);
             } else {
               var tempBatch = null;
-              handleAddedProducts(tempBatch);
+              handleAddedProducts('null');
             }
           });
         // handleAddedProducts();
@@ -470,11 +470,14 @@ export default function AddProductInwardView() {
             ? manufacturingDate.split("T")[0]
             : null,
         expiryDate: batchEnabled.batchEnabled ? expiryDate.split("T")[0] : null,
-        batchName: optionalBatchNameAsParam
+        batchName: optionalBatchNameAsParam && optionalBatchNameAsParam != 'null'
           ? optionalBatchNameAsParam.toString()
-          : generateBatchName
-            ? generateBatchName.toString()
-            : null,
+          :
+          optionalBatchNameAsParam === 'null' ?
+            null
+            : generateBatchName
+              ? generateBatchName.toString()
+              : null,
       },
     ]);
     setProductId("");
