@@ -200,14 +200,14 @@ function AddRideView() {
     }
     selectedRide
       ? setProductOutwards(
-          removeItemFromArrayIfExistInAnotherArray(
-            productOutwards,
-            selectedRide.RideDropoff
-          )
+        removeItemFromArrayIfExistInAnotherArray(
+          productOutwards,
+          selectedRide.RideDropoff
         )
+      )
       : setProductOutwards(
-          removeItemFromArrayIfExistInAnotherArray(productOutwards, dropoffs)
-        );
+        removeItemFromArrayIfExistInAnotherArray(productOutwards, dropoffs)
+      );
     setDropoffs(dropoffs);
     setDropoffStatus(DROPOFF_STATUS.DROPOFF_SCHEDULED);
   };
@@ -402,8 +402,8 @@ function AddRideView() {
       setDropoffDate(
         selectedRide.RideDropoff[selectedDropoffNumber - 1]
           ? dateToPickerFormatYear(
-              selectedRide.RideDropoff[selectedDropoffNumber - 1].dateTime
-            )
+            selectedRide.RideDropoff[selectedDropoffNumber - 1].dateTime
+          )
           : ""
       );
       setActive(!!selectedRide.isActive);
@@ -440,15 +440,15 @@ function AddRideView() {
           : ""
       );
       selectedRide &&
-      selectedRide.RideDropoff[selectedDropoffNumber - 1] &&
-      typeof selectedRide.RideDropoff[selectedDropoffNumber - 1].manifestId ===
+        selectedRide.RideDropoff[selectedDropoffNumber - 1] &&
+        typeof selectedRide.RideDropoff[selectedDropoffNumber - 1].manifestId ===
         "number"
         ? setManifestImageSrc(
-            getURL(
-              "preview",
-              selectedRide.RideDropoff[selectedDropoffNumber - 1].manifestId
-            )
+          getURL(
+            "preview",
+            selectedRide.RideDropoff[selectedDropoffNumber - 1].manifestId
           )
+        )
         : setManifestImageSrc(null);
       selectedRide && selectedRide.eirId
         ? setEIRImageSrc(getURL("preview", selectedRide.eirId))
@@ -1007,7 +1007,7 @@ function AddRideView() {
       await setOutwardId(currentDropoff.outwardId);
       await setDropoffDate(
         dateToPickerFormatYear(currentDropoff.dateTime) ||
-          dateToPickerFormatYear(currentDropoff.dropoffDate)
+        dateToPickerFormatYear(currentDropoff.dropoffDate)
       );
       await setMemo(currentDropoff.memo);
       await setSingleLocationLatlng(
@@ -1191,7 +1191,7 @@ function AddRideView() {
           <Grid item xs={1}>
             <Link
               to={"/logistics/load"} // providing state to clear the persists state filter of ride listing.
-              // state={{ prevPath: location.pathname }}
+            // state={{ prevPath: location.pathname }}
             >
               <Button variant="contained" color="primary">
                 Cancel
@@ -1216,9 +1216,9 @@ function AddRideView() {
                 defaultValue={
                   !!selectedRide
                     ? {
-                        name: selectedRide.Customer.name,
-                        id: selectedRide.Customer.id,
-                      }
+                      name: selectedRide.Customer.name,
+                      id: selectedRide.Customer.id,
+                    }
                     : ""
                 }
                 renderInput={(params) => (
@@ -1233,10 +1233,10 @@ function AddRideView() {
                 }}
               />
               {validation.customerId &&
-              !isRequired(customerId) &&
-              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.customerId.includes(
-                status
-              ) ? (
+                !isRequired(customerId) &&
+                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.customerId.includes(
+                  status
+                ) ? (
                 <Typography color="error">Company is required!</Typography>
               ) : (
                 ""
@@ -1305,10 +1305,10 @@ function AddRideView() {
                   }}
                 />
                 {validation.cancellationReason &&
-                !isRequired(cancellationReason) &&
-                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.cancellationReason.includes(
-                  status
-                ) ? (
+                  !isRequired(cancellationReason) &&
+                  RIDE_COLUMNS_WITH_MANDATORY_STATUSES.cancellationReason.includes(
+                    status
+                  ) ? (
                   <Typography color="error">
                     Cancellation reason is required!
                   </Typography>
@@ -1335,8 +1335,8 @@ function AddRideView() {
                 onChange={(e) => setCancellationComment(e.target.value)}
               />
               {validation.cancellationReason &&
-              isRequired(cancellationReason) &&
-              cancellationReason == "Other" ? (
+                isRequired(cancellationReason) &&
+                cancellationReason == "Other" ? (
                 <Typography color="error">
                   Cancellation Comment is required!
                 </Typography>
@@ -1359,9 +1359,9 @@ function AddRideView() {
                 defaultValue={
                   !!selectedRide && selectedRide.Vehicle
                     ? {
-                        name: `${selectedRide.Vehicle.Car.CarMake.name} ${selectedRide.Vehicle.Car.CarModel.name}`,
-                        id: selectedRide.Vehicle.Car.id,
-                      }
+                      name: `${selectedRide.Vehicle.Car.CarMake.name} ${selectedRide.Vehicle.Car.CarModel.name}`,
+                      id: selectedRide.Vehicle.Car.id,
+                    }
                     : ""
                 }
                 renderInput={(params) => (
@@ -1375,8 +1375,8 @@ function AddRideView() {
                   return vehicle && vehicle.name
                     ? vehicle.name
                     : vehicle.Car && vehicle.Car.CarMake && vehicle.Car.CarModel
-                    ? `${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`
-                    : "";
+                      ? `${vehicle.Car.CarMake.name} ${vehicle.Car.CarModel.name}`
+                      : "";
                 }}
                 onBlur={(e) => setValidation({ ...validation, carId: true })}
                 onChange={(event, newValue) => {
@@ -1384,8 +1384,8 @@ function AddRideView() {
                 }}
               />
               {validation.carId &&
-              !isRequired(carId) &&
-              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.carId.includes(status) ? (
+                !isRequired(carId) &&
+                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.carId.includes(status) ? (
                 <Typography color="error">Vehicle Type is required!</Typography>
               ) : (
                 ""
@@ -1405,8 +1405,8 @@ function AddRideView() {
                 return vendor && vendor.name
                   ? vendor.name
                   : vendor.Vendor
-                  ? vendor.Vendor.name
-                  : "";
+                    ? vendor.Vendor.name
+                    : "";
               }}
               onChange={(event, newValue) => {
                 setVendorId(newValue ? newValue.companyId : null);
@@ -1419,8 +1419,8 @@ function AddRideView() {
               onBlur={(e) => setValidation({ ...validation, vendorId: true })}
             />
             {validation.vendorId &&
-            !isRequired(vendorId) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.vendorId.includes(status) ? (
+              !isRequired(vendorId) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.vendorId.includes(status) ? (
               <Typography color="error">Vendor is required!</Typography>
             ) : (
               <Typography color="error" style={{ visibility: "hidden" }}>
@@ -1440,10 +1440,10 @@ function AddRideView() {
                 defaultValue={
                   !!selectedRide && selectedRide.Vehicle
                     ? {
-                        registrationNumber:
-                          selectedRide.Vehicle.registrationNumber,
-                        id: selectedRide.Vehicle.id,
-                      }
+                      registrationNumber:
+                        selectedRide.Vehicle.registrationNumber,
+                      id: selectedRide.Vehicle.id,
+                    }
                     : ""
                 }
                 renderInput={(params) => (
@@ -1454,8 +1454,8 @@ function AddRideView() {
                   return vehicle && vehicle.registrationNumber
                     ? vehicle.registrationNumber
                     : vehicle.Vehicle
-                    ? vehicle.Vehicle.registrationNumber
-                    : "";
+                      ? vehicle.Vehicle.registrationNumber
+                      : "";
                 }}
                 onBlur={(e) => setValidation({ ...validation, status: true })}
                 onChange={(event, newValue) => {
@@ -1463,8 +1463,8 @@ function AddRideView() {
                 }}
               />
               {validation.vehicleId &&
-              !isRequired(vehicleId) &&
-              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.vendorId.includes(status) ? (
+                !isRequired(vehicleId) &&
+                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.vendorId.includes(status) ? (
                 <Typography color="error">Vehicle is required!</Typography>
               ) : (
                 ""
@@ -1480,9 +1480,9 @@ function AddRideView() {
                 defaultValue={
                   !!selectedRide && selectedRide.Driver
                     ? {
-                        name: selectedRide.Driver.name,
-                        id: selectedRide.Driver.id,
-                      }
+                      name: selectedRide.Driver.name,
+                      id: selectedRide.Driver.id,
+                    }
                     : ""
                 }
                 renderInput={(params) => (
@@ -1493,8 +1493,8 @@ function AddRideView() {
                   return driver && driver.name
                     ? driver.name
                     : driver.Driver
-                    ? driver.Driver.name
-                    : "";
+                      ? driver.Driver.name
+                      : "";
                 }}
                 onBlur={(e) => setValidation({ ...validation, driverId: true })}
                 onChange={(event, newValue) => {
@@ -1503,8 +1503,8 @@ function AddRideView() {
               />
 
               {validation.driverId &&
-              !isRequired(driverId) &&
-              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.driverId.includes(status) ? (
+                !isRequired(driverId) &&
+                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.driverId.includes(status) ? (
                 <Typography color="error">Driver is required!</Typography>
               ) : (
                 ""
@@ -1581,10 +1581,10 @@ function AddRideView() {
                 }}
               />
               {validation.pickupCityId &&
-              !isRequired(pickupCityId) &&
-              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupCityId.includes(
-                status
-              ) ? (
+                !isRequired(pickupCityId) &&
+                RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupCityId.includes(
+                  status
+                ) ? (
                 <Typography color="error">Pickup City is required!</Typography>
               ) : (
                 ""
@@ -1608,10 +1608,10 @@ function AddRideView() {
               }
             />
             {validation.pickupAddress &&
-            !isRequired(pickupAddress) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupAddress.includes(
-              status
-            ) ? (
+              !isRequired(pickupAddress) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupAddress.includes(
+                status
+              ) ? (
               <Typography color="error">Pickup address is required!</Typography>
             ) : (
               ""
@@ -1639,8 +1639,8 @@ function AddRideView() {
               onBlur={(e) => setValidation({ ...validation, pickupDate: true })}
             />
             {validation.pickupDate &&
-            !isValidDate(pickupDate) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupDate.includes(status) ? (
+              !isValidDate(pickupDate) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.pickupDate.includes(status) ? (
               <Typography color="error">Pickup date is required!</Typography>
             ) : (
               ""
@@ -1695,7 +1695,7 @@ function AddRideView() {
                               fontWeight: "normal",
                               backgroundColor: "white",
                             }}
-                            // startIcon={dropoffs[idx] ? <AddSharpIcon /> : " "}
+                          // startIcon={dropoffs[idx] ? <AddSharpIcon /> : " "}
                           >
                             Dropoff {idx + 1}
                           </Button>
@@ -1770,12 +1770,12 @@ function AddRideView() {
                     dropoffs={dropoffs}
                     setSelectedDropoffNumber={setSelectedDropoffNumber}
                     handleCancelDropoff={handleCancelDropoff}
-                    // key={4}
-                    // confirmDelete={handleCancelDropoff}
-                    // open={setRemoveDropoffDialogState}
-                    // handleClose={closeThisModel}
-                    // title={"ProductOutward"}
-                    // setShowChangeConfirmMessage={setShowChangeConfirmMessage}
+                  // key={4}
+                  // confirmDelete={handleCancelDropoff}
+                  // open={setRemoveDropoffDialogState}
+                  // handleClose={closeThisModel}
+                  // title={"ProductOutward"}
+                  // setShowChangeConfirmMessage={setShowChangeConfirmMessage}
                   />
                 </>
               </Grid>
@@ -1839,13 +1839,13 @@ function AddRideView() {
                     setDropoffAddress={setDropoffAddress}
                     checkValidation={
                       validation.singleLocationLatlng &&
-                      !isRequired(singleLocationLatlng)
+                        !isRequired(singleLocationLatlng)
                         ? true
                         : false
                     }
                   />
                   {validation.singleLocationLatlng &&
-                  !isRequired(singleLocationLatlng) ? (
+                    !isRequired(singleLocationLatlng) ? (
                     <Typography color="error">
                       Dropoff Location is required!
                     </Typography>
@@ -1873,8 +1873,8 @@ function AddRideView() {
                       options={Object.values(dropoffStatuses)}
                       defaultValue={
                         dropoffs &&
-                        dropoffs[selectedDropoffNumber - 1] &&
-                        dropoffs[selectedDropoffNumber - 1].dropoffStatus
+                          dropoffs[selectedDropoffNumber - 1] &&
+                          dropoffs[selectedDropoffNumber - 1].dropoffStatus
                           ? dropoffs[selectedDropoffNumber - 1].dropoffStatus
                           : DROPOFF_STATUS.DROPOFF_SCHEDULED
                       }
@@ -1922,8 +1922,8 @@ function AddRideView() {
                       defaultValue={
                         !!outwardId
                           ? initialProductOutwards.find(
-                              (po) => po.id === outwardId
-                            )
+                            (po) => po.id === outwardId
+                          )
                           : { internalIdForBusiness: "" }
                       }
                       renderInput={(params) => (
@@ -2086,8 +2086,8 @@ function AddRideView() {
                     }
                   />
                   {validation.pocNumber &&
-                  isRequired(pocNumber) &&
-                  !isPhone(pocNumber.replace(/-/g, "")) ? (
+                    isRequired(pocNumber) &&
+                    !isPhone(pocNumber.replace(/-/g, "")) ? (
                     <Typography color="error">
                       Incorrect phone number!
                     </Typography>
@@ -2120,7 +2120,7 @@ function AddRideView() {
                     }
                   />
                   {validation.currentLocation &&
-                  !isRequired(currentLocation) ? (
+                    !isRequired(currentLocation) ? (
                     <Typography color="error">
                       Current Location is required!
                     </Typography>
@@ -2193,11 +2193,11 @@ function AddRideView() {
                           (selectedRide &&
                             selectedRide.RideDropoff &&
                             selectedRide.RideDropoff[
-                              selectedDropoffNumber - 1
+                            selectedDropoffNumber - 1
                             ] &&
                             selectedRide.RideDropoff[selectedDropoffNumber - 1]
                               .manifestId) ||
-                          manifestImage
+                            manifestImage
                             ? "primary"
                             : "default"
                         }
@@ -2209,7 +2209,7 @@ function AddRideView() {
                           selectedRide.RideDropoff[selectedDropoffNumber - 1] &&
                           selectedRide.RideDropoff[selectedDropoffNumber - 1]
                             .manifestId) ||
-                        manifestImage
+                          manifestImage
                           ? "Uploaded"
                           : ""}
                         <input
@@ -2301,8 +2301,8 @@ function AddRideView() {
               onBlur={(e) => setValidation({ ...validation, price: true })}
             />
             {validation.price &&
-            !isRequired(price) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.price.includes(status) ? (
+              !isRequired(price) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.price.includes(status) ? (
               <Typography color="error">Customer Price is required!</Typography>
             ) : (
               ""
@@ -2328,8 +2328,8 @@ function AddRideView() {
               onBlur={(e) => setValidation({ ...validation, cost: true })}
             />
             {validation.cost &&
-            !isRequired(cost) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.cost.includes(status) ? (
+              !isRequired(cost) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.cost.includes(status) ? (
               <Typography color="error">Vendor Cost is required!</Typography>
             ) : (
               ""
@@ -2374,7 +2374,7 @@ function AddRideView() {
                   e.target.value < 0 ? e.target.value == 0 : e.target.value
                 )
               }
-              // onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
+            // onBlur={(e) => setValidation({ ...validation, driverIncentive: true })}
             />
           </Grid>
         </Grid>
@@ -2416,8 +2416,8 @@ function AddRideView() {
               onBlur={(e) => setValidation({ ...validation, eta: true })}
             />
             {validation.eta &&
-            !isRequired(eta) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.eta.includes(status) ? (
+              !isRequired(eta) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.eta.includes(status) ? (
               <Typography color="error">ETA is required!</Typography>
             ) : (
               ""
@@ -2447,10 +2447,10 @@ function AddRideView() {
               }
             />
             {validation.completionTime &&
-            !isRequired(completionTime) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.completionTime.includes(
-              status
-            ) ? (
+              !isRequired(completionTime) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.completionTime.includes(
+                status
+              ) ? (
               <Typography color="error">
                 Trip Completion Time is required!
               </Typography>
@@ -2482,10 +2482,10 @@ function AddRideView() {
               }
             />
             {validation.weightCargo &&
-            !isRequired(weightCargo) &&
-            RIDE_COLUMNS_WITH_MANDATORY_STATUSES.weightCargo.includes(
-              status
-            ) ? (
+              !isRequired(weightCargo) &&
+              RIDE_COLUMNS_WITH_MANDATORY_STATUSES.weightCargo.includes(
+                status
+              ) ? (
               <Typography color="error">
                 Weight Of Cargo is required!
               </Typography>
