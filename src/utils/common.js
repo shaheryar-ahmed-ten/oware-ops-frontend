@@ -2,7 +2,9 @@ import { createContext } from "react";
 import moment from "moment";
 
 // export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://3.225.149.130" : "") + "/api/v1";
-export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "") + "/api/v1";
+export const apiBaseURL =
+  (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "") +
+  "/api/v1";
 // export const apiBaseURL = (process.env.NODE_ENV === "development" ? "http://52.90.194.45" : "") + "/api/v1";
 
 export const getURL = (...args) => {
@@ -18,13 +20,23 @@ export const digitize = (value, places) => {
 export const dateFormat = (value) => {
   return value ? moment(value).format("DD-MM-yyyy hh:mm A") : "-";
 };
+export const dateToPickerFormatYear = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "");
 
-export const dateToPickerFormat = (value) => (value ? moment(value).format("yyyy-MM-DDTHH:mm") : "");
+export const dateToPickerFormat = (value) =>
+  value ? moment(value).format("DD-MM-yyyyTHH:mm") : "";
+export const dividerDateWithoutTimeFormat = (value) =>
+  value ? moment(value).format("DD-MM-yyyy") : "-";
+export const dividerDateFormat = (value) =>
+  value ? moment(value).format("DD-MM-yyyy") : "-";
+export const dividerTimeFormat = (value) =>
+  value ? moment(value).format("hh:mm A") : "-";
 
-export const dividerDateFormat = (value) => (value ? moment(value).format("DD-MM-yyyy") : "-");
-export const dividerTimeFormat = (value) => (value ? moment(value).format("hh:mm A") : "-");
+export const dividerDateFormatForFilter = (value) =>
+  value ? moment(value).format("DD-MM-yyyy") : "-";
 
-export const dividerDateFormatForFilter = (value) => (value ? moment(value).format("yyyy-MM-DD") : "-");
+export const compareDateFormat = (value) =>
+  value ? moment(value).format("MM-DD-yyyy") : "-";
+
 
 export const SharedContext = createContext(null);
 
@@ -46,16 +58,20 @@ export const filterZeroQuantity = (array) => {
 };
 
 export const checkForZeroQuantityInArray = (array) => {
-  console.log("Array", array);
   for (let el of array) {
     if (el.quantity === 0 || el.quantity === 0) return false;
   }
   return true;
 };
 
-export const removeItemFromArrayIfExistInAnotherArray = (removeFromThisArray, anotherArray) => {
+export const removeItemFromArrayIfExistInAnotherArray = (
+  removeFromThisArray,
+  anotherArray
+) => {
   for (const item of anotherArray) {
-    removeFromThisArray = removeFromThisArray.filter((i) => i.id !== item.outwardId);
+    removeFromThisArray = removeFromThisArray.filter(
+      (i) => i.id !== item.outwardId
+    );
   }
   return removeFromThisArray;
 };

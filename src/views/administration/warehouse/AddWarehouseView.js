@@ -33,9 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors }) {
+function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, formErrors, cities }) {
   const classes = useStyles();
-  const cities = ["Karachi", "Lahore", "Islamabad", "Sheikhpura", "Muridke", "Multan", "Faisalabad", "Khairpur"];
   const [validation, setValidation] = useState({});
   const [name, setName] = useState("");
   const [businessWarehouseCode, setBusinessWarehouseCode] = useState("");
@@ -91,6 +90,8 @@ function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, 
       setSingleLocationLatlng(null);
     }
   }, [selectedWarehouse]);
+
+
   const handleSubmit = (e) => {
     const newWarehouse = {
       name,
@@ -137,7 +138,7 @@ function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, 
           aria-labelledby="form-dialog-title"
           maxWidth="sm"
           fullWidth
-          // style={{ width: 800 }}
+        // style={{ width: 800 }}
         >
           <DialogTitle>{!selectedWarehouse ? "Add Warehouse" : "Edit Warehouse"}</DialogTitle>
           <DialogContent>
@@ -225,12 +226,20 @@ function AddWarehouseView({ addWarehouse, open, handleClose, selectedWarehouse, 
                     id="cities"
                     key={cities}
                     options={cities}
-                    defaultValue={city ? city : ""}
+                    defaultValue={city ? cities.find((c) => c.id == city) : ""}
                     renderInput={(params) => <TextField {...params} label="City" variant="outlined" />}
-                    getOptionLabel={(city) => city}
+                    getOptionLabel={(city) => {
+                      if (city && city.name)
+                        return city.name
+                      else {
+                        return city || ""
+                      }
+                    }}
                     onBlur={(e) => setValidation({ ...validation, city: true })}
                     onChange={(event, newValue) => {
-                      if (newValue) setCity(newValue);
+                      if (newValue) {
+                        setCity(newValue.id);
+                      }
                     }}
                   />
                   {validation.city && !isRequired(city) ? <Typography color="error">City is required!</Typography> : ""}

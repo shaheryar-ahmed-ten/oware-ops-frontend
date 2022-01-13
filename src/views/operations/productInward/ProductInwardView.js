@@ -114,13 +114,6 @@ export default function ProductInwardView() {
       format: (value, entity) => entity.Warehouse.name,
     },
     {
-      id: 'product',
-      label: 'NO. OF PRODUCTS',
-      minWidth: 'auto',
-      className: '',
-      format: (value, entity) => entity.Products.length,
-    },
-    {
       id: 'creator',
       label: 'CREATED BY',
       minWidth: 'auto',
@@ -261,6 +254,19 @@ export default function ProductInwardView() {
     key={1}
     onChange={e => setSearchKeyword(e.target.value)}
   />;
+
+  const addBulkProductInwadButton = (
+    <Button
+      key={4}
+      variant="contained"
+      color="primary"
+      size="small"
+      className={classes.bulkBtn}
+      onClick={() => navigate("bulk-upload")}
+    >
+      Bulk Upload
+    </Button>
+  );
 
   const addProductInwardButton = <Button
     key={2}

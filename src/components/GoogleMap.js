@@ -1,6 +1,9 @@
 import { Map, Marker, GoogleApiWrapper, fitBounds } from "google-maps-react";
 import React, { useContext, useEffect, useState, useRef } from "react";
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 import { makeStyles } from "@material-ui/core";
 import { SharedContext } from "../utils/common";
 import dropoffIcon from "../assets/icons/mapicon/darkgreen_MarkerD.png";
@@ -33,16 +36,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   placeInputDiv: {
-    width: "150%",
+    // width: "250%",
     position: "absolute",
     zIndex: 100,
     top: "130%",
-    left: "45%",
+    left: "50%",
     [theme.breakpoints.up("md")]: {
-      width: "25%",
-    },
-    [theme.breakpoints.down("md")]: {
-      width: "40%",
+      width: "50%",
     },
     transform: "translateX(-50%)",
     fontSize: 12,
@@ -105,31 +105,70 @@ function GoogleMap(props) {
 
   const calcZoomAndMapCenter = (pickup, dropoff) => {
     let zoom = null;
-    if (Math.abs(pickup.lat - dropoff.lat) > 17 || Math.abs(pickup.lng - dropoff.lng) > 17) {
+    if (
+      Math.abs(pickup.lat - dropoff.lat) > 17 ||
+      Math.abs(pickup.lng - dropoff.lng) > 17
+    ) {
       zoom = 1.5;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 14 || Math.abs(pickup.lng - dropoff.lng) > 14) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 14 ||
+      Math.abs(pickup.lng - dropoff.lng) > 14
+    ) {
       zoom = 2.5;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 11.8 || Math.abs(pickup.lng - dropoff.lng) > 11.8) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 11.8 ||
+      Math.abs(pickup.lng - dropoff.lng) > 11.8
+    ) {
       zoom = 4.5;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 8 || Math.abs(pickup.lng - dropoff.lng) > 8) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 8 ||
+      Math.abs(pickup.lng - dropoff.lng) > 8
+    ) {
       zoom = 4.5;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 4 || Math.abs(pickup.lng - dropoff.lng) > 4) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 4 ||
+      Math.abs(pickup.lng - dropoff.lng) > 4
+    ) {
       zoom = 5.25;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 3 || Math.abs(pickup.lng - dropoff.lng) > 3) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 3 ||
+      Math.abs(pickup.lng - dropoff.lng) > 3
+    ) {
       zoom = 7;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 2 || Math.abs(pickup.lng - dropoff.lng) > 2) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 2 ||
+      Math.abs(pickup.lng - dropoff.lng) > 2
+    ) {
       zoom = 8;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.5 || Math.abs(pickup.lng - dropoff.lng) > 0.5) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.5 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.5
+    ) {
       zoom = 8;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.1 || Math.abs(pickup.lng - dropoff.lng) > 0.1) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.1 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.1
+    ) {
       zoom = 10;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.06 || Math.abs(pickup.lng - dropoff.lng) > 0.06) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.06 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.06
+    ) {
       zoom = 11;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.04 || Math.abs(pickup.lng - dropoff.lng) > 0.04) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.04 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.04
+    ) {
       zoom = 12;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.025 || Math.abs(pickup.lng - dropoff.lng) > 0.025) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.025 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.025
+    ) {
       zoom = 13;
-    } else if (Math.abs(pickup.lat - dropoff.lat) > 0.01 || Math.abs(pickup.lng - dropoff.lng) > 0.01) {
+    } else if (
+      Math.abs(pickup.lat - dropoff.lat) > 0.01 ||
+      Math.abs(pickup.lng - dropoff.lng) > 0.01
+    ) {
       zoom = 14;
     }
     const midPointLat = (pickup.lat + dropoff.lat) / 2;
@@ -148,7 +187,7 @@ function GoogleMap(props) {
     singleLocationLatlng,
     setSingleLocationAddress,
     showPickupOnly,
-    editable
+    editable,
   } = props;
 
   const [pickupSearchBox, setpickupSearchBox] = useState("");
@@ -158,7 +197,12 @@ function GoogleMap(props) {
   let zoom, mapCenter;
 
   useEffect(() => {
-    if (pickupLocation && pickupLocation.lat && dropoffLocation && dropoffLocation.lat) {
+    if (
+      pickupLocation &&
+      pickupLocation.lat &&
+      dropoffLocation &&
+      dropoffLocation.lat
+    ) {
       const calc = calcZoomAndMapCenter(pickupLocation, dropoffLocation);
       zoom = calc.zoom;
       mapCenter = calc.mapCenter;
@@ -215,8 +259,36 @@ function GoogleMap(props) {
   }, [state.pickupMarker]);
 
   const handleChangePickup = (pickupAddress) => {
+    console.log(":- onchange,pickupAddress", pickupAddress);
     setState({ ...state, pickupAddress });
     setpickupSearchBox(pickupAddress);
+    console.log(":- !!pickupAddress", !!pickupAddress);
+    if (!!pickupAddress) {
+      console.log(":- pickupAddress", pickupAddress);
+      geocodeByAddress(pickupAddress)
+        .then((results) => getLatLng(results[0]))
+        .then((latLng) => {
+          if (latLng.lat && latLng.lng) {
+            console.log(":- debug1", {
+              lat: latLng.lat,
+              lng: latLng.lng,
+            });
+            // setPickUp({
+            //   lat: latLng.lat,
+            //   lng: latLng.lng,
+            // });
+          } else {
+            console.log(":- debug2");
+            setPickUp(null);
+          }
+        })
+        .catch((err) => {
+          console.log(":- err", err);
+        });
+    } else {
+      setPickUp(null);
+      console.log(":- debug 3\npickUp", props.pickUp);
+    }
   };
 
   const handleChangeDropoff = (dropoffAddress) => {
@@ -228,7 +300,9 @@ function GoogleMap(props) {
     setState({ ...state, singleLocationSearchBox });
     setSingleLocationSearchBox(singleLocationSearchBox);
     setSingleLocationLatlng(
-      reverseGeocoding(singleLocationSearchBox) ? await reverseGeocoding(singleLocationSearchBox) : null
+      reverseGeocoding(singleLocationSearchBox)
+        ? await reverseGeocoding(singleLocationSearchBox)
+        : null
     );
   };
 
@@ -262,10 +336,14 @@ function GoogleMap(props) {
               },
           zoom: zoom ? zoom : 14,
         });
-        setPickUp({
-          lat: latLng.lat,
-          lng: latLng.lng,
-        });
+        if (latLng.lat && latLng.lng) {
+          // setPickUp({
+          //   lat: latLng.lat,
+          //   lng: latLng.lng,
+          // });
+        } else {
+          setPickUp(null);
+        }
         setPickupAddress(pickupAddress);
         setpickupSearchBox(pickupAddress);
       })
@@ -339,14 +417,18 @@ function GoogleMap(props) {
         });
         setSingleLocationAddress(singleLocationAddress);
       });
-    if (setSingleLocationSearchBox) setSingleLocationSearchBox(singleLocationAddress);
+    if (setSingleLocationSearchBox)
+      setSingleLocationSearchBox(singleLocationAddress);
   };
 
   const onPickupMarkerDragEnd = async (coord) => {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
-    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    const addr = await reverseGeocoding({
+      lat: latLng.lat(),
+      lng: latLng.lng(),
+    });
     setpickupSearchBox(addr);
     setPickupAddress(addr);
 
@@ -370,7 +452,10 @@ function GoogleMap(props) {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
-    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    const addr = await reverseGeocoding({
+      lat: latLng.lat(),
+      lng: latLng.lng(),
+    });
     setDropoffSearchBox(addr);
     setDropoffAddress(addr);
     setState({
@@ -392,7 +477,10 @@ function GoogleMap(props) {
     const { latLng } = coord;
     const updatedLat = latLng.lat();
     const updatedLng = latLng.lng();
-    const addr = await reverseGeocoding({ lat: latLng.lat(), lng: latLng.lng() });
+    const addr = await reverseGeocoding({
+      lat: latLng.lat(),
+      lng: latLng.lng(),
+    });
     setSingleLocationSearchBox(addr);
     setSingleLocationAddress(addr);
     setSingleLocationLatlng({
@@ -415,9 +503,24 @@ function GoogleMap(props) {
   };
 
   useEffect(() => {
+    // if (state.pickupMarker.lat && state.pickupMarker.lng) {
+    //   console.log(setPickUp);
+    //   if (setPickUp) setPickUp(state.pickupMarker);
+    // } else {
+    //   setPickUp(null);
+    // }
     if (setPickUp) setPickUp(state.pickupMarker);
     if (setDropOff) setDropOff(state.dropoffMarker);
   }, [state.pickupMarker, state.dropoffMarker]);
+
+  useEffect(() => {
+    //   // if (state.pickupMarker.lat && state.pickupMarker.lng) {
+    //   //   // setPickUp(state.pickupMarker)
+    //   // } else setPickUp(null);
+    //   setPickUp(null);
+    if (setPickUp) setPickUp(state.pickupMarker);
+    if (setDropOff) setDropOff(state.dropoffMarker);
+  }, [pickupSearchBox]);
 
   const searchOptions = {
     componentRestrictions: { country: ["pk"] },
@@ -446,10 +549,6 @@ function GoogleMap(props) {
             lng: state.pickupMarker.lng,
           }}
           name={"Pickup Location"}
-          // label={{
-          //   text: "P",
-          //   color: "white",
-          // }}
           title={"Pickup Location"}
           icon={{
             url: pickupIcon,
@@ -468,10 +567,6 @@ function GoogleMap(props) {
             lng: state.dropoffMarker.lng,
           }}
           name={"Dropoff Location"}
-          // label={{
-          //   text: "P",
-          //   color: "white",
-          // }}
           title={"Dropoff Location"}
           icon={{
             url: dropoffIcon,
@@ -482,7 +577,6 @@ function GoogleMap(props) {
       ) : (
         <div></div>
       )}
-      {console.log("pickupSearch", pickupSearchBox)}
       {showPickupOnly ? (
         <PlacesAutocomplete
           searchOptions={searchOptions}
@@ -490,8 +584,14 @@ function GoogleMap(props) {
           onChange={handleChangePickup}
           onSelect={handlePickupSelect}
           style={{ width: "50%" }}
+          // onBlur={(e) => setValidation({ ...validation, pickUp: true })}
         >
-          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          {({
+            getInputProps,
+            suggestions,
+            getSuggestionItemProps,
+            loading,
+          }) => (
             <div className={classes.placeInputDiv}>
               <input
                 {...getInputProps({
@@ -503,11 +603,18 @@ function GoogleMap(props) {
               />
               <div
                 className="autocomplete-dropdown-container"
-                style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                style={{
+                  overflowY: "auto",
+                  maxHeight: 150,
+                  position: "relative",
+                  bottom: "200px",
+                }}
               >
                 {loading && <div>Loading...</div>}
                 {suggestions.map((suggestion) => {
-                  const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                  const className = suggestion.active
+                    ? "suggestion-item--active"
+                    : "suggestion-item";
                   // inline style for demonstration purpose
                   const style = suggestion.active
                     ? {
@@ -541,119 +648,6 @@ function GoogleMap(props) {
         ""
       )}
 
-      {/* {props.showMapSearchFields ? (
-        <div>
-          <PlacesAutocomplete
-            searchOptions={searchOptions}
-            value={pickupSearchBox}
-            onChange={handleChangePickup}
-            onSelect={handlePickupSelect}
-            style={{ width: "50%" }}
-          >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-              <div className={classes.placeInputDiv}>
-                <input
-                  {...getInputProps({
-                    placeholder: "Search Pickup Location...",
-                    className: "location-search-input",
-                  })}
-                  className={classes.placeInput}
-                  value={pickupSearchBox}
-                />
-                <div
-                  className="autocomplete-dropdown-container"
-                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
-                >
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
-                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
-                    // inline style for demonstration purpose
-                    const style = suggestion.active
-                      ? {
-                          backgroundColor: "#fafafa",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        }
-                      : {
-                          backgroundColor: "#ffffff",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        };
-                    return (
-                      <div
-                        {...getSuggestionItemProps(suggestion, {
-                          className,
-                          style,
-                        })}
-                      >
-                        <span>{suggestion.description}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </PlacesAutocomplete>
-          <PlacesAutocomplete
-            searchOptions={searchOptions}
-            value={dropoffSearchBox}
-            onChange={handleChangeDropoff}
-            onSelect={handleDropoffSelect}
-            style={{ width: "50%" }}
-          >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-              <div className={classes.placeDropoffInputDiv}>
-                <input
-                  {...getInputProps({
-                    placeholder: "Search Dropoff Location...",
-                    className: "location-search-input",
-                  })}
-                  className={classes.placeInput}
-                  value={dropoffSearchBox}
-                />
-                <div
-                  className="autocomplete-dropdown-container"
-                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
-                >
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
-                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
-                    // inline style for demonstration purpose
-                    const style = suggestion.active
-                      ? {
-                          backgroundColor: "#fafafa",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        }
-                      : {
-                          backgroundColor: "#ffffff",
-                          cursor: "pointer",
-                          borderBottom: "1px solid black",
-                          padding: "5px 5px",
-                        };
-                    return (
-                      <div
-                        {...getSuggestionItemProps(suggestion, {
-                          className,
-                          style,
-                        })}
-                      >
-                        <span>{suggestion.description}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </PlacesAutocomplete>
-        </div>
-      ) : (
-        <div></div>
-      )} */}
-
       {state.singleLocationMarker.lat && state.singleLocationMarker.lng ? (
         <Marker
           position={{
@@ -679,7 +673,12 @@ function GoogleMap(props) {
             onSelect={handleSingleLocationSelect}
             style={{ width: "50%", margin: "auto", display: "block" }}
           >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
               <div className={classes.singleInputDiv}>
                 <input
                   {...getInputProps({
@@ -691,11 +690,18 @@ function GoogleMap(props) {
                 />
                 <div
                   className="autocomplete-dropdown-container"
-                  style={{ overflowY: "auto", maxHeight: 150, position: "relative", bottom: "200px" }}
+                  style={{
+                    overflowY: "auto",
+                    maxHeight: 150,
+                    position: "relative",
+                    bottom: "200px",
+                  }}
                 >
                   {loading && <div>Loading...</div>}
                   {suggestions.map((suggestion) => {
-                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                    const className = suggestion.active
+                      ? "suggestion-item--active"
+                      : "suggestion-item";
                     // inline style for demonstration purpose
                     const style = suggestion.active
                       ? {

@@ -141,8 +141,6 @@ function RideDetailsView(props) {
     setValue(newValue);
   };
 
-  // console.log("selectedRide",selectedRide)
-
   return selectedRide ? (
     <>
       {/* Only for printing */}
@@ -204,7 +202,6 @@ function RideDetailsView(props) {
               </Grid>
             </Grid>
           </Grid>
-          {/* {console.log(selectedRide)} */}
 
           {selectedRide.status === "Cancelled" ? (
             <Grid container item xs={12} style={{ marginTop: 20 }} justifyContent="space-between">
@@ -338,65 +335,65 @@ function RideDetailsView(props) {
                         </Typography>
                       </Grid>
                       {/* <Grid container item xs={12} spacing={2}> */}
-                        <Grid container item xs={12} spacing={2}>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Dropoff Status:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.status ? dropoff.status : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Outward ID:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.ProductOutward ? dropoff.ProductOutward.internalIdForBusiness : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Dropoff City:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.DropoffCity ? dropoff.DropoffCity.name : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Dropoff Address:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.address ? dropoff.address : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Dropoff Date:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.dateTime ? dateFormat(dropoff.dateTime) : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            POC Name:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.pocName || "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            POC Number:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.pocNumber ? dropoff.pocNumber : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Current Location:
-                          </Grid>
-                          <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.currentLocation ? dropoff.currentLocation : "-"}
-                          </Grid>
-                          <Grid style={{ fontWeight: 500 }} item xs={4}>
-                            Memo :
-                          </Grid>
-                          <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
-                            {dropoff.memo ? dropoff.memo : "-"}
-                          </Grid>
-                          {/* </Grid> */}
+                      <Grid container item xs={12} spacing={2}>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Dropoff Status:
                         </Grid>
-                        
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.status ? dropoff.status : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Outward ID:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.ProductOutward ? dropoff.ProductOutward.internalIdForBusiness : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Dropoff City:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.DropoffCity ? dropoff.DropoffCity.name : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Dropoff Address:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.address ? dropoff.address : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Dropoff Date:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.dateTime ? dateFormat(dropoff.dateTime) : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          POC Name:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.pocName || "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          POC Number:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.pocNumber ? dropoff.pocNumber : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Current Location:
+                        </Grid>
+                        <Grid item xs={2} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.currentLocation ? dropoff.currentLocation : "-"}
+                        </Grid>
+                        <Grid style={{ fontWeight: 500 }} item xs={4}>
+                          Memo :
+                        </Grid>
+                        <Grid item xs={8} style={{ fontStyle: "italic", transform: "translateX(-50px)" }}>
+                          {dropoff.memo ? dropoff.memo : "-"}
+                        </Grid>
                         {/* </Grid> */}
+                      </Grid>
+
+                      {/* </Grid> */}
                       {/* </Grid> */}
                     </Grid>
                   </>
@@ -418,7 +415,7 @@ function RideDetailsView(props) {
             </Typography>
           </Grid>
           <Grid item xs={1}>
-            <Button variant="contained" color="primary" onClick={() => navigate("/logistics/ride")}>
+            <Button variant="contained" color="primary" onClick={() => navigate("/logistics/load")}>
               Back
             </Button>
           </Grid>
@@ -513,10 +510,10 @@ function RideDetailsView(props) {
           <Grid item sm={12}>
             <Grid item sm={12} className={classes.locationMap} style={{ position: "relative", minHeight: 300 }}>
               <GoogleMap
-               editable={false}
-               showSingleSearchField={false}
-               singleLocationLatlng={selectedRide.pickupLocation}
-               showMapSearchFields={false}
+                editable={false}
+                showSingleSearchField={false}
+                singleLocationLatlng={selectedRide.pickupLocation}
+                showMapSearchFields={false}
               />
             </Grid>
           </Grid>

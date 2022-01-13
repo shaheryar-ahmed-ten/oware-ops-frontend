@@ -73,14 +73,14 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
+    // color: "#fff",
   },
   backdropGrid: {
     backgroundColor: "white",
     padding: "18px 18px",
     boxSizing: "border-box",
     borderRadius: "4px",
-    color: "black",
+    // color: "black",
   },
   backdropTitle: {
     fontSize: 24,
@@ -145,7 +145,7 @@ export default function StockManagementView() {
         >
           <DeleteIcon color="error" key="delete" style={{ cursor: "pointer" }} />
         </IconButton>,
-        <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)}>
+        <Backdrop className={classes.backdrop} open={openBackdrop} onClick={() => setOpenBackdrop(false)} style={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
           <Grid container xs={4} className={classes.backdropGrid} justifyContent="flex-end">
             <Grid item xs={12}>
               <Typography className={classes.backdropTitle}>Are you sure to delete this adjustment ?</Typography>
