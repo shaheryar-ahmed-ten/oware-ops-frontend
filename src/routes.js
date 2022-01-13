@@ -35,8 +35,6 @@ import StockManagementView from "./views/operations/stockmanagement/StockManagem
 import AddStockManagement from "./views/operations/stockmanagement/AddStockManagement";
 import ViewStockManagementDetails from "./views/operations/stockmanagement/ViewStockManagementDetails";
 import VehicleTypeView from "./views/logistics/vehicletype/VehicleTypeView";
-// import AddVehicleTypeView from './views/logistics/vehicletype/AddVehicleTypeView';
-// import VehicleTypeDetailsView from './views/logistics/vehicletype/VehicleTypeDetailsView';
 import RideDetailsView from "./views/logistics/ride/RideDetailsView";
 import ActivityView from "./views/administration/activity/ActivityView";
 import BulkUpload from "./views/administration/product/BulkUpload";
