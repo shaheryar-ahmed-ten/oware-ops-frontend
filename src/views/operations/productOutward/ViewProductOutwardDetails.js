@@ -218,72 +218,75 @@ function ViewProductOutwardDetails() {
                     sentQt += targetedPoInv.OutwardGroup.quantity;
                   }
                   remainingQt = order.OrderGroup.quantity - sentQt;
-                  return targetedPoInv.OutwardGroup.InventoryDetail.map((invDetail) => {
-                    return (
-                      <>
-                        <Grid item xs={12} container style={{ marginTop: 10 }} >
-                          <Grid item xs={6}>
-                            BATCH NUMBER :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {
-                              order.Product.batchEnabled ?
-                                invDetail.batchNumber || '-'
-                                :
-                                '-'
-                            }
-                          </Grid>
-                          <Grid item xs={6}>
-                            PRODUCT :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {order.Product.name}
-                          </Grid>
-                          <Grid item xs={6}>
-                            UOM :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {order.Product.UOM.name}
-                          </Grid>
-                          <Grid item xs={6}>
-                            REQUESTED QTY :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {order.OrderGroup.quantity}
-                          </Grid>
-                          <Grid item xs={6}>
-                            DISPATCHED QTY :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {sentQt}
-                          </Grid>
+                  if (targetedPoInv) {
 
-                          <Grid item xs={6}>
-                            BATCH DISPATCHED QTY :
+                    return targetedPoInv.OutwardGroup.InventoryDetail.map((invDetail) => {
+                      return (
+                        <>
+                          <Grid item xs={12} container style={{ marginTop: 10 }} >
+                            <Grid item xs={6}>
+                              BATCH NUMBER :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {
+                                order.Product.batchEnabled ?
+                                  invDetail.batchNumber || '-'
+                                  :
+                                  '-'
+                              }
+                            </Grid>
+                            <Grid item xs={6}>
+                              PRODUCT :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {order.Product.name}
+                            </Grid>
+                            <Grid item xs={6}>
+                              UOM :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {order.Product.UOM.name}
+                            </Grid>
+                            <Grid item xs={6}>
+                              REQUESTED QTY :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {order.OrderGroup.quantity}
+                            </Grid>
+                            <Grid item xs={6}>
+                              DISPATCHED QTY :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {sentQt}
+                            </Grid>
+
+                            <Grid item xs={6}>
+                              BATCH DISPATCHED QTY :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {
+                                order.Product.batchEnabled ?
+                                  invDetail.outwardQuantity || '-'
+                                  :
+                                  '-'
+                              }
+                            </Grid>
+                            <Grid item xs={6}>
+                              BATCH EXPIRY DATE :
+                            </Grid>
+                            <Grid item xs={6} style={{ textAlign: 'center' }}>
+                              {
+                                order.Product.batchEnabled ?
+                                  dividerDateFormat(invDetail.expiryDate) || '-'
+                                  :
+                                  '-'
+                              }
+                            </Grid>
                           </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {
-                              order.Product.batchEnabled ?
-                                invDetail.outwardQuantity || '-'
-                                :
-                                '-'
-                            }
-                          </Grid>
-                          <Grid item xs={6}>
-                            BATCH EXPIRY DATE :
-                          </Grid>
-                          <Grid item xs={6} style={{ textAlign: 'center' }}>
-                            {
-                              order.Product.batchEnabled ?
-                                dividerDateFormat(invDetail.expiryDate) || '-'
-                                :
-                                '-'
-                            }
-                          </Grid>
-                        </Grid>
-                      </>
-                    )
-                  })
+                        </>
+                      )
+                    })
+                  }
 
 
                 })
@@ -367,49 +370,52 @@ function ViewProductOutwardDetails() {
                 const targetedPoInv = selectedProductOutward.Inventories.find(
                   (inv) => inv.OutwardGroup.inventoryId === order.OrderGroup.inventoryId
                 );
+                console.log("debug 0", order.OrderGroup.inventoryId)
+                console.log("debug 1", selectedProductOutward.Inventories)
                 if (targetedPoInv) {
                   sentQt += targetedPoInv.OutwardGroup.quantity;
                 }
                 remainingQt = order.OrderGroup.quantity - sentQt;
-                return targetedPoInv.OutwardGroup.InventoryDetail.map((invDetail) => {
-                  return (
-                    <TableRow key={idx}>
-                      <TableCell>
-                        {
-                          order.Product.batchEnabled ?
-                            invDetail.batchNumber || '-'
-                            :
-                            '-'
-                        }
-                      </TableCell>
-                      <TableCell>{order.Product.name}</TableCell>
-                      <TableCell>{order.Product.UOM.name}</TableCell>
-                      <TableCell>{order.OrderGroup.quantity}</TableCell>
-                      <TableCell>{sentQt}</TableCell>
-                      <TableCell>
-                        {
-                          order.Product.batchEnabled ?
-                            invDetail.OutwardGroup ?
-                              invDetail.OutwardGroup.find((outGrp) => outGrp.inventoryId == invDetail.inventoryId)?.OutwardGroupBatch?.quantity || '-'
+                if (targetedPoInv) {
+                  return targetedPoInv.OutwardGroup.InventoryDetail.map((invDetail) => {
+                    return (
+                      <TableRow key={idx}>
+                        <TableCell>
+                          {
+                            order.Product.batchEnabled ?
+                              invDetail.batchNumber || '-'
                               :
                               '-'
-                            // invDetail.outwardQuantity || '-'
-                            :
-                            '-'
-                        }
-                      </TableCell>
-                      <TableCell>
-                        {
-                          order.Product.batchEnabled ?
-                            dividerDateFormat(invDetail.expiryDate) || '-'
-                            :
-                            '-'
-                        }
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-
+                          }
+                        </TableCell>
+                        <TableCell>{order.Product.name}</TableCell>
+                        <TableCell>{order.Product.UOM.name}</TableCell>
+                        <TableCell>{order.OrderGroup.quantity}</TableCell>
+                        <TableCell>{sentQt}</TableCell>
+                        <TableCell>
+                          {
+                            order.Product.batchEnabled ?
+                              invDetail.OutwardGroup ?
+                                invDetail.OutwardGroup.find((outGrp) => outGrp.inventoryId == invDetail.inventoryId)?.OutwardGroupBatch?.quantity || '-'
+                                :
+                                '-'
+                              // invDetail.outwardQuantity || '-'
+                              :
+                              '-'
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {
+                            order.Product.batchEnabled ?
+                              dividerDateFormat(invDetail.expiryDate) || '-'
+                              :
+                              '-'
+                          }
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                }
               })}
             </TableBody>
           </Table>
