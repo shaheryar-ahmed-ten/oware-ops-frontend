@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { dateFormat, dividerDateFormat, getURL } from "../../../utils/common";
 import PrintIcon from "@material-ui/icons/Print";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import owareLogo from "../../../assets/icons/oware-logo-black.png";
 
@@ -52,29 +52,23 @@ const useStyles = makeStyles((theme) => ({
 function InwardProductDetailsView() {
   const classes = useStyles();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const { uid } = useParams();
-  const [selectedProductInward, setSelectedProductInward] = useState(
-    state ? state.selectedProductInward : null
-  );
+  const [selectedProductInward, setSelectedProductInward] = useState(null);
 
   useEffect(() => {
-    // console.log(selectedProductInward);
     if (!selectedProductInward) {
       fetchInwardOrders();
     }
   }, [uid]);
-  // console.log("uid", uid);
 
   const fetchInwardOrders = () => {
     _getProductInwards();
   };
 
   const _getProductInwards = () => {
-    axios.get(getURL("product-inward")).then((res) => {
-      // console.log("product inwardddsgsgssgdg ", res.data.data);
+    axios.get(getURL(`product-inward/${uid}`)).then((res) => {
       setSelectedProductInward(
-        res.data.data.find((product) => product.id == uid)
+        res.data.data
       );
     });
   };
@@ -86,7 +80,6 @@ function InwardProductDetailsView() {
 
   return selectedProductInward ? (
     <>
-      {/* {console.log("selectedProductInward", selectedProductInward)} */}
       <Box display="none" displayPrint="block" ref={componentRef}>
         <Box
           display="none"
@@ -212,46 +205,11 @@ function InwardProductDetailsView() {
                 {selectedProductInward.memo ? selectedProductInward.memo : "-"}
               </Box>
             </Grid>
-            {/* <Grid item xs={12}>
-              <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell className={classes.tableHeadText}>
-                        PRODUCT
-                      </TableCell>
-                      <TableCell className={classes.tableHeadText}>
-                        PRODUCT WEIGHT
-                      </TableCell>
-                      <TableCell className={classes.tableHeadText}>
-                        UOM
-                      </TableCell>
-                      <TableCell className={classes.tableHeadText}>
-                        QUANTITY
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {selectedProductInward.Products.map((product, idx) => {
-                      return (
-                        <TableRow key={idx}>
-                          <TableCell>{product.name}</TableCell>
-                          <TableCell>{product.weight} KG/UNIT</TableCell>
-                          <TableCell>{product.UOM.name}</TableCell>
-                          <TableCell>{product.InwardGroup.quantity}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid> */}
 
             <Grid
               container
               item
               xs={12}
-              // style={{ marginTop: 20 }}
               justifyContent="space-between"
             >
               <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
@@ -336,19 +294,6 @@ function InwardProductDetailsView() {
                                   ? product.InwardGroup.quantity
                                   : "-"}
                               </Grid>
-                              {/* <Grid style={{ fontWeight: 500 }} item xs={4}>
-                                Batch Name:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={2}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {batch ? batch.batchName : "-"}
-                              </Grid> */}
                               <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Batch Number:
                               </Grid>
@@ -360,7 +305,7 @@ function InwardProductDetailsView() {
                                   transform: "translateX(-50px)",
                                 }}
                               >
-                                {batch ? batch.batchNumber : "-"}
+                                {batch ? batch.batchNumber || "-" : "-"}
                               </Grid>
                               <Grid style={{ fontWeight: 500 }} item xs={6}>
                                 Manufacturing Date:
@@ -553,9 +498,6 @@ function InwardProductDetailsView() {
                 </TableCell>
                 <TableCell className={classes.tableHeadText}>UOM</TableCell>
                 <TableCell className={classes.tableHeadText}>
-                  BATCH NAME
-                </TableCell>
-                <TableCell className={classes.tableHeadText}>
                   BATCH NUMBER
                 </TableCell>
                 <TableCell className={classes.tableHeadText}>
@@ -577,23 +519,16 @@ function InwardProductDetailsView() {
                         <TableCell>{product ? product.name : "-"}</TableCell>
                         <TableCell>
                           {batch &&
-                          batch.InwardGroup &&
-                          batch.InwardGroup[0] &&
-                          batch.InwardGroup[0].InwardGroupBatch
+                            batch.InwardGroup &&
+                            batch.InwardGroup[0] &&
+                            batch.InwardGroup[0].InwardGroupBatch
                             ? batch.InwardGroup[0].InwardGroupBatch.quantity
                             : "-"}
                         </TableCell>
                         <TableCell>
                           {product && product.UOM ? product.UOM.name : "-"}
                         </TableCell>
-                        <TableCell>
-                          {batch
-                            ? batch.batchName.includes("default")
-                              ? "-"
-                              : batch.batchName
-                            : "-"}
-                        </TableCell>
-                        <TableCell>{batch ? batch.batchNumber : "-"}</TableCell>
+                        <TableCell>{batch ? batch.batchNumber || "-" : "-"}</TableCell>
                         <TableCell>
                           {batch
                             ? dividerDateFormat(batch.manufacturingDate)
