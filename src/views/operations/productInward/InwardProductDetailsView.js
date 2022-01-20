@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import React, { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import { dateFormat, dividerDateFormat, getURL } from "../../../utils/common";
+import { dateFormat, dividerDateFormat, dividerDateWithoutTimeFormat, getURL } from "../../../utils/common";
 import PrintIcon from "@material-ui/icons/Print";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
@@ -55,6 +55,60 @@ function InwardProductDetailsView() {
   const { uid } = useParams();
   const [selectedProductInward, setSelectedProductInward] = useState(null);
 
+  const topColumns = [
+    {
+      id: "productName",
+      label: "PRODUCT NAME",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => product.name || '-'
+    },
+    {
+      id: "uom",
+      label: "UOM",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => product.UOM?.name || '-'
+    },
+    {
+      id: "weight",
+      label: "PRODUCT WEIGHT",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => product.weight || '-'
+    },
+  ]
+
+  const midColumns = [
+    {
+      id: "batchNumber",
+      label: "BATCH NUMBER",
+      minWidth: "auto",
+      className: "",
+    },
+    {
+      id: "quantity",
+      label: "QUANTITY",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => product.InwardGroup?.quantity || 0
+    },
+    {
+      id: "manufacturingDate",
+      label: "MANUFACTURING DATE",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => batch.manufacturingDate ? dividerDateWithoutTimeFormat(batch.manufacturingDate) : '-',
+    },
+    {
+      id: "expiryDate",
+      label: "EXPIRY DATE",
+      minWidth: "auto",
+      className: "",
+      format: (value, product, batch) => batch.expiryDate ? dividerDateWithoutTimeFormat(batch.expiryDate) : '-',
+    },
+  ]
+
   useEffect(() => {
     if (!selectedProductInward) {
       fetchInwardOrders();
@@ -80,7 +134,7 @@ function InwardProductDetailsView() {
 
   return selectedProductInward ? (
     <>
-      <Box display="none" displayPrint="block" ref={componentRef}>
+      <Box display="none" displayPrint="block" ref={componentRef} >
         <Box
           display="none"
           displayPrint="block"
@@ -212,142 +266,96 @@ function InwardProductDetailsView() {
               xs={12}
               justifyContent="space-between"
             >
-              <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
-                <Typography
-                  variant="h5"
-                  style={{ fontWeight: 700 }}
-                  className={classes.pageSubHeading}
-                >
-                  Product Details
-                </Typography>
-              </Grid>
-              <Grid container style={{ display: "block" }}>
-                {selectedProductInward.Products.map((product, idx) => {
-                  return product.InwardGroup.InventoryDetail.map(
-                    (batch, index) => {
-                      return (
-                        <>
-                          <Grid
-                            container
-                            style={{ display: "inline-block" }}
-                            key={index}
-                          >
-                            <Grid
-                              container
-                              item
-                              xs={12}
-                              spacing={2}
-                              style={{ marginTop: 25 }}
-                            >
-                              <Grid style={{ fontWeight: 600 }} item xs={6}>
-                                Product Name:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  fontWeight: 600,
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {product ? product.name : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                Product Weight:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {product ? product.weight : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                UOM:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {product.UOM ? product.UOM.name : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                Quantity:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {product && product.InwardGroup
-                                  ? product.InwardGroup.quantity
-                                  : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                Batch Number:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {batch ? batch.batchNumber || "-" : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                Manufacturing Date:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {batch
-                                  ? dividerDateFormat(batch.manufacturingDate)
-                                  : "-"}
-                              </Grid>
-                              <Grid style={{ fontWeight: 500 }} item xs={6}>
-                                Expiry Date:
-                              </Grid>
-                              <Grid
-                                item
-                                xs={6}
-                                style={{
-                                  fontStyle: "italic",
-                                  transform: "translateX(-50px)",
-                                }}
-                              >
-                                {batch
-                                  ? dividerDateFormat(batch.expiryDate)
-                                  : "-"}
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                        </>
-                      );
-                    }
-                  );
-                })}
-              </Grid>
             </Grid>
           </Grid>
+
+          {
+            selectedProductInward.Products.map((product, idx) => {
+              return <>
+                <TableContainer key={idx}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow >
+                        {
+                          topColumns.map((column, idx) => {
+                            return (
+                              <TableCell key={idx}>
+                                {column.label}
+                              </TableCell>
+                            )
+                          })
+                        }
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow className={classes.tableRow}>
+                        {
+                          topColumns.map((column, idx) => {
+                            var value = product[column.id]
+                            return (
+                              <TableCell key={idx}>
+                                {
+                                  column.format ?
+                                    column.format(value, product)
+                                    :
+                                    value || '-'
+                                }
+                              </TableCell>
+                            )
+                          })
+                        }
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TableContainer style={{ marginTop: 10, marginBottom: 50, boxSizing: 'border-box', padding: "2mm 0mm 2mm 6mm" }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead style={{ backgroundColor: 'transparent' }}>
+                      <TableRow className={classes.tableRow} style={{ backgroundColor: 'transparent' }}>
+                        {
+                          midColumns.map((column, idx) => {
+                            return (
+                              <TableCell key={idx} style={{ backgroundColor: 'transparent' }}>
+                                {column.label}
+                              </TableCell>
+                            )
+                          })
+                        }
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {
+                        product.InwardGroup.InventoryDetail.map((batch, idx) => {
+                          return <TableRow className={classes.tableRow}>
+                            {
+                              midColumns.map((column, idx) => {
+                                var value = batch[column.id]
+                                return (
+                                  <TableCell key={idx}>
+                                    {
+                                      column.format ?
+                                        column.format(value, product, batch)
+                                        :
+                                        value || '-'
+                                    }
+                                  </TableCell>
+                                )
+                              })
+                            }
+                          </TableRow>
+                        })
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+              </>
+            })
+          }
+
+
         </Box>
+
       </Box>
 
       <Grid container className={classes.parentContainer} spacing={3}>
@@ -475,7 +483,6 @@ function InwardProductDetailsView() {
               <TableBody>
                 <TableRow
                   className={classes.tableRow}
-                  className={classes.tableRow}
                 >
                   <TableCell>{selectedProductInward.memo}</TableCell>
                 </TableRow>
@@ -553,3 +560,136 @@ function InwardProductDetailsView() {
 }
 
 export default InwardProductDetailsView;
+
+
+{/* <Grid item xs={12} style={{ marginTop: 10, marginBottom: 10 }}>
+<Typography
+  variant="h5"
+  style={{ fontWeight: 700 }}
+  className={classes.pageSubHeading}
+>
+  Product Details
+</Typography>
+</Grid>
+{selectedProductInward.Products.map((product, idx) => {
+return product.InwardGroup.InventoryDetail.map(
+  (batch, index) => {
+    return (
+      <>
+        <Grid
+          container
+          style={{ display: "inline-block", pageBreakBefore: 'always', pageBreakInside: 'always', pageBreakAfter: 'always' }}
+          key={index}
+        >
+          <Grid
+            container
+            item
+            xs={12}
+            spacing={2}
+            style={{ marginTop: 25, pageBreakBefore: 'always', pageBreakInside: 'always', pageBreakAfter: 'always' }}
+          >
+            <Grid style={{ fontWeight: 600 }} item xs={6}>
+              Product Name:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                fontWeight: 600,
+                transform: "translateX(-50px)",
+              }}
+            >
+              {product ? product.name : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              Product Weight:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {product ? product.weight : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              UOM:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {product.UOM ? product.UOM.name : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              Quantity:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {product && product.InwardGroup
+                ? product.InwardGroup.quantity
+                : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              Batch Number:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {batch ? batch.batchNumber || "-" : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              Manufacturing Date:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {batch
+                ? dividerDateFormat(batch.manufacturingDate)
+                : "-"}
+            </Grid>
+            <Grid style={{ fontWeight: 500 }} item xs={6}>
+              Expiry Date:
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                fontStyle: "italic",
+                transform: "translateX(-50px)",
+              }}
+            >
+              {batch
+                ? dividerDateFormat(batch.expiryDate)
+                : "-"}
+            </Grid>
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
+);
+})} */}
