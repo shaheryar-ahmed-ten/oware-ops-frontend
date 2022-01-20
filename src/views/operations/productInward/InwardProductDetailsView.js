@@ -91,7 +91,17 @@ function InwardProductDetailsView() {
       label: "QUANTITY",
       minWidth: "auto",
       className: "",
-      format: (value, product, batch) => product.InwardGroup?.quantity || 0
+      format: (value, product, batch) => {
+        console.log("debug 0 ", batch)
+
+        return batch &&
+          batch.InwardGroup &&
+          batch.InwardGroup[0] &&
+          batch.InwardGroup[0].InwardGroupBatch
+          ? batch.InwardGroup[0].InwardGroupBatch.quantity
+          :
+          0
+      }
     },
     {
       id: "manufacturingDate",
