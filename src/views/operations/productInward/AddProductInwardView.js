@@ -452,7 +452,10 @@ export default function AddProductInwardView() {
         // referenceId: true,
         productId: true,
         warehouseId: true,
-        expiryDate: productId && customerId && warehouseId ? true : false,
+        expiryDate: productId && customerId && warehouseId && products?.find((_product) => _product.id == productId)?.batchEnabled ?
+          true
+          :
+          false,
       });
     }
   };
