@@ -92,8 +92,6 @@ function InwardProductDetailsView() {
       minWidth: "auto",
       className: "",
       format: (value, product, batch) => {
-        console.log("debug 0 ", batch)
-
         return batch &&
           batch.InwardGroup &&
           batch.InwardGroup[0] &&
