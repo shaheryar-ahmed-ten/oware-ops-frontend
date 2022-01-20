@@ -252,7 +252,10 @@ export default function ProductInwardView() {
     variant="outlined"
     value={searchKeyword}
     key={1}
-    onChange={e => setSearchKeyword(e.target.value)}
+    onChange={e => {
+      setPage(1)
+      setSearchKeyword(e.target.value)
+    }}
   />;
 
   const addBulkProductInwadButton = (
