@@ -452,7 +452,7 @@ export default function AddProductInwardView() {
         // referenceId: true,
         productId: true,
         warehouseId: true,
-        expiryDate: true,
+        expiryDate: productId && customerId && warehouseId ? true : false,
       });
     }
   };
@@ -637,7 +637,12 @@ export default function AddProductInwardView() {
               options={customers}
               getOptionLabel={(customer) => customer.name || ""}
               onChange={(event, newValue) => {
-                if (newValue) setCustomerId(newValue.id);
+                if (newValue) {
+                  setCustomerId(newValue.id);
+                }
+                else {
+                  setCustomerId(null)
+                }
               }}
               renderInput={(params) => (
                 <TextField {...params} label="Company" variant="outlined" />
@@ -677,6 +682,9 @@ export default function AddProductInwardView() {
                   setInternalIdForBusiness(
                     `PI-${newValue.businessWarehouseCode}-`
                   );
+                }
+                else {
+                  setWarehouseId(null)
                 }
               }}
               renderInput={(params) => (
@@ -816,7 +824,12 @@ export default function AddProductInwardView() {
                 options={products}
                 getOptionLabel={(product) => product.name || ""}
                 onChange={(event, newValue) => {
-                  if (newValue) selectProduct(newValue.id);
+                  if (newValue) {
+                    selectProduct(newValue.id);
+                  }
+                  else {
+                    selectProduct(null)
+                  }
                 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Product" variant="outlined" />
