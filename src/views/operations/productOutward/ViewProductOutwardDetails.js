@@ -300,7 +300,7 @@ function ViewProductOutwardDetails() {
         <Grid container item xs={12} justifyContent="space-between">
           <Grid item xs={11}>
             <Typography variant="h3" className={classes.heading}>
-              Product Ouward Details
+              Product Outward Details
               <IconButton aria-label="print" onClick={handlePrint}>
                 <PrintIcon />
               </IconButton>
