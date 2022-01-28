@@ -668,9 +668,8 @@ export default function AddProductInwardView() {
               onChange={(event, newValue) => {
                 if (newValue) {
                   setCustomerId(newValue.id);
-                }
-                else {
-                  setCustomerId(null)
+                } else {
+                  setCustomerId(null);
                 }
               }}
               renderInput={(params) => (
@@ -714,9 +713,6 @@ export default function AddProductInwardView() {
                 } else {
                   setWarehouseId(null);
                 }
-                // else {
-                //   setWarehouseId(null)
-                // }
               }}
               renderInput={(params) => (
                 <TextField {...params} label="Warehouse" variant="outlined" />
@@ -857,9 +853,8 @@ export default function AddProductInwardView() {
                 onChange={(event, newValue) => {
                   if (newValue) {
                     selectProduct(newValue.id);
-                  }
-                  else {
-                    selectProduct(null)
+                  } else {
+                    selectProduct(null);
                   }
                 }}
                 renderInput={(params) => (
