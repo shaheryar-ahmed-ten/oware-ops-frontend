@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddProductOutwardView({ }) {
+export default function AddProductOutwardView({}) {
   const classes = useStyles();
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -96,6 +96,7 @@ export default function AddProductOutwardView({ }) {
   const [disabledAddBatchButtonIds, setDisabledAddBatchButtonIds] = useState(
     []
   );
+  const [dispatchOrder, setDispatchOrder] = useState(null);
   useEffect(() => {
     getRelations();
   }, []);
@@ -112,50 +113,17 @@ export default function AddProductOutwardView({ }) {
     }
   }, [selectedProductOutward, dispatchOrders]);
 
-  const dispatchOrdersForDropdown = [];
-  const filterDispatchOrdersForDropdown = () => {
-    dispatchOrders.forEach((dispatchOrder) => {
-      //    loop to get the PO of each DO
-      // let totalQuantityDispatched = dispatchOrder.ProductOutwards.reduce((acc, po) => acc + po.quantity, 0); // 1 DO
-      let totalRequestedQuantity = dispatchOrder.Inventories.reduce(
-        (acc, inv) => acc + inv.OrderGroup.quantity,
-        0
-      ); // 1 DO
-      let totalDispatchedQuantity = 0;
-      dispatchOrder.ProductOutwards.forEach((po) => {
-        totalDispatchedQuantity += po.Inventories.reduce(
-          (acc, inv) => acc + inv.OutwardGroup.quantity,
-          0
-        );
-      });
-      let remainingQuantityOfDispatch =
-        totalRequestedQuantity - totalDispatchedQuantity; // 1 DO's remaining quantity
+  useEffect(() => {
+    getDispatchOrderDetail();
+  }, [dispatchOrder]);
 
-      if (remainingQuantityOfDispatch != 0) {
-        dispatchOrdersForDropdown.push(dispatchOrder);
-      }
-    });
-  };
-  filterDispatchOrdersForDropdown();
+  const dispatchOrdersForDropdown = dispatchOrders;
 
-  const getRelations = () => {
-    axios.get(getURL("product-outward/relations")).then((res) => {
-      setVehicles(res.data.vehicles);
-      setDispatchOrders(res.data.dispatchOrders);
-      setAllBatches(res.data.batches);
-    });
-  };
-
-  // resolved: error occurs on product outward edit.
-  const selectDispatchOrder = (value, internalIdForBusiness) => {
-    setDispatchOrderId(value);
-    if (value && dispatchOrders.length > 0) {
-      let dispatchOrder = dispatchOrders.find(
-        (dispatchOrder) => dispatchOrder.id == value
-      );
-      let selectedInventoryBatches = {};
-      let inventoryBatchTrack = {};
-      // set an object of each inventory in selected dispatch order containing all of their batches
+  const getDispatchOrderDetail = () => {
+    let selectedInventoryBatches = {};
+    let inventoryBatchTrack = {};
+    // set an object of each inventory in selected dispatch order containing all of their batches
+    if (dispatchOrder) {
       for (let inv of dispatchOrder.Inventories) {
         selectedInventoryBatches[inv.id] = [
           ...allBatches.filter(
@@ -182,12 +150,28 @@ export default function AddProductOutwardView({ }) {
       setInternalIdForBusiness(
         `PD-${dispatchOrder.Inventory.Warehouse.businessWarehouseCode}-`
       );
-      // setIsInternal(selectedProductOutward.isInternal || 1);
       if (selectedProductOutward) {
         setVehicleId(selectedProductOutward.vehicleId || null);
         setExternalVehicle(selectedProductOutward.externalVehicle || null);
-        // setIsInternal(selectedProductOutward.isInternal || 1);
       }
+    }
+  };
+
+  const getRelations = () => {
+    axios.get(getURL("product-outward/relations")).then((res) => {
+      setVehicles(res.data.vehicles);
+      setDispatchOrders(res.data.dispatchOrders);
+      setAllBatches(res.data.batches);
+    });
+  };
+
+  // resolved: error occurs on product outward edit.
+  const selectDispatchOrder = (value) => {
+    setDispatchOrderId(value);
+    if (value && dispatchOrders.length > 0) {
+      axios.get(getURL(`dispatch-order/${value}`)).then((res) => {
+        setDispatchOrder(res.data.data);
+      });
     } else {
       setWarehouse("");
       setCustomer("");
@@ -198,7 +182,6 @@ export default function AddProductOutwardView({ }) {
       setInternalIdForBusiness("");
       setVehicleId("");
       setExternalVehicle("");
-      // setIsInternal("");
     }
   };
 
@@ -293,8 +276,8 @@ export default function AddProductOutwardView({ }) {
       isRequired(dispatchOrderId) && selectedRadioValue == "externalRide"
         ? isRequired(externalVehicle)
         : true &&
-        isNotEmptyArray(filteredArray) &&
-        checkForZeroQuantityInArray(filteredArray)
+          isNotEmptyArray(filteredArray) &&
+          checkForZeroQuantityInArray(filteredArray)
     ) {
       setDisableSubmitButton(true);
       addProductOutward(newProductOutward);
@@ -349,11 +332,11 @@ export default function AddProductOutwardView({ }) {
 
       toBeUpdatedBatch.toBeSubtractedQuantity =
         toBeUpdatedBatch.availableQuantity >= value &&
-          orderedRamainingQty >= value
+        orderedRamainingQty >= value
           ? value
           : orderedRamainingQty < toBeUpdatedBatch.availableQuantity
-            ? orderedRamainingQty
-            : toBeUpdatedBatch.availableQuantity;
+          ? orderedRamainingQty
+          : toBeUpdatedBatch.availableQuantity;
       setInventoryBatchTracker((prevState) => ({
         ...prevState,
         [`${inventoryId}-0`]: toBeUpdatedBatch,
@@ -362,24 +345,23 @@ export default function AddProductOutwardView({ }) {
       let toBeUpdatedInventory = selectedDispatchOrder.Inventories.find(
         (inv) => inv.id == inventoryId
       );
-      const diff = orderedRamainingQty - toBeUpdatedInventory.OrderGroup.orignalToBeSubtractedQuantity
+      const diff =
+        orderedRamainingQty -
+        toBeUpdatedInventory.OrderGroup.orignalToBeSubtractedQuantity;
 
       toBeUpdatedInventory.OrderGroup.toBeSubtractedQuantity =
         toBeUpdatedInventory["duplicate"]
-          ? diff >
-            value && toBeUpdatedBatch.availableQuantity > value
+          ? diff > value && toBeUpdatedBatch.availableQuantity > value
             ? value
-            : diff <
-              toBeUpdatedBatch.availableQuantity
-              ? diff
-              : toBeUpdatedBatch.availableQuantity
+            : diff < toBeUpdatedBatch.availableQuantity
+            ? diff
+            : toBeUpdatedBatch.availableQuantity
           : orderedRamainingQty > value &&
             toBeUpdatedBatch.availableQuantity > value
-            ? value
-            : orderedRamainingQty < toBeUpdatedBatch.availableQuantity
-              ? orderedRamainingQty
-              : toBeUpdatedBatch.availableQuantity;
-
+          ? value
+          : orderedRamainingQty < toBeUpdatedBatch.availableQuantity
+          ? orderedRamainingQty
+          : toBeUpdatedBatch.availableQuantity;
     }
     // for remaining ordered quantity -->  for  batch enabled false products
     if (!batchEnabled) {
@@ -393,27 +375,33 @@ export default function AddProductOutwardView({ }) {
 
   const reducer = (previousValue, currentValue) => previousValue + currentValue;
 
-  const addNewBatch = (inventory, existingBatchName, idx, orderedRamainingQty) => {
+  const addNewBatch = (
+    inventory,
+    existingBatchName,
+    idx,
+    orderedRamainingQty
+  ) => {
     // find previous duplicate inventories if any
-    var prevOriginalQuantities = []
-    var diff = inventory.OrderGroup.quantity - orderedRamainingQty
-    var prevSumOfOriginalQuantities = inventory['duplicate'] ?
-      diff > 0 ?
-        -diff
-        :
-        diff
-      :
-      diff
+    var prevOriginalQuantities = [];
+    var diff = inventory.OrderGroup.quantity - orderedRamainingQty;
+    var prevSumOfOriginalQuantities = inventory["duplicate"]
+      ? diff > 0
+        ? -diff
+        : diff
+      : diff;
     // var prevSumOfOriginalQuantities = 0
     var duplicateInventories = selectedDispatchOrder.Inventories.filter(
       (inv) => inv["duplicate"] && inv.originalId == inventory.originalId
     );
     if (duplicateInventories.length) {
       for (let dupInv of duplicateInventories) {
-        prevOriginalQuantities.push(dupInv.OrderGroup.orignalToBeSubtractedQuantity)
+        prevOriginalQuantities.push(
+          dupInv.OrderGroup.orignalToBeSubtractedQuantity
+        );
       }
       // prevSumOfOriginalQuantities = prevOriginalQuantities.reduce(reducer)
-      prevSumOfOriginalQuantities = prevOriginalQuantities[prevOriginalQuantities.length - 1]
+      prevSumOfOriginalQuantities =
+        prevOriginalQuantities[prevOriginalQuantities.length - 1];
     }
 
     // create a duplicate inventory
@@ -422,7 +410,8 @@ export default function AddProductOutwardView({ }) {
         ...inventory.OrderGroup,
         inventoryId: `${inventory.id}-dup`,
         orignalToBeSubtractedQuantity:
-          (parseInt(inventory.OrderGroup.toBeSubtractedQuantity) + parseInt(prevSumOfOriginalQuantities)),
+          parseInt(inventory.OrderGroup.toBeSubtractedQuantity) +
+          parseInt(prevSumOfOriginalQuantities),
         toBeSubtractedQuantity: 0,
         // quantity: inventory.OrderGroup.quantity - (inventory.OrderGroup.toBeSubtractedQuantity || 0)
         quantity: inventory.OrderGroup.quantity,
@@ -496,9 +485,7 @@ export default function AddProductOutwardView({ }) {
                     ? ` - ${Math.floor(duration.asDays())} days pending`
                     : "";
                 return (
-                  <span
-                    {...props}
-                  >
+                  <span {...props}>
                     <p>
                       {props.internalIdForBusiness}
                       <span
@@ -506,8 +493,8 @@ export default function AddProductOutwardView({ }) {
                           color: grThanTwo
                             ? "rgba(255,30,0,0.8)"
                             : grThanOne
-                              ? "#DBA712"
-                              : "black",
+                            ? "#DBA712"
+                            : "black",
                         }}
                       >
                         {message}
@@ -520,9 +507,9 @@ export default function AddProductOutwardView({ }) {
               defaultValue={
                 selectedProductOutward
                   ? {
-                    internalIdForBusiness:
-                      selectedProductOutward.internalIdForBusiness,
-                  }
+                      internalIdForBusiness:
+                        selectedProductOutward.internalIdForBusiness,
+                    }
                   : ""
               }
               filterOptions={filterOptions}
@@ -531,11 +518,7 @@ export default function AddProductOutwardView({ }) {
                 dispatchOrder.internalIdForBusiness || ""
               }
               onChange={(event, newValue) => {
-                if (newValue)
-                  selectDispatchOrder(
-                    newValue.id,
-                    newValue.internalIdForBusiness || ""
-                  );
+                if (newValue) selectDispatchOrder(newValue.id);
               }}
               renderInput={(params) => (
                 <TextField
@@ -624,9 +607,7 @@ export default function AddProductOutwardView({ }) {
               disabled
               inputProps={{ maxLength: 30 }}
               variant="filled"
-
             />
-
           </Grid>
         ) : (
           // External Ride
@@ -649,8 +630,8 @@ export default function AddProductOutwardView({ }) {
               }
             />
             {validation.externalVehicle &&
-              !isRequired(externalVehicle) &&
-              selectedRadioValue == "externalRide" ? (
+            !isRequired(externalVehicle) &&
+            selectedRadioValue == "externalRide" ? (
               <Typography color="error">
                 External Vehicle number is required!
               </Typography>
@@ -829,10 +810,10 @@ export default function AddProductOutwardView({ }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {selectedDispatchOrder.Inventories.map((inventory, idx) => {
+                {dispatchOrder.Inventories.map((inventory, idx) => {
                   let remainingQt = 0;
                   let outwardQt = 0;
-                  for (let po of selectedDispatchOrder.ProductOutwards) {
+                  for (let po of dispatchOrder.ProductOutwards) {
                     const targetedPoInv = po.Inventories.find(
                       (inv) =>
                         inv.OutwardGroup.inventoryId ===
@@ -863,12 +844,10 @@ export default function AddProductOutwardView({ }) {
                       <TableCell>{inventory.Product.UOM.name}</TableCell>
                       <TableCell>{inventory.OrderGroup.quantity}</TableCell>
                       <TableCell>
-                        {
-                          remainingQt -
+                        {remainingQt -
                           (inventory.OrderGroup.toBeSubtractedQuantity || 0) -
                           (inventory.OrderGroup.orignalToBeSubtractedQuantity ||
-                            0)
-                        }
+                            0)}
                         {
                           <PriorityHighOutlinedIcon
                             style={{
@@ -945,8 +924,9 @@ export default function AddProductOutwardView({ }) {
                                 inventoryBatches.map((batch, idx) => {
                                   return (
                                     <MenuItem value={batch.batchName} key={idx}>
-                                      {`${batch.batchNumber || ""} ${batch.batchNumber ? "," : ""
-                                        } ${dividerDateFormat(batch.expiryDate)}`}
+                                      {`${batch.batchNumber || ""} ${
+                                        batch.batchNumber ? "," : ""
+                                      } ${dividerDateFormat(batch.expiryDate)}`}
                                     </MenuItem>
                                   );
                                 })}
@@ -991,41 +971,41 @@ export default function AddProductOutwardView({ }) {
                                   ? e.target.value < 0
                                     ? e.target.value == 0
                                     : inventory["duplicate"]
-                                      ? inventory.OrderGroup.quantity >
+                                    ? inventory.OrderGroup.quantity >
+                                      currentSelectedInventoryBatch.availableQuantity
+                                      ? e.target.value >
                                         currentSelectedInventoryBatch.availableQuantity
-                                        ? e.target.value >
+                                        ? remainingQt -
+                                            inventory.OrderGroup
+                                              .orignalToBeSubtractedQuantity <
                                           currentSelectedInventoryBatch.availableQuantity
                                           ? remainingQt -
                                             inventory.OrderGroup
-                                              .orignalToBeSubtractedQuantity < currentSelectedInventoryBatch.availableQuantity ?
-                                            remainingQt -
-                                            inventory.OrderGroup
                                               .orignalToBeSubtractedQuantity
-                                            :
-                                            currentSelectedInventoryBatch.availableQuantity
-                                          : e.target.value
-                                        : e.target.value <
-                                          remainingQt -
+                                          : currentSelectedInventoryBatch.availableQuantity
+                                        : e.target.value
+                                      : e.target.value <
+                                        remainingQt -
                                           inventory.OrderGroup
                                             .orignalToBeSubtractedQuantity
-                                          ? e.target.value
-                                          : remainingQt -
-                                          inventory.OrderGroup
-                                            .orignalToBeSubtractedQuantity
-                                      : inventory.OrderGroup.quantity >
-                                        currentSelectedInventoryBatch.availableQuantity
-                                        ? e.target.value >
-                                          currentSelectedInventoryBatch.availableQuantity
-                                          ? currentSelectedInventoryBatch.availableQuantity
-                                          : e.target.value
-                                        : e.target.value < remainingQt
-                                          ? e.target.value
-                                          : remainingQt
-                                  : e.target.value < 0
-                                    ? e.target.value == 0
-                                    : e.target.value < remainingQt
                                       ? e.target.value
-                                      : remainingQt,
+                                      : remainingQt -
+                                        inventory.OrderGroup
+                                          .orignalToBeSubtractedQuantity
+                                    : inventory.OrderGroup.quantity >
+                                      currentSelectedInventoryBatch.availableQuantity
+                                    ? e.target.value >
+                                      currentSelectedInventoryBatch.availableQuantity
+                                      ? currentSelectedInventoryBatch.availableQuantity
+                                      : e.target.value
+                                    : e.target.value < remainingQt
+                                    ? e.target.value
+                                    : remainingQt
+                                  : e.target.value < 0
+                                  ? e.target.value == 0
+                                  : e.target.value < remainingQt
+                                  ? e.target.value
+                                  : remainingQt,
                                 id: inventory.id,
                                 availableQuantity: remainingQt,
                                 // in case on batch enabled
@@ -1042,18 +1022,18 @@ export default function AddProductOutwardView({ }) {
                                         ? e.target.value == 0
                                         : inventory.OrderGroup.quantity >
                                           currentSelectedInventoryBatch.availableQuantity
-                                          ? e.target.value >
-                                            currentSelectedInventoryBatch.availableQuantity
-                                            ? currentSelectedInventoryBatch.availableQuantity
-                                            : e.target.value
-                                          : e.target.value < remainingQt
-                                            ? e.target.value
-                                            : remainingQt
-                                      : e.target.value < 0
-                                        ? e.target.value == 0
+                                        ? e.target.value >
+                                          currentSelectedInventoryBatch.availableQuantity
+                                          ? currentSelectedInventoryBatch.availableQuantity
+                                          : e.target.value
                                         : e.target.value < remainingQt
-                                          ? e.target.value
-                                          : remainingQt,
+                                        ? e.target.value
+                                        : remainingQt
+                                      : e.target.value < 0
+                                      ? e.target.value == 0
+                                      : e.target.value < remainingQt
+                                      ? e.target.value
+                                      : remainingQt,
                                   },
                                 ],
                                 // : []
@@ -1065,13 +1045,12 @@ export default function AddProductOutwardView({ }) {
                           }
                         />
                       </TableCell>
-                      {/* {console.log("debug 0", inventoryBatches.length > 1)} */}
                       <TableCell>
                         {" "}
                         {inventory.Product.batchEnabled ? (
                           // (inventory.OrderGroup.quantity >= currentSelectedInventoryBatch.availableQuantity) && remainingQt - (inventory.OrderGroup.toBeSubtractedQuantity || 0) > 0 ?
                           inventoryBatches.length > 1 &&
-                            remainingQt -
+                          remainingQt -
                             (inventory.OrderGroup.toBeSubtractedQuantity || 0) >
                             0 ? (
                             <div
@@ -1086,8 +1065,8 @@ export default function AddProductOutwardView({ }) {
                               <IconButton
                                 disabled={
                                   disabledAddBatchButtonIds[idx] ||
-                                    !inventoryQuantities[idx] ||
-                                    inventoryQuantities[idx]?.quantity == 0
+                                  !inventoryQuantities[idx] ||
+                                  inventoryQuantities[idx]?.quantity == 0
                                     ? true
                                     : false
                                 }
@@ -1145,4 +1124,3 @@ export default function AddProductOutwardView({ }) {
     </>
   );
 }
-
