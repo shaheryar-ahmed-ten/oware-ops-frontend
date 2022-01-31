@@ -128,7 +128,7 @@ function InwardProductDetailsView() {
       minWidth: "auto",
       colSpan: "2",
       align: "center",
-      className: classes.topColumn,
+      className: classes.topColumn1,
       style: classes.value,
       format: (value, product, batch) => product.totalBatchQuantity,
     },
