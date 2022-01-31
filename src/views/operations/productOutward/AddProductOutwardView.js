@@ -161,7 +161,13 @@ export default function AddProductOutwardView({}) {
     axios.get(getURL("product-outward/relations")).then((res) => {
       setVehicles(res.data.vehicles);
       setDispatchOrders(res.data.dispatchOrders);
-      setAllBatches(res.data.batches);
+      getBatches();
+    });
+  };
+
+  const getBatches = () => {
+    axios.get(getURL("product-outward/batch")).then((res) => {
+      setAllBatches(res.data.data);
     });
   };
 
